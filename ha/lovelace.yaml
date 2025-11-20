@@ -1,32 +1,94 @@
 # 💠 BSG Network Dashboard (Home Assistant Lovelace)
-# Requires sensors named sensor.vlanXX_metric
-# Uses Mushroom cards for conditional color feedback
+# Comprehensive dashboard with automation, monitoring, and network controls
 
 title: 💠 BSG Network Dashboard
 views:
   - title: Overview
     cards:
-      - type: custom:mushroom-template-card
-        primary: Trusted (10)
-        secondary: >
-          Bandwidth: {{ states('sensor.vlan10_bandwidth_mbps') }} Mbps ·
-          Failed logins/min: {{ states('sensor.vlan10_failed_logins_min') }}
-        icon: mdi:shield-check
-        icon_color: >
-          {% set fails = states('sensor.vlan10_failed_logins_min')|float(0) %}
-          {% if fails > 5 %} red
-          {% elif fails > 2 %} yellow
-          {% else %} green
-          {% endif %}
-      - type: custom:mushroom-template-card
-        primary: IoT (20)
-        secondary: >
-          Devices up: {{ states('sensor.vlan20_devices_up') }} ·
-          >3σ: {{ states('sensor.vlan20_sigma_anomalies') }}
-        icon: mdi:cog
-        icon_color: >
-          {% if states('sensor.vlan20_sigma_anomalies')|int(0) >= 3 %} red
-          {% elif states('sensor.vlan20_sigma_anomalies')|int(0) >= 1 %} yellow
-          {% else %} green
-          {% endif %}
-      # … repeat for VLANs 30, 31, 40, 50, 60, 70, 81, 82, 90 …
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                content: '{{ states("automation.network_monitoring") }}'
+                icon: mdi:network
+                icon_color: |
+                  {% if is_state('automation.network_monitoring', 'on') %}
+                    green
+                  {% else %}
+                    red
+                  {% endif %}
+              - type: template
+                content: '{{ states("script.network_restart") }}'
+                icon: mdi:restart
+                icon_color: |
+                  {% if is_state('script.network_restart', 'on') %}
+                    blue
+                  {% else %}
+                    grey
+                  {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.cpu_usage
+            name: CPU Usage
+            icon: mdi:cpu-64-bit
+            icon_color: |
+              {% set usage = states('sensor.cpu_usage') | float(0) %}
+              {% if usage > 80 %} red
+              {% elif usage > 60 %} yellow
+              {% else %} green
+              {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.memory_usage
+            name: Memory Usage
+            icon: mdi:memory
+            icon_color: |
+              {% set usage = states('sensor.memory_usage') | float(0) %}
+              {% if usage > 80 %} red
+              {% elif usage > 60 %} yellow
+              {% else %} green
+              {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.network_bandwidth
+            name: Network Bandwidth
+            icon: mdi:network-outline
+            icon_color: |
+              {% set bandwidth = states('sensor.network_bandwidth') | float(0) %}
+              {% if bandwidth > 900 %} red
+              {% elif bandwidth > 700 %} yellow
+              {% else %} green
+              {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.active_connections
+            name: Active Connections
+            icon: mdi:lan-connect
+            icon_color: |
+              {% set connections = states('sensor.active_connections') | int(0) %}
+              {% if connections > 100 %} red
+              {% elif connections > 50 %} yellow
+              {% else %} green
+              {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.failed_logins
+            name: Failed Logins (24h)
+            icon: mdi:shield-alert
+            icon_color: |
+              {% set fails = states('sensor.failed_logins') | int(0) %}
+              {% if fails > 10 %} red
+              {% elif fails > 5 %} yellow
+              {% else %} green
+              {% endif %}
+          - type: custom:mushroom-entity-card
+            entity: sensor.uptime
+            name: System Uptime
+            icon: mdi:clock-outline
+            icon_color: green
+          - type: custom:mushroom-entity-card
+            entity: sensor.temperature
+            name: System Temperature
+            icon: mdi:thermometer
+            icon_color: |
+              {% set temp = states('sensor.temperature') | float(0) %}
+              {% if temp > 70 %} red
+              {% elif temp > 60 %} yellow
+              {% else %} green
+              {% endif %}
