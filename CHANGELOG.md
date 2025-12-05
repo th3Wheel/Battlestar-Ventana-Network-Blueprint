@@ -8,24 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Added
+---
 
-* **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
-* **`plan/` directory** with feature and infrastructure planning documents.
-* **`docs/raw/network.md`** - Raw network documentation.
-* **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
-* **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
+## [1.1.0] — 2025-12-05
 
 ### Changed
 
-* **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
-
-* **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.
-* Updated all documentation references to reflect new VLAN names.
-* **Repository reorganization** - Consolidated network documentation from `../Network Structure/` into main blueprint directory.
-* **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
-* **File renamed** - `fgemp` renamed to `current-network-baseline.md` for clarity (baseline network state documentation).
-* **Baseline folder created** - New `baseline/` directory for architectural design documents including network blueprints, deployment guides, and system specifications.
+* **README repository structure** - Enhanced tree structure with clickable markdown links to all files and directories for improved navigation
+* **Documentation accessibility** - All documentation files now directly accessible from README tree structure
+* **Baseline folder excluded** - Removed baseline folder from README tree to focus on active documentation
 
 ### Removed
 
