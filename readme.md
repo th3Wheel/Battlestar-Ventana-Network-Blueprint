@@ -65,7 +65,7 @@ Battlestar-Ventana-Network-Blueprint/
 ├── [layout.md](layout.md)                          # Network layout
 ├── [network-map.md](network-map.md)                # Network topology map
 │
-├── infrastructure/                                 # Infrastructure configs
+
 │
 ├── alerts/                                         # Prometheus alert rules
 │   └── [Alertmanager style.yaml](alerts/Alertmanager%20style.yaml)
@@ -88,7 +88,7 @@ Battlestar-Ventana-Network-Blueprint/
 │       └── [network.md](docs/raw/network.md)
 │
 ├── ha/                                             # Home Assistant
-│   ├── [dasboard..yaml](ha/dasboard..yaml)
+│   ├── [dashboard.yaml](ha/dashboard.yaml)
 │   ├── [home-assistant-programming-guidelines.instructions.md](ha/home-assistant-programming-guidelines.instructions.md)
 │   ├── [lovelace.yaml](ha/lovelace.yaml)
 │   └── guidelines/
