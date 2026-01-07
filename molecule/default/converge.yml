@@ -1,0 +1,7 @@
+---
+roles:
+  - role: your_role_name
+    tags: setup
+  - role: another_role_name
+    tags: configure
+```
