@@ -58,7 +58,6 @@ Use subgraphs to organize these layers clearly. Show the data flow between layer
 - **Technology Stack Selection**: Document choice rationale for each layer
 ```
 
-- **Technology Stack Selection**: Document choice rationale for each layer
 - **Integration Points**: Define clear boundaries and communication protocols
 - **Deployment Architecture**: Docker containerization strategy
 - **Scalability Considerations**: Horizontal and vertical scaling approaches
