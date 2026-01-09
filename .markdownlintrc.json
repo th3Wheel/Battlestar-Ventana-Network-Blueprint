@@ -1,0 +1,14 @@
+{
+  "extends": "markdownlint/style/relaxed",
+  "no-hard-tabs": false,
+  "line-length": {
+    "line_length": 120,
+    "heading_line_length": 120,
+    "headers": true,
+    "code_blocks": false,
+    "code_lines": false,
+    "tables": false
+  },
+  "no-bare-urls": false,
+  "no-emphasis-as-heading": false
+}

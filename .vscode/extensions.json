@@ -1,5 +1,11 @@
 {
     "recommendations": [
-        "upstash.context7-mcp"
+        "upstash.context7-mcp",
+        "DavidAnson.vscode-markdownlint",
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "redhat.vscode-yaml",
+        "charliermarsh.ruff",
+        "dbaeumer.vscode-eslint"
     ]
 }
