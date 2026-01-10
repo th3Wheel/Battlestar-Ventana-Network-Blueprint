@@ -1,0 +1,133 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lint: All",
+      "dependsOn": [
+        "Lint: Markdown",
+        "Lint: YAML",
+        "Lint: JavaScript/TypeScript",
+        "Lint: Python"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: Markdown",
+      "type": "shell",
+      "command": "markdownlint",
+      "args": ["**/*.md"],
+      "problemMatcher": {
+        "owner": "markdownlint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "code": 4,
+          "message": 6,
+          "severity": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: YAML",
+      "type": "shell",
+      "command": "yamllint",
+      "args": ["."],
+      "problemMatcher": {
+        "owner": "yamllint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+\\[(error|warning)\\]\\s+(.*)\\s+\\((.*)\\)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5,
+          "code": 6
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: JavaScript/TypeScript",
+      "type": "shell",
+      "command": "npx",
+      "args": ["eslint", "."],
+      "problemMatcher": "$eslint-stylish",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (Pylint)",
+      "type": "shell",
+      "command": "pylint",
+      "args": ["${workspaceFolder}/**/*.py"],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "Get-ChildItem -Recurse -Filter *.py | ForEach-Object { pylint $_.FullName }"
+        ]
+      },
+      "problemMatcher": {
+        "owner": "pylint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (Ruff)",
+      "type": "shell",
+      "command": "ruff",
+      "args": ["check", "."],
+      "problemMatcher": {
+        "owner": "ruff",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    }
+  ]
+}
