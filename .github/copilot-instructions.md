@@ -8,10 +8,10 @@
 - Naming theme is Battlestar Galactica for VLANs/SSIDs and Pacific Rim for hosts; see [baseline/Battlestar Ventana Network Blueprint.md](baseline/Battlestar%20Ventana%20Network%20Blueprint.md) for naming patterns.
 
 ## Key source docs
-- Overview and repo map: [readme.md](readme.md), [layout.md](layout.md).
-- Blueprint and summary: [baseline/Battlestar Ventana Network Blueprint.md](baseline/Battlestar%20Ventana%20Network%20Blueprint.md), [baseline/Battlestar-Ventana-Blueprint-Summary.md](baseline/Battlestar-Ventana-Blueprint-Summary.md).
-- Architecture deep dive: [docs/Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md).
-- Policy tables: [docs/firewall-matrix.md](docs/firewall-matrix.md), [docs/services.md](docs/services.md), [docs/dhcp-scopes.md](docs/dhcp-scopes.md), [docs/audit-checklist.md](docs/audit-checklist.md).
+- Overview and repo map: [readme.md](../readme.md), [layout.md](../layout.md).
+- Blueprint and summary: [baseline/Battlestar Ventana Network Blueprint.md](../baseline/Battlestar%20Ventana%20Network%20Blueprint.md), [baseline/Battlestar-Ventana-Blueprint-Summary.md](../baseline/Battlestar-Ventana-Blueprint-Summary.md).
+- Architecture deep dive: [docs/Project_Architecture_Blueprint.md](../docs/Project_Architecture_Blueprint.md).
+- Policy tables: [docs/firewall-matrix.md](../docs/firewall-matrix.md), [docs/services.md](../docs/services.md), [docs/dhcp-scopes.md](../docs/dhcp-scopes.md), [docs/audit-checklist.md](../docs/audit-checklist.md).
 
 ## Update rules
 - When adding or changing a VLAN, update DHCP scopes, firewall matrix, services matrix, and any diagrams together; keep the VLAN ID aligned with the third octet.

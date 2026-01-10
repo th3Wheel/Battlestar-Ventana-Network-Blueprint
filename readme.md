@@ -13,13 +13,12 @@
 - **CapricaGuestPortal (30):** Guest – Internet only  
 - **PiconResidentGate (31):** Elevated guest (casting, printing)  
 
-* **Basestar Control (40):** Infrastructure switches/controllers  
+- **Basestar Control (40):** Infrastructure switches/controllers  
 - **GemenonServiceVault (50):** NAS, MQTT, Home Assistant  
 - **VirgonFleetYard (60):** Printers  
 - **PegasusMediaNode (70):** Media / Casting  
 - **ScorpiaMediaShield (81):** Cameras – Local  
 - **ScorpiaMediaRelay (82):** Cameras – Cloud  
-
 - **ScyllaProcessControl (90):** Work VLAN
 
 ---
