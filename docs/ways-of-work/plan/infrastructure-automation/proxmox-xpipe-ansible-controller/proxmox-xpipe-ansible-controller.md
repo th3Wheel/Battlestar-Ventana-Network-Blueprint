@@ -73,15 +73,17 @@ apt install -y \
   git \
   curl \
   nano \
-  pipx \
-  sshpass
+  pipx
 
 pipx ensurepath
 pipx install ansible
 "
 ```
 
-`sshpass` is included here so you can deploy keys from the controller CT if desired.
+**Note:** `sshpass` is intentionally excluded from this setup. While it simplifies
+initial key deployment, it creates security risks (password exposure in command
+history, process listings, and logs). See Command 4 below for secure alternatives
+using interactive `ssh-copy-id` or Ansible Vault for automated deployment.
 
 ---
 
