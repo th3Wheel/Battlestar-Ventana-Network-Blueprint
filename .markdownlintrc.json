@@ -1,5 +1,6 @@
 {
   "extends": "markdownlint/style/relaxed",
+  "ignore-pattern": "node_modules/",
   "no-hard-tabs": false,
   "line-length": {
     "line_length": 120,

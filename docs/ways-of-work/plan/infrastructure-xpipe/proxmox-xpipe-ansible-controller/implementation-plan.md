@@ -10,6 +10,7 @@ ai_note: "Yes; generated with AI assistance."
 summary: "Implementation plan for Proxmox XPipe Ansible controller bootstrap command pack, inventory, and workflow."
 post_date: "2026-01-07"
 ---
+## Goal
 
 ## Goal
 

@@ -1,1 +1,10 @@
 Copilot-Processing.md
+.github/copilot/memory/
+node_modules/
+.venv/
+venv/
+*.egg-info/
+__pycache__/
+.DS_Store
+dist/
+build/

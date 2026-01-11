@@ -1,0 +1,230 @@
+📘 Prompt Document: Guardrail Scaffolding Specification
+
+For an Agent that Generates All Files, Folders, Scripts, and Components
+
+🎯 Objective
+
+Generate a complete, reproducible, multi‑layer guardrail system that enforces the invariant:
+
+automations.yaml must always contain a valid YAML list ([]).
+
+This guardrail must be enforced across:
+
+GitHub (CI)
+
+Home Assistant (pre‑flight add‑on)
+
+Local development (VS Code tasks)
+
+Cluster automation (Ansible role)
+
+XPipe command packs
+
+Documentation (Mermaid diagrams + folder structure)
+
+The agent must scaffold all files, folders, scripts, and configuration needed to implement this system.
+
+📂 1. Required Folder Structure
+
+The agent must generate the following directory tree:
+
+repo-root/
+├── home-assistant/
+│   ├── automations.yaml
+│   ├── python_scripts/
+│   │   └── ensure_automation_list.py
+│   ├── guardrails/
+│   │   ├── validate_automations.py
+│   │   ├── schema.yaml
+│   │   └── README.md
+│
+├── tools/
+│   ├── xpipe/
+│   │   └── guardrail-pack.json
+│   ├── vscode/
+│   │   └── tasks.json
+│   └── hooks/
+│       └── pre-commit
+│
+├── ansible/
+│   └── roles/
+│       └── ha_guardrail/
+│           ├── tasks/main.yml
+│           └── defaults/main.yml
+│
+├── github/
+│   └── workflows/
+│       └── guardrail.yml
+│
+├── addons/
+│   └── ha-preflight-guardrail/
+│       ├── config.yaml
+│       ├── Dockerfile
+│       └── guardrail.sh
+│
+├── docs/
+│   ├── ha-copilot/
+│   │   ├── guardrails.md
+│   │   └── troubleshooting.md
+│   └── diagrams/
+│       └── guardrail-flow.mmd
+│
+└── README.md
+
+🧩 2. Required Files and Their Contents
+
+The agent must generate the following files with full content:
+
+2.1 Home Assistant Guardrail Scripts
+
+automations.yaml containing []
+
+python_scripts/ensure_automation_list.py
+
+guardrails/validate_automations.py
+
+guardrails/schema.yaml
+
+guardrails/README.md
+
+2.2 GitHub Action
+
+.github/workflows/guardrail.ymlValidates automations.yaml on every push/PR.
+
+2.3 Pre‑flight HA Supervisor Add-on
+
+addons/ha-preflight-guardrail/config.yaml
+
+addons/ha-preflight-guardrail/Dockerfile
+
+addons/ha-preflight-guardrail/guardrail.sh
+
+2.4 VS Code Tasks
+
+tools/vscode/tasks.jsonIncludes:
+
+YAML syntax check
+
+Guardrail validation
+
+Combined guardrail suite
+
+2.5 XPipe Command Pack
+
+tools/xpipe/guardrail-pack.jsonIncludes:
+
+validate
+
+repair
+
+guardrail (validate + repair)
+
+2.6 Git Pre‑Commit Hook
+
+tools/hooks/pre-commitEnforces YAML validity before commit.
+
+2.7 Ansible Role
+
+ansible/roles/ha_guardrail/tasks/main.yml
+
+ansible/roles/ha_guardrail/defaults/main.yml
+
+2.8 Documentation
+
+docs/ha-copilot/guardrails.md
+
+docs/ha-copilot/troubleshooting.md
+
+docs/diagrams/guardrail-flow.mmd
+
+🧭 3. Required Mermaid Diagrams
+
+3.1 Guardrail Flow Diagram
+
+The agent must generate:
+
+flowchart TD
+
+    A[Home Assistant Startup] --> B{automations.yaml exists?}
+    B -- No --> C[Create automations.yaml with []]
+    B -- Yes --> D{YAML parses as list?}
+
+    D -- No --> C
+    D -- Yes --> E[Proceed]
+
+    C --> F[Write [] to automations.yaml]
+    F --> G[Reload Automations]
+
+    E --> H[ha-copilot Add-on Startup]
+    H --> I{get_auto_script_list() returns list?}
+
+    I -- No --> C
+    I -- Yes --> J[Add-on Fully Operational]
+
+    subgraph Developer Workflow
+        K[VS Code Task: YAML Validation]
+        L[Git Pre-Commit Hook]
+        M[XPipe Guardrail Command]
+    end
+
+    K --> B
+    L --> B
+    M --> B
+
+3.2 HA ↔ Add-on ↔ Filesystem Sequence Diagram
+
+sequenceDiagram
+    participant HA as Home Assistant Core
+    participant FS as Filesystem (/config)
+    participant GA as Guardrail System
+    participant HC as ha-copilot Add-on
+
+    GA->>FS: Validate automations.yaml\n(create or repair if needed)
+    FS-->>GA: automations.yaml is valid
+
+    HA->>FS: Load automations.yaml
+    FS-->>HA: YAML list returned
+
+    HA->>HC: Start add-on
+    HC->>FS: Read automations.yaml via ha_auto_cfg
+    FS-->>HC: YAML list returned
+
+    HC->>HA: Add-on ready (WSGI app loaded)
+
+🧬 4. Required Behavior of the Agent
+
+The agent must:
+
+Scaffold all folders exactly as specified
+
+Generate all files with complete content
+
+Ensure all scripts are executable where appropriate
+
+Ensure YAML is valid and lint‑clean
+
+Ensure JSON is valid
+
+Ensure Mermaid diagrams are syntactically correct
+
+Ensure the entire system is self‑healing and reproducible
+
+🧱 5. Output Format
+
+The agent must output:
+
+A complete file tree
+
+Each file with a fenced code block
+
+No placeholders
+
+No TODOs
+
+Fully functional code
+
+🧨 6. Invariant
+
+Every component must enforce:
+
+automations.yaml must always contain a YAML list ([]).
