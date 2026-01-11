@@ -170,10 +170,10 @@ set -e
 # Verify host key first (manual step or pre-populate known_hosts)
 ssh-keyscan -H {{target_host}} >> /home/ansible/.ssh/known_hosts
 
-# Use SSH_ASKPASS environment variable (password not in command line or logs)
-export SSH_ASKPASS_REQUIRE=force
-export SSH_ASKPASS=/path/to/secure/askpass/script
-export DISPLAY=:0
+# Note: SSH_ASKPASS requires a custom script that outputs password to stdout
+# This approach still requires secure password handling; consider Ansible Vault
+# or other secrets management instead of manual approach for production use.
+# For reference implementation, see: man ssh-add, section SSH_ASKPASS
 
 ssh-copy-id -i /home/ansible/.ssh/id_ed25519.pub {{target_user}}@{{target_host}}
 "
