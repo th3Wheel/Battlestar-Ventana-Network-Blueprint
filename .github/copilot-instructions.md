@@ -28,7 +28,7 @@
 - Maintain tables in a consistent order (by VLAN ID); avoid leaving TODOs unaddressed when adding new services.
 - Do not commit helper files like Copilot-Processing.md; keep changes scoped to relevant docs.
 - Commit messages must follow Conventional Commits (`type(scope): subject`). Allowed types include: `docs`, `chore`, `fix`, `feat`, `refactor`, `style`, `test`, `ci`, `build`, `perf`. Keep subjects in imperative mood and under ~72 chars.
-- Commit gating: do not create commits if validators report any issues above informational (i.e., warnings or errors). Fix findings before committing.
+- Commit gating: do not create commits if validators report errors. Warnings are acceptable but should be addressed when practical. Fix error findings before committing.
 - Validators to run before commit: markdownlint on `.md`, yamllint on `.yaml/.yml`, ESLint on `.js/.ts` when present, Pylint/Ruff on `.py` when present. Use repo configs: `.markdownlintrc.json`, `.yamllint`, `.eslintrc.json`, `.pylintrc`.
 - Recommended local checks (Windows-friendly examples):
 	- `markdownlint "**/*.md"` or the VS Code Markdownlint extension
@@ -46,4 +46,4 @@
 - Types: prefer `docs` for documentation, `chore` for tooling/config, and use `fix`, `feat`, `refactor`, `style`, `test`, `ci`, `build`, `perf` as appropriate.
 - Body: include context and rationale when non-trivial; wrap at ~72 chars.
 - Breaking changes: include `BREAKING CHANGE:` footer when applicable.
-- Commit gating policy: any linter or validator warning or error blocks the commit. Only informational notes are permitted at commit time.
+- Commit gating policy: any linter or validator error blocks the commit. Warnings are acceptable but should be addressed when practical. Only errors must be resolved before committing.
