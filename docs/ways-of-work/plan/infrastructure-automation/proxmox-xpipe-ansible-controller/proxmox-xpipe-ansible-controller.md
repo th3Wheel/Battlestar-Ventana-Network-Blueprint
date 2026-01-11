@@ -142,20 +142,57 @@ XPipe will display the public key for you to use wherever needed.
 - `ctid` – LXC container ID (required)
 - `target_user` – user on the target server (required)
 - `target_host` – IP/hostname of target server (required)
-- `password` – password for `target_user` on `target_host` (required, secret)
 
-**Command:**
+**Secure Key Deployment Approach:**
+
+Instead of using `sshpass` with passwords on the command line (which exposes
+credentials in process listings, shell history, and logs), use one of these
+secure alternatives:
+
+#### Option 1: Interactive ssh-copy-id (Recommended for initial setup)
 
 ```bash
 pct exec {{ctid}} -- bash -c "
 set -e
 
-sshpass -p '{{password}}' ssh-copy-id \
-  -o StrictHostKeyChecking=no \
-  -i /home/ansible/.ssh/id_ed25519.pub \
-  {{target_user}}@{{target_host}}
+# Interactive password prompt (not logged)
+ssh-copy-id -i /home/ansible/.ssh/id_ed25519.pub {{target_user}}@{{target_host}}
 "
 ```
+
+#### Option 2: Using SSH_ASKPASS with environment (for automation)
+
+```bash
+# Create a temporary askpass script inside the container
+pct exec {{ctid}} -- bash -c "
+set -e
+
+# Verify host key first (manual step or pre-populate known_hosts)
+ssh-keyscan -H {{target_host}} >> /home/ansible/.ssh/known_hosts
+
+# Use SSH_ASKPASS environment variable (password not in command line or logs)
+export SSH_ASKPASS_REQUIRE=force
+export SSH_ASKPASS=/path/to/secure/askpass/script
+export DISPLAY=:0
+
+ssh-copy-id -i /home/ansible/.ssh/id_ed25519.pub {{target_user}}@{{target_host}}
+"
+```
+
+**Security Notes:**
+
+- **Never use `-o StrictHostKeyChecking=no`** as it disables host key
+  verification and enables MITM attacks. Instead:
+  - Pre-populate `known_hosts` with `ssh-keyscan -H {{target_host}}`
+  - Or manually verify the host key during the first connection
+- **Never put passwords in command-line arguments** as they appear in:
+  - Process listings (`ps`, `/proc/*/cmdline`)
+  - Shell history files
+  - System logs and audit trails
+- For automation requiring passwordless flows, use:
+  - Environment-based password passing (SSH_ASKPASS)
+  - Temporary expect scripts with restrictive permissions
+  - Pre-established trust relationships when possible
 
 After this, the `ansible` user in the CT can SSH to that host with keys.
 

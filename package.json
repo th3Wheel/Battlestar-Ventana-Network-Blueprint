@@ -1,6 +1,36 @@
 {
+  "name": "battlestar-ventana-network-blueprint",
+  "version": "1.0.0",
+  "description": "Network documentation and configuration repository",
   "type": "module",
+  "scripts": {
+    "lint:js": "eslint .",
+    "lint:md": "markdownlint \"**/*.md\"",
+    "lint:yaml": "yamllint .",
+    "lint": "npm run lint:js && npm run lint:md && npm run lint:yaml"
+  },
   "devDependencies": {
-    "eslint": "^9.39.2"
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "markdownlint-cli": "^0.47.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "network",
+    "documentation",
+    "vlan",
+    "firewall",
+    "dhcp"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint.git"
+  },
+  "comments": {
+    "linters": "This is a documentation-first repository. Linter dependencies beyond ESLint are installed system-wide and configured via dotfiles (.markdownlintrc.json, .yamllint, .pylintrc). TypeScript support (eslint-config-prettier, @typescript-eslint/*) is not needed as this repo contains no TypeScript code."
   }
 }
