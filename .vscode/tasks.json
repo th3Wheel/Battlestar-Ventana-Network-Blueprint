@@ -77,15 +77,11 @@
     {
       "label": "Lint: Python (Pylint)",
       "type": "shell",
-      "command": "pylint",
-      "args": ["${workspaceFolder}/**/*.py"],
-      "windows": {
-        "command": "powershell",
-        "args": [
-          "-Command",
-          "Get-ChildItem -Recurse -Filter *.py | ForEach-Object { pylint $_.FullName }"
-        ]
-      },
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "Get-ChildItem -Recurse -Filter *.py | ForEach-Object { & '.venv\\Scripts\\pylint.exe' $_.FullName }"
+      ],
       "problemMatcher": {
         "owner": "pylint",
         "fileLocation": ["relative", "${workspaceFolder}"],
@@ -108,8 +104,11 @@
     {
       "label": "Lint: Python (Ruff)",
       "type": "shell",
-      "command": "ruff",
-      "args": ["check", "."],
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '.venv\\Scripts\\ruff.exe' check ."
+      ],
       "problemMatcher": {
         "owner": "ruff",
         "fileLocation": ["relative", "${workspaceFolder}"],

@@ -1,5 +1,12 @@
 ---
 extends: default
+
+ignore: |
+  node_modules/
+  .venv/
+  venv/
+  molecule/
+
 rules:
   line-length:
     max: 120
@@ -11,5 +18,11 @@ rules:
     min-spaces-from-content: 1
   comments-indentation: {}
   trailing-spaces: enable
+  new-lines:
+    type: platform
   truthy:
-    allowed: ["true", "false", "yes", "no"]
+    allowed-values: ['true', 'false', 'yes', 'no']
+  braces:
+    max-spaces-inside: 1
+  empty-lines:
+    max: 2
