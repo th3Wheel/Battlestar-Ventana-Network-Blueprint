@@ -80,7 +80,9 @@ pipx install ansible
 "
 ```
 
-`sshpass` is included here so you can deploy keys from the controller CT if desired.
+**Note:** `sshpass` is intentionally excluded due to security concerns. Use
+1Password CLI (`op`) for secure credential management instead. See Command 4 for
+details.
 
 ---
 
@@ -141,7 +143,29 @@ XPipe will display the public key for you to use wherever needed.
 - `ctid` – LXC container ID (required)
 - `target_user` – user on the target server (required)
 - `target_host` – IP/hostname of target server (required)
-- `password` – password for `target_user` on `target_host` (required, secret)
+- `op_vault` – 1Password vault name (optional, for Option A, e.g., `Infrastructure`)
+- `op_item` – 1Password item name containing password (optional, for Option A)
+
+**Security Note:**
+
+> **WARNING:** Do not use `sshpass -p '{{password}}'` to pass passwords on the
+> command line. This exposes credentials in process listings, shell history, and
+> command logs, allowing unauthorized access to target systems. Additionally,
+> disabling host key verification with `-o StrictHostKeyChecking=no` enables
+> man-in-the-middle attacks.
+
+**Recommended Approaches:**
+
+#### Option A: 1Password CLI (Recommended for Production)
+
+Use 1Password CLI to securely inject credentials without exposing them in
+command lines or process listings:
+
+**Prerequisites:**
+
+- 1Password CLI installed on Proxmox host
+- Authenticated session: `eval $(op signin)`
+- Password stored in 1Password vault
 
 **Command:**
 
@@ -149,29 +173,15 @@ XPipe will display the public key for you to use wherever needed.
 pct exec {{ctid}} -- bash -c "
 set -e
 
-sshpass -p '{{password}}' ssh-copy-id \
-  -o StrictHostKeyChecking=no \
-  -i /home/ansible/.ssh/id_ed25519.pub \
+# Retrieve password securely from 1Password and pipe to ssh-copy-id via stdin
+op read 'op://{{op_vault}}/{{op_item}}/password' | \
+  sudo -u ansible ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
   {{target_user}}@{{target_host}}
 "
 ```
 
-**Security Notes:**
-
-- **Never use `-o StrictHostKeyChecking=no`** as it disables host key
-  verification and enables MITM attacks. Instead:
-  - Pre-populate `known_hosts` with `ssh-keyscan -H {{target_host}}`
-  - Or manually verify the host key during the first connection
-- **Never put passwords in command-line arguments** as they appear in:
-  - Process listings (`ps`, `/proc/*/cmdline`)
-  - Shell history files
-  - System logs and audit trails
-- For automation requiring passwordless flows, use:
-  - Environment-based password passing (SSH_ASKPASS)
-  - Temporary expect scripts with restrictive permissions
-  - Pre-established trust relationships when possible
-
-**Note:** The `-f` flag forces the key copy even if the key already exists. Remove if you want to skip already-deployed keys.
+**Note:** The `-f` flag forces the key copy even if the key already exists.
+Remove if you want to skip already-deployed keys.
 
 **Security Benefits:**
 
@@ -181,7 +191,7 @@ sshpass -p '{{password}}' ssh-copy-id \
 - Centralized credential rotation without updating scripts
 - Works seamlessly with XPipe's command templating
 
-**Option B: Interactive ssh-copy-id**
+#### Option B: Interactive ssh-copy-id
 
 ```bash
 pct exec {{ctid}} -- sudo -u ansible ssh-copy-id \
@@ -189,9 +199,10 @@ pct exec {{ctid}} -- sudo -u ansible ssh-copy-id \
   {{target_user}}@{{target_host}}
 ```
 
-This prompts interactively for the password, keeping credentials secure and maintaining host key verification.
+This prompts interactively for the password, keeping credentials secure and
+maintaining host key verification.
 
-**Option C: Ansible vault with pre-populated known_hosts**
+#### Option C: Ansible vault with pre-populated known_hosts
 
 1. First, manually verify and accept the host key:
 
@@ -199,11 +210,14 @@ This prompts interactively for the password, keeping credentials secure and main
 pct exec {{ctid}} -- sudo -u ansible ssh-keyscan -H {{target_host}} >> /home/ansible/.ssh/known_hosts
 ```
 
-1. Then use Ansible's `authorized_key` module with vault-encrypted passwords in a playbook rather than XPipe commands for production deployments.
+2. Then use Ansible's `authorized_key` module with vault-encrypted passwords in
+   a playbook rather than XPipe commands for production deployments.
 
-**Option D: Out-of-band key deployment**
+#### Option D: Out-of-band key deployment
 
-Manually copy the public key content and add it to the target server's `~/.ssh/authorized_keys` file through a secure channel (console access, existing secure connection, etc.).
+Manually copy the public key content and add it to the target server's
+`~/.ssh/authorized_keys` file through a secure channel (console access, existing
+secure connection, etc.).
 
 After key deployment, the `ansible` user in the CT can SSH to that host with keys.
 
