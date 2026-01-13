@@ -2,6 +2,19 @@
     "cSpell.words": [
         "Galactica"
     ],
+    "mcp.servers": {
+        "context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@context7/mcp-server"
+            ],
+            "env": {
+                "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
+            }
+        }
+    }
+    ],
     "[markdown]": {
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
         "editor.formatOnSave": true
