@@ -1,5 +1,6 @@
 [MASTER]
 max-line-length=120
+ignore-patterns=^\.venv/.*
 disable=
     missing-docstring,
     too-few-public-methods,
