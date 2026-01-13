@@ -176,7 +176,6 @@ set -e
 # Use SSH_ASKPASS to provide password securely from 1Password
 export SSH_ASKPASS_REQUIRE=force
 export SSH_ASKPASS=\$(mktemp)
-chmod 700 \$SSH_ASKPASS
 export DISPLAY=:0
 
 # Create temporary askpass script that reads from 1Password
@@ -188,7 +187,10 @@ op read --no-newline 'op://{{op_vault}}/{{op_item}}/password' || {
   exit 1
 }
 EOF
-chmod +x \$SSH_ASKPASS
+
+# Set ownership and permissions for ansible user to execute
+chown ansible:ansible \$SSH_ASKPASS
+chmod 700 \$SSH_ASKPASS
 
 # Deploy the key - preserve environment variables through sudo
 sudo -u ansible \
