@@ -25,6 +25,8 @@
             ]
         }
     }
+    }
+    ],
     "[markdown]": {
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
         "editor.formatOnSave": true
