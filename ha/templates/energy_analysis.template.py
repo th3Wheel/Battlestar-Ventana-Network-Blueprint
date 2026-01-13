@@ -9,6 +9,13 @@ Assistant database and generates reports for energy management.
 Usage:
     python3 energy_analysis.py --days 30 --output report.json
 
+Environment Variables:
+    HA_DB_HOST: PostgreSQL host (default: localhost)
+    HA_DB_PORT: PostgreSQL port (default: 5432)
+    HA_DB_NAME: Database name (default: homeassistant)
+    HA_DB_USER: Database username (required)
+    HA_DB_PASSWORD: Database password (required)
+
 Author: Network Operations Team
 Date: 2024-01-15
 Version: 1.0.0
@@ -16,13 +23,26 @@ Version: 1.0.0
 
 import argparse
 import json
+import os
 import sys
 from typing import Dict, List
 
 # Configuration constants
 DEFAULT_DAYS = 30
-DATABASE_URL = "postgresql://user:pass@localhost:8123/homeassistant"
 OUTPUT_FORMAT = "json"
+
+# Database configuration from environment variables
+DB_HOST = os.getenv("HA_DB_HOST", "localhost")
+DB_PORT = os.getenv("HA_DB_PORT", "5432")
+DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
+DB_USER = os.getenv("HA_DB_USER")
+DB_PASSWORD = os.getenv("HA_DB_PASSWORD")
+
+# Construct database URL from environment variables
+if DB_USER and DB_PASSWORD:
+    DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+else:
+    DATABASE_URL = None
 
 
 class EnergyAnalyzer:
@@ -193,6 +213,13 @@ def main():
 Examples:
   python3 energy_analysis.py --days 30 --output report.json
   python3 energy_analysis.py --days 7 --format csv --output weekly.csv
+
+Environment Variables:
+  HA_DB_HOST     - PostgreSQL host (default: localhost)
+  HA_DB_PORT     - PostgreSQL port (default: 5432)
+  HA_DB_NAME     - Database name (default: homeassistant)
+  HA_DB_USER     - Database username (required)
+  HA_DB_PASSWORD - Database password (required)
         """,
     )
 
@@ -214,6 +241,12 @@ Examples:
     )
 
     args = parser.parse_args()
+
+    # Validate required environment variables
+    if not DATABASE_URL:
+        print("Error: Database credentials not configured.", file=sys.stderr)
+        print("Please set HA_DB_USER and HA_DB_PASSWORD environment variables.", file=sys.stderr)
+        sys.exit(1)
 
     # Initialize analyzer
     analyzer = EnergyAnalyzer(DATABASE_URL, args.days)
