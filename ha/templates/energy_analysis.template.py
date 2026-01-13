@@ -36,8 +36,8 @@ OUTPUT_FORMAT = "json"
 DB_HOST = os.getenv("HA_DB_HOST", "localhost")
 DB_PORT = os.getenv("HA_DB_PORT", "5432")
 DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
-DB_USER = os.getenv("HA_DB_USER", "").strip()
-DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip()
+DB_USER = os.getenv("HA_DB_USER", "").strip() or None
+DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip() or None
 
 # Construct database URL from environment variables with proper URL encoding
 if DB_USER and DB_PASSWORD:
