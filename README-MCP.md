@@ -22,7 +22,7 @@ This repository is configured to use the Context7 MCP (Model Context Protocol) s
 
 ### MCP Configuration File
 
-The `mcp-config.json` file contains the MCP server configuration:
+The `mcp-config.json` file contains the MCP server configuration in the standard MCP format:
 
 ```json
 {
@@ -35,15 +35,43 @@ The `mcp-config.json` file contains the MCP server configuration:
 }
 ```
 
-- The MCP server reads the `CONTEXT7_API_KEY` from the environment. In CI, it is provided via the `copilot` environment secret `COPILOT_MCP_CONTEXT7_KEY`.
+**When to use `mcp-config.json`:**
+- For MCP clients and tools that follow the [Model Context Protocol specification](https://modelcontextprotocol.io)
+- Compatible with MCP-compliant development tools, IDEs, and command-line utilities
+- Used by tools like Claude Desktop, Cline, and other MCP-enabled applications
+- Can be consumed by any tool implementing the MCP standard configuration format
+
+**How it works:**
+- The MCP server reads the `CONTEXT7_API_KEY` from the environment
+- In CI, the API key is provided via the `copilot` environment secret `COPILOT_MCP_CONTEXT7_KEY`
+- The configuration defines the server command but relies on environment variables for credentials
 
 ### VS Code Integration (optional)
 
-VS Code configuration for local development:
-- `.vscode/settings.json` - Registers the MCP server with basic configuration
-- (optional) `.vscode/mcp.json` - Detailed MCP server configuration you can create for the VS Code MCP extension
+VS Code requires its own configuration format in `.vscode/settings.json`:
 
-Ensure `CONTEXT7_API_KEY` is set in your shell environment before launching VS Code.
+```json
+{
+  "mcp.servers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "env": {
+        "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+**When to use `.vscode/settings.json`:**
+- Specifically for VS Code's MCP extension or Copilot integration
+- Required if using GitHub Copilot or VS Code MCP features
+- Uses VS Code's proprietary settings format with explicit environment variable references
+
+**Note:** Both configurations can coexist. Use `mcp-config.json` for general MCP tooling and `.vscode/settings.json` for VS Code-specific integration.
+
+Ensure `CONTEXT7_API_KEY` is set in your shell environment before launching VS Code or any MCP client.
 
 ## GitHub Actions Integration
 
