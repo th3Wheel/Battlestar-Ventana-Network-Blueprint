@@ -170,22 +170,26 @@ command lines or process listings:
 **Command:**
 
 ```bash
-pct exec {{ctid}} -- bash -c "
-set -e
-
-# Use SSH_ASKPASS to provide password securely from 1Password
-export SSH_ASKPASS_REQUIRE=force
-export SSH_ASKPASS=\$(mktemp)
-export DISPLAY=:0
-
-# Create temporary askpass script that reads from 1Password
-cat > \$SSH_ASKPASS << 'EOF'
-#!/bin/bash
-set -e
-op read --no-newline 'op://{{op_vault}}/{{op_item}}/password' || {
+# Retrieve password from 1Password on the Proxmox host
+PASSWORD=$(op read --no-newline 'op://{{op_vault}}/{{op_item}}/password') || {
   echo "ERROR: Failed to retrieve password from 1Password" >&2
   exit 1
 }
+
+# Deploy the key inside the container
+pct exec {{ctid}} -- /bin/bash -c "
+set -e
+
+# Use SSH_ASKPASS to provide password securely
+export SSH_ASKPASS_REQUIRE=force
+export SSH_ASKPASS=\$(mktemp)
+export DISPLAY=:0
+export TARGET_PASSWORD='$PASSWORD'
+
+# Create temporary askpass script that returns the password from environment
+cat > \$SSH_ASKPASS << 'EOF'
+#!/bin/bash
+printf '%s' \"\$TARGET_PASSWORD\"
 EOF
 
 # Set ownership and permissions for ansible user to execute
@@ -194,6 +198,7 @@ chmod 700 \$SSH_ASKPASS
 
 # Deploy the key - preserve environment variables through sudo
 sudo -u ansible \
+  TARGET_PASSWORD=\"\$TARGET_PASSWORD\" \
   SSH_ASKPASS=\$SSH_ASKPASS \
   SSH_ASKPASS_REQUIRE=force \
   DISPLAY=:0 \
@@ -202,6 +207,7 @@ sudo -u ansible \
 
 # Clean up
 rm -f \$SSH_ASKPASS
+unset TARGET_PASSWORD
 "
 ```
 
