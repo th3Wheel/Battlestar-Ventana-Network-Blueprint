@@ -190,8 +190,12 @@ op read --no-newline 'op://{{op_vault}}/{{op_item}}/password' || {
 EOF
 chmod +x \$SSH_ASKPASS
 
-# Deploy the key
-sudo -u ansible ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
+# Deploy the key - preserve environment variables through sudo
+sudo -u ansible \
+  SSH_ASKPASS=\$SSH_ASKPASS \
+  SSH_ASKPASS_REQUIRE=force \
+  DISPLAY=:0 \
+  ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
   {{target_user}}@{{target_host}}
 
 # Clean up
