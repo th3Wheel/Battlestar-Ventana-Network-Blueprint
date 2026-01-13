@@ -248,9 +248,12 @@ Environment Variables:
 
     # Validate required environment variables
     if not DATABASE_URL:
-        print("Error: Database credentials not configured.", file=sys.stderr)
-        print("Please set HA_DB_USER and HA_DB_PASSWORD environment variables.", file=sys.stderr)
-        print("Both must be non-empty strings.", file=sys.stderr)
+        print(
+            "Error: Database credentials not configured.\n"
+            "Please set HA_DB_USER and HA_DB_PASSWORD environment variables.\n"
+            "Both must be non-empty strings.",
+            file=sys.stderr
+        )
         sys.exit(1)
 
     # Initialize analyzer
