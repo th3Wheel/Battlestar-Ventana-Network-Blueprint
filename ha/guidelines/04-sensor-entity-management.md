@@ -8,11 +8,13 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 ## 1. Entity Organization
 
 **Entity Categories:**
+
 * Use consistent naming patterns across all entities
 * Group related entities logically
 * Document entity purposes and relationships
 
 **Entity Registry Management:**
+
 ```yaml
 # Customize entity display
 homeassistant:
@@ -25,6 +27,7 @@ homeassistant:
 ```
 
 **Entity Grouping:**
+
 ```yaml
 group:
   climate_sensors:
@@ -45,6 +48,7 @@ group:
 ## 2. Template Sensors
 
 **Basic Template Sensors:**
+
 ```yaml
 template:
   - sensor:
@@ -57,6 +61,7 @@ template:
 ```
 
 **Trigger-Based Template Sensors:**
+
 ```yaml
 template:
   - trigger:
@@ -72,6 +77,7 @@ template:
 ```
 
 **Availability Templates:**
+
 ```yaml
 template:
   - sensor:
@@ -86,6 +92,7 @@ template:
 ## 3. Binary Sensors
 
 **State-Based Binary Sensors:**
+
 ```yaml
 template:
   - binary_sensor:
@@ -96,6 +103,7 @@ template:
 ```
 
 **Threshold Binary Sensors:**
+
 ```yaml
 template:
   - binary_sensor:
@@ -109,12 +117,14 @@ template:
 ### 4.1 Entity Lifecycle Management
 
 **Entity Creation Guidelines:**
+
 * Create entities with clear, descriptive names
 * Assign appropriate device classes and units
 * Set up proper state classes for sensors
 * Configure availability templates for reliability
 
 **Entity Maintenance:**
+
 * Regularly review and clean up unused entities
 * Update entity configurations as needs change
 * Document entity relationships and dependencies
@@ -123,12 +133,14 @@ template:
 ### 4.2 Template Sensor Best Practices
 
 **Template Sensor Patterns:**
+
 * Use trigger-based sensors for better performance
 * Include availability templates to prevent unknown states
 * Validate template syntax before deployment
 * Test templates with various state conditions
 
 **Performance Optimization:**
+
 * Avoid complex calculations in frequently updated sensors
 * Use caching for expensive operations
 * Limit template sensor scope to necessary data
@@ -162,6 +174,7 @@ template:
 ```
 
 **Alternative Approaches:**
+
 ```yaml
 # Using is_number() for validation
 availability: >
@@ -173,12 +186,14 @@ availability: >
 ```
 
 **Benefits:**
+
 * Prevents incorrect energy logging when sensors are offline
 * Maintains data integrity in energy dashboards
 * Provides clear availability status for monitoring
 * Ensures accurate long-term energy calculations
 
 **Implementation Notes:**
+
 * Test availability conditions with sensor offline scenarios
 * Monitor sensor availability in dashboard views
 * Use appropriate fallback values when sensors are unavailable
@@ -214,6 +229,7 @@ template:
 ```
 
 **Alternative Approaches:**
+
 ```yaml
 # Using min/max functions
 - name: "Grid Power Import (Alt)"
@@ -224,6 +240,7 @@ template:
 ```
 
 **Energy Sensor Splitting:**
+
 ```yaml
 template:
   - sensor:
@@ -268,18 +285,21 @@ template:
 For simpler cases, use the UI to create utility meters or Riemann sum integral sensors that handle positive/negative values appropriately.
 
 **Benefits:**
+
 * Accurate energy dashboard calculations
 * Separate tracking of consumption vs production
 * Proper handling of bidirectional power flows
 * Clear visibility into energy flows
 
 **Dashboard Integration:**
+
 * Use separate cards for import/export values
 * Create combined views showing net energy flow
 * Set up alerts for high import/export conditions
 * Track energy trends over time
 
 **Testing:**
+
 * Verify sensor values during different power flow scenarios
 * Test with positive, negative, and zero power values
 * Monitor dashboard accuracy during sensor transitions

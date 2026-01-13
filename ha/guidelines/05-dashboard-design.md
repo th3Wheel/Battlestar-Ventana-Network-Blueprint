@@ -8,6 +8,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 ## 1. Lovelace UI Fundamentals
 
 **Dashboard Structure:**
+
 ```yaml
 views:
   - title: "Home"
@@ -23,6 +24,7 @@ views:
 ```
 
 **View Configuration:**
+
 ```yaml
 views:
   - title: "Overview"
@@ -38,6 +40,7 @@ views:
 ## 2. Card Types
 
 **Entity Cards:**
+
 ```yaml
 type: entities
 title: "Living Room"
@@ -51,6 +54,7 @@ entities:
 ```
 
 **Button Cards:**
+
 ```yaml
 type: button
 entity: light.living_room
@@ -63,6 +67,7 @@ hold_action:
 ```
 
 **Mushroom Cards:**
+
 ```yaml
 type: custom:mushroom-entity-card
 entity: light.living_room
@@ -75,6 +80,7 @@ tap_action:
 ## 3. Template Cards
 
 **Basic Template Card:**
+
 ```yaml
 type: template
 entity: sensor.temperature
@@ -89,6 +95,7 @@ icon: >
 ```
 
 **Advanced Template Card:**
+
 ```yaml
 type: custom:mushroom-template-card
 primary: "Weather"
@@ -110,6 +117,7 @@ icon: >
 ## 4. Layout and Organization
 
 **Grid Layout:**
+
 ```yaml
 type: grid
 columns: 3
@@ -124,6 +132,7 @@ cards:
 ```
 
 **Horizontal Stack:**
+
 ```yaml
 type: horizontal-stack
 cards:
@@ -134,6 +143,7 @@ cards:
 ```
 
 **Vertical Stack:**
+
 ```yaml
 type: vertical-stack
 cards:
@@ -148,6 +158,7 @@ cards:
 ## 5. Storage Monitoring Dashboard
 
 **Storage Overview Card:**
+
 ```yaml
 type: custom:mushroom-template-card
 primary: "Network Storage"
@@ -180,6 +191,7 @@ tap_action:
 ```
 
 **Storage Details View:**
+
 ```yaml
 title: "Storage Details"
 cards:
@@ -256,6 +268,7 @@ cards:
 ```
 
 **Alert Cards:**
+
 ```yaml
 type: conditional
 conditions:
@@ -293,6 +306,7 @@ card:
 ## 6. Responsive Design
 
 **Mobile Optimization:**
+
 ```yaml
 type: conditional
 conditions:
@@ -310,6 +324,7 @@ card:
 ```
 
 **Theme Integration:**
+
 ```yaml
 # Use theme variables
 card_mod:
@@ -323,18 +338,21 @@ card_mod:
 ## 7. Best Practices
 
 **Performance Optimization:**
+
 * Limit the number of cards per view
 * Use conditional cards to reduce rendering
 * Cache expensive template calculations
 * Optimize image sizes and loading
 
 **User Experience:**
+
 * Group related controls together
 * Use consistent naming and icons
 * Provide clear navigation between views
 * Include helpful tooltips and descriptions
 
 **Maintenance:**
+
 * Document card configurations
 * Use version control for dashboard changes
 * Test dashboards on different screen sizes

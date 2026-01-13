@@ -1,0 +1,21 @@
+# Energy cost calculation template
+# Calculates daily energy cost based on consumption and rate
+# Handles missing data gracefully with defaults
+
+{%- set consumption = states('sensor.daily_energy_consumption') -%}
+{%- set rate = states('input_number.energy_rate') -%}
+
+{# Validate sensor availability #}
+{%- if consumption == 'unknown' or consumption == 'unavailable' -%}
+  {%- set consumption = 0 -%}
+{%- endif -%}
+
+{# Convert to float with fallback #}
+{%- set consumption_kw = consumption | float(0) -%}
+{%- set rate_per_kw = rate | float(0.12) -%}
+
+{# Calculate cost #}
+{%- set daily_cost = (consumption_kw * rate_per_kw) | round(2) -%}
+
+{# Format output #}
+Daily Energy Cost: ${{ daily_cost }}

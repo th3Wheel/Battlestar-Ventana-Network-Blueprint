@@ -8,6 +8,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 ## 1. Authentication and Authorization
 
 **User Management:**
+
 ```yaml
 # configuration.yaml
 homeassistant:
@@ -24,6 +25,7 @@ homeassistant:
 ```
 
 **Multi-Factor Authentication:**
+
 ```yaml
 # Enable MFA for admin users
 # Use external authentication providers for enhanced security
@@ -35,6 +37,7 @@ auth:
 ```
 
 **Role-Based Access Control:**
+
 ```yaml
 # Create limited user accounts
 # Assign specific permissions based on roles
@@ -62,6 +65,7 @@ group:
 ## 2. Network Security
 
 **Firewall Configuration:**
+
 ```yaml
 # Use VLANs for network segmentation
 # Isolate IoT devices from main network
@@ -86,6 +90,7 @@ networks:
 ```
 
 **SSL/TLS Configuration:**
+
 ```yaml
 # Enable HTTPS
 http:
@@ -103,6 +108,7 @@ lets_encrypt:
 ```
 
 **API Security:**
+
 ```yaml
 # Use long-lived access tokens
 # Rotate tokens regularly
@@ -118,6 +124,7 @@ curl -X GET \
 ## 3. Device Security
 
 **IoT Device Isolation:**
+
 ```yaml
 # Configure separate VLAN for IoT devices
 # Use firewall rules to limit IoT device access
@@ -129,6 +136,7 @@ pass in quick on $IoT_VLAN inet from any to ! $Management_VLAN keep state
 ```
 
 **Device Authentication:**
+
 ```yaml
 # Use secure device passwords
 # Enable device encryption where possible
@@ -145,6 +153,7 @@ mqtt:
 ```
 
 **Backup Security:**
+
 ```yaml
 # Encrypt backups
 # Store backups securely off-site
@@ -165,6 +174,7 @@ scp "$BACKUP_DIR/backup-$(date +%Y%m%d).tar.gz.enc" user@secure-server:/backups/
 ## 4. Access Control
 
 **SSH Security:**
+
 ```bash
 # Disable password authentication
 # Use SSH key authentication only
@@ -181,6 +191,7 @@ ListenAddress 192.168.1.100
 ```
 
 **Port Security:**
+
 ```yaml
 # Close unnecessary ports
 # Use non-standard ports for services
@@ -197,6 +208,7 @@ services:
 ```
 
 **File System Security:**
+
 ```yaml
 # Secure file permissions
 # Use dedicated user for Home Assistant
@@ -216,6 +228,7 @@ secrets.yaml:
 ## 5. Monitoring and Logging
 
 **Security Monitoring:**
+
 ```yaml
 # Monitor for suspicious activity
 # Log authentication attempts
@@ -242,6 +255,7 @@ automation:
 ```
 
 **Log Analysis:**
+
 ```yaml
 # Enable comprehensive logging
 # Monitor logs for security events
@@ -267,6 +281,7 @@ logrotate:
 ## 6. Incident Response
 
 **Security Incident Plan:**
+
 ```yaml
 # Documented incident response procedures
 # Emergency contact information
@@ -289,6 +304,7 @@ automation:
 ```
 
 **Recovery Procedures:**
+
 ```bash
 # Documented recovery steps
 # Backup restoration procedures
@@ -316,26 +332,31 @@ echo "Recovery complete"
 ## 7. Best Practices
 
 **Regular Updates:**
+
 * Keep Home Assistant and add-ons updated
 * Monitor security advisories
 * Test updates in staging environment first
 
 **Defense in Depth:**
+
 * Multiple layers of security controls
 * Least privilege access principle
 * Fail-safe defaults
 
 **Security Testing:**
+
 * Regular vulnerability scanning
 * Penetration testing
 * Code security reviews
 
 **Documentation:**
+
 * Document security configurations
 * Maintain security incident logs
 * Update security procedures regularly
 
 **Compliance:**
+
 * Follow industry security standards
 * Implement appropriate security controls
 * Regular security audits and assessments
