@@ -173,10 +173,24 @@ command lines or process listings:
 pct exec {{ctid}} -- bash -c "
 set -e
 
-# Retrieve password securely from 1Password and pipe to ssh-copy-id via stdin
-op read 'op://{{op_vault}}/{{op_item}}/password' | \
-  sudo -u ansible ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
+# Use SSH_ASKPASS to provide password securely from 1Password
+export SSH_ASKPASS_REQUIRE=force
+export SSH_ASKPASS=\$(mktemp)
+export DISPLAY=:0
+
+# Create temporary askpass script that reads from 1Password
+cat > \$SSH_ASKPASS << 'EOF'
+#!/bin/bash
+op read 'op://{{op_vault}}/{{op_item}}/password'
+EOF
+chmod +x \$SSH_ASKPASS
+
+# Deploy the key
+sudo -u ansible ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
   {{target_user}}@{{target_host}}
+
+# Clean up
+rm -f \$SSH_ASKPASS
 "
 ```
 
