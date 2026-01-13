@@ -4,70 +4,70 @@
 
 # Core configuration
 homeassistant:
-# System name and location
-name: 'Battlestar Ventana'
-latitude: !secret latitude
-longitude: !secret longitude
-elevation: !secret elevation
+  # System name and location
+  name: 'Battlestar Ventana'
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
 
-# Unit system (metric for international standards)
-unit_system: metric
+  # Unit system (metric for international standards)
+  unit_system: metric
 
-# Time zone for accurate scheduling
-time_zone: 'America/New_York'
+  # Time zone for accurate scheduling
+  time_zone: 'America/New_York'
 
-# External URL for remote access
-external_url: !secret external_url
+  # External URL for remote access
+  external_url: !secret external_url
 
-# Internal URL for local access
-internal_url: !secret internal_url
+  # Internal URL for local access
+  internal_url: !secret internal_url
 
 # HTTP configuration for secure access
 http:
-# SSL certificate for HTTPS encryption
-ssl_certificate: !secret ssl_cert
-ssl_key: !secret ssl_key
+  # SSL certificate for HTTPS encryption
+  ssl_certificate: !secret ssl_cert
+  ssl_key: !secret ssl_key
 
-# Trusted proxies for reverse proxy setup
-trusted_proxies:
-- 127.0.0.1
-- ::1
-- 10.0.0.0/8 # Local network
+  # Trusted proxies for reverse proxy setup
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+    - 10.0.0.0/8 # Local network
 
-# IP banning for security
-ip_ban_enabled: true
-login_attempts_threshold: 5
+  # IP banning for security
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
 
 # Database configuration for historical data
 recorder:
-# PostgreSQL for better performance and reliability
-db_url: !secret db_url
+  # PostgreSQL for better performance and reliability
+  db_url: !secret db_url
 
-# Record all entities for complete history
-include:
-entity_globs:
-- '*'
+  # Record all entities for complete history
+  include:
+    entity_globs:
+      - '*'
 
-# Exclude system entities that don't need recording
-exclude:
-entity_globs:
-- 'sensor.last_*' # Temporary sensors
-- 'sensor.date_*' # Date/time sensors
+  # Exclude system entities that don't need recording
+  exclude:
+    entity_globs:
+      - 'sensor.last_*' # Temporary sensors
+      - 'sensor.date_*' # Date/time sensors
 
-# Keep data for analysis and trending
-purge_keep_days: 365
+  # Keep data for analysis and trending
+  purge_keep_days: 365
 
 # Automation configuration
 automation:
-# Reload automations on config change
-reload: true
+  # Reload automations on config change
+  reload: true
 
 # Script configuration
 script:
-# Reload scripts on config change
-reload: true
+  # Reload scripts on config change
+  reload: true
 
 # Scene configuration
 scene:
-# Reload scenes on config change
-reload: true
+  # Reload scenes on config change
+  reload: true
