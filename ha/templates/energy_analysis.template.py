@@ -36,8 +36,8 @@ OUTPUT_FORMAT = "json"
 DB_HOST = os.getenv("HA_DB_HOST", "localhost")
 DB_PORT = os.getenv("HA_DB_PORT", "5432")
 DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
-DB_USER = os.getenv("HA_DB_USER")
-DB_PASSWORD = os.getenv("HA_DB_PASSWORD")
+DB_USER = os.getenv("HA_DB_USER", "").strip()
+DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip()
 
 # Construct database URL from environment variables with proper URL encoding
 if DB_USER and DB_PASSWORD:
@@ -247,7 +247,7 @@ Environment Variables:
     args = parser.parse_args()
 
     # Validate required environment variables
-    if not DB_USER or not DB_PASSWORD or not DB_USER.strip() or not DB_PASSWORD.strip():
+    if not DATABASE_URL:
         print("Error: Database credentials not configured.", file=sys.stderr)
         print("Please set HA_DB_USER and HA_DB_PASSWORD environment variables.", file=sys.stderr)
         print("Both must be non-empty strings.", file=sys.stderr)
