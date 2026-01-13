@@ -24,8 +24,7 @@
       ansible.builtin.expect:
         command: >
           pct exec {{ ctid }} -- bash -c
-          "op read 'op://Vault/SSH Password/password' |
-           sudo -u ansible ssh-copy-id -i {{ public_key_path }}
+          "sudo -u ansible ssh-copy-id -i {{ public_key_path }}
            {{ ansible_user }}@{{ target_host }}"
         responses:
           '(?i)password': '{{ ssh_password }}'
