@@ -140,9 +140,11 @@ systemctl restart isc-dhcp-relay
 
 1. Ping `$PIHOLE_VIP` from a client — should respond from master.
 2. Stop keepalived on master:
+
    ```bash
    systemctl stop keepalived
    ```
+
 3. VIP should move to backup within ~2 seconds.
 4. Restart master keepalived — VIP should return.
 
