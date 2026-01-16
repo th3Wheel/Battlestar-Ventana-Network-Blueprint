@@ -24,6 +24,7 @@ Version: 1.0.0
 import argparse
 import json
 import os
+import re
 import sys
 from typing import Dict, List
 from urllib.parse import quote_plus
@@ -39,15 +40,6 @@ DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
 DB_USER = os.getenv("HA_DB_USER", "").strip() or None
 DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip() or None
 
-# Construct database URL from environment variables with proper URL encoding
-if DB_USER and DB_PASSWORD:
-    # URL encode credentials to handle special characters safely
-    encoded_user = quote_plus(DB_USER)
-    encoded_password = quote_plus(DB_PASSWORD)
-    DATABASE_URL = f"postgresql://{encoded_user}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-else:
-    DATABASE_URL = None
-
 
 class EnergyAnalyzer:
     """
@@ -60,17 +52,55 @@ class EnergyAnalyzer:
     - Export data in various formats
     """
 
-    def __init__(self, db_url: str, days: int = DEFAULT_DAYS):
+    def __init__(
+        self,
+        db_host: str,
+        db_port: int,
+        db_name: str,
+        db_user: str,
+        db_password: str,
+        days: int = DEFAULT_DAYS,
+    ):
         """
         Initialize the energy analyzer.
 
         Args:
-            db_url: PostgreSQL connection string
+            db_host: PostgreSQL host
+            db_port: PostgreSQL port
+            db_name: Database name
+            db_user: Database username
+            db_password: Database password
             days: Number of days to analyze
         """
-        self.db_url = db_url
+        self.db_host = db_host
+        self.db_port = db_port
+        self.db_name = db_name
+        self.db_user = db_user
+        self.db_password = db_password
         self.days = days
         self.data = {}
+
+    def _sanitize_credential(self, error_msg: str, credential: str) -> str:
+        """
+        Sanitize a credential from error messages in both plain and URL-encoded forms.
+
+        Args:
+            error_msg: The error message to sanitize
+            credential: The credential to remove
+
+        Returns:
+            Sanitized error message with credential replaced by ***REDACTED***
+        """
+        # Sanitize plain-text credential (case-sensitive)
+        escaped_credential = re.escape(credential)
+        error_msg = re.sub(escaped_credential, "***REDACTED***", error_msg)
+        
+        # Sanitize URL-encoded credential (case-sensitive)
+        encoded_credential = quote_plus(credential)
+        escaped_encoded = re.escape(encoded_credential)
+        error_msg = re.sub(escaped_encoded, "***REDACTED***", error_msg)
+        
+        return error_msg
 
     def connect_database(self) -> bool:
         """
@@ -81,10 +111,20 @@ class EnergyAnalyzer:
         """
         try:
             # Database connection logic here
-            print(f"Connected to database: {self.db_url}")
+            # Connection parameters are stored securely without exposing credentials
+            print(f"Connected to database: {self.db_name}@{self.db_host}:{self.db_port}")
             return True
         except Exception as e:
-            print(f"Database connection failed: {e}")
+            # Sanitize error message to avoid exposing credentials
+            error_msg = str(e)
+            
+            # Sanitize password and username in both plain and URL-encoded forms
+            if self.db_password:
+                error_msg = self._sanitize_credential(error_msg, self.db_password)
+            if self.db_user:
+                error_msg = self._sanitize_credential(error_msg, self.db_user)
+            
+            print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
     def fetch_energy_data(self) -> Dict[str, List[float]]:
@@ -246,18 +286,46 @@ Environment Variables:
 
     args = parser.parse_args()
 
-    # Validate required environment variables
-    if not DATABASE_URL:
+    # Validate required environment variables without storing them in data structures
+    missing = []
+    if not DB_HOST:
+        missing.append('HA_DB_HOST')
+    if not DB_PORT:
+        missing.append('HA_DB_PORT')
+    if not DB_NAME:
+        missing.append('HA_DB_NAME')
+    if not DB_USER:
+        missing.append('HA_DB_USER')
+    if not DB_PASSWORD:
+        missing.append('HA_DB_PASSWORD')
+    
+    if missing:
         print(
-            "Error: Database credentials not configured.\n"
-            "Please set HA_DB_USER and HA_DB_PASSWORD environment variables.\n"
-            "Both must be non-empty strings.",
+            f"Error: Required database configuration missing: {', '.join(missing)}\n"
+            "Please set all required environment variables.",
             file=sys.stderr
         )
         sys.exit(1)
 
-    # Initialize analyzer
-    analyzer = EnergyAnalyzer(DATABASE_URL, args.days)
+    # Validate and convert DB_PORT to integer
+    try:
+        db_port = int(DB_PORT)
+    except (ValueError, TypeError):
+        print(
+            "Error: HA_DB_PORT must be a valid integer",
+            file=sys.stderr
+        )
+        sys.exit(1)
+
+    # Initialize analyzer with separate connection parameters
+    analyzer = EnergyAnalyzer(
+        db_host=DB_HOST,
+        db_port=db_port,
+        db_name=DB_NAME,
+        db_user=DB_USER,
+        db_password=DB_PASSWORD,
+        days=args.days,
+    )
 
     # Connect to database
     if not analyzer.connect_database():
