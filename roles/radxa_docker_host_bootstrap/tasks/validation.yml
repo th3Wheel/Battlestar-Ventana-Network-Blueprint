@@ -1,0 +1,62 @@
+---
+# Validation Tasks
+# Performs connectivity checks and configuration validation
+
+- name: Validate Docker installation
+  ansible.builtin.command:
+    cmd: "docker info --format '{{.Name}}: {{.OperatingSystem}}'"
+  register: docker_info
+  changed_when: false
+  failed_when: docker_info.rc != 0
+
+- name: Display Docker info
+  ansible.builtin.debug:
+    msg: 'Docker Info: {{ docker_info.stdout }}'
+
+- name: Validate VLAN interface presence
+  ansible.builtin.command:
+    cmd: ip -d link show {{ primary_iface }}.{{ radxa_vlan_id }}
+  register: vlan_interface
+  changed_when: false
+  failed_when: vlan_interface.rc != 0
+
+- name: Display VLAN interface details
+  ansible.builtin.debug:
+    msg: "VLAN Interface: {{ vlan_interface.stdout_lines | join('\n') }}"
+
+- name: Test Docker Compose configuration
+  ansible.builtin.command:
+    cmd: docker compose --file {{ radxa_pihole_base_dir }}/docker-compose.yaml config
+  args:
+    chdir: '{{ radxa_pihole_base_dir }}'
+  register: compose_config
+  changed_when: false
+  failed_when: compose_config.rc != 0
+
+- name: Display Compose config validation
+  ansible.builtin.debug:
+    msg: 'Docker Compose config validation passed'
+
+- name: Final connectivity test to gateway
+  ansible.builtin.command:
+    cmd: ping -c 4 {{ radxa_vlan_gateway }}
+  register: final_ping_gateway
+  changed_when: false
+  failed_when: final_ping_gateway.rc != 0
+
+- name: Final connectivity test to Pi-hole node
+  ansible.builtin.command:
+    cmd: ping -c 4 {{ radxa_pihole_ip }}
+  register: final_ping_pihole
+  changed_when: false
+  failed_when: final_ping_pihole.rc != 0
+
+- name: Display success message
+  ansible.builtin.debug:
+    msg: |
+      ✓ Radxa Docker Host Bootstrap completed successfully!
+      Host IP: {{ radxa_host_ip }}
+      VLAN: {{ radxa_vlan_id }}
+      Docker: {{ docker_info.stdout }}
+      Pi-hole directory: {{ radxa_pihole_base_dir }}
+      Ready for Pi-hole deployment

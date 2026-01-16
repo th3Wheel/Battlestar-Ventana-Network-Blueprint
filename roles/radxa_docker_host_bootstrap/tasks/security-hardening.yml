@@ -1,0 +1,45 @@
+---
+# Security Hardening Tasks
+# Creates automation user, configures unattended-upgrades, and sets up nftables firewall
+
+- name: Create automation user
+  ansible.builtin.user:
+    name: '{{ radxa_automation_user }}'
+    comment: '{{ radxa_automation_comment }}'
+    shell: /bin/bash
+    groups: sudo,docker
+    append: true
+    create_home: true
+    password_lock: true
+
+- name: Install unattended-upgrades and dependencies
+  ansible.builtin.apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: present
+    update_cache: true
+
+- name: Configure unattended-upgrades
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure -f noninteractive unattended-upgrades
+  changed_when: true
+
+- name: Install nftables
+  ansible.builtin.apt:
+    name: nftables
+    state: present
+    update_cache: true
+
+- name: Configure nftables firewall
+  ansible.builtin.template:
+    src: nftables.conf.j2
+    dest: /etc/nftables.conf
+    mode: '0644'
+  notify: restart nftables
+
+- name: Enable nftables service
+  ansible.builtin.systemd:
+    name: nftables
+    enabled: true
+    state: started
