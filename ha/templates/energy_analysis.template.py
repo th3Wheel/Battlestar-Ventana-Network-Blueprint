@@ -286,17 +286,19 @@ Environment Variables:
 
     args = parser.parse_args()
 
-    # Validate required environment variables
-    # Note: We check for None/empty values without storing the actual credentials
-    required_config = [
-        ('HA_DB_HOST', DB_HOST),
-        ('HA_DB_PORT', DB_PORT),
-        ('HA_DB_NAME', DB_NAME),
-        ('HA_DB_USER', DB_USER),
-        ('HA_DB_PASSWORD', DB_PASSWORD),
-    ]
+    # Validate required environment variables without storing them in data structures
+    missing = []
+    if not DB_HOST:
+        missing.append('HA_DB_HOST')
+    if not DB_PORT:
+        missing.append('HA_DB_PORT')
+    if not DB_NAME:
+        missing.append('HA_DB_NAME')
+    if not DB_USER:
+        missing.append('HA_DB_USER')
+    if not DB_PASSWORD:
+        missing.append('HA_DB_PASSWORD')
     
-    missing = [name for name, value in required_config if not value]
     if missing:
         print(
             f"Error: Required database configuration missing: {', '.join(missing)}\n"
@@ -310,7 +312,7 @@ Environment Variables:
         db_port = int(DB_PORT)
     except (ValueError, TypeError):
         print(
-            f"Error: HA_DB_PORT must be a valid integer, got: {DB_PORT}",
+            "Error: HA_DB_PORT must be a valid integer",
             file=sys.stderr
         )
         sys.exit(1)
