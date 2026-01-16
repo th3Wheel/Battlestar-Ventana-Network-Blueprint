@@ -26,7 +26,7 @@ import json
 import os
 import re
 import sys
-from typing import Dict, List, Optional
+from typing import Dict, List
 from urllib.parse import quote_plus
 
 # Configuration constants
@@ -273,15 +273,16 @@ Environment Variables:
     args = parser.parse_args()
 
     # Validate required environment variables
-    required_vars = {
-        'HA_DB_HOST': DB_HOST,
-        'HA_DB_PORT': DB_PORT,
-        'HA_DB_NAME': DB_NAME,
-        'HA_DB_USER': DB_USER,
-        'HA_DB_PASSWORD': DB_PASSWORD,
-    }
+    # Note: We check for None/empty values without storing the actual credentials
+    required_config = [
+        ('HA_DB_HOST', DB_HOST),
+        ('HA_DB_PORT', DB_PORT),
+        ('HA_DB_NAME', DB_NAME),
+        ('HA_DB_USER', DB_USER),
+        ('HA_DB_PASSWORD', DB_PASSWORD),
+    ]
     
-    missing = [name for name, value in required_vars.items() if not value]
+    missing = [name for name, value in required_config if not value]
     if missing:
         print(
             f"Error: Required database configuration missing: {', '.join(missing)}\n"
