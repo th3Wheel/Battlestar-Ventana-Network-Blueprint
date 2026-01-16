@@ -27,6 +27,7 @@ import os
 import re
 import sys
 from typing import Dict, List, Optional
+from urllib.parse import quote_plus
 
 # Configuration constants
 DEFAULT_DAYS = 30
@@ -99,10 +100,16 @@ class EnergyAnalyzer:
                 # Escape special regex characters in the password
                 escaped_password = re.escape(self.db_password)
                 error_msg = re.sub(escaped_password, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+                # Also sanitize URL-encoded version of the password
+                encoded_password = re.escape(quote_plus(self.db_password))
+                error_msg = re.sub(encoded_password, "***REDACTED***", error_msg, flags=re.IGNORECASE)
             if self.db_user:
                 # Escape special regex characters in the username
                 escaped_user = re.escape(self.db_user)
                 error_msg = re.sub(escaped_user, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+                # Also sanitize URL-encoded version of the username
+                encoded_user = re.escape(quote_plus(self.db_user))
+                error_msg = re.sub(encoded_user, "***REDACTED***", error_msg, flags=re.IGNORECASE)
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
