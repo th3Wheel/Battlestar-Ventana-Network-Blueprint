@@ -24,6 +24,7 @@ Version: 1.0.0
 import argparse
 import json
 import os
+import re
 import sys
 from typing import Dict, List, Optional
 
@@ -93,11 +94,15 @@ class EnergyAnalyzer:
         except Exception as e:
             # Sanitize error message to avoid exposing credentials
             error_msg = str(e)
-            # Remove any potential credential exposure from error messages
-            if self.db_password and self.db_password in error_msg:
-                error_msg = error_msg.replace(self.db_password, "***REDACTED***")
-            if self.db_user and self.db_user in error_msg:
-                error_msg = error_msg.replace(self.db_user, "***REDACTED***")
+            # Use regex to replace credentials in various forms (plain, URL-encoded, etc.)
+            if self.db_password:
+                # Escape special regex characters in the password
+                escaped_password = re.escape(self.db_password)
+                error_msg = re.sub(escaped_password, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+            if self.db_user:
+                # Escape special regex characters in the username
+                escaped_user = re.escape(self.db_user)
+                error_msg = re.sub(escaped_user, "***REDACTED***", error_msg, flags=re.IGNORECASE)
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
@@ -261,19 +266,16 @@ Environment Variables:
     args = parser.parse_args()
 
     # Validate required environment variables
-    if not all([DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD]):
-        missing = []
-        if not DB_HOST:
-            missing.append("HA_DB_HOST")
-        if not DB_PORT:
-            missing.append("HA_DB_PORT")
-        if not DB_NAME:
-            missing.append("HA_DB_NAME")
-        if not DB_USER:
-            missing.append("HA_DB_USER")
-        if not DB_PASSWORD:
-            missing.append("HA_DB_PASSWORD")
-        
+    required_vars = {
+        'HA_DB_HOST': DB_HOST,
+        'HA_DB_PORT': DB_PORT,
+        'HA_DB_NAME': DB_NAME,
+        'HA_DB_USER': DB_USER,
+        'HA_DB_PASSWORD': DB_PASSWORD,
+    }
+    
+    missing = [name for name, value in required_vars.items() if not value]
+    if missing:
         print(
             f"Error: Required database configuration missing: {', '.join(missing)}\n"
             "Please set all required environment variables.",
@@ -281,10 +283,20 @@ Environment Variables:
         )
         sys.exit(1)
 
+    # Validate and convert DB_PORT to integer
+    try:
+        db_port = int(DB_PORT)
+    except (ValueError, TypeError):
+        print(
+            f"Error: HA_DB_PORT must be a valid integer, got: {DB_PORT}",
+            file=sys.stderr
+        )
+        sys.exit(1)
+
     # Initialize analyzer with separate connection parameters
     analyzer = EnergyAnalyzer(
         db_host=DB_HOST,
-        db_port=int(DB_PORT),
+        db_port=db_port,
         db_name=DB_NAME,
         db_user=DB_USER,
         db_password=DB_PASSWORD,
