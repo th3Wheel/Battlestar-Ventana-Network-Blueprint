@@ -12,8 +12,6 @@ post_date: "2026-01-07"
 ---
 ## Goal
 
-## Goal
-
 Deliver a reusable Proxmox + XPipe + Ansible controller automation pack that creates Debian controller LXCs, bootstraps Ansible, and provisions an `ansible` user with SSH keys. Standardize XPipe folder layout, inventory structure, and validation paths so Proxmox clusters can onboard controllers quickly and maintain Ansible as the single source of truth. Keep the bootstrap minimal (OS + Ansible + keys) while ensuring repeatable, host-agnostic runs across PVE nodes. Reduce first-run friction by templating variables and documenting the minimal operator flow in XPipe.
 
 ## Requirements

@@ -5,6 +5,7 @@ This repository is configured to use the Context7 MCP (Model Context Protocol) s
 ## Environment Setup
 
 ### GitHub Environment
+
 - Environment Name: `copilot`
 - Required Secret: `COPILOT_MCP_CONTEXT7_KEY`
 
@@ -12,10 +13,13 @@ This repository is configured to use the Context7 MCP (Model Context Protocol) s
 
 1. Install Node.js (v18 or higher recommended)
 2. Set your API key:
+
    ```bash
    export CONTEXT7_API_KEY="your-api-key-here"
    ```
+
 3. Install and/or run the Context7 MCP Server:
+
    ```bash
    npx -y @context7/mcp-server --help
    ```
@@ -36,12 +40,14 @@ The `mcp-config.json` file contains the MCP server configuration in the standard
 ```
 
 **When to use `mcp-config.json`:**
+
 - For MCP clients and tools that follow the [Model Context Protocol specification](https://modelcontextprotocol.io)
 - Compatible with MCP-compliant development tools, IDEs, and command-line utilities
 - Used by tools like Claude Desktop, Cline, and other MCP-enabled applications
 - Can be consumed by any tool implementing the MCP standard configuration format
 
 **How it works:**
+
 - The MCP server reads the `CONTEXT7_API_KEY` from the environment
 - In CI, the API key is provided via the `copilot` environment secret `COPILOT_MCP_CONTEXT7_KEY`
 - The configuration defines the server command but relies on environment variables for credentials
@@ -65,6 +71,7 @@ VS Code requires its own configuration format in `.vscode/settings.json`:
 ```
 
 **When to use `.vscode/settings.json`:**
+
 - Specifically for VS Code's MCP extension or Copilot integration
 - Required if using GitHub Copilot or VS Code MCP features
 - Uses VS Code's proprietary settings format with explicit environment variable references
@@ -76,6 +83,7 @@ Ensure `CONTEXT7_API_KEY` is set in your shell environment before launching VS C
 ## GitHub Actions Integration
 
 The workflow `.github/workflows/mcp-workflow.yml` is configured to:
+
 - Use the `copilot` environment
 - Access the `COPILOT_MCP_CONTEXT7_KEY` secret
 - Run a basic invocation of the Context7 MCP server to validate configuration
@@ -86,6 +94,7 @@ The workflow `.github/workflows/mcp-workflow.yml` is configured to:
 ### Common Issues
 
 #### API Key Not Being Read
+
 - Ensure `CONTEXT7_API_KEY` is exported in your shell environment
 - Restart VS Code after setting the environment variable
 - Verify the key is set:
@@ -93,16 +102,19 @@ The workflow `.github/workflows/mcp-workflow.yml` is configured to:
   - Bash/Zsh: `echo $CONTEXT7_API_KEY`
 
 #### MCP Server Installation Issues
+
 - Clear npm cache: `npm cache clean --force`
 - Try installing manually: `npm install -g @context7/mcp-server`
 - Check Node.js version (requires v18+): `node --version`
 
 #### Connection Issues
+
 - Verify API key is valid at [context7.dev](https://context7.dev)
 - Check that environment variable is correctly set
 - Restart VS Code after setting environment variables
 
 #### GitHub Actions Failures
+
 - Verify the `copilot` environment exists in your repository settings
 - Ensure `COPILOT_MCP_CONTEXT7_KEY` secret is configured in the `copilot` environment
 - Check workflow runs for specific error messages

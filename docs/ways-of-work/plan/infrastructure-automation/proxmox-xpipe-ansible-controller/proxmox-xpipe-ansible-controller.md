@@ -235,7 +235,7 @@ maintaining host key verification.
 pct exec {{ctid}} -- sudo -u ansible ssh-keyscan -H {{target_host}} >> /home/ansible/.ssh/known_hosts
 ```
 
-2. Then use Ansible's `authorized_key` module with vault-encrypted passwords in
+1. Then use Ansible's `authorized_key` module with vault-encrypted passwords in
    a playbook rather than XPipe commands for production deployments.
 
 #### Option D: Out-of-band key deployment
