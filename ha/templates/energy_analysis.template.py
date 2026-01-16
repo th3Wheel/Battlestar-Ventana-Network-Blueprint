@@ -53,7 +53,7 @@ class EnergyAnalyzer:
     def __init__(
         self,
         db_host: str,
-        db_port: str,
+        db_port: int,
         db_name: str,
         db_user: str,
         db_password: str,
@@ -261,11 +261,22 @@ Environment Variables:
     args = parser.parse_args()
 
     # Validate required environment variables
-    if not DB_USER or not DB_PASSWORD:
+    if not all([DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD]):
+        missing = []
+        if not DB_HOST:
+            missing.append("HA_DB_HOST")
+        if not DB_PORT:
+            missing.append("HA_DB_PORT")
+        if not DB_NAME:
+            missing.append("HA_DB_NAME")
+        if not DB_USER:
+            missing.append("HA_DB_USER")
+        if not DB_PASSWORD:
+            missing.append("HA_DB_PASSWORD")
+        
         print(
-            "Error: Database credentials not configured.\n"
-            "Please set HA_DB_USER and HA_DB_PASSWORD environment variables.\n"
-            "Both must be non-empty strings.",
+            f"Error: Required database configuration missing: {', '.join(missing)}\n"
+            "Please set all required environment variables.",
             file=sys.stderr
         )
         sys.exit(1)
@@ -273,7 +284,7 @@ Environment Variables:
     # Initialize analyzer with separate connection parameters
     analyzer = EnergyAnalyzer(
         db_host=DB_HOST,
-        db_port=DB_PORT,
+        db_port=int(DB_PORT),
         db_name=DB_NAME,
         db_user=DB_USER,
         db_password=DB_PASSWORD,
