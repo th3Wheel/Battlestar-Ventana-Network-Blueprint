@@ -91,14 +91,14 @@ class EnergyAnalyzer:
         Returns:
             Sanitized error message with credential replaced by ***REDACTED***
         """
-        # Sanitize plain-text credential
+        # Sanitize plain-text credential (case-sensitive)
         escaped_credential = re.escape(credential)
-        error_msg = re.sub(escaped_credential, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+        error_msg = re.sub(escaped_credential, "***REDACTED***", error_msg)
         
-        # Sanitize URL-encoded credential
+        # Sanitize URL-encoded credential (case-sensitive)
         encoded_credential = quote_plus(credential)
         escaped_encoded = re.escape(encoded_credential)
-        error_msg = re.sub(escaped_encoded, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+        error_msg = re.sub(escaped_encoded, "***REDACTED***", error_msg)
         
         return error_msg
 
