@@ -50,7 +50,9 @@ Battlestar-Ventana-Network-Blueprint/
 │   │
 │   ├── infrastructure/                        # Infrastructure deployment configs
 │   │   ├── proxmox/
-│   │   │   └── pihole-lxc-template.sh         # Pi-hole LXC deployment script
+│   │   │   └── _archive/
+│   │   │       ├── pihole-lxc-template.sh     # Archived: replaced by Ansible role
+│   │   │       └── README.md                  # Archive documentation
 │   │   └── radxa/
 │   │       ├── a5e-router-config.md           # Radxa A5E router configuration
 │   │       └── docker-host-bootstrap.md       # Docker host setup guide
