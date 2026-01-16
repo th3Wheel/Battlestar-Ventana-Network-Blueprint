@@ -10,7 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-* **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
 * **`plan/` directory** with feature and infrastructure planning documents.
 * **`docs/raw/network.md`** - Raw network documentation.
 * **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
@@ -29,8 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed
 
+* **`infrastructure/` symlink** - Removed broken symlink pointing to local development environment (`i:/obsidian/Homelab Vault/projects/route-pi-squared/infrastructure`). This symlink was not portable and caused access issues in CI/CD and other environments.
 * **Legacy Network Structure files** - Moved core documentation into main blueprint directory for better organization.
-
 * **Redundant documentation files** - Consolidated duplicate content.
 
 ### Deprecated
