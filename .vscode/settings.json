@@ -47,5 +47,8 @@
         "javascript",
         "typescript"
     ],
-    "eslint.format.enable": true
+    "eslint.format.enable": true,
+    "chat.tools.terminal.autoApprove": {
+        "New-Item": true
+    }
 }

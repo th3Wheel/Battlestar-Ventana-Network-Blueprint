@@ -236,6 +236,7 @@ This guide defines the deterministic steps for preparing the Radxa Cubie A5E pla
    ```
 
 - 2026-01-16: Initial deterministic bootstrap procedure authored for Route Pi² deployment.
+
 1. Record the system state in Route Pi² documentation and update `projects/route-pi-squared/docs/hardware-inventory.md` with the Cubie A5E serial and interface mapping.
 
 ---
