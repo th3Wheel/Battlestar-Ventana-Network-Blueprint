@@ -13,6 +13,7 @@
     responses:
       '(?i)password': '{{ ssh_password }}'
   delegate_to: localhost
+  no_log: true
 
 - name: Validate passwordless SSH
   ansible.builtin.command: 'true'
