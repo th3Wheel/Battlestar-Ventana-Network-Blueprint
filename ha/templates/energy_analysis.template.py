@@ -80,6 +80,28 @@ class EnergyAnalyzer:
         self.days = days
         self.data = {}
 
+    def _sanitize_credential(self, error_msg: str, credential: str) -> str:
+        """
+        Sanitize a credential from error messages in both plain and URL-encoded forms.
+
+        Args:
+            error_msg: The error message to sanitize
+            credential: The credential to remove
+
+        Returns:
+            Sanitized error message with credential replaced by ***REDACTED***
+        """
+        # Sanitize plain-text credential
+        escaped_credential = re.escape(credential)
+        error_msg = re.sub(escaped_credential, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+        
+        # Sanitize URL-encoded credential
+        encoded_credential = quote_plus(credential)
+        escaped_encoded = re.escape(encoded_credential)
+        error_msg = re.sub(escaped_encoded, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+        
+        return error_msg
+
     def connect_database(self) -> bool:
         """
         Establish database connection.
@@ -95,21 +117,13 @@ class EnergyAnalyzer:
         except Exception as e:
             # Sanitize error message to avoid exposing credentials
             error_msg = str(e)
-            # Use regex to replace credentials in various forms (plain, URL-encoded, etc.)
+            
+            # Sanitize password and username in both plain and URL-encoded forms
             if self.db_password:
-                # Escape special regex characters in the password
-                escaped_password = re.escape(self.db_password)
-                error_msg = re.sub(escaped_password, "***REDACTED***", error_msg, flags=re.IGNORECASE)
-                # Also sanitize URL-encoded version of the password
-                encoded_password = re.escape(quote_plus(self.db_password))
-                error_msg = re.sub(encoded_password, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+                error_msg = self._sanitize_credential(error_msg, self.db_password)
             if self.db_user:
-                # Escape special regex characters in the username
-                escaped_user = re.escape(self.db_user)
-                error_msg = re.sub(escaped_user, "***REDACTED***", error_msg, flags=re.IGNORECASE)
-                # Also sanitize URL-encoded version of the username
-                encoded_user = re.escape(quote_plus(self.db_user))
-                error_msg = re.sub(encoded_user, "***REDACTED***", error_msg, flags=re.IGNORECASE)
+                error_msg = self._sanitize_credential(error_msg, self.db_user)
+            
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
