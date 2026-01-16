@@ -25,8 +25,7 @@ import argparse
 import json
 import os
 import sys
-from typing import Dict, List
-from urllib.parse import quote_plus
+from typing import Dict, List, Optional
 
 # Configuration constants
 DEFAULT_DAYS = 30
@@ -38,15 +37,6 @@ DB_PORT = os.getenv("HA_DB_PORT", "5432")
 DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
 DB_USER = os.getenv("HA_DB_USER", "").strip() or None
 DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip() or None
-
-# Construct database URL from environment variables with proper URL encoding
-if DB_USER and DB_PASSWORD:
-    # URL encode credentials to handle special characters safely
-    encoded_user = quote_plus(DB_USER)
-    encoded_password = quote_plus(DB_PASSWORD)
-    DATABASE_URL = f"postgresql://{encoded_user}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-else:
-    DATABASE_URL = None
 
 
 class EnergyAnalyzer:
@@ -60,15 +50,31 @@ class EnergyAnalyzer:
     - Export data in various formats
     """
 
-    def __init__(self, db_url: str, days: int = DEFAULT_DAYS):
+    def __init__(
+        self,
+        db_host: str,
+        db_port: str,
+        db_name: str,
+        db_user: str,
+        db_password: str,
+        days: int = DEFAULT_DAYS,
+    ):
         """
         Initialize the energy analyzer.
 
         Args:
-            db_url: PostgreSQL connection string
+            db_host: PostgreSQL host
+            db_port: PostgreSQL port
+            db_name: Database name
+            db_user: Database username
+            db_password: Database password
             days: Number of days to analyze
         """
-        self.db_url = db_url
+        self.db_host = db_host
+        self.db_port = db_port
+        self.db_name = db_name
+        self.db_user = db_user
+        self.db_password = db_password
         self.days = days
         self.data = {}
 
@@ -81,10 +87,18 @@ class EnergyAnalyzer:
         """
         try:
             # Database connection logic here
-            print(f"Connected to database: {self.db_url}")
+            # Connection parameters are stored securely without exposing credentials
+            print(f"Connected to database: {self.db_name}@{self.db_host}:{self.db_port}")
             return True
         except Exception as e:
-            print(f"Database connection failed: {e}")
+            # Sanitize error message to avoid exposing credentials
+            error_msg = str(e)
+            # Remove any potential credential exposure from error messages
+            if self.db_password and self.db_password in error_msg:
+                error_msg = error_msg.replace(self.db_password, "***REDACTED***")
+            if self.db_user and self.db_user in error_msg:
+                error_msg = error_msg.replace(self.db_user, "***REDACTED***")
+            print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
     def fetch_energy_data(self) -> Dict[str, List[float]]:
@@ -247,7 +261,7 @@ Environment Variables:
     args = parser.parse_args()
 
     # Validate required environment variables
-    if not DATABASE_URL:
+    if not DB_USER or not DB_PASSWORD:
         print(
             "Error: Database credentials not configured.\n"
             "Please set HA_DB_USER and HA_DB_PASSWORD environment variables.\n"
@@ -256,8 +270,15 @@ Environment Variables:
         )
         sys.exit(1)
 
-    # Initialize analyzer
-    analyzer = EnergyAnalyzer(DATABASE_URL, args.days)
+    # Initialize analyzer with separate connection parameters
+    analyzer = EnergyAnalyzer(
+        db_host=DB_HOST,
+        db_port=DB_PORT,
+        db_name=DB_NAME,
+        db_user=DB_USER,
+        db_password=DB_PASSWORD,
+        days=args.days,
+    )
 
     # Connect to database
     if not analyzer.connect_database():
