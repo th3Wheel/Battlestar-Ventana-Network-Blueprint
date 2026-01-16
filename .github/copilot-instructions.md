@@ -1,3 +1,35 @@
+## Context7 MCP Integration (CRITICAL - Read First)
+
+**MANDATORY:** Before starting ANY task, ALWAYS leverage Context7 MCP to gather comprehensive context about the repository, codebase, and related resources.
+
+### Context7 Usage Requirements
+
+1. **Pre-Task Discovery (REQUIRED):**
+   - Use Context7 MCP to search for relevant documentation, code patterns, and architectural decisions BEFORE making changes
+   - Query Context7 for similar implementations, related VLANs, existing firewall rules, and naming patterns
+   - Identify dependencies and cross-references using Context7's semantic search capabilities
+
+2. **Continuous Context Gathering:**
+   - Invoke Context7 MCP at every decision point to validate assumptions
+   - Use Context7 to find examples of similar changes in repository history
+   - Query Context7 for related documentation that might need updating alongside your changes
+
+3. **Context7 Query Patterns:**
+   - **For VLAN changes:** "Find all references to VLAN [ID], DHCP scopes, firewall rules, and service definitions"
+   - **For firewall updates:** "Show firewall rules involving [source] to [destination], related services, and port definitions"
+   - **For naming:** "Find naming patterns for [VLANs/SSIDs/hosts], theme conventions, and similar examples"
+   - **For architecture:** "Retrieve architectural decisions, zone models, and related design documents"
+   - **For cross-references:** "Find all files mentioning [service/VLAN/host] and their relationships"
+
+4. **Validation Before Commit:**
+   - Use Context7 to verify all affected files are identified and updated
+   - Query for TODOs, cross-references, and dependencies that might be impacted
+   - Ensure consistency across documentation using Context7's semantic analysis
+
+**FAILURE TO USE CONTEXT7 MAY RESULT IN INCOMPLETE CHANGES, BROKEN CROSS-REFERENCES, OR INCONSISTENT DOCUMENTATION.**
+
+---
+
 ## Purpose
 - Guide AI agents working in a documentation-first network blueprint repo; emphasize VLAN design, firewall policy, and DHCP/service tables over code changes.
 
@@ -24,8 +56,10 @@
 - Device inventories and physical details are tracked in [docs/host-tracker.md](docs/host-tracker.md) and [docs/physical-hosts.md](docs/physical-hosts.md) when updating hardware-dependent changes.
 
 ## Workflow and quality checks
+- **ALWAYS START WITH CONTEXT7:** Query Context7 MCP for relevant documentation, patterns, and cross-references before making any changes.
 - No build/test toolchain; reviews focus on docs correctness: align matrices with narrative text, ensure links resolve, and keep ASCII unless a file already uses emoji.
 - Maintain tables in a consistent order (by VLAN ID); avoid leaving TODOs unaddressed when adding new services.
+- **USE CONTEXT7 FOR VALIDATION:** Before committing, query Context7 to verify all affected files are updated and cross-references are intact.
 - Do not commit helper files like Copilot-Processing.md; keep changes scoped to relevant docs.
 - Commit messages must follow Conventional Commits (`type(scope): subject`). Allowed types include: `docs`, `chore`, `fix`, `feat`, `refactor`, `style`, `test`, `ci`, `build`, `perf`. Keep subjects in imperative mood and under ~72 chars.
 - Commit gating: do not create commits if validators report errors. Warnings are acceptable but should be addressed when practical. Fix error findings before committing.
@@ -37,9 +71,11 @@
 	- `pylint $(Get-ChildItem -Recurse -Filter *.py)` or `ruff check .` (if Python tooling present)
 
 ## Contribution patterns
+- **QUERY CONTEXT7 FIRST:** Before any contribution, use Context7 MCP to find similar changes, related documentation, and potential impacts.
 - For new service exposure: add the port/protocol row in [docs/services.md](docs/services.md), reflect access level in [docs/firewall-matrix.md](docs/firewall-matrix.md), and note DHCP/DNS dependencies if applicable.
 - For new monitoring coverage: add panel/metric notes in [dashboards/Homepage Mockup.md](dashboards/Homepage%20Mockup.md) and keep alert styling consistent with [alerts/Alertmanager style.yaml](alerts/Alertmanager%20style.yaml).
 - For policy audits: use [docs/audit-checklist.md](docs/audit-checklist.md) to capture pass/fail outcomes and cross-check against the firewall and services matrices.
+- **VERIFY WITH CONTEXT7:** After changes, query Context7 to ensure all cross-references are updated and no documentation is left inconsistent.
 
 ## Commit Standards
 - Conventional Commits are required for all commits. Format: `type(optional-scope): short imperative subject`.

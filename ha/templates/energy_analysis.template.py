@@ -87,12 +87,12 @@ class EnergyAnalyzer:
         # Sanitize plain-text credential (case-sensitive)
         escaped_credential = re.escape(credential)
         error_msg = re.sub(escaped_credential, "***REDACTED***", error_msg)
-        
+
         # Sanitize URL-encoded credential (case-sensitive)
         encoded_credential = quote_plus(credential)
         escaped_encoded = re.escape(encoded_credential)
         error_msg = re.sub(escaped_encoded, "***REDACTED***", error_msg)
-        
+
         return error_msg
 
     def connect_database(self) -> bool:
@@ -105,18 +105,20 @@ class EnergyAnalyzer:
         try:
             # Database connection logic here
             # Connection parameters are stored securely without exposing credentials
-            print(f"Connected to database: {self.db_name}@{self.db_host}:{self.db_port}")
+            print(
+                f"Connected to database: {self.db_name}@{self.db_host}:{self.db_port}"
+            )
             return True
         except Exception as e:
             # Sanitize error message to avoid exposing credentials
             error_msg = str(e)
-            
+
             # Sanitize password and username in both plain and URL-encoded forms
             if self.db_password:
                 error_msg = self._sanitize_credential(error_msg, self.db_password)
             if self.db_user:
                 error_msg = self._sanitize_credential(error_msg, self.db_user)
-            
+
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
@@ -288,16 +290,22 @@ Environment Variables:
 
     # Validate required environment variables without storing them in data structures
     missing = []
-    if not db_user:
-        missing.append('HA_DB_USER')
-    if not db_password:
-        missing.append('HA_DB_PASSWORD')
-    
+    if not DB_HOST:
+        missing.append("HA_DB_HOST")
+    if not DB_PORT:
+        missing.append("HA_DB_PORT")
+    if not DB_NAME:
+        missing.append("HA_DB_NAME")
+    if not DB_USER:
+        missing.append("HA_DB_USER")
+    if not DB_PASSWORD:
+        missing.append("HA_DB_PASSWORD")
+
     if missing:
         print(
             f"Error: Required database configuration missing: {', '.join(missing)}\n"
             "Please set all required environment variables.",
-            file=sys.stderr
+            file=sys.stderr,
         )
         sys.exit(1)
 
@@ -305,10 +313,7 @@ Environment Variables:
     try:
         db_port = int(db_port_str)
     except (ValueError, TypeError):
-        print(
-            "Error: HA_DB_PORT must be a valid integer",
-            file=sys.stderr
-        )
+        print("Error: HA_DB_PORT must be a valid integer", file=sys.stderr)
         sys.exit(1)
 
     # Initialize analyzer with separate connection parameters

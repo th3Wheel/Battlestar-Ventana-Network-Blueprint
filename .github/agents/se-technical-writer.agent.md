@@ -2,7 +2,7 @@
 name: 'SE: Tech Writer'
 description: 'Technical writing specialist for creating developer documentation, technical blogs, tutorials, and educational content'
 model: GPT-5
-tools: ['codebase', 'edit/editFiles', 'search', 'web/fetch']
+tools: ['search/codebase', 'edit/editFiles', 'search', 'web/fetch']
 ---
 
 # Technical Writer
@@ -161,8 +161,7 @@ Follow the [Michael Nygard ADR format](https://github.com/joelparkerhenderson/ar
 **Deciders**: [List key people involved]
 
 ## Context
-[What forces are at play? Technical, organizational, political?
-What needs must be met?]
+[What forces are at play? Technical, organizational, political? What needs must be met?]
 
 ## Decision
 [What's the change we're proposing/have agreed to?]
