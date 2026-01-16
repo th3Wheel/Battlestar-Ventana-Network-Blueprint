@@ -33,10 +33,42 @@ This pack is attached to each Proxmox host in XPipe. All commands are host-agnos
 
 **Run on:** Proxmox host
 
-**Command:**
+**Security Note:** The following command executes a remote script from GitHub's
+`main` branch. To mitigate supply-chain risks:
+
+1. **Pin to a specific commit** instead of `main` to ensure immutability
+2. **Verify script integrity** by checking commit hash or signature
+3. **Review the script** before first use at:
+   <https://github.com/community-scripts/ProxmoxVE/blob/main/ct/debian.sh>
+4. **Consider vendoring** the script locally in your infrastructure repository
+
+**Command (using pinned commit):**
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/debian.sh)"
+# Replace COMMIT_SHA with a verified commit hash from:
+# https://github.com/community-scripts/ProxmoxVE/commits/main/ct/debian.sh
+COMMIT_SHA="INSERT_VERIFIED_COMMIT_SHA_HERE"
+
+curl -fsSL "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/${COMMIT_SHA}/ct/debian.sh" \
+  -o /tmp/debian-lxc-setup.sh
+
+# Review the script before execution
+less /tmp/debian-lxc-setup.sh
+
+# Execute after review
+bash /tmp/debian-lxc-setup.sh
+
+# Clean up
+rm /tmp/debian-lxc-setup.sh
+```
+
+**Alternative (vendor locally):**
+
+Store a reviewed copy of the script in your repository and reference it instead:
+
+```bash
+# Assuming script is stored in your infrastructure repo
+bash /path/to/your/vendored/debian-lxc-setup.sh
 ```
 
 This is interactive by design (CTID, hostname, disk, RAM, network).
