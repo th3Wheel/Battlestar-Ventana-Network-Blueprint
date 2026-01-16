@@ -27,11 +27,13 @@ This document provides comprehensive guidelines for programming, configuring, an
 ### 1. Modular Design
 
 **Separate Concerns:**
+
 - Keep configuration files focused on single responsibilities
 - Use packages for related functionality
 - Avoid monolithic configuration files
 
 **Directory Structure:**
+
 ```
 ha/
 ├── configuration.yaml          # Core HA configuration
@@ -49,11 +51,13 @@ ha/
 ### 2. Naming Conventions
 
 **Entity IDs:**
+
 - Use lowercase with underscores: `sensor.vlan10_bandwidth_mbps`
 - Follow pattern: `domain.vlan{purpose}_{metric}_{unit}`
 - Be descriptive but concise
 
 **Examples:**
+
 ```yaml
 # Good
 sensor.vlan10_bandwidth_mbps
@@ -69,11 +73,13 @@ sensor.10bandwidth
 ### 3. VLAN-Based Organization
 
 **Network Segmentation:**
+
 - Organize entities by VLAN/security zone
 - Use consistent VLAN numbering scheme
 - Document VLAN purposes and security levels
 
 **VLAN Mapping:**
+
 - VLAN 10: Trusted (management systems)
 - VLAN 20: IoT (smart devices)
 - VLAN 30: Guest (temporary access)
@@ -91,6 +97,7 @@ sensor.10bandwidth
 ### 1. Core Configuration
 
 **configuration.yaml Structure:**
+
 ```yaml
 # Core Home Assistant configuration
 homeassistant:
@@ -124,6 +131,7 @@ script: !include_dir_merge_list scripts/
 ### 2. Package Organization
 
 **Package Structure:**
+
 ```yaml
 # packages/network_monitoring.yaml
 ---
@@ -162,6 +170,7 @@ template:
 ### 3. Secrets Management
 
 **Secrets Organization:**
+
 ```yaml
 # secrets.yaml
 latitude: "40.7128"
@@ -184,6 +193,7 @@ database_password: !env_var DB_PASSWORD
 ### 1. Automation Structure
 
 **Standard Automation Format:**
+
 ```yaml
 automation:
   - alias: "Descriptive Automation Name"
@@ -230,6 +240,7 @@ automation:
 ### 2. Error Handling
 
 **Robust Automation Design:**
+
 ```yaml
 automation:
   - alias: "Network Restart with Error Handling"
@@ -268,6 +279,7 @@ automation:
 ### 3. Template Best Practices
 
 **Jinja2 Template Guidelines:**
+
 ```yaml
 # Good: Readable and maintainable
 template:
@@ -296,6 +308,7 @@ template:
 ### 1. Sensor Configuration
 
 **Standard Sensor Setup:**
+
 ```yaml
 sensor:
   - platform: command_line
@@ -327,12 +340,14 @@ sensor:
 ### 2. Entity Organization
 
 **Entity Registry Management:**
+
 - Use consistent naming patterns
 - Group related entities
 - Document entity purposes
 - Maintain entity cleanup procedures
 
 **Custom Properties:**
+
 ```yaml
 # Customize entity display
 homeassistant:
@@ -353,6 +368,7 @@ homeassistant:
 ### 1. Lovelace Configuration
 
 **Dashboard Structure:**
+
 ```yaml
 title: "Battlestar Ventana Network"
 views:
@@ -385,6 +401,7 @@ views:
 ### 2. Card Design Patterns
 
 **Mushroom Card Template:**
+
 ```yaml
 - type: custom:mushroom-template-card
   primary: "VLAN 10 - Trusted"
@@ -410,6 +427,7 @@ views:
 ### 3. Responsive Design
 
 **Breakpoint Considerations:**
+
 - Mobile: Single column layout
 - Tablet: 2-column grid
 - Desktop: 3-4 column grid
@@ -420,6 +438,7 @@ views:
 ### 1. Access Control
 
 **User Management:**
+
 ```yaml
 # configuration.yaml
 homeassistant:
@@ -443,12 +462,14 @@ group:
 ### 2. Network Security
 
 **Firewall Configuration:**
+
 - Restrict HA access to trusted VLANs only
 - Use HTTPS with valid certificates
 - Implement rate limiting
 - Enable IP filtering
 
 **API Security:**
+
 ```yaml
 http:
   ssl_certificate: /ssl/fullchain.pem
@@ -463,6 +484,7 @@ http:
 ### 3. Secret Management
 
 **Secure Storage:**
+
 - Use `secrets.yaml` for sensitive data
 - Environment variables for dynamic secrets
 - Regular rotation of API keys and passwords
@@ -473,6 +495,7 @@ http:
 ### 1. Database Optimization
 
 **Recorder Configuration:**
+
 ```yaml
 recorder:
   purge_keep_days: 30
@@ -495,12 +518,14 @@ recorder:
 ### 2. Automation Efficiency
 
 **Optimization Techniques:**
+
 - Use appropriate `mode` settings (single vs parallel)
 - Implement cooldown periods
 - Cache expensive calculations
 - Use entity state triggers instead of polling
 
 **Efficient Automation:**
+
 ```yaml
 automation:
   - alias: "Efficient Network Monitoring"
@@ -518,6 +543,7 @@ automation:
 ### 3. Template Optimization
 
 **Caching Strategies:**
+
 ```yaml
 template:
   - trigger:
@@ -543,6 +569,7 @@ template:
 ### 1. Configuration Testing
 
 **Validation Commands:**
+
 ```bash
 # Check configuration syntax
 hass --config /config --script check_config
@@ -557,12 +584,14 @@ hass --config /config --script test_template template_string
 ### 2. Integration Testing
 
 **Test Scenarios:**
+
 - Network failure simulation
 - Sensor data validation
 - Automation trigger testing
 - Dashboard responsiveness
 
 **Test Automation:**
+
 ```yaml
 # Test automation triggers
 automation:
@@ -582,6 +611,7 @@ automation:
 ### 1. Code Documentation
 
 **Configuration Comments:**
+
 ```yaml
 # Network monitoring package
 # Monitors VLAN bandwidth, security events, and system health
@@ -599,6 +629,7 @@ sensor:
 ### 2. Entity Documentation
 
 **Entity Descriptions:**
+
 ```yaml
 homeassistant:
   customize:
@@ -619,6 +650,7 @@ homeassistant:
 ### 1. Backup Strategy
 
 **Configuration Backup:**
+
 ```bash
 # Daily backup script
 #!/bin/bash
@@ -638,6 +670,7 @@ sqlite3 /config/home-assistant_v2.db ".backup '$BACKUP_DIR/ha_db_$DATE.db'"
 ### 2. Update Procedures
 
 **Safe Update Process:**
+
 1. Backup current configuration
 2. Test updates in development environment
 3. Update HA core and custom components
@@ -648,6 +681,7 @@ sqlite3 /config/home-assistant_v2.db ".backup '$BACKUP_DIR/ha_db_$DATE.db'"
 ### 3. Monitoring and Alerting
 
 **System Health Monitoring:**
+
 ```yaml
 automation:
   - alias: "HA System Health Check"
@@ -680,6 +714,7 @@ automation:
 ### Common Patterns
 
 **Status Color Coding:**
+
 ```yaml
 icon_color: >
   {% set value = states(entity_id) | float(0) %}
@@ -690,11 +725,13 @@ icon_color: >
 ```
 
 **Availability Template:**
+
 ```yaml
 availability_template: "{{ states(entity_id) not in ['unknown', 'unavailable'] }}"
 ```
 
 **Safe Template Operations:**
+
 ```yaml
 {% set value = states(entity_id) | float(0) %}
 {% if value is number and value > 0 %}
@@ -707,12 +744,14 @@ availability_template: "{{ states(entity_id) not in ['unknown', 'unavailable'] }
 ### Troubleshooting
 
 **Common Issues:**
+
 1. **Template Errors:** Check Jinja2 syntax and state availability
 2. **Automation Not Triggering:** Verify trigger conditions and entity states
 3. **Sensor Unavailable:** Check command execution and permissions
 4. **Performance Issues:** Review scan intervals and template complexity
 
 **Debug Commands:**
+
 ```bash
 # Check HA logs
 docker logs homeassistant

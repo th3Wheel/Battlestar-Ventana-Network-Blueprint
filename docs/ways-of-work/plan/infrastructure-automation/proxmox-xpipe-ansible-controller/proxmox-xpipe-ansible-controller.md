@@ -143,31 +143,25 @@ XPipe will display the public key for you to use wherever needed.
 - `ctid` – LXC container ID (required)
 - `target_user` – user on the target server (required)
 - `target_host` – IP/hostname of target server (required)
-- `op_vault` – 1Password vault name (optional, for Option A, e.g., `Infrastructure`)
-- `op_item` – 1Password item name containing password (optional, for Option A)
 
-**Security Note:**
+**Secure Key Deployment Approach:**
 
-> **WARNING:** Do not use `sshpass -p '{{password}}'` to pass passwords on the
-> command line. This exposes credentials in process listings, shell history, and
-> command logs, allowing unauthorized access to target systems. Additionally,
-> disabling host key verification with `-o StrictHostKeyChecking=no` enables
-> man-in-the-middle attacks.
+Instead of using `sshpass` with passwords on the command line (which exposes
+credentials in process listings, shell history, and logs), use one of these
+secure alternatives:
 
-**Recommended Approaches:**
+#### Option 1: Interactive ssh-copy-id (Recommended for initial setup)
 
-#### Option A: 1Password CLI (Recommended for Production)
+```bash
+pct exec {{ctid}} -- bash -c "
+set -e
 
-Use 1Password CLI to securely inject credentials without exposing them in
-command lines or process listings:
+# Interactive password prompt (not logged)
+ssh-copy-id -i /home/ansible/.ssh/id_ed25519.pub {{target_user}}@{{target_host}}
+"
+```
 
-**Prerequisites:**
-
-- 1Password CLI installed on Proxmox host
-- Authenticated session: `eval $(op signin)`
-- Password stored in 1Password vault
-
-**Command:**
+#### Option 2: Using SSH_ASKPASS with environment (for automation)
 
 ```bash
 # Retrieve password from 1Password on the Proxmox host

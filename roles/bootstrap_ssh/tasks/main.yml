@@ -1,0 +1,20 @@
+---
+- name: Pre-seed known_hosts
+  ansible.builtin.known_hosts:
+    name: '{{ inventory_hostname }}'
+    key: "{{ lookup('pipe', 'ssh-keyscan -t ed25519 ' ~ inventory_hostname) }}"
+  delegate_to: localhost
+
+- name: Deploy SSH key using 1Password password
+  ansible.builtin.expect:
+    command: >
+      ssh-copy-id -i {{ public_key_path }}
+      {{ ansible_user }}@{{ inventory_hostname }}
+    responses:
+      '(?i)password': '{{ ssh_password }}'
+  delegate_to: localhost
+
+- name: Validate passwordless SSH
+  ansible.builtin.command: 'true'
+  register: ssh_check
+  changed_when: false

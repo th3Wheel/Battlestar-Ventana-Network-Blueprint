@@ -1,0 +1,40 @@
+---
+- name: Proxmox LXC SSH key bootstrap using 1Password
+  hosts: proxmox_lxc
+  gather_facts: false
+
+  vars:
+    ssh_password: >-
+      {{ lookup(
+          'community.general.onepassword',
+          'SSH Password',
+          field='password'
+      ) }}
+
+    public_key_path: '/home/ansible/.ssh/id_ed25519.pub'
+
+  tasks:
+    - name: Pre-seed known_hosts on controller
+      ansible.builtin.known_hosts:
+        name: '{{ inventory_hostname }}'
+        key: "{{ lookup('pipe', 'ssh-keyscan -t ed25519 ' ~ inventory_hostname) }}"
+      delegate_to: localhost
+
+    - name: Copy SSH key using pct exec + sudo -u ansible
+      ansible.builtin.expect:
+        command: >
+          pct exec {{ ctid }} -- bash -c
+          "sudo -u ansible ssh-copy-id -i {{ public_key_path }}
+           {{ ansible_user }}@{{ target_host }}"
+        responses:
+          '(?i)password': '{{ ssh_password }}'
+      delegate_to: localhost
+
+    - name: Validate passwordless SSH
+      ansible.builtin.command: 'true'
+      register: ssh_check
+      changed_when: false
+
+    - name: Report success
+      debug:
+        msg: 'SSH key successfully deployed to {{ target_host }} via LXC {{ ctid }}'

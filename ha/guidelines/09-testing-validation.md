@@ -8,6 +8,7 @@ applyTo: "**/*.py,**/*.yaml,**/*.js,**/*.sh,**/ha/**,**/*.test.*"
 ## 1. Testing Strategy
 
 **Testing Pyramid for Home Assistant:**
+
 ```
 ┌─────────────────┐
 │   End-to-End    │ ← Few tests, high value
@@ -22,6 +23,7 @@ applyTo: "**/*.py,**/*.yaml,**/*.js,**/*.sh,**/ha/**,**/*.test.*"
 ```
 
 **Testing Principles:**
+
 * Test behavior, not implementation
 * Keep tests fast and reliable
 * Test one thing at a time
@@ -31,6 +33,7 @@ applyTo: "**/*.py,**/*.yaml,**/*.js,**/*.sh,**/ha/**,**/*.test.*"
 ## 2. Unit Testing
 
 **Python Script Testing:**
+
 ```python
 # tests/test_energy_calculations.py
 import pytest
@@ -95,6 +98,7 @@ def test_energy_trend_analysis(sample_energy_data):
 ```
 
 **Template Testing:**
+
 ```python
 # tests/test_templates.py
 import pytest
@@ -154,6 +158,7 @@ def test_template_error_handling():
 ## 3. Integration Testing
 
 **Automation Testing:**
+
 ```yaml
 # tests/test_automations.yaml
 # Integration tests for automations
@@ -220,6 +225,7 @@ test_backup_automation:
 ```
 
 **API Integration Testing:**
+
 ```python
 # tests/test_api_integration.py
 import pytest
@@ -298,6 +304,7 @@ def test_nfs_monitoring_integration():
 ## 4. End-to-End Testing
 
 **Scenario-Based Testing:**
+
 ```yaml
 # tests/e2e/test_energy_dashboard.yaml
 test_energy_dashboard_workflow:
@@ -361,6 +368,7 @@ test_energy_dashboard_workflow:
 ```
 
 **Performance Testing:**
+
 ```python
 # tests/performance/test_energy_processing.py
 import pytest
@@ -427,6 +435,7 @@ class TestEnergyProcessingPerformance:
 ## 5. Template Validation
 
 **Template Testing Tools:**
+
 ```python
 # tools/validate_templates.py
 import os
@@ -536,6 +545,7 @@ if __name__ == "__main__":
 ```
 
 **Template Testing in HA:**
+
 ```yaml
 # Developer tools template testing
 # Use HA Developer Tools > Template to test templates
@@ -564,6 +574,7 @@ Sensor status: {{ 'Available' if sensor_available and sensor_is_number else 'Una
 ## 6. Automation Testing
 
 **Automation Test Framework:**
+
 ```python
 # tests/test_automations.py
 import pytest
@@ -681,6 +692,7 @@ def test_energy_automations():
 ## 7. Validation Best Practices
 
 **Configuration Validation:**
+
 ```bash
 # Validate configuration before restart
 hass --config /config --script check_config
@@ -697,6 +709,7 @@ print('Template syntax is valid')
 ```
 
 **Automated Validation:**
+
 ```yaml
 # CI/CD validation pipeline
 name: "Validate HA Configuration"
@@ -741,16 +754,18 @@ jobs:
 ```
 
 **Testing Checklist:**
-- [ ] Unit tests for all custom functions
-- [ ] Integration tests for automations
-- [ ] End-to-end tests for critical workflows
-- [ ] Template validation for all Jinja2 code
-- [ ] Configuration validation before deployment
-- [ ] Performance testing under load
-- [ ] Security testing for sensitive operations
-- [ ] Documentation updated with test results
+
+* [ ] Unit tests for all custom functions
+* [ ] Integration tests for automations
+* [ ] End-to-end tests for critical workflows
+* [ ] Template validation for all Jinja2 code
+* [ ] Configuration validation before deployment
+* [ ] Performance testing under load
+* [ ] Security testing for sensitive operations
+* [ ] Documentation updated with test results
 
 **Continuous Testing:**
+
 * Run tests on every configuration change
 * Monitor test success rates and fix failures immediately
 * Include performance benchmarks in testing

@@ -1,7 +1,7 @@
-# 💠 BSG Network Dashboard (Home Assistant Lovelace)
+# ðŸ’  BSG Network Dashboard (Home Assistant Lovelace)
 # Comprehensive dashboard with automation, monitoring, and network controls
 
-title: 💠 BSG Network Dashboard
+title: ðŸ’  BSG Network Dashboard
 views:
   - title: Overview
     cards:
