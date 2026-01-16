@@ -48,7 +48,7 @@ This pack is attached to each Proxmox host in XPipe. All commands are host-agnos
 # 1. Visit https://github.com/community-scripts/ProxmoxVE/commits/main/ct/debian.sh
 # 2. Select a commit you've reviewed and verified
 # 3. Replace with the full commit SHA (example shown below)
-COMMIT_SHA="abc123def456789"  # Replace with actual verified commit SHA
+COMMIT_SHA="a1b2c3d4e5f6789012345678901234567890abcd"  # Replace with actual verified commit SHA
 
 curl -fsSL "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/${COMMIT_SHA}/ct/debian.sh" \
   -o /tmp/debian-lxc-setup.sh
