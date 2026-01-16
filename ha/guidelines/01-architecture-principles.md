@@ -5,14 +5,16 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 
 # Architecture Principles
 
-### 1. Modular Design
+## 1. Modular Design
 
 **Separate Concerns:**
+
 - Keep configuration files focused on single responsibilities
 - Use packages for related functionality
 - Avoid monolithic configuration files
 
 **Directory Structure:**
+
 ```
 ha/
 ├── configuration.yaml          # Core HA configuration
@@ -30,6 +32,7 @@ ha/
 ### 2. Naming Conventions
 
 **Entity IDs:**
+
 - Use lowercase with underscores: `sensor.vlan10_bandwidth_mbps`
 - Follow pattern: `domain.vlan{purpose}_{metric}_{unit}`
 - Be descriptive but concise
@@ -37,6 +40,7 @@ ha/
 - Rename entities immediately after adding devices
 
 **Device Naming Pattern:**
+
 ```yaml
 # Pattern: [area] [object] [device type]
 # Examples:
@@ -48,6 +52,7 @@ entity: switch.living_room_lamp_smart_plug_power
 ```
 
 **Entity ID Examples:**
+
 ```yaml
 # Good
 sensor.vlan10_bandwidth_mbps
@@ -65,6 +70,7 @@ sensor.temp_sensor_abc123     # Contains model number
 ```
 
 **Naming Best Practices:**
+
 - **Consistency:** Use the same naming structure throughout your configuration
 - **Future-proofing:** Names without manufacturer/model info make device replacement easier
 - **Immediate Renaming:** Always rename devices and entities right after adding them
@@ -74,11 +80,13 @@ sensor.temp_sensor_abc123     # Contains model number
 ### 3. VLAN-Based Organization
 
 **Network Segmentation:**
+
 - Organize entities by VLAN/security zone
 - Use consistent VLAN numbering scheme
 - Document VLAN purposes and security levels
 
 **VLAN Mapping:**
+
 - VLAN 10: Trusted (management systems)
 - VLAN 20: IoT (smart devices)
 - VLAN 30: Guest (temporary access)

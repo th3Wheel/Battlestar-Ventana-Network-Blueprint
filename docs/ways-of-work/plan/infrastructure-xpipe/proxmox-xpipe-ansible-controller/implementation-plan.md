@@ -24,7 +24,7 @@ Deliver a reusable Proxmox + XPipe + Ansible controller automation pack that cre
 - Ship a cluster-aware Ansible inventory template with group vars for controllers, Proxmox, LXCs, VMs, network devices, and services.
 - Include Mermaid diagrams for the pipeline (XPipe → Proxmox → LXC → Ansible) and the overall architecture.
 - Keep automation bootstrap-only; delegate configuration management to the downstream Ansible repo once keys and inventory exist.
-- Provision a standard admin-level user across all Proxmox hosts and guests (LXCs/VMs) with SSH key-based access, membership in `sudo` (NOPASSWD), and configurable username/key via variables.
+- Provision a standard admin-level user across all Proxmox hosts and guests (LXCs/VMs) with SSH key-based access and membership in `sudo`, avoiding cluster-wide `NOPASSWD` by default; where passwordless sudo is required for automation, scope it to a minimal set of commands via host-specific `sudoers` entries and document compensating controls (key management, rotation, auditing).
 
 ## Technical Considerations
 
