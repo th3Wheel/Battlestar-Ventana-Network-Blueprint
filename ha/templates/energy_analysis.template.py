@@ -26,7 +26,6 @@ import json
 import os
 import re
 import sys
-from typing import Dict, List
 from urllib.parse import quote_plus
 
 # Configuration constants
@@ -129,7 +128,7 @@ class EnergyAnalyzer:
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
-    def fetch_energy_data(self) -> Dict[str, List[float]]:
+    def fetch_energy_data(self) -> dict[str, list[float]]:
         """
         Fetch energy consumption data from database.
 
@@ -144,7 +143,7 @@ class EnergyAnalyzer:
             "battery_usage": [400.2, 800.1, 150.1],
         }
 
-    def calculate_daily_totals(self, data: Dict[str, List[float]]) -> Dict[str, float]:
+    def calculate_daily_totals(self, data: dict[str, list[float]]) -> dict[str, float]:
         """
         Calculate daily totals for each energy source.
 
@@ -159,7 +158,7 @@ class EnergyAnalyzer:
             totals[sensor] = sum(values)
         return totals
 
-    def analyze_patterns(self, data: Dict[str, List[float]]) -> Dict[str, any]:
+    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, any]:
         """
         Analyze energy usage patterns.
 
@@ -176,7 +175,7 @@ class EnergyAnalyzer:
         }
         return analysis
 
-    def _find_peak_hours(self, data: Dict[str, List[float]]) -> List[int]:
+    def _find_peak_hours(self, data: dict[str, list[float]]) -> list[int]:
         """
         Find hours with highest energy consumption.
 
@@ -189,7 +188,7 @@ class EnergyAnalyzer:
         # Simplified implementation
         return [18, 19, 20]  # Evening hours
 
-    def _calculate_efficiency(self, data: Dict[str, List[float]]) -> float:
+    def _calculate_efficiency(self, data: dict[str, list[float]]) -> float:
         """
         Calculate overall energy efficiency score.
 
@@ -205,7 +204,7 @@ class EnergyAnalyzer:
         efficiency = (solar / (solar + grid)) * 100 if (solar + grid) > 0 else 0
         return round(efficiency, 1)
 
-    def _generate_recommendations(self, data: Dict[str, List[float]]) -> List[str]:
+    def _generate_recommendations(self, data: dict[str, list[float]]) -> list[str]:
         """
         Generate optimization recommendations.
 
@@ -232,7 +231,7 @@ class EnergyAnalyzer:
         return recommendations
 
     def export_report(
-        self, analysis: Dict, output_file: str, format: str = OUTPUT_FORMAT
+        self, analysis: dict, output_file: str, format: str = OUTPUT_FORMAT
     ):
         """
         Export analysis report to file.
