@@ -45,9 +45,10 @@ This pack is attached to each Proxmox host in XPipe. All commands are host-agnos
 **Command (using pinned commit):**
 
 ```bash
-# Replace COMMIT_SHA with a verified commit hash from:
-# https://github.com/community-scripts/ProxmoxVE/commits/main/ct/debian.sh
-COMMIT_SHA="INSERT_VERIFIED_COMMIT_SHA_HERE"
+# 1. Visit https://github.com/community-scripts/ProxmoxVE/commits/main/ct/debian.sh
+# 2. Select a commit you've reviewed and verified
+# 3. Replace with the full commit SHA (example shown below)
+COMMIT_SHA="abc123def456789"  # Replace with actual verified commit SHA
 
 curl -fsSL "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/${COMMIT_SHA}/ct/debian.sh" \
   -o /tmp/debian-lxc-setup.sh
@@ -67,8 +68,8 @@ rm /tmp/debian-lxc-setup.sh
 Store a reviewed copy of the script in your repository and reference it instead:
 
 ```bash
-# Assuming script is stored in your infrastructure repo
-bash /path/to/your/vendored/debian-lxc-setup.sh
+# Example: script stored in your infrastructure automation repository
+bash scripts/proxmox/debian-lxc-setup.sh
 ```
 
 This is interactive by design (CTID, hostname, disk, RAM, network).
