@@ -83,11 +83,11 @@ devices:
 
 | Task     | Description           | Completed | Date |
 | -------- | --------------------- | --------- | ---- |
-| TASK-L06 | Launch Debian 12 container | `lxc launch images:debian/12 radxa-test --profile test-profile` |           |      |
-| TASK-L07 | Configure container networking | Set up eth0 with DHCP |           |      |
-| TASK-L08 | Install Ansible in container | For local execution testing |           |      |
-| TASK-L09 | Configure SSH access | Password or key-based access |           |      |
-| TASK-L10 | Test container connectivity | Ping and SSH verification |           |      |
+| TASK-L06 | Launch Debian 12 container | `lxc launch images:debian/12 radxa-test --profile test-profile` |           |
+| TASK-L07 | Configure container networking | Set up eth0 with DHCP |           |
+| TASK-L08 | Install Ansible in container | For local execution testing |           |
+| TASK-L09 | Configure SSH access | Password or key-based access |           |
+| TASK-L10 | Test container connectivity | Ping and SSH verification |           |
 
 ### Phase L3: Ansible Role Testing
 
@@ -95,12 +95,12 @@ devices:
 
 | Task     | Description           | Completed | Date |
 | -------- | --------------------- | --------- | ---- |
-| TASK-L11 | Copy role to container | Mount or copy roles directory |           |      |
-| TASK-L12 | Create test inventory | Localhost or container-specific |           |      |
-| TASK-L13 | Execute role (first run) | Full role execution |           |      |
-| TASK-L14 | Verify configuration changes | Check systemd units, Docker, network |           |      |
-| TASK-L15 | Test idempotency | Run role again, verify no changes |           |      |
-| TASK-L16 | Execute validation tasks | Run role's built-in validation |           |      |
+| TASK-L11 | Copy role to container | Mount or copy roles directory |           |
+| TASK-L12 | Create test inventory | Localhost or container-specific |           |
+| TASK-L13 | Execute role (first run) | Full role execution |           |
+| TASK-L14 | Verify configuration changes | Check systemd units, Docker, network |           |
+| TASK-L15 | Test idempotency | Run role again, verify no changes |           |
+| TASK-L16 | Execute validation tasks | Run role's built-in validation |           |
 
 ### Phase L4: Results Analysis & Cleanup
 
@@ -108,12 +108,12 @@ devices:
 
 | Task     | Description           | Completed | Date |
 | -------- | --------------------- | --------- | ---- |
-| TASK-L17 | Review Ansible output | Check for errors or warnings |           |      |
-| TASK-L18 | Validate system state | Compare with manual guide expectations |           |      |
-| TASK-L19 | Test network functionality | VLAN configuration and connectivity |           |      |
-| TASK-L20 | Document issues/findings | Update testing plan with results |           |      |
-| TASK-L21 | Clean up test container | `lxc delete radxa-test --force` |           |      |
-| TASK-L22 | Update testing documentation | Record successful patterns |           |      |
+| TASK-L17 | Review Ansible output | Check for errors or warnings |           |
+| TASK-L18 | Validate system state | Compare with manual guide expectations |           |
+| TASK-L19 | Test network functionality | VLAN configuration and connectivity |           |
+| TASK-L20 | Document issues/findings | Update testing plan with results |           |
+| TASK-L21 | Clean up test container | `lxc delete radxa-test --force` |           |
+| TASK-L22 | Update testing documentation | Record successful patterns |           |
 
 ## 4. Windows/WSL2 Implementation
 
@@ -298,6 +298,7 @@ update-binfmts --display qemu-aarch64
 ### Fallback Approach: Docker with Limitations
 
 If LXC setup proves too complex:
+
 1. Use Docker for basic syntax and template testing
 2. Document limitations clearly
 3. Plan for eventual LXC/hardware testing
