@@ -24,3 +24,16 @@ Structured naming for IoT, printers, cameras, and appliances.
 | appliance-light-01   | Appliance   | light  | 01    | Active   | LIFX Smart Bulb            |
 
 ```
+
+| iot-wled-01          | IoT         | wled   | 01    | Active   | LED Strip (90 LEDs, 6 segments) |
+| iot-wled-02          | IoT         | wled   | 02    | Reserved | LED Strip (TBD)            |
+| iot-wled-03          | IoT         | wled   | 03    | Reserved | LED Strip (TBD)            |
+
+```n
+---
+
+## 🔗 Additional Documentation
+
+- **WLED Configurations:** Detailed segment mappings, presets, and integration guides → [wled-configurations.md](wled-configurations.md)
+
+``
