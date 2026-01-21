@@ -121,8 +121,9 @@ resource "null_resource" "create_output_dir" {
 resource "null_resource" "generate_ufw_rules" {
   depends_on = [null_resource.create_output_dir]
 
+  # Triggers: Regenerate rules when source files change
+  # This ensures rules stay in sync with documentation updates
   triggers = {
-    # Regenerate when script or docs change
     script_hash = filemd5(local.script_path)
     services_hash = filemd5("${local.docs_path}/services.md")
     matrix_hash = filemd5("${local.docs_path}/firewall-matrix.md")
@@ -142,8 +143,9 @@ resource "null_resource" "generate_ufw_rules" {
 resource "null_resource" "generate_json_rules" {
   depends_on = [null_resource.create_output_dir]
 
+  # Triggers: Regenerate rules when source files change
+  # This ensures rules stay in sync with documentation updates
   triggers = {
-    # Regenerate when script or docs change
     script_hash = filemd5(local.script_path)
     services_hash = filemd5("${local.docs_path}/services.md")
     matrix_hash = filemd5("${local.docs_path}/firewall-matrix.md")

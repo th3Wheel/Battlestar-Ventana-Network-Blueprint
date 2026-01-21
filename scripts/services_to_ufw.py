@@ -80,6 +80,8 @@ class FirewallMatrixParser:
     }
     
     # Service to port mappings from the documentation
+    # Note: Some services are defined here for future use but may not be
+    # currently referenced in the firewall matrix
     SERVICE_PORTS = {
         "SSH": ("22", "tcp"),
         "HTTPS": ("443", "tcp"),
@@ -92,12 +94,12 @@ class FirewallMatrixParser:
         "DLNA": ("1900", "udp"),
         "Chromecast": ("8008,8009", "tcp"),
         "RTSP": ("554", "tcp"),
-        "MQTT": ("8883", "tcp"),
-        "MQTT_PLAIN": ("1883", "tcp"),
+        "MQTT": ("8883", "tcp"),  # MQTT over TLS
+        "MQTT_PLAIN": ("1883", "tcp"),  # Plain MQTT (future use)
         "Syslog": ("514", "udp"),
         "DNS": ("53", "udp"),
         "DHCP": ("67,68", "udp"),
-        "PostgreSQL": ("5432", "tcp"),
+        "PostgreSQL": ("5432", "tcp"),  # Database access for infrastructure
         "JetDirect": ("9100", "tcp"),
         "Plex": ("32400", "tcp"),
     }

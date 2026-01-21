@@ -71,7 +71,7 @@ Generated 76 rules -> firewall-rules.sh
 ```
 
 The generated UFW script includes:
-- **253 lines** of bash script
+- **Approximately 250+ lines** of bash script
 - **76 firewall rules** covering all VLAN interactions
 - **11 VLANs** configured
 - **16 service types** (SSH, HTTPS, MQTT, SMB, etc.)
