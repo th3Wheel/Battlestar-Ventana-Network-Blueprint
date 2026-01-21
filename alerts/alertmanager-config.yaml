@@ -2,15 +2,15 @@
 global:
   # Global configuration for Alertmanager
   resolve_timeout: 5m
-  # SMTP configuration (placeholder - do not use real credentials)
+  # SMTP configuration (set via environment variables)
   smtp_smarthost: 'smtp.example.com:587'
   smtp_from: 'alertmanager@battlestar-ventana.local'
   smtp_auth_username: 'alertmanager@example.com'
-  smtp_auth_password: '<SMTP_PASSWORD_PLACEHOLDER>'
+  smtp_auth_password: '${SMTP_PASSWORD}'  # Set via environment variable
   smtp_require_tls: true
 
-  # Slack API URL (placeholder)
-  slack_api_url: '<SLACK_WEBHOOK_URL_PLACEHOLDER>'
+  # Slack API URL (set via environment variable)
+  slack_api_url: '${SLACK_WEBHOOK_URL}'  # Set via environment variable
 
   # PagerDuty integration key (placeholder)
   pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
@@ -149,7 +149,7 @@ receivers:
   # PagerDuty for all critical alerts
   - name: 'pagerduty'
     pagerduty_configs:
-      - service_key: '<PAGERDUTY_SERVICE_KEY_PLACEHOLDER>'
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'  # Set via environment variable
         description: '{{ .GroupLabels.alertname }} on VLAN {{ .GroupLabels.vlan }}'
         details:
           summary: '{{ .CommonAnnotations.summary }}'

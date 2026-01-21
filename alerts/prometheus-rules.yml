@@ -76,7 +76,7 @@ groups:
         expr: |
           rate(firewall_denied_packets_total{
             source_vlan="90",
-            dest_vlan!~"70|90"
+            dest_vlan!="70"
           }[5m]) > 5
         for: 5m
         labels:
@@ -85,7 +85,7 @@ groups:
           team: security
         annotations:
           summary: "Work VLAN attempting unauthorized lateral movement"
-          description: "Work VLAN (90) trying to access restricted VLAN {{ $labels.dest_vlan }}. Work VLAN is isolated except for media."
+          description: "Work VLAN (90) trying to access restricted VLAN {{ $labels.dest_vlan }}. Work VLAN can only access Media VLAN (70)."
           runbook_url: "https://wiki.example.com/runbooks/work-vlan-violation"
 
   - name: siem_threshold_violations
@@ -212,7 +212,7 @@ groups:
         expr: |
           count by (device_mac, vlan) (
             (device_first_seen_timestamp > (time() - 3600))
-            and (rate(device_bytes_total[10m]) > 10000000)
+            and (rate(device_bytes_total[10m]) > 10000000)  # 10 MB/sec threshold
           ) > 0
         labels:
           severity: info
@@ -229,8 +229,10 @@ groups:
             sum by (vlan, protocol) (rate(protocol_bytes_total[10m])) /
             sum by (vlan) (rate(protocol_bytes_total[10m])) -
             avg_over_time(
-              sum by (vlan, protocol) (rate(protocol_bytes_total[10m])) /
-              sum by (vlan) (rate(protocol_bytes_total[10m]))[24h:10m]
+              (
+                sum by (vlan, protocol) (rate(protocol_bytes_total[10m])) /
+                sum by (vlan) (rate(protocol_bytes_total[10m]))
+              )[24h:10m]
             )
           ) > 0.2
         for: 30m
