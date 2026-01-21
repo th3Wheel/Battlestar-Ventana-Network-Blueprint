@@ -34,8 +34,8 @@ This repository contains the **Battlestar Ventana Network Blueprint**, a compreh
 ### Naming Conventions
 Follow the established naming patterns documented in `docs/naming-conventions.md`:
 
-1. **VLANs & SSIDs:** Battlestar Galactica themed names (PascalCase)
-   - Example: `BattlestarVentana` (VLAN 10), `CylonSynthLink` (VLAN 20)
+1. **VLANs & SSIDs:** Battlestar Galactica themed names (space-separated with capital words)
+   - Example: `Battlestar Ventana` (VLAN 10), `CylonSynthLink` (VLAN 20)
 
 2. **Physical Hosts:** `<Color/Element><Descriptor>` (PascalCase)
    - Example: `CrimsonRogue`, `MintRedoubt`, `AzureDefiant`
