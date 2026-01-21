@@ -152,9 +152,9 @@ Layers:
 
 1) Physical/Link Layer → switches, cabling
 2) Network Layer → VLANs, routing, DHCP/DNS
-3) Security Layer → firewall/ACLs, Service/Ports allowlists
+3) Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
 4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5) Observability Layer → dashboards, alerting, logs
+5) Observability Layer → dashboards, alerting, logs, SIEM integration
 6) Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
@@ -162,6 +162,50 @@ Dependency rules:
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
 - No circular dependencies; Services do not depend on Untrusted/Semi-Trusted availability
+
+### 5.1 Enhanced Security Layer Components
+
+#### Rate-Limiting and Traffic Shaping
+- Implement connection rate limits at firewall level per VLAN
+- Throttle Guest (30) and GuestElevated (31) Internet bandwidth to prevent abuse
+- Apply per-service rate limits on ServerVault (50) endpoints:
+  - MQTT: 100 messages/second per device
+  - HTTPS: 60 requests/minute per IP for public endpoints
+  - DNS: 50 queries/second per client to prevent DNS amplification
+- QoS policies for Surveillance (81/82) to ensure camera streams maintain priority
+
+#### Service Mesh Architecture
+- Implement reverse proxy layer at ServerVault (50) for all HTTP/HTTPS services
+- Service discovery through internal DNS with health checks
+- Mutual TLS (mTLS) for service-to-service communication within ServerVault
+- Circuit breaker patterns for external service dependencies
+- Load balancing for redundant services (HA configurations)
+- Sidecar proxy pattern for observability and security policy enforcement
+
+#### Automation Framework
+- Infrastructure-as-Code (IaC) for network configuration:
+  - Terraform modules for firewall rules and VLAN definitions
+  - Ansible playbooks for device provisioning and service deployment
+- Configuration drift detection with automated remediation
+- Automated backup and disaster recovery procedures
+- Self-healing mechanisms for critical services
+- Automated patch management with staged rollouts
+- GitOps workflow for all infrastructure changes
+
+#### SIEM and Alerting Integration
+- Centralized security event logging at ServerVault (50):
+  - Firewall logs with rule hit tracking
+  - Authentication attempt logs (SSH, HTTPS, MQTT)
+  - Anomaly detection for unusual traffic patterns
+- Alert rules for security events:
+  - Failed authentication threshold exceeded
+  - Unusual data volume from IoT devices
+  - Cross-zone communication attempts outside policy
+  - Surveillance camera offline or tampering detection
+- Integration with external SIEM platforms:
+  - Syslog forwarding for enterprise SIEM ingestion
+  - API endpoints for security orchestration
+- Threat intelligence feed integration for known malicious IPs/domains
 
 ---
 
@@ -193,19 +237,31 @@ Validation:
 ### Authentication & Authorization
 - Network-level auth via segmentation; service-level auth on ServerVault apps
 - Admin access constrained to Trusted→Infra with strong auth (SSH/HTTPS)
+- Rate-limiting on authentication endpoints to prevent brute force attacks
+- Automated account lockout after failed attempts with SIEM alerting
 
 ### Error Handling & Resilience
 - Prefer stateless services behind reverse proxy; restart-on-failure policies
 - Redundant storage or backup for critical data on ServerVault
+- Circuit breaker patterns in service mesh to prevent cascade failures
+- Automated health checks and self-healing automation
 
 ### Logging & Monitoring
 - Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; alert styles defined in `alerts/`
+- SIEM integration for security event correlation and threat detection
+- Automated anomaly detection with configurable thresholds
+- Real-time alerting for security and operational events
 
 ### Validation
 - Input validation for firewall rules (ports, protocols); config linting
+- Automated configuration validation before deployment
+- Infrastructure-as-Code validation via CI/CD pipelines
 
 ### Configuration Management
 - Secrets externalized; environment-specific overrides; plan migration to IaC (Terraform/Ansible) as noted in future enhancements
+- GitOps workflow with version control for all configuration changes
+- Automated configuration drift detection and remediation
+- Immutable infrastructure principles for service deployments
 
 ---
 
