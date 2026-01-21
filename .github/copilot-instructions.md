@@ -7,11 +7,13 @@ This document provides guidance for GitHub Copilot when working with the Battles
 ## 1. Architecture Context
 
 ### Network Segmentation Model
+
 - **Zone-based security**: VLANs organized by trust level (Trusted, Semi-Trusted, Untrusted, Services, Infrastructure, Surveillance)
 - **Address scheme**: `10.76.X.0/24` where X = VLAN ID
 - **Naming convention**: Battlestar Galactica themed names for memorability and auditability
 
 ### Key Security Zones
+
 - **Trusted (10, 90)**: Full access to services, strict authentication
 - **Semi-Trusted (31, 60, 70)**: Function-specific access only
 - **Untrusted (20, 30)**: Internet-only or minimal telemetry
@@ -24,13 +26,16 @@ This document provides guidance for GitHub Copilot when working with the Battles
 ## 2. Security Patterns
 
 ### Least Privilege Principle
+
 When suggesting firewall rules or service access:
+
 - Always default to DENY
 - Explicitly allow only required ports/protocols
 - Document the business justification for each rule
 - Prefer unidirectional flows (source → destination only)
 
 Example:
+
 ```markdown
 | Source VLAN | Destination VLAN | Ports | Protocol | Justification |
 |-------------|------------------|-------|----------|---------------|
@@ -38,7 +43,9 @@ Example:
 ```
 
 ### Rate-Limiting Standards
+
 Apply rate limits to prevent abuse:
+
 - **Authentication endpoints**: 5 attempts/minute per IP
 - **API endpoints**: 60 requests/minute per client
 - **MQTT telemetry**: 100 messages/second per device
@@ -46,7 +53,9 @@ Apply rate limits to prevent abuse:
 - **Guest network**: Bandwidth throttled to 10 Mbps
 
 ### Service Mesh Patterns
+
 For service-to-service communication:
+
 - Route all HTTP/HTTPS through reverse proxy on ServerVault
 - Implement health checks for all services
 - Use mutual TLS (mTLS) for internal service communication
@@ -54,6 +63,7 @@ For service-to-service communication:
 - Implement retry logic with exponential backoff
 
 Example service configuration:
+
 ```yaml
 service:
   name: mqtt-broker
@@ -69,13 +79,16 @@ service:
 ```
 
 ### SIEM Integration Requirements
+
 When adding logging or monitoring:
+
 - Centralize all logs to ServerVault syslog
 - Include structured fields: timestamp, source_vlan, destination_vlan, action, rule_id
 - Define alert thresholds for security events
 - Tag events by severity: critical, high, medium, low, info
 
 Example log format:
+
 ```json
 {
   "timestamp": "2026-01-21T21:00:00Z",
@@ -96,7 +109,9 @@ Example log format:
 ## 3. Automation Patterns
 
 ### Infrastructure as Code (IaC)
+
 When suggesting infrastructure changes:
+
 - Prefer declarative configuration over imperative scripts
 - Use Terraform for network infrastructure (VLANs, firewall rules, routing)
 - Use Ansible for service deployment and configuration
@@ -104,6 +119,7 @@ When suggesting infrastructure changes:
 - Include validation and testing steps
 
 Example Terraform structure:
+
 ```hcl
 # firewall_rules.tf
 resource "firewall_rule" "iot_to_servervault" {
@@ -118,7 +134,9 @@ resource "firewall_rule" "iot_to_servervault" {
 ```
 
 ### GitOps Workflow
+
 All changes should follow GitOps principles:
+
 1. Make changes in a feature branch
 2. Update documentation in same commit
 3. Run validation/linting
@@ -128,13 +146,16 @@ All changes should follow GitOps principles:
 7. Automated rollback on failure
 
 ### Configuration Management
+
 For service configuration:
+
 - Store secrets in external secret management (not in repo)
 - Use environment-specific override files
 - Implement configuration drift detection
 - Automated remediation for drift from desired state
 
 Example secrets pattern:
+
 ```yaml
 # config.yaml (checked into repo)
 mqtt:
@@ -145,7 +166,9 @@ mqtt:
 ```
 
 ### Automation Standards
+
 When writing automation scripts:
+
 - Use idempotent operations (safe to run multiple times)
 - Include rollback procedures
 - Add comprehensive logging
@@ -153,6 +176,7 @@ When writing automation scripts:
 - Follow the repository's naming conventions
 
 Example automation script structure:
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -176,13 +200,16 @@ trap rollback ERR
 ## 4. Documentation Patterns
 
 ### Markdown Structure
+
 - Use ATX-style headers (`#`, `##`, `###`)
 - Include table of contents for documents > 100 lines
 - Use Mermaid diagrams for network flows
 - Use tables for structured data (firewall rules, DHCP scopes)
 
 ### Documentation Requirements
+
 When adding features or changes:
+
 - Update `docs/Project_Architecture_Blueprint.md` for architectural changes
 - Update `docs/firewall-matrix.md` for firewall rule changes
 - Update `docs/dhcp-scopes.md` for network changes
@@ -190,7 +217,9 @@ When adding features or changes:
 - Update relevant diagrams if network topology changes
 
 ### Naming Conventions
+
 Follow the Battlestar Galactica theme:
+
 - VLANs named after colonies, ships, or locations
 - Services named functionally (ServerVault, BasestarControl)
 - Documentation files use kebab-case: `firewall-matrix.md`
@@ -201,7 +230,9 @@ Follow the Battlestar Galactica theme:
 ## 5. Testing and Validation
 
 ### Pre-Deployment Testing
+
 Before suggesting deployment:
+
 - Validate Markdown syntax with linter
 - Render Mermaid diagrams to verify syntax
 - Test firewall rules in isolated environment
@@ -209,7 +240,9 @@ Before suggesting deployment:
 - Check for configuration conflicts
 
 ### Security Testing
+
 For security-related changes:
+
 - Run network policy tests (nmap scans from each VLAN)
 - Verify authentication rate limits
 - Test circuit breaker failover scenarios
@@ -217,7 +250,9 @@ For security-related changes:
 - Scan for exposed sensitive information
 
 ### Monitoring and Observability
+
 After deployment:
+
 - Verify dashboards show expected metrics
 - Confirm alerts fire for test scenarios
 - Check log aggregation is working
@@ -229,6 +264,7 @@ After deployment:
 ## 6. Common Scenarios and Solutions
 
 ### Adding a New VLAN
+
 1. Choose next available VLAN ID
 2. Assign subnet `10.76.X.0/24` with gateway `.1`
 3. Select Battlestar-themed name
@@ -239,6 +275,7 @@ After deployment:
 8. Add monitoring dashboard coverage
 
 ### Adding a New Service
+
 1. Deploy to ServerVault (VLAN 50) by default
 2. Configure reverse proxy endpoint
 3. Implement health checks
@@ -249,6 +286,7 @@ After deployment:
 8. Create monitoring alerts
 
 ### Hardening Existing Service
+
 1. Review current firewall rules - tighten if possible
 2. Add rate limiting if missing
 3. Implement mTLS for internal communication
@@ -262,7 +300,9 @@ After deployment:
 ## 7. Compliance and Audit
 
 ### Documentation Requirements
+
 Maintain audit trail for:
+
 - Firewall rule changes (who, what, when, why)
 - VLAN additions/modifications
 - Service deployments
@@ -270,7 +310,9 @@ Maintain audit trail for:
 - Configuration changes
 
 ### Audit Checklist
+
 Use `docs/audit-checklist.md` for periodic reviews:
+
 - Verify zone isolation is maintained
 - Confirm rate limits are enforced
 - Check SIEM logs for anomalies
@@ -283,6 +325,7 @@ Use `docs/audit-checklist.md` for periodic reviews:
 ## 8. Best Practices Summary
 
 ✅ **Do:**
+
 - Follow the least privilege principle
 - Document all changes thoroughly
 - Use Infrastructure as Code
@@ -294,6 +337,7 @@ Use `docs/audit-checklist.md` for periodic reviews:
 - Monitor and alert on anomalies
 
 ❌ **Don't:**
+
 - Open bidirectional ports without justification
 - Skip documentation updates
 - Hardcode secrets in configuration

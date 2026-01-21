@@ -34,6 +34,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Establish baseline monitoring and logging infrastructure required for subsequent phases.
 
 #### Tasks
+
 1. **Centralized Logging Infrastructure**
    - Deploy syslog server on ServerVault (VLAN 50)
    - Configure log retention policies (30 days standard, 90 days security events)
@@ -56,15 +57,18 @@ This document outlines the phased deployment schedule for implementing security 
    - Update `docs/services.md` with logging endpoints
 
 #### Dependencies
+
 - None (foundational phase)
 
 #### Success Criteria
+
 - All VLANs forwarding logs to central syslog
 - SIEM platform operational and ingesting logs
 - Dashboards displaying real-time security metrics
 - Baseline anomaly detection thresholds established
 
 #### Rollback Plan
+
 - Disable log forwarding if performance impact detected
 - Revert to previous Grafana dashboard configuration
 
@@ -75,6 +79,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Implement traffic shaping and rate-limiting controls to prevent abuse and resource exhaustion.
 
 #### Tasks
+
 1. **Firewall-Level Rate Limits**
    - Configure connection rate limits per VLAN at firewall:
      - Guest (30): 100 connections/minute per IP
@@ -105,15 +110,18 @@ This document outlines the phased deployment schedule for implementing security 
    - MQTT: 3 failures locks device for 15 minutes
 
 #### Dependencies
+
 - Phase 1 (logging must be operational to monitor rate limit effectiveness)
 
 #### Success Criteria
+
 - Rate limits active and enforced on all specified services
 - No legitimate traffic blocked (validate with test scenarios)
 - SIEM showing rate limit hit statistics
 - Performance impact < 5% on firewall/services
 
 #### Rollback Plan
+
 - Pre-configured firewall ruleset without rate limits
 - Service configurations backed up before changes
 - One-command rollback script: `./rollback_rate_limits.sh`
@@ -125,6 +133,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Implement service mesh architecture for improved security, observability, and resilience.
 
 #### Tasks
+
 1. **Reverse Proxy Layer**
    - Deploy Traefik or Nginx as reverse proxy on ServerVault
    - Configure TLS termination for all HTTP services
@@ -159,10 +168,12 @@ This document outlines the phased deployment schedule for implementing security 
      - Half-open state: 30 seconds
 
 #### Dependencies
+
 - Phase 1 (monitoring required for health checks)
 - Phase 2 (rate limits protect service mesh components)
 
 #### Success Criteria
+
 - All HTTP/HTTPS services routed through reverse proxy
 - Health checks operational for all services
 - mTLS enabled for internal service communication
@@ -170,6 +181,7 @@ This document outlines the phased deployment schedule for implementing security 
 - Service latency impact < 10ms (p99)
 
 #### Rollback Plan
+
 - Keep existing service configurations parallel during migration
 - DNS-based cutover enables instant rollback
 - Disable mTLS with single configuration flag
@@ -181,6 +193,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Implement Infrastructure-as-Code and automated configuration management.
 
 #### Tasks
+
 1. **Infrastructure as Code Setup**
    - Initialize Terraform workspace for network infrastructure
    - Create modules for:
@@ -222,10 +235,12 @@ This document outlines the phased deployment schedule for implementing security 
    - 30-day retention with monthly archives
 
 #### Dependencies
+
 - Phase 3 (service mesh provides stable foundation for automation)
 - All phases (automation touches all systems)
 
 #### Success Criteria
+
 - All infrastructure managed by Terraform
 - Service deployments automated via Ansible
 - GitOps workflow operational with successful test deployments
@@ -233,6 +248,7 @@ This document outlines the phased deployment schedule for implementing security 
 - Backup/restore tested successfully
 
 #### Rollback Plan
+
 - Manual configuration changes possible via documented procedures
 - Terraform state backups for rollback
 - Keep manual deployment scripts during transition period
@@ -244,6 +260,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Enhance security monitoring with advanced threat detection and automated response.
 
 #### Tasks
+
 1. **Enhanced Log Collection**
    - Add logging for previously unmonitored sources:
      - Switch port status changes
@@ -259,18 +276,18 @@ This document outlines the phased deployment schedule for implementing security 
      - Surveillance camera offline or tampering detected
      - Firewall rule changes outside GitOps workflow
      - SIEM platform offline
-   
+
    - **High Alerts** (5-minute delay, grouped):
      - Unusual data volume from IoT devices (>10x baseline)
      - New device appeared on trusted networks
      - Rate limit threshold exceeded repeatedly
      - Certificate expiration within 7 days
-   
+
    - **Medium Alerts** (1-hour digest):
      - Unusual time-of-day access patterns
      - Geographic anomalies (if internet-facing services)
      - Software updates available
-   
+
    - **Low Alerts** (daily digest):
      - Configuration drift detected and remediated
      - Backup completion status
@@ -290,13 +307,13 @@ This document outlines the phased deployment schedule for implementing security 
      2. Add source IP to temporary blocklist (24 hours)
      3. Log incident for review
      4. Escalate if repeated from multiple sources
-   
+
    - **Compromised Device Response**:
      1. Isolate device (block at switch/VLAN level)
      2. Alert administrator with device details
      3. Capture network traffic for forensics
      4. Create incident ticket
-   
+
    - **Service Failure Response**:
      1. Attempt automated restart
      2. Check dependencies and circuit breakers
@@ -304,11 +321,13 @@ This document outlines the phased deployment schedule for implementing security 
      4. Initiate failover if HA available
 
 #### Dependencies
+
 - Phase 1 (foundational SIEM)
 - Phase 3 (service mesh for service-level events)
 - Phase 4 (automation for response actions)
 
 #### Success Criteria
+
 - All defined alert rules operational
 - Alert false positive rate < 5%
 - Automated response playbooks tested
@@ -316,6 +335,7 @@ This document outlines the phased deployment schedule for implementing security 
 - Mean time to detect (MTTD) < 5 minutes for critical events
 
 #### Rollback Plan
+
 - Disable alert rules causing excessive false positives
 - Deactivate automated responses (manual review only)
 - Revert to Phase 1 basic alerting if needed
@@ -327,6 +347,7 @@ This document outlines the phased deployment schedule for implementing security 
 **Objective**: Comprehensive testing, documentation, and handoff.
 
 #### Tasks
+
 1. **End-to-End Security Testing**
    - Penetration testing from each VLAN
    - Verify all security controls:
@@ -371,9 +392,11 @@ This document outlines the phased deployment schedule for implementing security 
    - Declare production ready
 
 #### Dependencies
+
 - All previous phases complete and validated
 
 #### Success Criteria
+
 - All security controls tested and operational
 - Performance within acceptable thresholds
 - Documentation complete and reviewed
@@ -381,6 +404,7 @@ This document outlines the phased deployment schedule for implementing security 
 - Zero critical issues in 48-hour monitoring period
 
 #### Rollback Plan
+
 - Full system snapshot available
 - Step-by-step rollback procedures documented
 - Support available for 2 weeks post-cutover
@@ -404,9 +428,11 @@ graph TD
 ```
 
 ### Critical Path
+
 Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 ### Parallel Opportunities
+
 - Phase 2 and early Phase 3 planning can overlap
 - Phase 4 Terraform work can begin during Phase 3
 - Phase 5 alert rule design can happen during Phase 4
@@ -460,7 +486,7 @@ Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 1. **Learning Curve for New Tools**
    - **Mitigation**: Training sessions, documentation, staged rollout
-   
+
 2. **Certificate Management Complexity**
    - **Mitigation**: Automation for cert rotation, monitoring for expiration
 
@@ -474,6 +500,7 @@ Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 ### Phase-Specific Testing
 
 Each phase includes:
+
 - **Unit Testing**: Individual components in isolation
 - **Integration Testing**: Components working together
 - **Regression Testing**: Existing functionality still works
@@ -530,6 +557,7 @@ cd /opt/battlestar-ventana/automation
 ### Phase-Specific Rollback
 
 Each phase has documented rollback procedures:
+
 - Pre-change configuration backups
 - Database/state rollback scripts
 - DNS cutover for services
