@@ -54,7 +54,9 @@ views:
           - type: custom:mushroom-template-card
             primary: ResidentGate (31)
             secondary: >
-              Devices: {{ states('sensor.vlan31_clients') }} Â· Denied/min: {{ states('sensor.vlan31_denied_min') }} Â· Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
+              Devices: {{ states('sensor.vlan31_clients') }} Â·
+              Denied/min: {{ states('sensor.vlan31_denied_min') }} Â·
+              Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
             icon: mdi:gate
             icon_color: >
               {% set denied = states('sensor.vlan31_denied_min')|float(0) %}
