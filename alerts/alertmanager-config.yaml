@@ -1,0 +1,259 @@
+---
+global:
+  # Global configuration for Alertmanager
+  resolve_timeout: 5m
+  # SMTP configuration (placeholder - do not use real credentials)
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_from: 'alertmanager@battlestar-ventana.local'
+  smtp_auth_username: 'alertmanager@example.com'
+  smtp_auth_password: '<SMTP_PASSWORD_PLACEHOLDER>'
+  smtp_require_tls: true
+
+  # Slack API URL (placeholder)
+  slack_api_url: '<SLACK_WEBHOOK_URL_PLACEHOLDER>'
+
+  # PagerDuty integration key (placeholder)
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+# Templates for alert notifications
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# Route tree for alert routing
+route:
+  # Default receiver for all alerts
+  receiver: 'default'
+
+  # Group alerts by these labels to reduce noise
+  group_by: ['alertname', 'vlan', 'category']
+
+  # Wait time before sending initial notification
+  group_wait: 30s
+
+  # Wait time before sending notification about new alerts in group
+  group_interval: 5m
+
+  # Wait time before re-sending notification for unresolved alerts
+  repeat_interval: 4h
+
+  # Child routes for specific alert types
+  routes:
+    # Critical hard violations - page immediately
+    - match:
+        severity: critical
+        category: hard_violation
+      receiver: 'security-critical'
+      group_wait: 10s
+      group_interval: 2m
+      repeat_interval: 30m
+      continue: true  # Also send to default receiver
+
+    # All critical alerts go to PagerDuty
+    - match:
+        severity: critical
+      receiver: 'pagerduty'
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 1h
+
+    # Threshold violations to operations team
+    - match:
+        category: threshold_violation
+      receiver: 'operations-slack'
+      group_interval: 10m
+      repeat_interval: 6h
+
+    # Anomalies to monitoring dashboard and email digest
+    - match:
+        category: anomaly
+      receiver: 'monitoring-email'
+      group_wait: 5m
+      group_interval: 30m
+      repeat_interval: 24h
+
+    # VLAN-specific routing
+    - match_re:
+        vlan: '30|31'  # Guest networks
+      receiver: 'guest-network-alerts'
+
+    - match:
+        vlan: '20'  # IoT devices
+      receiver: 'iot-alerts'
+
+    - match_re:
+        vlan: '81|82'  # Cameras
+      receiver: 'camera-alerts'
+
+    - match:
+        vlan: '90'  # Work VLAN
+      receiver: 'work-vlan-alerts'
+
+# Inhibition rules - suppress certain alerts when others are firing
+inhibit_rules:
+  # Inhibit bandwidth threshold alerts if there's an ongoing DDoS
+  - source_match:
+      alertname: 'DNSQueryRateSpike'
+    target_match:
+      alertname: 'BandwidthThresholdExceeded'
+    equal: ['vlan']
+
+  # Inhibit anomaly alerts if there's a hard violation
+  - source_match:
+      severity: critical
+      category: hard_violation
+    target_match:
+      severity: info
+      category: anomaly
+    equal: ['vlan', 'source_ip']
+
+  # Inhibit connection rate alerts if auth failures are detected
+  - source_match:
+      alertname: 'AuthenticationFailureSurge'
+    target_match:
+      alertname: 'ConnectionRateExceeded'
+    equal: ['source_ip']
+
+# Receiver definitions
+receivers:
+  # Default receiver - logs only
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://alertmanager-logger:9099/webhook'
+        send_resolved: true
+
+  # Security team - critical violations
+  - name: 'security-critical'
+    email_configs:
+      - to: 'security-team@example.com'
+        headers:
+          Subject: '🚨 CRITICAL: Security Violation on Battlestar Ventana Network'
+        html: |
+          <h2>Critical Security Alert</h2>
+          <p><strong>Alert:</strong> {{ .GroupLabels.alertname }}</p>
+          <p><strong>VLAN:</strong> {{ .GroupLabels.vlan }}</p>
+          <p><strong>Severity:</strong> {{ .CommonLabels.severity }}</p>
+          <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
+          <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
+          <p><strong>Runbook:</strong> <a href="{{ .CommonAnnotations.runbook_url }}">{{ .CommonAnnotations.runbook_url }}</a></p>
+        send_resolved: true
+    slack_configs:
+      - channel: '#security-alerts'
+        title: '🚨 Critical Security Violation'
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *VLAN:* {{ .GroupLabels.vlan }}
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Description:* {{ .CommonAnnotations.description }}
+        send_resolved: true
+
+  # PagerDuty for all critical alerts
+  - name: 'pagerduty'
+    pagerduty_configs:
+      - service_key: '<PAGERDUTY_SERVICE_KEY_PLACEHOLDER>'
+        description: '{{ .GroupLabels.alertname }} on VLAN {{ .GroupLabels.vlan }}'
+        details:
+          summary: '{{ .CommonAnnotations.summary }}'
+          description: '{{ .CommonAnnotations.description }}'
+          severity: '{{ .CommonLabels.severity }}'
+          category: '{{ .CommonLabels.category }}'
+        send_resolved: true
+
+  # Operations team Slack channel
+  - name: 'operations-slack'
+    slack_configs:
+      - channel: '#operations'
+        title: '⚠️ Threshold Violation'
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *VLAN:* {{ .GroupLabels.vlan }}
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Status:* {{ .Status }}
+        color: '{{ if eq .Status "firing" }}warning{{ else }}good{{ end }}'
+        send_resolved: true
+
+  # Monitoring team email digest
+  - name: 'monitoring-email'
+    email_configs:
+      - to: 'monitoring-team@example.com'
+        headers:
+          Subject: 'ℹ️ Anomaly Detection Report - Battlestar Ventana'
+        html: |
+          <h3>Anomaly Detection Alert</h3>
+          <table border="1" cellpadding="5">
+            <tr><th>Alert</th><td>{{ .GroupLabels.alertname }}</td></tr>
+            <tr><th>VLAN</th><td>{{ .GroupLabels.vlan }}</td></tr>
+            <tr><th>Summary</th><td>{{ .CommonAnnotations.summary }}</td></tr>
+            <tr><th>Description</th><td>{{ .CommonAnnotations.description }}</td></tr>
+          </table>
+        send_resolved: false  # Only send firing alerts for anomalies
+
+  # Guest network specific alerts
+  - name: 'guest-network-alerts'
+    webhook_configs:
+      - url: 'http://guest-network-monitor:8080/alerts'
+        send_resolved: true
+    email_configs:
+      - to: 'network-admin@example.com'
+        headers:
+          Subject: 'Guest Network Alert - VLAN {{ .GroupLabels.vlan }}'
+        send_resolved: true
+
+  # IoT network alerts
+  - name: 'iot-alerts'
+    slack_configs:
+      - channel: '#iot-monitoring'
+        title: '🤖 IoT Device Alert'
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Device:* {{ .CommonLabels.device_mac }}
+        send_resolved: true
+
+  # Camera system alerts
+  - name: 'camera-alerts'
+    email_configs:
+      - to: 'security-operations@example.com'
+        headers:
+          Subject: '📹 Camera System Alert - VLAN {{ .GroupLabels.vlan }}'
+        send_resolved: true
+    webhook_configs:
+      - url: 'http://camera-monitor:9090/webhook'
+        send_resolved: true
+
+  # Work VLAN alerts
+  - name: 'work-vlan-alerts'
+    email_configs:
+      - to: 'it-support@example.com'
+        headers:
+          Subject: '💼 Work VLAN Alert'
+        html: |
+          <h3>Work VLAN (90) Alert</h3>
+          <p>{{ .CommonAnnotations.summary }}</p>
+          <p>{{ .CommonAnnotations.description }}</p>
+        send_resolved: true
+
+# Time intervals for muting alerts (optional)
+time_intervals:
+  - name: offhours
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '00:00'
+            end_time: '07:00'
+          - start_time: '22:00'
+            end_time: '24:00'
+      - weekdays: ['saturday', 'sunday']
+
+  - name: business-hours
+    time_intervals:
+      - weekdays: ['monday:friday']
+        times:
+          - start_time: '07:00'
+            end_time: '22:00'
+
+  - name: maintenance-window
+    time_intervals:
+      - weekdays: ['sunday']
+        times:
+          - start_time: '02:00'
+            end_time: '06:00'
