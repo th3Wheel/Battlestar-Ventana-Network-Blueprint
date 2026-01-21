@@ -2,31 +2,6 @@
     "cSpell.words": [
         "Galactica"
     ],
-    "mcp.servers": {
-        "context7": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@context7/mcp-server"
-            ],
-            "env": {
-                "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
-            }
-        }
-    },
-    "chat.mcp.serverSampling": {
-        "Battlestar-Ventana-Network-Blueprint/.vscode/mcp.json: context7": {
-            "allowedModels": [
-                "gpt-4o",
-                "gpt-4o-mini",
-                "gpt-4o-2024-08-06",
-                "gpt-4o-2024-08-06-mini",
-                
-            ]
-        }
-    }
-    }
-    ],
     "[markdown]": {
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
         "editor.formatOnSave": true
@@ -55,11 +30,16 @@
         "editor.formatOnSave": true,
         "editor.tabSize": 2
     },
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.pylintArgs": [
-        "--rcfile=.pylintrc"
-    ],
+    "pylint.severity": {
+        "convention": "Information",
+        "error": "Error",
+        "fatal": "Error",
+        "refactor": "Hint",
+        "warning": "Warning",
+        "info": "Information"
+    },
+    "pylint.args": [  "--rcfile=.pylintrc"],
+    "pylint.enabled": true,
     "markdownlint.config": {
         "extends": "markdownlint/style/relaxed"
     },

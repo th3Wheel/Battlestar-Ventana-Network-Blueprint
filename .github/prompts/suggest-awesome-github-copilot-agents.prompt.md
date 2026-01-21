@@ -1,7 +1,7 @@
 ---
 agent: "agent"
 description: "Suggest relevant GitHub Copilot Custom Agents files from the awesome-copilot repository based on current repository context and chat history, avoiding duplicates with existing custom agents in this repository."
-tools: ["edit", "search", "runCommands", "runTasks", "changes", "testFailure", "openSimpleBrowser", "fetch", "githubRepo", "todos"]
+tools: ["edit", "search", "execute/getTerminalOutput", "execute/runInTerminal", "read/terminalLastCommand", "read/terminalSelection", "execute/createAndRunTask", "execute/runTask", "read/getTaskOutput", "search/changes", "execute/testFailure", "vscode/openSimpleBrowser", "web/fetch", "web/githubRepo", "todo"]
 ---
 
 # Suggest Awesome GitHub Copilot Custom Agents
@@ -53,7 +53,6 @@ Display analysis results in structured table comparing awesome-copilot custom ag
 2. For each discovered file, read front matter to extract `description`
 3. Build comprehensive inventory of existing agents
 4. Use this inventory to avoid suggesting duplicates
-
 ## Requirements
 
 - Use `githubRepo` tool to get content from awesome-copilot repository agents folder

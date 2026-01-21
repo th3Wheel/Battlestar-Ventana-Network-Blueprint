@@ -6,7 +6,6 @@
 			"dependsOn": [
 				"Lint: Markdown",
 				"Lint: YAML",
-				"Lint: Jinja2 Templates",
 				"Lint: JavaScript/TypeScript",
 				"Lint: Python (Ruff)",
 				"Lint: Python (Pylint)"
@@ -18,7 +17,6 @@
 			"dependsOn": [
 				"Lint: Markdown Fix",
 				"Format: YAML (Prettier)",
-				"Format: Jinja2 Templates",
 				"Lint: JavaScript/TypeScript Fix",
 				"Lint: Python (Ruff) Fix",
 				"Format: Python (Black)",
@@ -280,54 +278,6 @@
 			"args": [
 				"-Command",
 				".venv/Scripts/isort.exe ."
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Jinja2 Templates",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-Command",
-				"& './.venv/Scripts/djlint.exe' -e yaml --lint ha/templates/"
-			],
-			"problemMatcher": {
-				"owner": "djlint",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)\\s+\\[(.*)\\]$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"message": 4,
-					"code": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Format: Jinja2 Templates",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-Command",
-				"& './.venv/Scripts/djlint.exe' -e yaml --reformat ha/templates/"
 			],
 			"problemMatcher": [],
 			"presentation": {

@@ -66,7 +66,6 @@ For each architectural component discovered in the codebase document:
   - Configuration and customization approaches
 
 ### 5. Architectural Layers and Dependencies
-
 - Map the layer structure as implemented in the codebase
 - Document the dependency rules between layers
 - Identify abstraction mechanisms that enable layer separation
@@ -74,7 +73,6 @@ For each architectural component discovered in the codebase document:
 - Document dependency injection patterns used to maintain separation
 
 ### 6. Data Architecture
-
 - Document domain model structure and organization
 - Map entity relationships and aggregation patterns
 - Identify data access patterns (repositories, data mappers, etc.)
@@ -166,10 +164,9 @@ Document concrete implementation patterns for key architectural components:
   - Entity implementation patterns
   - Value object patterns
   - Domain event implementation
-  - Business rule enforcement
+    - Business rule enforcement
 
 ### 11. Testing Architecture
-
 - Document testing strategies aligned with the architecture
 - Identify test boundary patterns (unit, integration, system)
 - Map test doubles and mocking approaches
@@ -177,7 +174,6 @@ Document concrete implementation patterns for key architectural components:
 - Note testing tools and frameworks integration
 
 ### 12. Deployment Architecture
-
 - Document deployment topology derived from configuration
 - Identify environment-specific architectural adaptations
 - Map runtime dependency resolution patterns
@@ -208,14 +204,12 @@ Provide detailed guidance for extending the architecture:
   - Service facade implementation
 
 ### 14. Architecture Governance
-
 - Document how architectural consistency is maintained
 - Identify automated checks for architectural compliance
 - Note architectural review processes evident in the codebase
 - Document architectural documentation practices
 
 ### 15. Blueprint for New Development
-
 Create a clear architectural guide for implementing new features:
 
 - **Development Workflow**:

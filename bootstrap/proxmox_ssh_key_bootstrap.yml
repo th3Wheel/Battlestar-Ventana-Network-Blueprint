@@ -1,6 +1,6 @@
 ---
 - name: Proxmox LXC SSH key bootstrap using 1Password
-  hosts: proxmox_lxc
+  hosts: localhost
   gather_facts: false
 
   vars:
@@ -13,11 +13,29 @@
 
     public_key_path: '/home/ansible/.ssh/id_ed25519.pub'
 
+    # Required variables (must be passed via -e/--extra-vars):
+    # - ctid: LXC container ID for the Ansible controller
+    # - target_host: IP/hostname of the target server to deploy SSH key to
+    # - target_user: Username on the target server (defaults to ansible_user if not set)
+
   tasks:
+    - name: Validate required variables are defined
+      ansible.builtin.assert:
+        that:
+          - ctid is defined
+          - target_host is defined
+          - target_user is defined or ansible_user is defined
+        fail_msg: "Required variables missing. Usage: ansible-playbook proxmox_ssh_key_bootstrap.yml -e 'ctid=100 target_host=10.10.10.10 target_user=ansible'"
+        quiet: true
+
+    - name: Set target_user default if not provided
+      ansible.builtin.set_fact:
+        target_user: "{{ target_user | default(ansible_user | default('ansible')) }}"
+
     - name: Pre-seed known_hosts on controller
       ansible.builtin.known_hosts:
-        name: '{{ inventory_hostname }}'
-        key: "{{ lookup('pipe', 'ssh-keyscan -t ed25519 ' ~ inventory_hostname) }}"
+        name: '{{ target_host }}'
+        key: "{{ lookup('pipe', 'ssh-keyscan -t ed25519 ' ~ target_host) }}"
       delegate_to: localhost
 
     - name: Copy SSH key using pct exec + sudo -u ansible
@@ -25,7 +43,7 @@
         command: >
           pct exec {{ ctid }} -- bash -c
           "sudo -u ansible ssh-copy-id -i {{ public_key_path }}
-           {{ ansible_user }}@{{ target_host }}"
+           {{ target_user }}@{{ target_host }}"
         responses:
           '(?i)password': '{{ ssh_password }}'
       delegate_to: localhost

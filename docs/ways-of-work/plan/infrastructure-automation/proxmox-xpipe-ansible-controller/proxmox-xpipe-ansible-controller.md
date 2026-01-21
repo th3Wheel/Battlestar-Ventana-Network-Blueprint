@@ -213,6 +213,9 @@ export SSH_ASKPASS=\$(mktemp)
 export DISPLAY=:0
 export TARGET_PASSWORD='$PASSWORD'
 
+# Set up cleanup trap to ensure temporary file is removed even on error
+trap 'rm -f \$SSH_ASKPASS' EXIT INT TERM
+
 # Create temporary askpass script that returns the password from environment
 cat > \$SSH_ASKPASS << 'EOF'
 #!/bin/bash
@@ -232,8 +235,7 @@ sudo -u ansible \
   ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
   {{target_user}}@{{target_host}}
 
-# Clean up
-rm -f \$SSH_ASKPASS
+# Clean up (trap will also handle this)
 unset TARGET_PASSWORD
 "
 ```
@@ -268,7 +270,7 @@ maintaining host key verification.
 pct exec {{ctid}} -- sudo -u ansible ssh-keyscan -H {{target_host}} >> /home/ansible/.ssh/known_hosts
 ```
 
-2. Then use Ansible's `authorized_key` module with vault-encrypted passwords in
+1. Then use Ansible's `authorized_key` module with vault-encrypted passwords in
    a playbook rather than XPipe commands for production deployments.
 
 #### Option D: Out-of-band key deployment
