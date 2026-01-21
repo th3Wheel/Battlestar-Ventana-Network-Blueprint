@@ -348,7 +348,7 @@ Linkerd provides pre-built Grafana dashboards:
 # Import Linkerd dashboards to existing Grafana
 linkerd viz dashboard &
 
-# Export dashboard JSON for integration
+# Export dashboard JSON for integration (run from repository root)
 curl -s http://localhost:50750/api/dashboards/linkerd-namespace.json > \
   dashboards/linkerd-namespace.json
 ```
@@ -406,13 +406,16 @@ groups:
 Linkerd supports distributed tracing with Jaeger (already referenced in repo):
 
 ```bash
-# Verify Jaeger is deployed and accessible
-kubectl get svc -n jaeger jaeger-collector
+# Verify Jaeger is deployed and accessible (prerequisite)
+kubectl get svc -n jaeger jaeger-collector || echo "Warning: Jaeger not found, install before proceeding"
 
 # Enable tracing with OpenTelemetry (generate config)
 linkerd install --set tracing.collector=jaeger-collector.jaeger:14268 > linkerd-tracing.yaml
 
-# Review and apply the configuration
+# Review the configuration before applying
+cat linkerd-tracing.yaml
+
+# Apply the configuration only if prerequisites are met
 kubectl apply -f linkerd-tracing.yaml
 
 # Configure trace sampling rate (10% for homelab)
