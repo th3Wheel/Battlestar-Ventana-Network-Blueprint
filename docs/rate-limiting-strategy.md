@@ -260,8 +260,9 @@ iptables -A INPUT -p tcp --dport 53 -m hashlimit \
 #### Example: SYN flood protection
 
 ```bash
-# Enable SYN cookies
-echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+# Enable SYN cookies (persistent method)
+sysctl -w net.ipv4.tcp_syncookies=1
+# Or temporarily: echo 1 > /proc/sys/net/ipv4/tcp_syncookies
 
 # Rate limit SYN packets
 iptables -A INPUT -p tcp --syn -m limit --limit 20/sec --limit-burst 40 -j ACCEPT
@@ -686,8 +687,9 @@ Log rate-limiting events to syslog/SIEM for forensic analysis.
 # iptables rate limit drops
 :msg, contains, "RATE-LIMIT-DROP" /var/log/rate-limit.log
 
-# Forward to SIEM (ServerVault)
-*.* @@10.76.50.10:514
+# Forward security logs to SIEM (ServerVault) - use TLS for production
+:msg, contains, "RATE-LIMIT-DROP" @@10.76.50.10:514
+:msg, contains, "UFW LIMIT" @@10.76.50.10:514
 ```
 
 #### Example: iptables logging
@@ -838,7 +840,7 @@ Rate limits should be tuned based on observed traffic patterns:
 
 ## 🛠️ Future Enhancements
 
-- Integrate with IDS/IPS (Suricata, Snort) for DPI-based rate limiting
+- Integrate with IDS/IPS (Suricata, Snort) for DPI (Deep Packet Inspection) based rate limiting
 - Machine learning-based anomaly detection for adaptive rate limits
 - Automated rate limit tuning based on historical patterns
 - Per-user/per-device rate limiting with RADIUS integration
