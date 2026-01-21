@@ -350,7 +350,7 @@ linkerd viz dashboard &
 
 # Export dashboard JSON for integration
 curl -s http://localhost:50750/api/dashboards/linkerd-namespace.json > \
-  /home/runner/work/Battlestar-Ventana-Network-Blueprint/Battlestar-Ventana-Network-Blueprint/dashboards/linkerd-namespace.json
+  dashboards/linkerd-namespace.json
 ```
 
 ### Key Dashboard Panels
@@ -406,8 +406,14 @@ groups:
 Linkerd supports distributed tracing with Jaeger (already referenced in repo):
 
 ```bash
-# Enable tracing with OpenTelemetry
-linkerd install --set tracing.collector=jaeger-collector.jaeger:14268 | kubectl apply -f -
+# Verify Jaeger is deployed and accessible
+kubectl get svc -n jaeger jaeger-collector
+
+# Enable tracing with OpenTelemetry (generate config)
+linkerd install --set tracing.collector=jaeger-collector.jaeger:14268 > linkerd-tracing.yaml
+
+# Review and apply the configuration
+kubectl apply -f linkerd-tracing.yaml
 
 # Configure trace sampling rate (10% for homelab)
 kubectl annotate namespace servervault config.linkerd.io/trace-collector=jaeger-collector.jaeger:14268
