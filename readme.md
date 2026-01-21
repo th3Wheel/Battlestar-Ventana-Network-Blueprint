@@ -21,8 +21,11 @@
 
 ---
 
-## 🔐 Firewall matrix
-See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
+## 🔐 Firewall matrix & automation
+- **Firewall Matrix:** [`docs/firewall-matrix.md`](docs/firewall-matrix.md) — VLAN access rules and policies
+- **Automated Rule Generation:** [`infrastructure/terraform/`](infrastructure/terraform/) — Terraform-based firewall automation
+- **Conversion Script:** [`scripts/services_to_ufw.py`](scripts/services_to_ufw.py) — Parse docs to UFW rules (76+ rules)
+- **Rollback Procedures:** [`docs/firewall-rollback.md`](docs/firewall-rollback.md) — Safe deployment and recovery
 
 ## 📊 Monitoring & dashboards
 - Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)  
@@ -34,7 +37,8 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules  
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times  
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist  
-- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)  
+- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
+- [`docs/firewall-rollback.md`](docs/firewall-rollback.md) — Firewall rollback and verification procedures
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes  
 
 ---
@@ -53,6 +57,14 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 Battlestar-Ventana-Network-Blueprint/
 ├── README.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
 │
+├── infrastructure/           # Infrastructure as Code
+│   ├── terraform/            # Terraform configurations
+│   │   └── firewall-automation.tf  # Automated firewall rule generation
+│   └── README.md             # Infrastructure documentation
+│
+├── scripts/                  # Automation scripts
+│   └── services_to_ufw.py    # Convert docs to UFW rules (76+ rules)
+│
 ├── dashboards/               # Grafana dashboards
 │   ├── dashboard.json
 │   └── README.md
@@ -65,8 +77,12 @@ Battlestar-Ventana-Network-Blueprint/
 │   ├── lovelace.yaml
 │   └── README.md
 │
+├── .github/workflows/        # CI/CD workflows
+│   └── firewall-validate.yml # Firewall rule validation
+│
 └── docs/                     # Supporting documentation
     ├── firewall-matrix.md    # VLAN + Zone firewall rules, Internet Access Policy, audit tie-in
+    ├── firewall-rollback.md  # Firewall rollback and verification procedures
     ├── dhcp-scopes.md        # Subnet ranges, gateways, lease times
     ├── naming-conventions.md # Canonical SSID/VLAN naming rules
     ├── audit-checklist.md    # Operational health checklist
@@ -81,4 +97,31 @@ CHANGELOG.md                  # Versioned history of changes
 
 ---
 
-🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*
+## 🤖 Firewall Automation
+
+The repository includes automated firewall rule generation from documentation:
+
+### Quick Start
+```bash
+# Generate UFW rules from documentation
+python3 scripts/services_to_ufw.py --format ufw --output firewall-rules.sh
+
+# Or use Terraform for infrastructure automation
+cd infrastructure/terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+### Features
+- ✅ **Deterministic output** — Same docs = Same rules every time
+- ✅ **76+ firewall rules** generated from 11 VLANs
+- ✅ **CI/CD validation** — Automated testing on every change
+- ✅ **Rollback procedures** — Safe deployment and recovery
+- ✅ **Multiple formats** — UFW bash scripts or JSON output
+
+See [`infrastructure/README.md`](infrastructure/README.md) for detailed usage.
+
+---
+
+🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and provides automated firewall rule generation in one cohesive repo.*
