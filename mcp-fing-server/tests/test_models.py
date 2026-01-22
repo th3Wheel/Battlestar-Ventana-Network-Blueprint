@@ -145,6 +145,5 @@ def test_model_validation_error():
     """Test that invalid data raises ValidationError."""
     with pytest.raises(ValidationError):
         DeviceModel(
-            # Missing required field 'id'
-            mac="AA:BB:CC:DD:EE:FF",
+            # Missing required fields 'id' and 'mac'
         )
