@@ -30,6 +30,9 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
+## 🔌 Network Tools
+- **MCP Fing Server:** [`mcp-fing-server/`](mcp-fing-server/) — MCP server for Fing Local API (device discovery, presence detection, network scanning)
+
 ## 📚 Supporting documentation
 - [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules  
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times  
@@ -52,6 +55,12 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 ``` tree
 Battlestar-Ventana-Network-Blueprint/
 ├── README.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
+│
+├── mcp-fing-server/          # MCP server for Fing Local API
+│   ├── src/                  # Python source code
+│   ├── tests/                # Test suite
+│   ├── Dockerfile            # Container image
+│   └── README.md             # Server documentation
 │
 ├── dashboards/               # Grafana dashboards
 │   ├── dashboard.json

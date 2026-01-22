@@ -5,7 +5,7 @@ All models use Pydantic for validation and JSON serialization.
 
 from datetime import datetime
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class DeviceModel(BaseModel):
@@ -22,8 +22,8 @@ class DeviceModel(BaseModel):
     os: Optional[str] = Field(default=None, description="Operating system")
     network_id: Optional[str] = Field(default=None, description="Network identifier")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "dev_12345",
                 "name": "Living Room TV",
@@ -37,6 +37,7 @@ class DeviceModel(BaseModel):
                 "network_id": "net_001"
             }
         }
+    )
 
 
 class DeviceDetailModel(DeviceModel):
@@ -63,8 +64,8 @@ class PersonModel(BaseModel):
     presence: PresenceModel = Field(description="Current presence information")
     associated_devices: List[str] = Field(default_factory=list, description="List of associated device IDs")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "person_001",
                 "name": "John Doe",
@@ -76,6 +77,7 @@ class PersonModel(BaseModel):
                 "associated_devices": ["dev_12345", "dev_67890"]
             }
         }
+    )
 
 
 class PersonDetailModel(PersonModel):
@@ -94,8 +96,8 @@ class EventModel(BaseModel):
     person_id: Optional[str] = Field(default=None, description="Related person ID")
     description: str = Field(description="Event description")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "evt_001",
                 "type": "device_discovered",
@@ -105,6 +107,7 @@ class EventModel(BaseModel):
                 "description": "New device discovered on network"
             }
         }
+    )
 
 
 class ScanResultModel(BaseModel):
@@ -114,14 +117,15 @@ class ScanResultModel(BaseModel):
     status: str = Field(description="Scan status (running, completed, failed)")
     discovered_devices: List[str] = Field(default_factory=list, description="List of discovered device IDs")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "scan_id": "scan_001",
                 "status": "completed",
                 "discovered_devices": ["dev_12345", "dev_67890"]
             }
         }
+    )
 
 
 class SystemInfoModel(BaseModel):
@@ -132,8 +136,8 @@ class SystemInfoModel(BaseModel):
     platform: Optional[str] = Field(default=None, description="Platform/OS")
     capabilities: List[str] = Field(default_factory=list, description="Available capabilities")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "fing_version": "5.0.0",
                 "uptime": 86400,
@@ -141,6 +145,7 @@ class SystemInfoModel(BaseModel):
                 "capabilities": ["device_discovery", "presence_detection", "network_scan"]
             }
         }
+    )
 
 
 class DevicesResponse(BaseModel):

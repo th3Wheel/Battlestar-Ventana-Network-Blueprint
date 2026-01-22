@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+* **MCP Fing Server** (`mcp-fing-server/`) - Model Context Protocol server for Fing Local API integration
+  * Device discovery and monitoring tools
+  * Presence detection capabilities
+  * Network scanning functionality
+  * Event retrieval and system information queries
+  * Full test suite with 41 passing tests
+  * Docker deployment support
+  * Comprehensive documentation and examples
 * **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
 * **`plan/` directory** with feature and infrastructure planning documents.
 * **`docs/raw/network.md`** - Raw network documentation.
