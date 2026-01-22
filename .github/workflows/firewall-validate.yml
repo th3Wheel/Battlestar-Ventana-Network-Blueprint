@@ -1,0 +1,145 @@
+name: Firewall Rules Validation
+
+on:
+  push:
+    paths:
+      - 'docs/services.md'
+      - 'docs/firewall-matrix.md'
+      - 'scripts/services_to_ufw.py'
+      - 'infrastructure/terraform/**'
+  pull_request:
+    paths:
+      - 'docs/services.md'
+      - 'docs/firewall-matrix.md'
+      - 'scripts/services_to_ufw.py'
+      - 'infrastructure/terraform/**'
+  workflow_dispatch:
+
+jobs:
+  validate-firewall-rules:
+    name: Validate Firewall Rule Generation
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Install any additional dependencies if needed
+      
+      - name: Validate Python script syntax
+        run: |
+          python -m py_compile scripts/services_to_ufw.py
+          echo "✅ Python script syntax is valid"
+      
+      - name: Test UFW rule generation
+        run: |
+          python scripts/services_to_ufw.py --format ufw --output /tmp/firewall-rules.sh
+          echo "✅ UFW rules generated successfully"
+          echo ""
+          echo "Generated $(wc -l < /tmp/firewall-rules.sh) lines of UFW rules"
+      
+      - name: Test JSON rule generation
+        run: |
+          python scripts/services_to_ufw.py --format json --output /tmp/firewall-rules.json
+          echo "✅ JSON rules generated successfully"
+          echo ""
+          cat /tmp/firewall-rules.json | python -m json.tool > /dev/null
+          echo "✅ JSON output is valid"
+          echo ""
+          RULE_COUNT=$(python -c "import json; data=json.load(open('/tmp/firewall-rules.json')); print(len(data['rules']))")
+          echo "Generated $RULE_COUNT firewall rules"
+      
+      - name: Check rule determinism
+        run: |
+          # Generate rules twice and compare
+          python scripts/services_to_ufw.py --format json --output /tmp/rules1.json
+          python scripts/services_to_ufw.py --format json --output /tmp/rules2.json
+          
+          if diff /tmp/rules1.json /tmp/rules2.json; then
+            echo "✅ Rule generation is deterministic"
+          else
+            echo "❌ Rule generation is not deterministic"
+            exit 1
+          fi
+      
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.6.0'
+      
+      - name: Terraform Init
+        run: |
+          cd infrastructure/terraform
+          terraform init
+      
+      - name: Terraform Validate
+        run: |
+          cd infrastructure/terraform
+          terraform validate
+          echo "✅ Terraform configuration is valid"
+      
+      - name: Terraform Plan
+        run: |
+          cd infrastructure/terraform
+          terraform plan -out=tfplan
+          echo "✅ Terraform plan generated successfully"
+      
+      - name: Show Terraform Plan
+        run: |
+          cd infrastructure/terraform
+          terraform show tfplan
+      
+      - name: Generate diff preview
+        run: |
+          echo "## Firewall Rules Diff Preview" > /tmp/diff-preview.md
+          echo "" >> /tmp/diff-preview.md
+          echo "### Generated Files:" >> /tmp/diff-preview.md
+          echo "- UFW Script: \`infrastructure/terraform/generated/firewall-rules.sh\`" >> /tmp/diff-preview.md
+          echo "- JSON Rules: \`infrastructure/terraform/generated/firewall-rules.json\`" >> /tmp/diff-preview.md
+          echo "" >> /tmp/diff-preview.md
+          
+          if [ -f "infrastructure/terraform/generated/firewall-rules.json" ]; then
+            RULE_COUNT=$(python -c "import json; data=json.load(open('infrastructure/terraform/generated/firewall-rules.json')); print(len(data['rules']))")
+            echo "### Rule Summary:" >> /tmp/diff-preview.md
+            echo "- Total Rules: $RULE_COUNT" >> /tmp/diff-preview.md
+            echo "" >> /tmp/diff-preview.md
+          fi
+          
+          echo "### Sample UFW Rules (first 20 lines):" >> /tmp/diff-preview.md
+          echo "\`\`\`bash" >> /tmp/diff-preview.md
+          head -20 /tmp/firewall-rules.sh >> /tmp/diff-preview.md
+          echo "\`\`\`" >> /tmp/diff-preview.md
+          
+          cat /tmp/diff-preview.md
+      
+      - name: Upload generated rules
+        uses: actions/upload-artifact@v4
+        with:
+          name: firewall-rules
+          path: |
+            /tmp/firewall-rules.sh
+            /tmp/firewall-rules.json
+      
+      - name: Validation Summary
+        run: |
+          echo "## ✅ Firewall Rules Validation Summary"
+          echo ""
+          echo "All validation steps passed successfully:"
+          echo "✅ Python script syntax is valid"
+          echo "✅ UFW rules generation works"
+          echo "✅ JSON rules generation works"
+          echo "✅ JSON output is valid"
+          echo "✅ Rule generation is deterministic"
+          echo "✅ Terraform configuration is valid"
+          echo "✅ Terraform plan generated successfully"
