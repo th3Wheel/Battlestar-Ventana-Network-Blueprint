@@ -28,12 +28,16 @@ Structured naming for IoT, printers, cameras, and appliances.
 | iot-wled-01          | IoT         | wled   | 01    | Active   | LED Strip (90 LEDs, 6 segments) |
 | iot-wled-02          | IoT         | wled   | 02    | Reserved | LED Strip (TBD)            |
 | iot-wled-03          | IoT         | wled   | 03    | Reserved | LED Strip (TBD)            |
+| iot-hyperion-cam-01  | IoT         | hyperion-cam | 01 | Active | ESP32-CAM for Hyperion HD (Living Room TV) |
+| iot-hyperion-cam-02  | IoT         | hyperion-cam | 02 | Reserved | ESP32-CAM for Hyperion HD (Bedroom TV) |
+| iot-hyperion-cam-03  | IoT         | hyperion-cam | 03 | Reserved | ESP32-CAM for Hyperion HD (Game Room) |
 
-```n
+```
 ---
 
 ## 🔗 Additional Documentation
 
 - **WLED Configurations:** Detailed segment mappings, presets, and integration guides → [wled-configurations.md](wled-configurations.md)
+- **Hyperion HD Camera Sensors:** ESP32 camera setup for ambient lighting control → [hyperion-camera-sensor.md](hyperion-camera-sensor.md)
 
-``
+```

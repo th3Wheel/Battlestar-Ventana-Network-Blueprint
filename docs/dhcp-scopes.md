@@ -23,7 +23,29 @@ All subnets follow the `10.76.X.0/24` convention (X = VLAN ID).
 
 ---
 
+## 📌 Static IP Reservations
+
+### VLAN 20: IoT (CylonSynthLink)
+
+| Hostname | IP Address | MAC Address | Device Type | Notes |
+|----------|------------|-------------|-------------|-------|
+| iot-wled-01 | 10.76.20.101 | TBD | WLED ESP32 | LED Strip Controller (90 LEDs) |
+| iot-hyperion-cam-01 | 10.76.20.102 | TBD | ESP32-CAM | Hyperion HD Camera (Living Room TV) |
+| iot-hyperion-cam-02 | 10.76.20.103 | TBD | ESP32-CAM | Hyperion HD Camera (Bedroom TV) - Reserved |
+| iot-hyperion-cam-03 | 10.76.20.104 | TBD | ESP32-CAM | Hyperion HD Camera (Game Room) - Reserved |
+
+### VLAN 50: ServerVault
+
+| Hostname | IP Address | MAC Address | Service | Notes |
+|----------|------------|-------------|---------|-------|
+| servervault-hyperion | 10.76.50.20 | TBD | Hyperion HD Server | Ambient lighting processing server |
+| servervault-mqtt | 10.76.50.10 | TBD | MQTT Broker | IoT telemetry and control |
+
+---
+
 ## 🔗 References
 
 - [Firewall Matrix](firewall-matrix.md)
 - [Audit Checklist](audit-checklist.md)
+- [Host Tracker](host-tracker.md)
+- [Other Devices](other-devices.md)
