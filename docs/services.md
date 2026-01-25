@@ -205,10 +205,10 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
 - **Service:** Hyperion HD ambient lighting frame streaming
-- **Ports:** Hyperion Flatbuffers (UDP 19444), Hyperion JSON API (TCP 19445), Hyperion Web UI (TCP 8090)
+- **Ports:** Hyperion Flatbuffers (UDP 19444)
 - **Direction:** IoT → ServerVault
-- **Protocol:** UDP (frame streaming), TCP (API and web UI)
-- **Notes:** ESP32 camera sensors stream captured TV frames to Hyperion HD server for ambient lighting processing. UDP 19444 is primary frame stream, TCP 19445 for configuration and control, TCP 8090 for web-based management.
+- **Protocol:** UDP (frame streaming only)
+- **Notes:** ESP32 camera sensors stream captured TV frames to Hyperion HD server for ambient lighting processing over UDP 19444 only. Hyperion JSON API (TCP 19445) and Web UI (TCP 8090) remain restricted to trusted management VLANs per firewall matrix and are not exposed to IoT devices.
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
 #### Outbound to Internet (🌐)
@@ -325,10 +325,10 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
 - **Service:** Hyperion HD ambient lighting frame reception
-- **Ports:** Hyperion Flatbuffers (UDP 19444), Hyperion JSON API (TCP 19445), Hyperion Web UI (TCP 8090)
+- **Ports:** Hyperion Flatbuffers (UDP 19444)
 - **Direction:** ← IoT (20)
-- **Protocol:** UDP (frame streaming), TCP (API and web UI)
-- **Notes:** Hyperion HD server receives frame streams from ESP32 camera sensors on IoT VLAN for ambient lighting processing
+- **Protocol:** UDP
+- **Notes:** Hyperion HD server receives frame streams from ESP32 camera sensors on IoT VLAN for ambient lighting processing; management interfaces (Hyperion JSON API TCP 19445, Web UI TCP 8090) are restricted to trusted admin VLANs per firewall matrix
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
 #### Inbound from Surveillance Zone (81, 82)

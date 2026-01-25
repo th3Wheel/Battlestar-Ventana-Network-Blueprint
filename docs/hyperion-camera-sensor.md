@@ -65,9 +65,9 @@ flowchart TB
 
 | Hostname | IP Address | Camera Model | Resolution | FPS | Location | Notes |
 |----------|------------|--------------|------------|-----|----------|-------|
-| iot-hyperion-cam-01 | 10.76.20.102 | ESP32-CAM OV2640 | 640x480 | 10 | Living Room TV | Main TV sensor |
-| iot-hyperion-cam-02 | TBD | ESP32-CAM OV5640 | 1280x720 | 15 | Bedroom TV | Reserved |
-| iot-hyperion-cam-03 | TBD | ESP32-CAM OV2640 | 640x480 | 10 | Game Room | Reserved |
+| iot-hcam-01 | 10.76.20.102 | ESP32-CAM OV2640 | 640x480 | 10 | Living Room TV | Main TV sensor |
+| iot-hcam-02 | TBD | ESP32-CAM OV5640 | 1280x720 | 15 | Bedroom TV | Reserved |
+| iot-hcam-03 | TBD | ESP32-CAM OV2640 | 640x480 | 10 | Game Room | Reserved |
 
 ---
 
@@ -169,7 +169,10 @@ camera:
 
 # Custom component for Hyperion streaming
 external_components:
-  - source: github://hyperion-project/esphome-hyperion
+  - source:
+      type: git
+      url: https://github.com/hyperion-project/esphome-hyperion
+      ref: v1.0.0  # Pin to specific release version
     components: [hyperion_grabber]
 
 hyperion_grabber:
@@ -194,7 +197,7 @@ version: '3.8'
 
 services:
   hyperion:
-    image: hyperionproject/hyperion.ng:latest
+    image: hyperionproject/hyperion.ng:2.0.16
     container_name: hyperion-hd
     restart: unless-stopped
     network_mode: host
@@ -203,10 +206,6 @@ services:
       - /dev:/dev
     environment:
       - TZ=America/Los_Angeles
-    ports:
-      - "8090:8090"   # Web UI
-      - "19444:19444/udp"  # Flatbuffers
-      - "19445:19445"      # JSON API
     devices:
       - /dev/video0:/dev/video0  # Optional: USB capture card
 ```
@@ -345,14 +344,15 @@ graph TB
    - No peer-to-peer IoT device communication
 
 2. **Firewall Rules:**
-   - **Allow:** IoT (20) → ServerVault (50) on UDP 19444, TCP 8090
+   - **Allow:** IoT (20) → ServerVault (50) on UDP 19444 only (Hyperion LED streaming)
+   - **Allow (management):** Trusted (10), Work (90) → ServerVault (50) on TCP 8090, TCP 19445 (Hyperion web UI/JSON API)
    - **Deny:** IoT (20) → Trusted (10), Work (90), Cameras (81/82)
    - **Limit:** Internet access to NTP (123) and firmware updates only
 
 3. **Authentication:**
    - Enable Hyperion web UI authentication (Configuration → Network)
    - Use strong password (minimum 12 characters, alphanumeric + symbols)
-   - Consider disabling web UI external access after initial setup
+   - Ensure Hyperion web UI is only reachable from Trusted (10) / Work (90) admin VLANs; consider disabling web UI external access after initial setup
 
 ### Privacy Considerations
 
