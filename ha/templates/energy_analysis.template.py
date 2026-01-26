@@ -32,13 +32,6 @@ from urllib.parse import quote_plus
 DEFAULT_DAYS = 30
 OUTPUT_FORMAT = "json"
 
-# Database configuration from environment variables
-DB_HOST = os.getenv("HA_DB_HOST", "localhost")
-DB_PORT = os.getenv("HA_DB_PORT", "5432")
-DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
-DB_USER = os.getenv("HA_DB_USER", "").strip() or None
-DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip() or None
-
 
 class EnergyAnalyzer:
     """
@@ -287,6 +280,13 @@ Environment Variables:
 
     args = parser.parse_args()
 
+    # Retrieve database configuration from environment variables only when needed
+    db_host = os.getenv("HA_DB_HOST", "localhost")
+    db_port_str = os.getenv("HA_DB_PORT", "5432")
+    db_name = os.getenv("HA_DB_NAME", "homeassistant")
+    db_user = os.getenv("HA_DB_USER", "").strip() or None
+    db_password = os.getenv("HA_DB_PASSWORD", "").strip() or None
+
     # Validate required environment variables without storing them in data structures
     missing = []
     if not DB_HOST:
@@ -310,18 +310,18 @@ Environment Variables:
 
     # Validate and convert DB_PORT to integer
     try:
-        db_port = int(DB_PORT)
+        db_port = int(db_port_str)
     except (ValueError, TypeError):
         print("Error: HA_DB_PORT must be a valid integer", file=sys.stderr)
         sys.exit(1)
 
     # Initialize analyzer with separate connection parameters
     analyzer = EnergyAnalyzer(
-        db_host=DB_HOST,
+        db_host=db_host,
         db_port=db_port,
-        db_name=DB_NAME,
-        db_user=DB_USER,
-        db_password=DB_PASSWORD,
+        db_name=db_name,
+        db_user=db_user,
+        db_password=db_password,
         days=args.days,
     )
 
