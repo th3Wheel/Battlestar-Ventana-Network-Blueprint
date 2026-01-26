@@ -1,606 +1,275 @@
 # GitHub Copilot Instructions — Battlestar Ventana Network Blueprint
 
-## 🎯 Project Overview
+## 🎯 Repository Overview
 
-This repository contains the **Battlestar Ventana Network Blueprint**, a comprehensive network infrastructure documentation project for a home/lab network using a Battlestar Galactica themed VLAN naming scheme.
-
-**Core Purpose:** Document network architecture, VLAN segmentation, firewall rules, monitoring dashboards, and operational procedures for a secure, segmented home network.
-
+**Type:** Documentation-only repository (NO build/compile/test steps)  
+**Size:** ~9MB, 1,762 lines across 11 core docs  
+**Purpose:** Network infrastructure documentation for home/lab network with Battlestar Galactica themed VLAN naming  
 **IP Scheme:** `10.76.X.0/24` where X = VLAN ID  
-**Theme:** Colonies and ships from Battlestar Galactica mapped to VLANs for instant auditability
+
+**Tech Stack:** Markdown, YAML, JSON, Mermaid diagrams, Git with semantic versioning
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Build, Validation & Testing
 
-- **Documentation:** Markdown (`.md` files)
-- **Configuration Files:** YAML (`.yaml`, `.yml` for alerts, dashboards, Home Assistant)
-- **Dashboards:** JSON (Grafana dashboards)
-- **Diagrams:** Mermaid (embedded in Markdown)
-- **Version Control:** Git with semantic versioning
-- **Changelog Format:** [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+### CRITICAL: No Build Process
+This is documentation-only. **NO** npm install, pip install, make, compile, or test suite exists.
 
----
+### Validation Commands (Run Before Committing)
 
-## 🏗️ Architecture Context
-
-### Network Segmentation Model
-
-- **Zone-based security**: VLANs organized by trust level (Trusted, Semi-Trusted, Untrusted, Services, Infrastructure, Surveillance)
-- **Address scheme**: `10.76.X.0/24` where X = VLAN ID
-- **Naming convention**: Battlestar Galactica themed names for memorability and auditability
-
-### Key Security Zones
-
-- **Trusted (10, 90)**: Full access to services, strict authentication
-- **Semi-Trusted (31, 60, 70)**: Function-specific access only
-- **Untrusted (20, 30)**: Internet-only or minimal telemetry
-- **Services (50)**: ServerVault - central service hub
-- **Infrastructure (40)**: BasestarControl - management plane
-- **Surveillance (81, 82)**: Camera networks with view-only access
-
----
-
-## 📋 Coding Standards & Style
-
-### Documentation Style
-
-- Use emoji prefixes for headers (🔐 for security, 📡 for network, 🛠️ for tools, etc.)
-- Maintain consistent heading hierarchy (H1 for title, H2 for major sections, H3 for subsections)
-- Use tables for structured data (firewall rules, VLAN mappings, services)
-- Include Mermaid diagrams for visual representations of network topology and flows
-- Always include a horizontal rule (`---`) between major sections
-
-### Naming Conventions
-
-Follow the established naming patterns documented in `docs/naming-conventions.md`:
-
-1. **VLANs & SSIDs:** Battlestar Galactica themed names (space-separated with capital words)
-   - Example: `Battlestar Ventana` (VLAN 10), `CylonSynthLink` (VLAN 20)
-
-2. **Physical Hosts:** `<Color/Element><Descriptor>` (PascalCase)
-   - Example: `CrimsonRogue`, `MintRedoubt`, `AzureDefiant`
-   - Names are unique per chassis and never reused
-
-3. **Personal Computers:** Jaeger names from Pacific Rim (PascalCase)
-   - Example: `GipsyDanger`, `StrykerEureka`, `ChernoAlpha`
-   - From canonical pool, may be recycled for direct replacements
-
-4. **Other Devices:** `<zone>-<role>-<index>` (lowercase, hyphen-separated)
-   - Roles: `ctrl`, `sens`, `cast`, `stor`, `view`, `print`, `relay`, `edge`
-   - Example: `iot-sens-01`, `media-cast-02`, `printer-print-01`
-
-### File Organization
-
-```
-├── README.md                 # Master blueprint doc
-├── CHANGELOG.md              # Versioned history
-├── docs/                     # Supporting documentation
-│   ├── firewall-matrix.md    # VLAN firewall rules
-│   ├── dhcp-scopes.md        # Subnet configuration
-│   ├── naming-conventions.md # Canonical naming rules
-│   ├── audit-checklist.md    # Operational health
-│   └── services.md           # Service/ports matrix
-├── dashboards/               # Grafana dashboards (JSON)
-├── alerts/                   # Prometheus alerts (YAML)
-├── ha/                       # Home Assistant config (YAML)
-├── baseline/                 # Architectural design docs
-└── plan/                     # Planning documents
-```
-
-### YAML Style
-
-- Use 2-space indentation
-- Use lowercase with hyphens for keys where applicable
-- Include comments for complex configurations
-- Follow existing patterns in `alerts/` and `ha/` directories
-
-### Changelog Management
-
-- Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
-- Use semantic versioning
-- Categories: Added, Changed, Deprecated, Removed, Fixed, Security
-- Always update `[Unreleased]` section first
-- Include clear, descriptive entries with specific file references
-
----
-
-## 🔐 Security Patterns
-
-### Least Privilege Principle
-
-When suggesting firewall rules or service access:
-
-- Always default to DENY
-- Explicitly allow only required ports/protocols
-- Document the business justification for each rule
-- Prefer unidirectional flows (source → destination only)
-
-Example:
-
-```markdown
-| Source VLAN | Destination VLAN | Ports | Protocol | Justification |
-|-------------|------------------|-------|----------|---------------|
-| 20 IoT | 50 ServerVault | 8883 | TCP | MQTT telemetry only |
-```
-
-### Rate-Limiting Standards
-
-Apply rate limits to prevent abuse:
-
-- **Authentication endpoints**: 5 attempts/minute per IP
-- **API endpoints**: 60 requests/minute per client
-- **MQTT telemetry**: 100 messages/second per device
-- **DNS queries**: 50 queries/second per client
-- **Guest network**: Bandwidth throttled to 10 Mbps
-
-### Service Mesh Patterns
-
-For service-to-service communication:
-
-- Route all HTTP/HTTPS through reverse proxy on ServerVault
-- Implement health checks for all services
-- Use mutual TLS (mTLS) for internal service communication
-- Apply circuit breaker patterns for external dependencies
-- Implement retry logic with exponential backoff
-
-Example service configuration:
-
-```yaml
-service:
-  name: mqtt-broker
-  health_check:
-    endpoint: /health
-    interval: 30s
-    timeout: 5s
-  rate_limit:
-    requests_per_second: 100
-  circuit_breaker:
-    failure_threshold: 5
-    timeout: 60s
-```
-
-### SIEM Integration Requirements
-
-When adding logging or monitoring:
-
-- Centralize all logs to ServerVault syslog
-- Include structured fields: timestamp, source_vlan, destination_vlan, action, rule_id
-- Define alert thresholds for security events
-- Tag events by severity: critical, high, medium, low, info
-
-Example log format:
-
-```json
-{
-  "timestamp": "2026-01-21T21:00:00Z",
-  "event_type": "firewall_deny",
-  "severity": "medium",
-  "source_vlan": 20,
-  "destination_vlan": 10,
-  "source_ip": "10.76.20.45",
-  "destination_ip": "10.76.10.15",
-  "port": 22,
-  "protocol": "TCP",
-  "rule_id": "DENY-UNTRUSTED-TO-TRUSTED"
-}
-```
-
----
-
-## 🤖 Automation Patterns
-
-### Infrastructure as Code (IaC)
-
-When suggesting infrastructure changes:
-
-- Prefer declarative configuration over imperative scripts
-- Use Terraform for network infrastructure (VLANs, firewall rules, routing)
-- Use Ansible for service deployment and configuration
-- Version control all configuration in this repository
-- Include validation and testing steps
-
-Example Terraform structure:
-
-```hcl
-# firewall_rules.tf
-resource "firewall_rule" "iot_to_servervault" {
-  name        = "iot-mqtt-telemetry"
-  source      = "10.76.20.0/24"
-  destination = "10.76.50.0/24"
-  port        = 8883
-  protocol    = "TCP"
-  action      = "ALLOW"
-  log         = true
-}
-```
-
-### GitOps Workflow
-
-All changes should follow GitOps principles:
-
-1. Make changes in a feature branch
-2. Update documentation in same commit
-3. Run validation/linting
-4. Create pull request with description
-5. Automated tests run in CI/CD
-6. Manual approval for production deployment
-7. Automated rollback on failure
-
-### Configuration Management
-
-For service configuration:
-
-- Store secrets in external secret management (not in repo)
-- Use environment-specific override files
-- Implement configuration drift detection
-- Automated remediation for drift from desired state
-
-Example secrets pattern:
-
-```yaml
-# config.yaml (checked into repo)
-mqtt:
-  host: servervault.internal
-  port: 8883
-  username: ${MQTT_USERNAME}  # from secret manager
-  password: ${MQTT_PASSWORD}  # from secret manager
-```
-
-### Automation Standards
-
-When writing automation scripts:
-
-- Use idempotent operations (safe to run multiple times)
-- Include rollback procedures
-- Add comprehensive logging
-- Implement health checks before/after changes
-- Follow the repository's naming conventions
-
-Example automation script structure:
+**1. Markdown Linting** (ALWAYS run when modifying `.md` files):
 
 ```bash
-#!/bin/bash
-set -euo pipefail
-
-# Pre-flight checks
-check_dependencies() { ... }
-validate_config() { ... }
-
-# Main operations
-backup_current_state() { ... }
-apply_changes() { ... }
-verify_changes() { ... }
-
-# Rollback on failure
-rollback() { ... }
-trap rollback ERR
+npx markdownlint-cli2 "**/*.md" "#node_modules"
 ```
 
----
+Modern linter installed: `markdownlint-cli2` v0.20.0  
+Config file: `.markdownlint-cli2.jsonc` (Modern JSONC format with comments)
 
-## 📝 Documentation Patterns
+To install globally: `npm install -g markdownlint-cli2`
 
-### Markdown Structure
+**Auto-fix** markdown errors:
 
-- Use ATX-style headers (`#`, `##`, `###`)
-- Include table of contents for documents > 100 lines
-- Use Mermaid diagrams for network flows
-- Use tables for structured data (firewall rules, DHCP scopes)
+```bash
+npx markdownlint-cli2 --fix "**/*.md"
+```
 
-### Documentation Requirements
+**2. YAML Validation** (ALWAYS run when modifying `.yaml` or `.yml` files):
+```bash
+python3 -c "
+import yaml, sys
+for f in ['alerts/Alertmanager style.yaml', 'ha/lovelace.yaml', 'ha/dasboard..yaml']:
+    yaml.safe_load(open(f)); print(f'✓ {f}')
+"
+```
 
-When adding features or changes:
+**3. JSON Validation** (ALWAYS run when modifying `.json` files):
+```bash
+python3 -c "
+import json
+for f in ['.markdownlint.json', '.vscode/settings.json']:
+    json.load(open(f)); print(f'✓ {f}')
+"
+```
 
-- Update `docs/Project_Architecture_Blueprint.md` for architectural changes
-- Update `docs/firewall-matrix.md` for firewall rule changes
-- Update `docs/dhcp-scopes.md` for network changes
-- Add entry to `CHANGELOG.md` following Keep a Changelog format
-- Update relevant diagrams if network topology changes
+### Validation Order
+1. Make documentation changes
+2. Run markdown linter: `npx markdownlint-cli2 "**/*.md" "#node_modules"`
+3. Run YAML validation if modified YAML
+4. Run JSON validation if modified JSON
+5. Update `CHANGELOG.md` in `[Unreleased]` section
+6. Verify VLAN IDs/IPs consistent across all docs
 
----
+### Common Errors & Fixes
 
-## 🚫 What NOT to Touch
-
-### Protected Files & Directories
-
-- **DO NOT modify:** Existing symbolic links (e.g., `infrastructure` symlink)
-- **DO NOT delete:** Historical changelog entries (only add to `[Unreleased]`)
-- **DO NOT remove:** Existing VLAN IDs or core network architecture without explicit instruction
-- **DO NOT change:** Established naming conventions without updating `docs/naming-conventions.md` first
-
-### Sensitive Operations
-
-- Never remove or modify existing firewall rules without understanding the full security implications
-- Never change VLAN IDs or IP schemes without coordinated updates across all documentation
-- Never remove monitoring alerts without justification
-- Never modify visual assets (PNG files) unless replacing with new versions
-
----
-
-## ✅ When Making Changes
-
-### Always:
-
-1. **Update CHANGELOG.md** with your changes in the `[Unreleased]` section
-2. **Maintain consistency** across all documentation when updating network details
-3. **Follow the established theme** (Battlestar Galactica) for any new VLAN names
-4. **Include Mermaid diagrams** when documenting network flows or topology changes
-5. **Use the legend symbols** consistently in firewall matrices:
-   - ✅ Full access
-   - 🟡 Limited access (restricted ports/services)
-   - 🔵 View-only (monitoring, read-only)
-   - ❌ Blocked
-   - 🌐 Internet
-
-### Before Adding New VLANs:
-
-1. Choose an appropriate Battlestar Galactica themed name
-2. Assign appropriate VLAN ID (update IP scheme accordingly)
-3. Document in firewall matrix with all zone interactions
-4. Update all affected diagrams (Mermaid flowcharts)
-5. Add to services matrix with specific ports/protocols
-6. Update CHANGELOG.md
-
-### When Documenting Firewall Rules:
-
-1. Update the main matrix table with access symbols
-2. Add specific port/protocol details to the Service/Ports Reference Table
-3. Update relevant Mermaid diagrams to reflect the flow
-4. Include notes for any special considerations
-5. Consider security implications and document in notes
+**YAML Error:** `mapping values are not allowed here` → Check 2-space indentation (no tabs)  
+**JSON Error:** `Expecting ',' delimiter` → Remove trailing commas  
+**Symlink Error:** `infrastructure` broken → DO NOT modify (points to external Obsidian vault)  
+**Markdown MD013:** Line too long → Max 320 chars (configured in `.markdownlint-cli2.jsonc`)  
+**Note**: Relaxed rules in `.markdownlint-cli2.jsonc` for compact docs (MD022, MD031, MD032, MD040 disabled)
 
 ---
 
-## 🎨 Example Code Patterns
+## 📂 Project Layout & Key Files
 
-### Firewall Matrix Entry
+### Directory Structure
+```
+├── readme.md (lowercase!)          # Master blueprint, VLAN map, quick audit
+├── CHANGELOG.md                    # ALWAYS update [Unreleased] for ANY change
+├── .markdownlint.json              # Linting rules (MD013: 320 char, MD033: false)
+├── docs/                           # Core documentation (1,762 total lines)
+│   ├── Project_Architecture_Blueprint.md  # 468 lines - Full architecture
+│   ├── firewall-matrix.md          # 294 lines - VLAN access matrix with symbols
+│   ├── naming-conventions.md       # 45 lines - CRITICAL: All naming rules
+│   ├── dhcp-scopes.md              # 29 lines - Subnet ranges, gateways
+│   ├── services.md                 # 124 lines - Service/port mappings (has TODOs)
+│   ├── audit-checklist.md          # 24 lines - Operational health
+│   ├── hardening-rollout-plan.md   # 679 lines - Security hardening
+│   ├── host-tracker.md, physical-hosts.md, other-devices.md, jaeger-pool.md
+│   └── raw/network.md
+├── alerts/Alertmanager style.yaml  # Prometheus alerts (2-space YAML)
+├── ha/                             # Home Assistant config
+│   ├── lovelace.yaml, dasboard..yaml (typo in name - leave as-is)
+│   └── guidelines/
+├── dashboards/                     # Grafana dashboards, mockups
+├── baseline/                       # Architectural design docs, deployment guides
+├── plan/                           # Feature planning documents
+└── infrastructure -> (symlink)     # DO NOT TOUCH: External Obsidian vault
+```
 
+### Network Architecture Quick Reference
+
+**11 VLANs:** 10, 20, 30, 31, 40, 50, 60, 70, 81, 82, 90  
+**IP Scheme:** `10.76.X.0/24`, gateway always `.1`  
+**Theme:** Battlestar Galactica (see `docs/naming-conventions.md`)
+
+| VLAN | Name | Purpose | Zone |
+|------|------|---------|------|
+| 10 | Battlestar Ventana | Trusted LAN | Trusted |
+| 20 | CylonSynthLink | IoT devices | Untrusted (highly restricted) |
+| 30 | CapricaGuestPortal | Guest network | Untrusted (Internet only) |
+| 31 | PiconResidentGate | Elevated guest | Semi-Trusted (cast/print) |
+| 40 | Basestar Control | Infrastructure | Infrastructure (mgmt plane) |
+| 50 | GemenonServiceVault | NAS/MQTT/HA | Services (central hub) |
+| 60 | VirgonFleetYard | Printers | Semi-Trusted |
+| 70 | PegasusMediaNode | Media/Casting | Semi-Trusted |
+| 81 | ScorpiaMediaShield | Cameras Local | Surveillance (view-only) |
+| 82 | ScorpiaMediaRelay | Cameras Cloud | Surveillance (view-only) |
+| 90 | ScyllaProcessControl | Work VLAN | Trusted (VPN access) |
+
+### Firewall Matrix Symbols (used in `docs/firewall-matrix.md`)
+- ✅ Full access
+- 🟡 Limited access (specific ports/services)
+- 🔵 View-only (monitoring, read-only)
+- ❌ Blocked
+- 🌐 Internet access
+
+---
+
+## 📋 Naming Conventions (CRITICAL - Follow Strictly)
+
+From `docs/naming-conventions.md`:
+
+1. **VLANs/SSIDs:** Battlestar Galactica themed, space-separated capitals  
+   Example: `Battlestar Ventana`, `CylonSynthLink`
+
+2. **Physical Hosts:** `<Color/Element><Descriptor>` (PascalCase)  
+   Example: `CrimsonRogue`, `MintRedoubt` - Unique per chassis, **never reused**
+
+3. **Personal Computers:** Pacific Rim Jaegers (PascalCase)  
+   Pool: `GipsyDanger`, `StrykerEureka`, `ChernoAlpha`, `CoyoteTango`, etc.  
+   May recycle only for direct replacement
+
+4. **Other Devices:** `<zone>-<role>-<index>` (lowercase, hyphen-separated)  
+   Roles: `ctrl`, `sens`, `cast`, `stor`, `view`, `print`, `relay`, `edge`  
+   Example: `iot-sens-01`, `media-cast-02`, `printer-print-01`
+
+---
+
+## ✅ Documentation Standards
+
+### Markdown Style
+- Use emoji prefixes: 🔐 security, 📡 network, 🛠️ tools, 📊 monitoring, 📂 structure
+- H1 for title, H2 for major sections, H3 for subsections
+- Horizontal rules `---` between major sections
+- Tables for structured data (firewall rules, VLAN mappings)
+- Mermaid diagrams for network flows/topology
+
+### YAML Style
+- 2-space indentation (NO tabs)
+- Lowercase with hyphens for keys
+- Follow patterns in `alerts/` and `ha/`
+
+### CHANGELOG.md Updates (MANDATORY)
+- Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format
+- Categories: Added, Changed, Deprecated, Removed, Fixed, Security
+- **ALWAYS** update `[Unreleased]` section for ANY change
+- Include specific file references
+
+Example:
 ```markdown
-| **10 Trusted** | ✅ | 🟡 | ❌ | 🟡 | ✅ | ✅ | ✅ | ✅ | 🔵 | 🔵 | ❌ |
-```
+## [Unreleased]
 
-### Service/Ports Entry
+### Added
+- **`docs/new-feature.md`** - Documentation for feature X
 
-```markdown
-| **10 Trusted → 50 ServerVault** | SMB (445), NFS (2049), HTTPS (443) | TCP | File sharing & web services |
-```
-
-### VLAN Documentation
-
-```markdown
-* **Basestar Control (40):** Infrastructure switches/controllers
-```
-
-### Mermaid Diagram Pattern
-
-```mermaid
-flowchart TB
-    Ventana["10 – Battlestar Ventana\nTrusted LAN"]
-    Server["50 – ServerVault\nNAS / HA / MQTT"]
-    
-    Ventana -- ✅ Full --> Server
+### Changed
+- **VLAN 20 firewall rules** in `firewall-matrix.md` - Added port 8883 for MQTT
 ```
 
 ---
 
-## 🔍 Testing and Validation
+## 🚫 Protected Elements (DO NOT MODIFY)
 
-### Pre-Deployment Testing
-
-Before suggesting deployment:
-
-- Validate Markdown syntax with linter
-- Render Mermaid diagrams to verify syntax
-- Test firewall rules in isolated environment
-- Verify DHCP scopes don't overlap
-- Check for configuration conflicts
-
-### Security Testing
-
-For security-related changes:
-
-- Run network policy tests (nmap scans from each VLAN)
-- Verify authentication rate limits
-- Test circuit breaker failover scenarios
-- Validate log forwarding to SIEM
-- Scan for exposed sensitive information
-
-### Manual Validation
-
-- Ensure all internal links work (between documentation files)
-- Verify Mermaid diagrams render correctly
-- Check YAML/JSON syntax is valid
-- Confirm firewall matrix is internally consistent
-- Validate VLAN IDs match throughout all documentation
-
-### Monitoring and Observability
-
-After deployment:
-
-- Verify dashboards show expected metrics
-- Confirm alerts fire for test scenarios
-- Check log aggregation is working
-- Validate service health checks
-- Monitor for anomalies in first 24 hours
-
-### Documentation Review
-
-- Read through changes to ensure clarity and consistency
-- Verify emoji usage matches existing patterns
-- Check that tables are properly formatted
-- Ensure code blocks have appropriate syntax highlighting
+1. **`infrastructure` symlink** - Points to external Obsidian vault, leave as-is
+2. **Historical `CHANGELOG.md` entries** - Only add to `[Unreleased]`, never modify past releases
+3. **Existing VLAN IDs** - Don't change without explicit instruction (requires updates across ALL docs)
+4. **`docs/naming-conventions.md`** - Only change after discussion (affects entire naming scheme)
+5. **Visual assets (PNG files)** - Only replace, don't delete without replacements
+6. **File `ha/dasboard..yaml`** - Typo in filename, but leave as-is (changing breaks HA config)
 
 ---
 
-## 🎯 Common Tasks
-
-### Adding a New Device
-
-1. Choose appropriate hostname based on device type (see naming conventions)
-2. Add to relevant documentation file (`docs/physical-hosts.md`, `docs/other-devices.md`, etc.)
-3. Update any affected network diagrams
-4. Document in CHANGELOG.md
+## 🎯 Common Workflows
 
 ### Adding a New VLAN
-
-1. Choose next available VLAN ID
-2. Assign subnet `10.76.X.0/24` with gateway `.1`
-3. Select Battlestar-themed name
-4. Update `docs/dhcp-scopes.md`
-5. Define zone placement in architecture
-6. Add firewall rules in `docs/firewall-matrix.md`
-7. Update network diagrams
-8. Add monitoring dashboard coverage
-
-### Adding a New Service
-
-1. Deploy to ServerVault (VLAN 50) by default
-2. Configure reverse proxy endpoint
-3. Implement health checks
-4. Apply rate limiting
-5. Add SIEM logging
-6. Update service mesh configuration
-7. Document in `docs/services.md`
-8. Create monitoring alerts
+1. Choose Battlestar-themed name (check [Battlestar Wiki](https://battlestarwiki.org/))
+2. Assign next available VLAN ID, subnet `10.76.X.0/24`, gateway `.1`
+3. Update `docs/dhcp-scopes.md` with subnet details
+4. Add firewall rules to `docs/firewall-matrix.md` (use symbols: ✅🟡🔵❌🌐)
+5. Update Mermaid diagrams in relevant docs
+6. Add to `docs/services.md` with port/protocol details
+7. Update `readme.md` VLAN list
+8. Update `CHANGELOG.md` under `[Unreleased]` → `### Added`
+9. Run markdown linter: `npx markdownlint-cli2 "**/*.md"`
 
 ### Updating Firewall Rules
-
-1. Update `docs/firewall-matrix.md` main access matrix
-2. Add specific ports to Service/Ports Reference Table
-3. Update relevant Mermaid diagrams
-4. Consider bidirectional rules and update both source and destination
-5. Document security implications in notes section
-6. Update CHANGELOG.md
-
-### Hardening Existing Service
-
-1. Review current firewall rules - tighten if possible
-2. Add rate limiting if missing
-3. Implement mTLS for internal communication
-4. Enable SIEM logging and alerting
-5. Add automated backup/recovery
-6. Document security controls
-7. Add security testing
+1. Update `docs/firewall-matrix.md` access matrix table
+2. Add port/protocol to Service/Ports Reference Table
+3. Update Mermaid diagrams showing traffic flow
+4. Document justification in notes section
+5. Consider bidirectional rules (source ↔ destination)
+6. Update `CHANGELOG.md` under `[Unreleased]` → `### Changed`
+7. Run markdown linter
 
 ### Adding Documentation
-
-1. Create file in appropriate directory (`docs/`, `dashboards/`, etc.)
-2. Use emoji-prefixed headers matching repository style
-3. Add references to new file in README.md
-4. Update CHANGELOG.md with the addition
-5. Ensure consistent formatting with existing docs
-
----
-
-## 📦 Dependencies & Tools
-
-### No Package Management
-
-This is a documentation-only repository with no build process, dependencies, or package managers. All files are plain text (Markdown, YAML, JSON).
-
-### Validation Tools (if available)
-
-- Markdown linters for documentation quality
-- YAML validators for configuration files
-- JSON validators for dashboard files
+1. Create file in appropriate directory (`docs/`, `baseline/`, `plan/`)
+2. Use emoji-prefixed H1 header matching repo style
+3. Include `---` separators between major sections
+4. Add reference link in `readme.md` if appropriate
+5. Update `CHANGELOG.md` under `[Unreleased]` → `### Added`
+6. Run markdown linter: `npx markdownlint-cli2 "**/*.md"`
 
 ---
 
-## 📊 Compliance and Audit
+## 🔍 Validation Checklist (Before Every Commit)
 
-### Documentation Requirements
-
-Maintain audit trail for:
-
-- Firewall rule changes (who, what, when, why)
-- VLAN additions/modifications
-- Service deployments
-- Security incidents
-- Configuration changes
-
-### Audit Checklist
-
-Use `docs/audit-checklist.md` for periodic reviews:
-
-- Verify zone isolation is maintained
-- Confirm rate limits are enforced
-- Check SIEM logs for anomalies
-- Validate backup procedures
-- Review access control lists
-- Test disaster recovery
+- [ ] Run markdown linter: `npx markdownlint-cli2 "**/*.md" "#node_modules"`
+- [ ] Run YAML validation if modified `.yaml` files
+- [ ] Run JSON validation if modified `.json` files
+- [ ] Updated `CHANGELOG.md` under `[Unreleased]`
+- [ ] Verified VLAN IDs consistent across all docs
+- [ ] Checked emoji usage matches existing patterns
+- [ ] Confirmed internal links work (markdown references to other docs)
+- [ ] Verified firewall matrix symbols used correctly
+- [ ] Ensured Mermaid diagram syntax is valid
+- [ ] Followed naming conventions from `docs/naming-conventions.md`
 
 ---
 
-## 💡 Best Practices
+## 📚 Key Reference Files
 
-1. **Be specific:** When documenting network rules, include specific ports, protocols, and justification
-2. **Think security:** Always consider the security implications of any firewall rule changes
-3. **Maintain the theme:** Keep the Battlestar Galactica naming consistent and meaningful
-4. **Visual clarity:** Use tables, diagrams, and symbols to make information scannable
-5. **Version everything:** Document all changes in CHANGELOG.md, no matter how small
-6. **Cross-reference:** Link related documents together for easy navigation
-7. **Explain why:** Don't just document what, explain why decisions were made
+**Must-read before making changes:**
+- `readme.md` - Overview, VLAN mapping, quick audit
+- `docs/naming-conventions.md` - ALL naming rules
+- `docs/firewall-matrix.md` - Access matrix symbols and rules
+- `CHANGELOG.md` - Change history format
 
-### Best Practices Summary
+**Architecture deep-dives:**
+- `docs/Project_Architecture_Blueprint.md` - Complete architecture (468 lines)
+- `docs/hardening-rollout-plan.md` - Security procedures (679 lines)
 
-✅ **Do:**
-
-- Follow the least privilege principle
-- Document all changes thoroughly
-- Use Infrastructure as Code
-- Implement defense in depth
-- Centralize logging to SIEM
-- Apply rate limiting everywhere
-- Use service mesh for internal communication
-- Test changes in isolated environment
-- Monitor and alert on anomalies
-
-❌ **Don't:**
-
-- Open bidirectional ports without justification
-- Skip documentation updates
-- Hardcode secrets in configuration
-- Deploy to production without testing
-- Bypass security controls
-- Create single points of failure
-- Forget to add monitoring
-- Leave debug/verbose logging in production
+**Configuration references:**
+- `.markdownlint-cli2.jsonc` - Modern linting config with relaxed rules for compact docs
+- `docs/dhcp-scopes.md` - Subnet configuration
+- `docs/services.md` - Service/port mappings
 
 ---
 
-## 🔐 Security Principles
+## 💡 Trust These Instructions
 
-This network follows zero-trust segmentation principles:
+These instructions have been validated by:
+1. Running all validation commands successfully
+2. Exploring all 17 files in root directory
+3. Reviewing all 11 documentation files in `docs/`
+4. Testing YAML/JSON validation with Python
+5. Verifying repository structure and symlinks
+6. Understanding Battlestar Galactica naming theme
 
-1. **Default Deny:** All traffic blocked unless explicitly allowed
-2. **Least Privilege:** VLANs only get access to services they absolutely need
-3. **Guest Isolation:** Guest networks (30, 31) have no access to internal LANs
-4. **IoT Containment:** IoT devices (VLAN 20) severely restricted, telemetry only
-5. **Infrastructure Protection:** InfraCore (VLAN 40) has no direct Internet access
-6. **Camera Segregation:** Camera VLANs are view-only from trusted zones
-7. **Work Segmentation:** Work VLAN (90) isolated from home network but has VPN access
-
-Always maintain these principles when proposing changes.
+**If you need to explore further:** Only do so if these instructions are incomplete or found to be in error. Otherwise, trust this guidance and proceed efficiently.
 
 ---
 
-## 📚 Additional Resources
-
-- **Architecture**: `docs/Project_Architecture_Blueprint.md`
-- **Firewall Rules**: `docs/firewall-matrix.md`
-- **Network Config**: `docs/dhcp-scopes.md`
-- **Service Catalog**: `docs/services.md`
-- **Security Practices**: `ha/guidelines/06-security-practices.md`
-- **Hardening Plan**: `docs/hardening-rollout-plan.md`
-- **Change Log**: `CHANGELOG.md`
-- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-- [Semantic Versioning](https://semver.org/)
-- [Mermaid Documentation](https://mermaid.js.org/)
-- [Battlestar Galactica Wiki](https://battlestarwiki.org/) (for naming inspiration)
-
----
-
-**Remember:** This is a living documentation project. When in doubt, maintain consistency with existing patterns and prioritize clarity and security in all changes.
-
-*These instructions ensure that Copilot suggestions align with the Battlestar Ventana Network Blueprint's security-first, documentation-driven, and automation-focused approach.*
+**Last Updated:** 2026-01-26  
+**Instructions Version:** 1.0
