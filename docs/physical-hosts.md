@@ -10,8 +10,8 @@ Canonical hostname assignment for physical hypervisor / bare‑metal hosts.
 | Host Name        | Status   | Assigned Role  |
 |------------------|----------|----------------|
 | CrimsonRogue     | Active   | ProxmoxNode1   |
-| MintRedoubt      | Active   | ESXiNode1      |
-| AzureDefiant     | Active   | K3sNode1       |
+| MintRedoubt      | Active   | ProxmoxNode3      |
+| AzureDefiant     | Active   | ProxmoxNode2   |
 | ~~CircularEnvoy~~| Retired  |                |
 ```
 

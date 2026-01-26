@@ -4,7 +4,7 @@
 
 - name: Validate Docker installation
   ansible.builtin.command:
-    cmd: "docker info --format '{{.Name}}: {{.OperatingSystem}}'"
+    cmd: "docker info --format '{% raw %}{{.Name}}: {{.OperatingSystem}}{% endraw %}'"
   register: docker_info
   changed_when: false
   failed_when: docker_info.rc != 0

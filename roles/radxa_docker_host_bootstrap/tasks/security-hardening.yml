@@ -2,6 +2,11 @@
 # Security Hardening Tasks
 # Creates automation user, configures unattended-upgrades, and sets up nftables firewall
 
+- name: Ensure docker group exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+
 - name: Create automation user
   ansible.builtin.user:
     name: '{{ radxa_automation_user }}'

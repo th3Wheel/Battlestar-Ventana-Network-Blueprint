@@ -161,7 +161,6 @@ Add to `.vscode/settings.json`:
 
 ---
 
-
 The `mcp-config.json` file contains the MCP server configuration in the standard MCP format:
 
 ```json
