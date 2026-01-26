@@ -1,6 +1,7 @@
 ## 🛡️ Pacific Rim Jaeger Pool
 
 Canonical hostname pool for personal computers and laptops.  
+
 - *Assigned devices* are italicized  
 - Retired names are ~~struck out~~  
 - Status column shows availability  
