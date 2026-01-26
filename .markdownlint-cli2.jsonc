@@ -7,30 +7,7 @@
     ".git"
   ],
   "config": {
-    "default": true,
-    "MD013": {
-      "line_length": 320,
-      "heading_line_length": 320,
-      "code_block_line_length": 320,
-      "tables": false
-    },
-    "MD022": false,
-    "MD024": {
-      "siblings_only": true
-    },
-    "MD031": false,
-    "MD032": false,
-    "MD033": false,
-    "MD040": false,
-    "MD041": false,
-    "MD025": false,
-    "MD034": false,
-    "MD036": false,
-    "MD023": false,
-    "MD012": {
-      "maximum": 2
-    },
-    "MD060": false
+    "extends": ".markdownlintrc.json"
   },
   "fix": false
 }

@@ -25,7 +25,7 @@ npx markdownlint-cli2 "**/*.md" "#node_modules"
 ```
 
 Modern linter installed: `markdownlint-cli2` v0.20.0  
-Config file: `.markdownlint-cli2.jsonc` (Modern JSONC format with comments)
+Config files: `.markdownlintrc.json` (rules) + `.markdownlint-cli2.jsonc` (CLI config)
 
 To install globally: `npm install -g markdownlint-cli2`
 
@@ -45,10 +45,11 @@ for f in ['alerts/Alertmanager style.yaml', 'ha/lovelace.yaml', 'ha/dasboard..ya
 ```
 
 **3. JSON Validation** (ALWAYS run when modifying `.json` files):
+
 ```bash
 python3 -c "
 import json
-for f in ['.markdownlint.json', '.vscode/settings.json']:
+for f in ['.markdownlintrc.json', '.vscode/settings.json']:
     json.load(open(f)); print(f'✓ {f}')
 "
 ```
@@ -66,18 +67,20 @@ for f in ['.markdownlint.json', '.vscode/settings.json']:
 **YAML Error:** `mapping values are not allowed here` → Check 2-space indentation (no tabs)  
 **JSON Error:** `Expecting ',' delimiter` → Remove trailing commas  
 **Symlink Error:** `infrastructure` broken → DO NOT modify (points to external Obsidian vault)  
-**Markdown MD013:** Line too long → Max 320 chars (configured in `.markdownlint-cli2.jsonc`)  
-**Note**: Relaxed rules in `.markdownlint-cli2.jsonc` for compact docs (MD022, MD031, MD032, MD040 disabled)
+**Markdown MD013:** Line too long → Max 320 chars (configured in `.markdownlintrc.json`)  
+**Note**: Relaxed rules in `.markdownlintrc.json` for compact docs (MD022, MD031, MD032, MD040 disabled)
 
 ---
 
 ## 📂 Project Layout & Key Files
 
 ### Directory Structure
+
 ```
 ├── readme.md (lowercase!)          # Master blueprint, VLAN map, quick audit
 ├── CHANGELOG.md                    # ALWAYS update [Unreleased] for ANY change
-├── .markdownlint.json              # Linting rules (MD013: 320 char, MD033: false)
+├── .markdownlintrc.json            # Markdown linting rules (320 char limit)
+├── .markdownlint-cli2.jsonc        # Modern linter config (extends .markdownlintrc.json)
 ├── docs/                           # Core documentation (1,762 total lines)
 │   ├── Project_Architecture_Blueprint.md  # 468 lines - Full architecture
 │   ├── firewall-matrix.md          # 294 lines - VLAN access matrix with symbols
@@ -251,7 +254,9 @@ Example:
 - `docs/hardening-rollout-plan.md` - Security procedures (679 lines)
 
 **Configuration references:**
-- `.markdownlint-cli2.jsonc` - Modern linting config with relaxed rules for compact docs
+
+- `.markdownlintrc.json` - Markdown linting rules (standard format)
+- `.markdownlint-cli2.jsonc` - CLI config (extends .markdownlintrc.json)
 - `docs/dhcp-scopes.md` - Subnet configuration
 - `docs/services.md` - Service/port mappings
 
@@ -260,7 +265,8 @@ Example:
 ## 💡 Trust These Instructions
 
 These instructions have been validated by:
-1. Running all validation commands successfully
+
+1. Running documented validation commands on key files
 2. Exploring all 17 files in root directory
 3. Reviewing all 11 documentation files in `docs/`
 4. Testing YAML/JSON validation with Python
