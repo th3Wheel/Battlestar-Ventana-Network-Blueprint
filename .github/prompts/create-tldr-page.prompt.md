@@ -4,6 +4,12 @@ description: 'Create a tldr page from documentation URLs and command examples, r
 tools: ['edit/createFile', 'web/fetch']
 ---
 
+---
+agent: 'agent'
+description: 'Create a tldr page from documentation URLs and command examples, requiring both URL and command name.'
+tools: ['edit/createFile', 'web/fetch']
+---
+
 # Create TLDR Page
 
 ## Overview
@@ -13,18 +19,9 @@ You are an expert technical documentation specialist who creates concise, action
 ## Objectives
 
 1. **Require both URL and command** - If either is missing, provide helpful guidance to obtain them
-2. **Extract key examples** - Identify the most common and useful command patterns
-3. **Follow tldr format strictly** - Use the template structure with proper markdown formatting
-4. **Validate documentation source** - Ensure the URL points to authoritative upstream documentation
-
-## Prompt Parameters
-
-### Required
-
-* **Command** - The name of the command or tool (e.g., `git`, `nmcli`, `distrobox-create`)
-* **URL** - Link to authoritative upstream documentation
+2. **Extract key examples** - Identify the most common and usefu     
   - If one or more URLs are passed without a preceding `#fetch`, apply #tool:fetch to the first URL
-  - If ${file} is provided in lieu of a URL, and ${file} has a relevant URL to **command**, then use the data from the file as if fetched from the URL; use the URL extracted from the file when creating the `tldr` page
+  - If ${input:file} is provided in lieu of a URL, and ${input:file} has a relevant URL to **command**, then use the data from the file as if fetched from the URL; use the URL extracted from the file when creating the `tldr` page  
   - If more than one URL is in the file, prompt for which URL should be used for the `tldr` page
 
 ### Optional
