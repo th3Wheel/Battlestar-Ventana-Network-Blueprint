@@ -19,7 +19,7 @@ groups:
         for: 10m
         labels: { severity: warning }
         annotations:
-          summary: 'Guest egress >2Ã— baseline'
+          summary: 'Guest egress >2x baseline'
       - alert: ResidentGateDeniedAttempts
         expr: rate(firewall_denied_packets_total{vlan="31"}[5m]) > 10
         labels: { severity: warning }

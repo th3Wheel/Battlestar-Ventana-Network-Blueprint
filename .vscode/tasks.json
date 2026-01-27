@@ -171,7 +171,7 @@
 			"args": [
 				"-NoProfile",
 				"-Command",
-				"& { Get-ChildItem -Recurse -Filter *.py | Where-Object { -not ($_.FullName -match '.venv') } | ForEach-Object { & './.venv/Scripts/pylint.exe' $_.FullName } }"
+				"& { $pylint = if ($env:PYLINT_PATH) { $env:PYLINT_PATH } else { './.venv/Scripts/pylint.exe' }; Get-ChildItem -Recurse -Filter *.py | Where-Object { -not ($_.FullName -match '.venv') } | ForEach-Object { & $pylint $_.FullName } }"
 			],
 			"problemMatcher": {
 				"owner": "pylint",
