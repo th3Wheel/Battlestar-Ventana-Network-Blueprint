@@ -62,8 +62,9 @@
 - **USE CONTEXT7 FOR VALIDATION:** Before committing, query Context7 to verify all affected files are updated and cross-references are intact.
 - Do not commit helper files like Copilot-Processing.md; keep changes scoped to relevant docs.
 - Commit messages must follow Conventional Commits (`type(scope): subject`). Allowed types include: `docs`, `chore`, `fix`, `feat`, `refactor`, `style`, `test`, `ci`, `build`, `perf`. Keep subjects in imperative mood and under ~72 chars.
-- Commit gating: do not create commits if validators report errors. Warnings are acceptable but should be addressed when practical. Fix error findings before committing.
-- Validators to run before commit: markdownlint on `.md`, yamllint on `.yaml/.yml`, ESLint on `.js/.ts` when present, Pylint/Ruff on `.py` when present. Use repo configs: `.markdownlintrc.json`, `.yamllint`, `.eslintrc.json`, `.pylintrc`.
+- Commit gating (mandatory): do not create commits if any required validator reports **errors**. Warnings are acceptable but should be addressed when practical. Fix all error-level findings from required validators before committing.
+- **Required validators for commit gating** (run before commit when matching files/toolchains are present): `markdownlint` on `.md`, `yamllint` on `.yaml/.yml`, `eslint` on `.js/.ts`, and `pylint` or `ruff` on `.py`. Use repo configs: `.markdownlintrc.json`, `.yamllint`, `.eslintrc.json`, `.pylintrc`.
+- **Optional / non-gating validators:** IDE-integrated linters, spellcheckers, formatters, or additional tools may be used to improve quality but are not required to pass before committing.
 - Recommended local checks (Windows-friendly examples):
 	- `markdownlint "**/*.md"` or the VS Code Markdownlint extension
 	- `yamllint .`
