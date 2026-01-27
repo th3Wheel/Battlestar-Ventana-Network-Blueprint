@@ -1,317 +1,484 @@
-# 1Password Connect server for Battlestar network secrets
+## 1Password Connect for Battlestar secrets
 
-Quick answer: You can update your Battlestar network to use 1Password Connect servers by creating a Connect Secrets Automation workflow, generating the 1password-credentials.json and access tokens, deploying the Connect API + sync containers (Docker or Kubernetes), and then reconfiguring your services to call the Connect REST API using per-service tokens — follow the 1Password Connect “Get started” steps for exact CLI and Docker/Kubernetes commands.
+Combined How-to + Explanation for deploying 1Password Connect and consuming it from XPipe, Ansible, and other services in this repo. Emphasis: least privilege, no plain environment variables for secrets, and per-service tokens with rotation.
 
-Plan & key decision points
-Goal: Replace or augment your current secret backend so services on the Battlestar network call a self‑hosted 1Password Connect server (private REST API) for secrets.
+### What you’ll achieve
 
-Choose deployment: Docker Compose for simple/local setups or Kubernetes (Helm) for production/high‑availability. Both are supported.
+- Deploy 1Password Connect (Docker Compose primary; Kubernetes/Helm and Portainer notes).
+- Issue scoped tokens and store them securely (no plain env vars).
+- Use those tokens from XPipe (MCP automation + pre-connection hook), Ansible, and other services.
+- Validate and harden (TLS, rotation, audit).
 
-Authentication model: Use one token per application/service (create tokens with the CLI) and store tokens as Kubernetes Secrets or environment variables (Kubernetes Secrets recommended).
+### Prereqs & assumptions
 
-Step‑by‑step (concise)
-Create a Connect workflow and credentials
+- Network placement: internal-only; default API port 8080. Do not expose to the Internet.
+- Files: `1password-credentials.json` from `op connect server create`.
+- Tools: Docker/Compose; optional kubectl/Helm; Portainer if you prefer stacks.
+- Secrets handling: tokens live in Kubernetes Secrets or root-owned files with `0600`. Avoid long-lived plain env vars; use env only as short-lived, in-memory export during tests.
 
-Use the 1Password web dashboard or the 1Password CLI (op connect server create) to create a Connect server and generate 1password-credentials.json in your working directory.
+### Quick architecture (why Connect)
 
-Create an access token for each service with op connect token create <tokenName> --server <serverName|serverID> --vault <vaultName|vaultID> and save tokens securely in 1Password or your secret store.developer.1password.com
+- Two components: `connect-api` (serves REST) and `connect-sync` (pulls from 1Password cloud to local state).
+- Tokens are scoped; issue one per consumer (XPipe, Ansible, app). Minimal vault/item access per token.
+- Traffic stays inside LAN; use TLS for east-west where possible.
 
-Deploy Connect server
+### Deploy Connect (primary: Docker Compose)
 
-Docker: create a docker-compose.yaml that runs 1password/connect-api and 1password/connect-sync, mount the 1password-credentials.json, then run docker compose up (use -d to detach).
+1) Create `docker-compose.yaml` with `1password/connect-api` and `1password/connect-sync`.
+2) Mount `1password-credentials.json` read-only at `/home/opuser/.op/1password-credentials.json` for both containers.
+3) Bind port `8080` to an internal interface only (or behind an internal LB/reverse proxy with TLS).
+4) Start: `docker compose up -d`.
+5) Smoke test: `curl http://<connect-host>:8080/health` → expect status ok.
 
-Kubernetes: use the provided Helm charts or operator examples in the docs to deploy the same two components and configure the credentials file and environment variables appropriately.
+**Complete docker-compose.yaml example:**
 
-Test the Connect REST API
-
-Export the token and call the API (example to list vaults):
-
-bash
-export OP_API_TOKEN="<token>"
-curl -H "Accept: application/json" -H "Authorization: Bearer $OP_API_TOKEN" http://<connect-host>:8080/v1/vaults
-By default the Connect API listens on port 8080 on the host where it’s deployed.
-
-Update Battlestar services
-
-Replace direct secret lookups with REST calls to your Connect server or use the 1Password SDKs (Go, Node, Python, etc.) and use a unique token per service. Store tokens as secrets and rotate them periodically.
-
-Risks, trade‑offs & operational tips
-Network exposure: Keep Connect servers on private networks or behind internal load balancers; avoid exposing the API publicly. Use Kubernetes Secrets rather than plain env vars for tokens in production.
-
-Availability: Run connect-api and connect-sync redundantly and monitor sync health.
-
-Access control: Grant Connect servers access only to the vaults they need; tokens are scoped and can be rotated or revoked.
-
-Next steps I can help with
-Provide a Docker Compose or Kubernetes Helm example tailored to your Battlestar network topology (nodes, ingress, secrets storage).
-
-Draft the exact op CLI commands and a sample docker-compose.yaml for your environment.
-
-Source: 1Password Connect “Get started” documentation.
-
-also let xpipe use it
-Integration overview
-You can make XPipe use a self‑hosted 1Password Connect server by (A) deploying a Connect server and issuing scoped tokens, (B) choosing how XPipe will retrieve secrets at runtime, and (C) wiring XPipe to call the Connect REST API (or to read secrets injected into its environment) before or during connection launches. XPipe exposes a local HTTP MCP/automation interface you can use to coordinate this behavior, and 1Password Connect provides a REST API and tokens for programmatic access.
-
-Quick comparison of integration approaches
-Method Complexity Security Latency Best for
-Direct REST calls from XPipe (plugin or hook) Medium High (per‑service tokens) Low Dynamic secret fetch per connection
-Secrets injector (sidecar/init that writes files/env) Low High (Kubernetes Secrets) Very low (local file reads) Environments where XPipe cannot call external APIs
-Periodic sync to local secret store Medium Medium (local store must be secured) Medium Offline or air‑gapped networks
-Sources: .
-
-Step‑by‑step plan (recommended: Direct REST calls + token per service)
-
-1. Create a 1Password Connect workflow and tokens
-Use the 1Password web UI or the CLI op connect server create to create a Connect server and generate the 1password-credentials.json file; then create one token per XPipe component or per connection consumer with op connect token create. Save tokens securely and treat each token as scoped credentialsdeveloper.1password.com.
-
-2. Deploy 1Password Connect
-Deploy the two Connect containers (1password/connect-api and 1password/connect-sync) with Docker Compose or Kubernetes as described in the 1Password docs; the Connect REST API is reachable on port 8080 by default for local deployments.
-
-3. Confirm XPipe can call external HTTP endpoints
-XPipe provides an MCP server and an HTTP API for automation and integrations; use that API or XPipe’s integration hooks to run pre‑connection logic or to fetch secrets when a connection is launched.
-
-4. Implement secret retrieval in XPipe
-Choose one of these concrete patterns:
-
-A. Direct REST call from XPipe integration hook (recommended)
-
-Add a pre‑connection hook (or plugin) in XPipe that:
-
-Reads a per‑service Connect token from a secure store (Kubernetes Secret or protected file).
-
-Calls the Connect REST API GET /v1/vaults/<vaultID>/items/<itemID> (or other endpoints) with Authorization: Bearer <token> to fetch credentials.
-
-Injects the returned secret into the connection environment (in‑memory or as an ephemeral file) before XPipe opens the remote session.
-
-This keeps secrets scoped, auditable, and rotated independently of XPipe.
-
-B. Secrets injector sidecar / init container
-
-Run a small process that uses the Connect token to fetch secrets at pod startup and writes them to a file or environment variables that XPipe reads. Use Kubernetes Secrets to store the Connect token and restrict RBAC accordingly.
-
-C. Periodic sync to a local secret cache
-
-Run a sync job that pulls required items from Connect into a local encrypted store that XPipe reads. Use this only if direct calls are impossible (air‑gapped or strict offline constraints).
-
-(Implementation details: the Connect API uses bearer tokens and JSON responses; test with a curl request against http://<connect-host>:8080/v1/vaults to verify connectivity and token scope.)
-
-All of the above rely on the Connect server and tokens created in Step 1 and the Connect containers deployed in Step 2. Use XPipe’s MCP/HTTP automation surface to trigger or coordinate these calls rather than embedding credentials in plain text in configsdocs.xpipe.io+1.
-All of the above rely on the Connect server and tokens created in Step 1 and the Connect containers deployed in Step 2. Use XPipe’s MCP/HTTP automation surface to trigger or coordinate these calls rather than embedding credentials in plain text in configs. See <https://docs.xpipe.io> for configuration details.
-Security and operational recommendations
-Token scope & rotation: Issue a distinct Connect token per XPipe consumer and rotate/revoke tokens regularly; store tokens as Kubernetes Secrets or in a secure vault, not plain env vars.
-
-Network placement: Keep Connect servers on an internal network or behind an internal load balancer; do not expose the Connect API publicly unless protected by strong network controls and mTLS.
-
-Least privilege: Grant Connect server access only to the vaults/items XPipe needs; avoid broad vault access when possible.
-
-High availability: Run both connect-api and connect-sync redundantly and monitor sync health; ensure XPipe handles transient failures (retry/backoff) when calling Connect.
-
-Audit & logging: Log token usage and XPipe secret fetch events for auditing and incident response.
-
-Example snippets (conceptual)
-Test Connect API (shell):
-
-bash
-export OP_API_TOKEN="<token>"
-curl -H "Accept: application/json" -H "Authorization: Bearer $OP_API_TOKEN" http://<connect-host>:8080/v1/vaults
-Pseudocode for XPipe pre‑connection hook:
-
-python
-
-# 1) read token from secure store
-
-# 2) call Connect API to fetch item
-
-# 3) inject secret into connection environment
-
-(Use the Connect REST endpoints and token creation steps from the 1Password docs to build the exact requests and parsing logic.)
-
-Next steps I can take for you
-Generate a Docker Compose example that runs connect-api + connect-sync with a mounted 1password-credentials.json and an example token usage snippet.
-
-Draft a Kubernetes manifest (Deployment + Secret + Service) and a small XPipe pre‑connection hook script (Go/Node/Python) that fetches a secret and injects it into the session.
-
-Walk through a minimal proof‑of‑concept sequence for one XPipe connection (commands and expected responses).
-
-Tell me which of the three next steps above you want first (Docker Compose, Kubernetes manifest + hook, or a POC walkthrough) and I’ll produce the concrete files and code snippets.
-
-Today
-
-## Today
-
-Absolutely — let’s build a clean, minimal, reproducible POC walkthrough that gets your Battlestar network + XPipe pulling secrets from a 1Password Connect Server.
-This is the smallest end‑to‑end demo that proves everything works before you wire it into your full homelab.
-
-I’ll keep it tight, actionable, and aligned with your workflow style: reproducible, documented, and future‑proof.
-
-🚀 POC Walkthrough: Battlestar Network + XPipe + 1Password Connect
-This POC demonstrates:
-
-Create Connect server + credentials
-
-Deploy Connect (Docker)
-
-Create a scoped token for XPipe
-
-Fetch a secret via Connect API
-
-Use that secret inside XPipe (pre‑connection hook)
-
-Everything below is self‑contained and safe to run on a test node.
-
-1️⃣ Create Connect Server + Credentials
-Run this on your workstation (not the server):
-
-bash
-op connect server create battlestar-connect \
-  --vault "Battlestar Secrets" \
-  --format json > 1password-credentials.json
-This file is the identity of your Connect server.
-You will mount it into the containers.
-
-2️⃣ Deploy Connect Server (Docker POC)
-Create docker-compose.yaml:
-
-yaml
+```yaml
 version: "3.8"
 
 services:
   connect-api:
     image: 1password/connect-api:latest
+    container_name: op-connect-api
+    restart: unless-stopped
     ports:
-      - "8080:8080"
+      # Bind to internal interface only; replace 10.76.50.10 with your ServerVault IP
+      - "10.76.50.10:8080:8080"
     volumes:
       - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
+      - connect-api-data:/home/opuser/.op/data
+    environment:
+      - OP_SESSION_inactivity_timeout=30m
+      - OP_LOG_LEVEL=info
+    networks:
+      - op-connect
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   connect-sync:
     image: 1password/connect-sync:latest
+    container_name: op-connect-sync
+    restart: unless-stopped
     volumes:
       - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
-Start it:
+      - connect-sync-data:/home/opuser/.op/data
+    environment:
+      - OP_LOG_LEVEL=info
+    networks:
+      - op-connect
+    depends_on:
+      connect-api:
+        condition: service_healthy
 
-bash
+volumes:
+  connect-api-data:
+  connect-sync-data:
+
+networks:
+  op-connect:
+    driver: bridge
+```
+
+**Deployment steps:**
+
+```bash
+# 1. Place 1password-credentials.json in the same directory as docker-compose.yaml
+ls -lh 1password-credentials.json  # Verify file exists and has restricted perms
+
+# 2. Start the services
 docker compose up -d
-Verify it’s alive:
 
-bash
-curl <http://localhost:8080/health>
-Expected:
+# 3. Verify both containers are running
+docker compose ps
 
-json
-{"status":"ok"}
-3️⃣ Create a Scoped Token for XPipe
-You want one token per XPipe connection type.
+# 4. Check logs for any errors
+docker compose logs -f
 
-Example:
+# 5. Test health endpoint
+curl http://10.76.50.10:8080/health
+# Expected: {"name":"1Password Connect API","version":"...","dependencies":[...]}
+```
 
-bash
+### Optional: Kubernetes/Helm or Portainer
+
+- Helm chart: provide the credentials file as a secret, set service type ClusterIP, and store tokens in a Secret. Keep ingress internal; add TLS if terminating at the proxy.
+- Portainer: deploy the same compose stack; ensure network is internal-only and mount the credentials file with read-only perms.
+
+### Create and handle tokens (no plain env vars)
+
+- Create per-service tokens: `op connect token create <name> --server <server> --vault <vault>`.
+- Storage: Kubernetes Secret (recommended) or root-owned file `0600` on hosts (e.g., `/etc/op/connect/<consumer>.token`).
+- Usage: load tokens from file or secret mount at runtime; avoid persistent env vars. If a command needs env, export from a protected file and unset immediately after use.
+- Rotation: issue short-lived tokens per service; rotate on a regular cadence (e.g., 30–90 days) or on suspicion; revoke unused tokens; log usage.
+
+**Token creation examples:**
+
+```bash
+# 1. Create Connect server and generate credentials (one-time setup)
+op connect server create battlestar-connect \
+  --vault "Battlestar Secrets" \
+  --format json > 1password-credentials.json
+
+# 2. Verify credentials file was created
+ls -lh 1password-credentials.json
+chmod 600 1password-credentials.json
+
+# 3. Create scoped token for XPipe
 op connect token create xpipe-battlestar \
   --server battlestar-connect \
   --vault "Battlestar Secrets"
-Copy the token into a secure location on the XPipe machine:
+# Save this token securely; it will only be shown once
 
-Code
-File path:
-Permissions:
+# 4. Create scoped token for Ansible automation
+op connect token create ansible-automation \
+  --server battlestar-connect \
+  --vault "Battlestar Secrets"
 
-bash
-chmod 600 /etc/xpipe/op-token
-4️⃣ Fetch a Secret via Connect API (POC Test)
-Let’s assume you have an item called “SSH – Azure Defiant Root”.
+# 5. Create scoped token for a specific service (e.g., Pi-hole deployment)
+op connect token create pihole-deployment \
+  --server battlestar-connect \
+  --vault "ServerVault Services"
+```
 
-Test retrieval:
+**Secure token storage on host:**
 
-bash
-export OP_API_TOKEN=$(cat /etc/xpipe/op-token)
+```bash
+# Create token directory with restricted permissions
+sudo mkdir -p /etc/op/connect
+sudo chmod 700 /etc/op/connect
 
-curl -s \
-  -H "Authorization: Bearer $OP_API_TOKEN" \
-  http://<connect-ip>:8080/v1/vaults | jq
-Then fetch the item:
+# Store XPipe token (paste token when prompted)
+sudo tee /etc/op/connect/xpipe.token > /dev/null
+sudo chmod 600 /etc/op/connect/xpipe.token
+sudo chown root:root /etc/op/connect/xpipe.token
 
-bash
-curl -s \
-  -H "Authorization: Bearer $OP_API_TOKEN" \
-  http://<connect-ip>:8080/v1/vaults/<vault-id>/items/<item-id> | jq
-You should see fields like:
+# Verify permissions
+ls -la /etc/op/connect/
+# Expected: drwx------ root root ... connect
+#           -rw------- root root ... xpipe.token
+```
 
-json
-{
-  "title": "SSH – Azure Defiant Root",
-  "fields": [
-    { "label": "username", "value": "root" },
-    { "label": "password", "value": "supersecret" }
-  ]
-}
-This proves Connect is working.
+**Testing token scope:**
 
-5️⃣ XPipe Integration (Pre‑Connection Hook)
-XPipe supports pre‑connection commands.
-You’ll use that to fetch secrets dynamically.
+```bash
+# Load token from secure file
+export OP_API_TOKEN=$(sudo cat /etc/op/connect/xpipe.token)
 
-Create a script XPipe will call:
+# List accessible vaults (should only show authorized vaults)
+curl -s -H "Authorization: Bearer $OP_API_TOKEN" \
+  http://10.76.50.10:8080/v1/vaults | jq '.[] | {id, name}'
 
-/usr/local/bin/xpipe-op-fetch
+# Unset token from environment immediately
+unset OP_API_TOKEN
+```
 
-bash
+### Integrations from this repo
 
-# !/usr/bin/env bash
+**XPipe (MCP automation + hook)**
 
-TOKEN=$(cat /etc/xpipe/op-token)
-CONNECT="http://<connect-ip>:8080"
-VAULT="<vault-id>"
-ITEM="<item-id>"
+- Prefer MCP/HTTP automation to fetch a secret before connection. Pattern:
+  1) XPipe automation calls a small script/binary that reads the token from a protected file/secret mount.
+  2) Script calls `GET /v1/vaults/<vault>/items/<item>` with `Authorization: Bearer <token>`.
+  3) It returns only the needed fields and hands them to XPipe as connection parameters (in-memory), then zeroes intermediates.
+- Pre-connection hook fallback: a short script that reads the token from the protected file and exports the needed fields for the session only (no disk write of secrets). Do not store the token in XPipe config.
 
-SECRET_JSON=$(curl -s \
-  -H "Authorization: Bearer $TOKEN" \
-  "$CONNECT/v1/vaults/$VAULT/items/$ITEM")
+**XPipe MCP automation script (recommended):**
 
-USERNAME=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.label=="username") | .value')
-PASSWORD=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.label=="password") | .value')
+Create `/usr/local/bin/xpipe-op-fetch` with root-only permissions:
 
-echo "username=$USERNAME"
-echo "password=$PASSWORD"
-Make it executable:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-bash
-chmod +x /usr/local/bin/xpipe-op-fetch
-6️⃣ XPipe Connection Template
-Inside XPipe:
+# XPipe 1Password Connect secret fetcher
+# Usage: xpipe-op-fetch <vault-id> <item-id>
+# Returns: JSON with username and password fields
 
-Connection → Advanced → Pre‑Command
+TOKEN_FILE="/etc/op/connect/xpipe.token"
+CONNECT_HOST="http://10.76.50.10:8080"
 
-Code
-eval $(/usr/local/bin/xpipe-op-fetch)
-Then configure the SSH connection using:
+# Validate arguments
+if [[ $# -lt 2 ]]; then
+    echo "Usage: $0 <vault-id> <item-id>" >&2
+    exit 1
+fi
 
-Username: $username
+VAULT_ID="$1"
+ITEM_ID="$2"
 
-Password: $password
+# Read token securely (requires root or sudo)
+if [[ ! -r "$TOKEN_FILE" ]]; then
+    echo "Error: Cannot read token file $TOKEN_FILE" >&2
+    exit 1
+fi
 
-XPipe will:
+TOKEN=$(cat "$TOKEN_FILE")
 
-Run the script
+# Fetch secret from Connect API
+SECRET_JSON=$(curl -sf \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "Accept: application/json" \
+    "${CONNECT_HOST}/v1/vaults/${VAULT_ID}/items/${ITEM_ID}" 2>/dev/null)
 
-Fetch secrets from Connect
+if [[ -z "$SECRET_JSON" ]]; then
+    echo "Error: Failed to fetch secret from Connect API" >&2
+    exit 1
+fi
 
-Inject them into the connection environment
+# Extract credentials using jq
+USERNAME=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.purpose=="USERNAME" or .label=="username") | .value' | head -n1)
+PASSWORD=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.purpose=="PASSWORD" or .label=="password") | .value' | head -n1)
 
-Open the SSH session using live secrets
+# Return as JSON for XPipe to parse
+jq -n \
+    --arg user "$USERNAME" \
+    --arg pass "$PASSWORD" \
+    '{username: $user, password: $pass}'
 
-No secrets stored in XPipe.
-No plaintext in configs.
-Everything rotates cleanly.
+# Zero sensitive vars
+TOKEN=""
+SECRET_JSON=""
+USERNAME=""
+PASSWORD=""
+```
 
-7️⃣ Validate End‑to‑End
-Run the XPipe connection.
+**Setup script permissions:**
 
-If it logs in successfully → POC complete.
+```bash
+sudo chmod 700 /usr/local/bin/xpipe-op-fetch
+sudo chown root:root /usr/local/bin/xpipe-op-fetch
 
-You now have:
+# Test script manually (requires sudo)
+sudo /usr/local/bin/xpipe-op-fetch <vault-id> <item-id>
+# Expected: {"username":"...","password":"..."}
+```
 
-✔ Connect server deployed
-✔ Scoped XPipe token
-✔ Live secret retrieval
-✔ XPipe using Connect dynamically
-✔ Zero static secrets on disk
+**XPipe pre-connection hook (simpler alternative):**
+
+Create `/usr/local/bin/xpipe-op-env` for environment variable export:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# XPipe pre-connection secret injector
+# Exports secrets as environment variables for current session only
+
+TOKEN_FILE="/etc/op/connect/xpipe.token"
+CONNECT_HOST="http://10.76.50.10:8080"
+VAULT_ID="${1:-}"
+ITEM_ID="${2:-}"
+
+if [[ -z "$VAULT_ID" ]] || [[ -z "$ITEM_ID" ]]; then
+    echo "Usage: source $0 <vault-id> <item-id>" >&2
+    return 1 2>/dev/null || exit 1
+fi
+
+TOKEN=$(sudo cat "$TOKEN_FILE")
+
+SECRET_JSON=$(curl -sf \
+    -H "Authorization: Bearer $TOKEN" \
+    "${CONNECT_HOST}/v1/vaults/${VAULT_ID}/items/${ITEM_ID}")
+
+# Export for current session only (no disk writes)
+export OP_USERNAME=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.purpose=="USERNAME") | .value')
+export OP_PASSWORD=$(echo "$SECRET_JSON" | jq -r '.fields[] | select(.purpose=="PASSWORD") | .value')
+
+# Zero local vars
+TOKEN=""
+SECRET_JSON=""
+
+echo "✓ Credentials loaded into environment (session-only)"
+```
+
+**XPipe connection configuration:**
+
+1. In XPipe, create a new SSH connection
+2. Go to **Advanced** → **Pre-Command**
+3. Add:
+
+   ```bash
+   # For MCP automation approach:
+   CREDS=$(sudo /usr/local/bin/xpipe-op-fetch <vault-id> <item-id>)
+   export SSH_USER=$(echo $CREDS | jq -r '.username')
+   export SSH_PASS=$(echo $CREDS | jq -r '.password')
+
+   # Or for pre-connection hook:
+   source /usr/local/bin/xpipe-op-env <vault-id> <item-id>
+   export SSH_USER=$OP_USERNAME
+   export SSH_PASS=$OP_PASSWORD
+   ```
+
+4. In connection fields, reference:
+   - Username: `$SSH_USER`
+   - Password: `$SSH_PASS`
+
+5. Secrets are fetched dynamically per connection; no persistence in XPipe config.
+
+**Ansible**
+
+- Use the 1Password Connect Ansible collection. Supply `OP_CONNECT_HOST` and the token via environment only within the task execution, ideally sourced from an Ansible Vault or CI secret provider. No plaintext tokens in playbooks or inventory.
+- Example pattern (conceptual): set `environment: OP_CONNECT_HOST`, `connect_token` from a vaulted var; call modules to fetch item fields; use `no_log: true` on secret-bearing tasks.
+
+**Ansible playbook example:**
+
+```yaml
+---
+- name: Deploy Pi-hole with secrets from 1Password Connect
+  hosts: pihole_servers
+  gather_facts: true
+  
+  vars:
+    # Store in Ansible Vault or load from CI secret provider
+    op_connect_token: "{{ lookup('env', 'OP_CONNECT_TOKEN') }}"
+    op_connect_host: "http://10.76.50.10:8080"
+    vault_name: "ServerVault Services"
+    
+  collections:
+    - onepassword.connect
+    
+  tasks:
+    - name: Fetch Pi-hole admin password from 1Password
+      onepassword.connect.item_info:
+        token: "{{ op_connect_token }}"
+        item: "Pi-hole Admin"
+        vault: "{{ vault_name }}"
+      environment:
+        OP_CONNECT_HOST: "{{ op_connect_host }}"
+      register: pihole_secret
+      no_log: true  # Prevent secrets from appearing in logs
+      
+    - name: Extract admin password from secret
+      set_fact:
+        pihole_admin_password: "{{ pihole_secret.op_item.fields | selectattr('label', 'equalto', 'password') | map(attribute='value') | first }}"
+      no_log: true
+      
+    - name: Deploy Pi-hole container with secret password
+      community.docker.docker_container:
+        name: pihole
+        image: pihole/pihole:latest
+        env:
+          WEBPASSWORD: "{{ pihole_admin_password }}"
+          TZ: "America/Los_Angeles"
+        ports:
+          - "53:53/tcp"
+          - "53:53/udp"
+          - "80:80/tcp"
+        restart_policy: unless-stopped
+      no_log: true
+      
+    - name: Clear password from memory
+      set_fact:
+        pihole_admin_password: ""
+      no_log: true
+```
+
+**Running the playbook securely:**
+
+```bash
+# Store Connect token in environment (loaded from secure file)
+export OP_CONNECT_TOKEN=$(sudo cat /etc/op/connect/ansible.token)
+
+# Run playbook
+ansible-playbook -i inventory.yml deploy-pihole.yml
+
+# Unset token immediately
+unset OP_CONNECT_TOKEN
+```
+
+**Ansible Vault alternative (recommended for production):**
+
+```bash
+# Encrypt the Connect token in Ansible Vault
+ansible-vault encrypt_string 'YOUR_CONNECT_TOKEN' --name 'op_connect_token' >> group_vars/all/vault.yml
+
+# Reference vaulted variable in playbook:
+# vars:
+#   op_connect_token: "{{ vault_op_connect_token }}"
+
+# Run with vault password
+ansible-playbook -i inventory.yml deploy-pihole.yml --ask-vault-pass
+```
+
+**Other services**
+
+- For apps in this repo, fetch secrets at startup via REST/SDK using per-app tokens loaded from secret mounts. Avoid baking tokens into images or configs.
+
+### Verify
+
+- `/health` returns ok.
+- Token test: list vaults with a scoped token and confirm only intended vaults are visible.
+- XPipe automation returns the expected secret fields and establishes a connection without persisting secrets.
+- Ansible task fetches a secret field with `no_log: true` and succeeds.
+
+**Verification commands:**
+
+```bash
+# 1. Test Connect API health
+curl -f http://10.76.50.10:8080/health
+# Expected: JSON with "name":"1Password Connect API", status indicators
+
+# 2. Test Connect API heartbeat (simpler check)
+curl -f http://10.76.50.10:8080/heartbeat
+# Expected: .
+
+# 3. List vaults with scoped token (load from secure file)
+export OP_API_TOKEN=$(sudo cat /etc/op/connect/xpipe.token)
+curl -s -H "Authorization: Bearer $OP_API_TOKEN" \
+  http://10.76.50.10:8080/v1/vaults | jq '.[] | {id, name}'
+# Expected: Only vaults authorized for this token
+
+# 4. Fetch a specific item (test secret retrieval)
+VAULT_ID="abc123xyz"
+ITEM_ID="def456uvw"
+curl -s -H "Authorization: Bearer $OP_API_TOKEN" \
+  "http://10.76.50.10:8080/v1/vaults/${VAULT_ID}/items/${ITEM_ID}" | jq '.fields[] | {label, value}'
+# Expected: Item fields with values
+
+# 5. Test XPipe secret fetcher
+sudo /usr/local/bin/xpipe-op-fetch $VAULT_ID $ITEM_ID
+# Expected: {"username":"...","password":"..."}
+
+# 6. Clean up
+unset OP_API_TOKEN
+
+# 7. Verify no secrets in environment
+env | grep -i 'password\|token\|secret' || echo "✓ No secrets in environment"
+
+# 8. Test Ansible integration
+ansible-playbook -i localhost, test-connect.yml --check
+# Expected: Playbook executes without errors; secrets fetched successfully
+```
+
+**Troubleshooting common issues:**
+
+```bash
+# Issue: Connection refused
+# Solution: Verify Connect API is running and accessible
+docker compose ps
+docker compose logs connect-api
+
+# Issue: 401 Unauthorized
+# Solution: Verify token is valid and not expired
+# Regenerate token if needed:
+op connect token create xpipe-battlestar --server battlestar-connect --vault "Battlestar Secrets"
+
+# Issue: 403 Forbidden (vault not accessible)
+# Solution: Token lacks access to requested vault; create new token with proper vault scope
+
+# Issue: Empty response from API
+# Solution: Check item ID and vault ID are correct
+curl -s -H "Authorization: Bearer $OP_API_TOKEN" \
+  http://10.76.50.10:8080/v1/vaults | jq '.[]'
+```
+
+### Hardening & ops tips
+
+- TLS: terminate at an internal proxy or enable TLS in Connect; consider mTLS for high-trust zones.
+- Isolation: keep API on internal-only networks/VLANs; no public ingress.
+- Logging/Audit: log token usage; alert on failed auth and unusual call rates.
+- Backups: protect `1password-credentials.json` (identity); back up secrets store as per 1Password guidance; never commit it.
+- Rotation & revocation: schedule rotation; revoke on role changes; re-issue per-service tokens when staff or services change.
