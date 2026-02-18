@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-* **Critical naming inconsistency resolved:** Work VLAN 90 name standardized to **ScyllaProcessControl** across all documents (was incorrectly listed as "ScyllaDataControl" in firewall-matrix.md diagram)
+* **Critical naming inconsistency resolved:** Work VLAN 90 name standardized to **ScyllaProcessControl** across all documents (was incorrectly listed as "ScyllaDataControl" in firewall-matrix.md, baseline documents)
+* **Baseline documents updated:** Camera VLAN names updated to current naming (ScorpiaMediaShield/ScorpiaMediaRelay) from deprecated names (ScorpiaShieldNet/CanceronSignalRelay)
 * **Project_Architecture_Blueprint.md:** Corrected invalid future date (2025-10-14) to current date format (Last Updated: 2026-02-18)
 * **readme.md:** Fixed malformed code block fence (removed space in ``` tree marker)
 * **readme.md:** Updated status from "unknown" to "Active" for clarity
