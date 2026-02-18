@@ -1,6 +1,6 @@
 # 🧭 Project Architecture Blueprint — Battlestar Ventana Network Blueprint
 
-Generated: 2025-10-14
+**Last Updated:** 2026-02-18
 
 This blueprint documents the effective architecture of the Battlestar Ventana homelab network and its supporting operational documentation. It consolidates patterns present across the repository (docs, dashboards, alerts, HA configs) and provides guidance for consistent extension and maintenance.
 
@@ -166,7 +166,7 @@ Dependency rules:
 
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
-- No circular dependencies; Services do not depend on Untrusted/Semi-Trusted availability
+- No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
 
 ### 5.1 Enhanced Security Layer Components
 
