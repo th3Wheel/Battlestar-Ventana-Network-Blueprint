@@ -12,7 +12,7 @@ if (-not (Test-Path $pythonExe)) {
 Write-Host "Running pylint using: $pythonExe"
 
 Get-ChildItem -Path $repoRoot -Recurse -Filter *.py |
-    Where-Object { -not ($_.FullName -match '\\.venv') } |
+    Where-Object { -not ($_.FullName -match '\\.venv|\\node_modules') } |
     ForEach-Object {
         Write-Host "Linting: $($_.FullName)"
         & $pythonExe -m pylint $_.FullName

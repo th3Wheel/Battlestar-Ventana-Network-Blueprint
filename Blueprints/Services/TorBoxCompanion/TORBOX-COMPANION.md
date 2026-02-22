@@ -22,6 +22,8 @@ This deployment uses:
 
 ## Network topology
 
+### Static Network Diagram
+
 ```mermaid
 flowchart LR
     subgraph Host["Radxa Host (Debian 11, firewalld+nftables)"]
@@ -52,12 +54,30 @@ flowchart LR
     DNS --> Host
 ```
 
+### Interaction Sequence Diagram
+
+``` mermaid
+sequenceDiagram
+    participant XP as XPipe / Admin Browser
+    participant GW as Router / L3 Gateway
+    participant RH as Radxa Host
+    participant DC as Docker: torbox-companion
+    participant TB as TorBox Cloud API
+
+    XP->>GW: HTTP(S) request to torbox-companion
+    GW->>RH: Forward request to Radxa (port 8300/3000)
+    RH->>DC: Deliver request via torbox_net (172.30.0.10:3000)
+    DC->>DC: Process UI/API logic
+    DC->>TB: HTTPS request to TorBox API (with API key)
+    TB-->>DC: JSON response (status, files, actions)
+    DC-->>XP: Rendered UI / JSON response
+```
+
 ---
 
 ## Hardened Docker Compose stack
 
 ```yaml
-version: "3.9"
 
 services:
   torbox-companion:
