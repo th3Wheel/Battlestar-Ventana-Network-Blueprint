@@ -1,0 +1,60 @@
+# Port Allocation Registry (source of truth)
+#
+# Purpose
+# - Track host-published ports (Docker/Podman publish, Kubernetes NodePort/LB/Ingress, systemd listeners)
+# - Prevent collisions
+# - Provide an Ansible-friendly data source for firewall and documentation automation
+#
+# Uniqueness / collisions
+# - Ports must be unique per bind address (IP) *and* protocol:
+#     unique key = (bind_address, host_port, protocol)
+# - Wildcard binds like 0.0.0.0 or :: claim the port on all interfaces for that protocol and therefore
+#   conflict with any specific-IP bind of the same host_port/protocol.
+#
+# Notes on fields
+# - vlan: VLAN ID integer when known; null when not yet assigned.
+# - consumers: list of VLAN IDs (integers) allowed/expected to access this port.
+# - source: keep this as a traceable pointer to the repo artifact that introduced the allocation.
+
+port_allocations:
+  - id: op-connect-api
+    host: servervault
+    vlan: 50
+    zone: ServerVault
+    service: 1Password Connect API
+    runtime: docker
+    stack: infrastructure/1password/connectserver.md
+    bind_address: 10.76.50.10
+    host_port: 8080
+    target_port: 8080
+    protocol: tcp
+    exposure: vlan-only
+    consumers: [10, 40, 50, 90]
+    auth_tls: 'Bearer token auth; HTTP by default; keep internal-only or place behind internal TLS proxy'
+    source:
+      file: infrastructure/1password/connectserver.md
+      reference: "ports: - '10.76.50.10:8080:8080'"
+    notes: >
+      Bind to an internal interface only. If this becomes routed cross-VLAN, ensure firewall policy remains
+      least-privilege and keep docs/services.md and docs/firewall-matrix.md aligned.
+
+  - id: torbox-companion-ui
+    host: radxa-torbox
+    vlan: null
+    zone: null
+    service: TorBox Companion UI
+    runtime: docker
+    stack: Blueprints/Services/TorBoxCompanion/TORBOX-COMPANION.md
+    bind_address: 0.0.0.0
+    host_port: 8300
+    target_port: 3000
+    protocol: tcp
+    exposure: vlan-only
+    consumers: [10, 90]
+    auth_tls: 'App-level auth (if configured); consider reverse proxy + TLS; otherwise LAN-only'
+    source:
+      file: Blueprints/Services/TorBoxCompanion/TORBOX-COMPANION.md
+      reference: "ports: - '8300:3000' (optional publish)"
+    notes: >
+      Blueprint shows container listening on 172.30.0.10:3000; publishing is optional.
+      Prefer binding to a specific VLAN IP rather than 0.0.0.0 if you want tighter blast-radius.

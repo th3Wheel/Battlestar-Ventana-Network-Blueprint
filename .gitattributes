@@ -15,6 +15,9 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 
+# yamllint configuration file (no extension)
+.yamllint text eol=lf
+
 # Markdown files
 *.md text eol=lf
 

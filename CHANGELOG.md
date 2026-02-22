@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 * **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
+* **Port allocation registry**: `infrastructure/ports.registry.yml` (Ansible-friendly source of truth) and `infrastructure/ports.md` (human-readable rendering).
 * **`plan/` directory** with feature and infrastructure planning documents.
 * **`docs/raw/network.md`** - Raw network documentation.
 * **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
