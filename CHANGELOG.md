@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **Project_Architecture_Blueprint.md:** Corrected invalid future date (2025-10-14) to current date format (Last Updated: 2026-02-18)
 * **readme.md:** Fixed malformed code block fence (removed space in \`\`\` tree marker)
 * **readme.md:** Updated status from "unknown" to "Active" for clarity
+* **readme.md:** Corrected repo structure tree to match actual filenames (readme.md not README.md) and actual directory contents
 * **naming-conventions.md:** Replaced Unicode hyphens (U+2011) with standard ASCII hyphens for consistency
 * **Project_Architecture_Blueprint.md:** Improved clarity of circular dependency statement
 * **firewall-matrix.md:** Clarified IaC implementation status as "PLANNED" (was ambiguous with "COMPLETED" marker elsewhere)
