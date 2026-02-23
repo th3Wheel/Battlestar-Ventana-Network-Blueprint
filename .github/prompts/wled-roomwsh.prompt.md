@@ -1,3 +1,10 @@
+---
+agent: context7
+description: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
+model: gpt-4-turbo
+tools: [execute, read, edit, search, web, agent, todo]
+---
+
 # GitHub Agent Prompt: Add Hyperion + WLED Room Lighting Config
 
 Task:Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
@@ -126,8 +133,3 @@ This config is designed to support screen capture, ambient effects, and WLED fal
 
 Ensure JSON is valid and formatted with 2-space indentation
 workflow to validate the JSON files automatically.
----
-agent: context7
-description: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
-model: gpt-4-turbo
-tools: [execute, read, edit, search, web, agent, todo]
