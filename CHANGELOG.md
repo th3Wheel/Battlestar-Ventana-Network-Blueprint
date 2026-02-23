@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-* Placeholder for bug fixes.
+* **Docker GPG key keyring mismatch** in `roles/radxa_docker_host_bootstrap/tasks/docker-install.yml` — Added `keyring: /usr/share/keyrings/docker-archive-keyring.gpg` to the `apt_key` task so the key is saved to the same path the `apt_repository` `signed-by` clause expects, preventing APT signature verification failure during Docker installation.
 
 ### Security
 
