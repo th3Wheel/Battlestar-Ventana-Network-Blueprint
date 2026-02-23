@@ -40,6 +40,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
+- [`docs/spec-review-todos.md`](docs/spec-review-todos.md) — Outstanding specification review items and TODOs
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
 
 ---
@@ -81,6 +82,7 @@ Battlestar-Ventana-Network-Blueprint/
 │   ├── physical-hosts.md
 │   ├── Project_Architecture_Blueprint.md
 │   ├── services.md
+│   ├── spec-review-todos.md
 │   └── raw/
 │       └── network.md
 │
