@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+* **`.github/agents/arm-migration.agent.md`** - Fixed malformed YAML front matter; removed duplicate embedded YAML block, keeping single valid front matter section.
+* **`.github/prompts/create-tldr-page.prompt.md`** - Removed duplicate YAML front matter block; fixed truncated word 'usefu' → 'useful'; removed duplicate bullet point lines.
+* **`.github/scripts/run_pylint.ps1`** - Collects all Python files and runs pylint in a single invocation; exits non-zero when pylint reports failures.
+* **`.github/skills/ha-automation-guardrail-skill.json`** - Repair command now uses `${REPO_ROOT}` consistently instead of a relative path.
+* **`.github/workflows/mcp-workflow.yml`** - Pinned `@context7/mcp-server` to version `1.0.0` for reproducibility and supply-chain safety.
+* **`.github/prompts/wled-roomwsh.prompt.md`** - Moved YAML front matter from end of file to top; added closing `---` delimiter.
+* **`.github/prompts/conventional-commit.prompt.md`** - Replaced misleading "automatic commit" wording with explicit user-confirmation step.
 * **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
 
 * **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.

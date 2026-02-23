@@ -21,7 +21,7 @@
       "args": [],
       "execution": {
         "type": "shell",
-        "command": "echo '[]' > home-assistant/automations.yaml"
+        "command": "echo '[]' > \"${REPO_ROOT}/home-assistant/automations.yaml\""
       }
     },
     {
