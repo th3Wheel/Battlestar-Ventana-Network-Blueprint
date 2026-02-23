@@ -29,7 +29,7 @@ Config files: `.markdownlintrc.json` (rules) + `.markdownlint-cli2.jsonc` (CLI c
 
 To install globally: `npm install -g markdownlint-cli2`
 
-**Auto-fix** markdown errors:
+**Autofix** Markdown errors:
 
 ```bash
 npx markdownlint-cli2 --fix "**/*.md"
@@ -56,7 +56,7 @@ for f in ['.markdownlintrc.json', '.vscode/settings.json']:
 
 ### Validation Order
 1. Make documentation changes
-2. Run markdown linter: `npx markdownlint-cli2 "**/*.md" "#node_modules"`
+2. Run Markdown linter: `npx Markdownlint-cli2 "**/*.md" "#node_modules"`
 3. Run YAML validation if modified YAML
 4. Run JSON validation if modified JSON
 5. Update `CHANGELOG.md` in `[Unreleased]` section
@@ -126,7 +126,7 @@ for f in ['.markdownlintrc.json', '.vscode/settings.json']:
 - 🟡 Limited access (specific ports/services)
 - 🔵 View-only (monitoring, read-only)
 - ❌ Blocked
-- 🌐 Internet access
+- 🌐 internet access
 
 ---
 
@@ -205,7 +205,7 @@ Example:
 6. Add to `docs/services.md` with port/protocol details
 7. Update `readme.md` VLAN list
 8. Update `CHANGELOG.md` under `[Unreleased]` → `### Added`
-9. Run markdown linter: `npx markdownlint-cli2 "**/*.md"`
+9. Run markdown linter: `npx Markdownlint-cli2 "**/*.md"`
 
 ### Updating Firewall Rules
 1. Update `docs/firewall-matrix.md` access matrix table
@@ -218,23 +218,23 @@ Example:
 
 ### Adding Documentation
 1. Create file in appropriate directory (`docs/`, `baseline/`, `plan/`)
-2. Use emoji-prefixed H1 header matching repo style
+2. Use emoji-prefixed H1 header matching repository style
 3. Include `---` separators between major sections
 4. Add reference link in `readme.md` if appropriate
 5. Update `CHANGELOG.md` under `[Unreleased]` → `### Added`
-6. Run markdown linter: `npx markdownlint-cli2 "**/*.md"`
+6. Run markdown linter: `npx Markdownlint-cli2 "**/*.md"`
 
 ---
 
 ## 🔍 Validation Checklist (Before Every Commit)
 
-- [ ] Run markdown linter: `npx markdownlint-cli2 "**/*.md" "#node_modules"`
+- [ ] Run markdown linter: `npx Markdownlint-cli2 "**/*.md" "#node_modules"`
 - [ ] Run YAML validation if modified `.yaml` files
 - [ ] Run JSON validation if modified `.json` files
 - [ ] Updated `CHANGELOG.md` under `[Unreleased]`
 - [ ] Verified VLAN IDs consistent across all docs
 - [ ] Checked emoji usage matches existing patterns
-- [ ] Confirmed internal links work (markdown references to other docs)
+- [ ] Confirmed internal links work (Markdown references to other docs)
 - [ ] Verified firewall matrix symbols used correctly
 - [ ] Ensured Mermaid diagram syntax is valid
 - [ ] Followed naming conventions from `docs/naming-conventions.md`
