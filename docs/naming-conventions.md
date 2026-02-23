@@ -18,7 +18,7 @@
 
 ---
 
-## 🖥️ Hostnames Can you put us on the other side? Yes. So, that will have enough computing power. Combined with the camera and the processor, to actually do facial recognition
+## 🖥️ Hostnames
 
 ### Physical Hosts (Hypervisors / Bare‑metal)
 
@@ -26,7 +26,6 @@
 - Examples: `CrimsonRogue`, `MintRedoubt`, `AzureDefiant`  
 - Reuse Policy: Unique per chassis; retired names are never reused  
 - External Mapping: None  
-Yeah That one's even smaller. That one's even smaller. Attached to an AI unit.
 
 ### Personal Computers & Laptops
 
