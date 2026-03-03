@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+* **README monitoring section** - Updated Grafana reference to note dashboards are managed in the UI; corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
+* **README tree structure** - Changed code fence language from `tree` to `text`; removed spurious empty line in tree
+
 ---
 
 ## [1.1.0] — 2025‑12‑05
