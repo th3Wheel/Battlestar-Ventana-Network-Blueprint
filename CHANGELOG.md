@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **naming-conventions.md:** Replaced Unicode hyphens (U+2011) with standard ASCII hyphens for consistency
 * **Project_Architecture_Blueprint.md:** Improved clarity of circular dependency statement
 * **firewall-matrix.md:** Clarified IaC implementation status as "PLANNED" (was ambiguous with "COMPLETED" marker elsewhere)
+* **Perimeter LED segments:** Clarified WLED segment `stop` semantics (exclusive), made preset "All White" deterministic across segments 0–5, and synced the WLED backup snapshot to preserve the 6-segment layout.
 
 ### Added
 
