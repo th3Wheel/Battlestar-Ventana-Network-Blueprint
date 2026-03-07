@@ -31,7 +31,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📊 Monitoring & dashboards
 
-- Grafana: dashboards managed in Grafana UI (not stored as JSON in this repo)
+- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
 - Prometheus: [`alerts/Alertmanager style.yaml`](alerts/Alertmanager%20style.yaml)
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
@@ -60,7 +60,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ```text
 Battlestar-Ventana-Network-Blueprint/
-├── [README.md](readme.md)                          # Master blueprint doc
+├── [readme.md](readme.md)                          # Master blueprint doc
 ├── [CHANGELOG.md](CHANGELOG.md)                    # Versioned history of changes
 ├── [layout.md](layout.md)                          # Network layout
 ├── [network-map.md](network-map.md)                # Network topology map
@@ -69,6 +69,7 @@ Battlestar-Ventana-Network-Blueprint/
 │   └── [Alertmanager style.yaml](alerts/Alertmanager%20style.yaml)
 │
 ├── dashboards/                                     # Grafana dashboards
+│   ├── [dashboard.json](dashboards/dashboard.json)
 │   └── [Homepage Mockup.md](dashboards/Homepage%20Mockup.md)
 │
 ├── docs/                                           # Supporting documentation
