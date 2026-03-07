@@ -6,7 +6,7 @@ This document provides the complete directory structure and file organization fo
 
 ## 🏗️ **Complete Repository Structure**
 
-```
+``` mermaid
 Battlestar-Ventana-Network-Blueprint/
 │
 ├── 📄 Core Documentation
