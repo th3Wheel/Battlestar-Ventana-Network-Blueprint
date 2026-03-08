@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+* **README monitoring section** - Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repo per IOC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
+* **README tree structure** - Changed code fence language from `tree` to `text`; removed spurious empty line in tree; corrected `README.md` label to `readme.md` to match actual filename; added `dashboard.json` to tree
+* **dashboards/dashboard.json** - Added placeholder Grafana dashboard JSON file
+
 ---
 
 ## [1.1.0] — 2025‑12‑05
