@@ -73,7 +73,7 @@ Follow the established naming patterns documented in `docs/naming-conventions.md
 ### File Organization
 
 ```
-├── README.md                 # Master blueprint doc
+├── readme.md                 # Master blueprint doc
 ├── CHANGELOG.md              # Versioned history
 ├── docs/                     # Supporting documentation
 │   ├── firewall-matrix.md    # VLAN firewall rules
