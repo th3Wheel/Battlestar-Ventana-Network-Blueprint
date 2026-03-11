@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **README monitoring section** - Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repo per IOC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
 * **README tree structure** - Changed code fence language from `tree` to `text`; removed spurious empty line in tree; corrected `README.md` label to `readme.md` to match actual filename; added `dashboard.json` to tree
 * **dashboards/dashboard.json** - Added placeholder Grafana dashboard JSON file
+* **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
+* **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
+* **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
+* **`plan/` directory** with feature and infrastructure planning documents.
+* **`docs/raw/network.md`** - Raw network documentation.
+* **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
+* **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
 
 ---
 
