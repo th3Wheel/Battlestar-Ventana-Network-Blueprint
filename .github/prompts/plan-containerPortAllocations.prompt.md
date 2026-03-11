@@ -14,10 +14,10 @@ You chose to place the human doc at `infrastructure/ports.md`, include **guideli
      - `id`, `host`, `vlan`, `zone`, `service`, `runtime`, `stack`, `bind_address`, `host_port`, `target_port`, `protocol`, `exposure`, `consumers`, `auth_tls`, `source`, `notes`
    - Keep values Ansible-friendly: numbers as integers where possible (ports), strings for addresses, and simple lists for `consumers`.
 2. Create the human document at `infrastructure/ports.md` (new file).
-2. Add a short **Scope + Definitions** section that distinguishes:
+3. Add a short **Scope + Definitions** section that distinguishes:
    - Network service ports (already covered by `docs/services.md` and `docs/firewall-matrix.md`)
    - Host-published ports (this doc’s source of truth): Docker/Podman `-p`, K8s NodePort/Ingress/LB, and systemd listeners.
-3. Add **Conventions** (the “how to allocate ports” rules), including:
+4. Add **Conventions** (the “how to allocate ports” rules), including:
    - Bind-address rules (prefer `127.0.0.1` or a specific VLAN IP over `0.0.0.0`)
    - Exposure labels: `localhost-only`, `VLAN-only`, `routed (explicit firewall)`, `internet (discouraged)`
    - Protocol notation (`tcp`, `udp`, `tcp/udp`)
