@@ -1,15 +1,18 @@
 # 📜 CHANGELOG — Battlestar Ventana Network Blueprint
 
-All notable changes to this project will be documented in this file.  
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
+All notable changes to this project will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
 ## [Unreleased]
 
-### Added
+### Fixed
 
+* **README monitoring section** - Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repo per IOC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
+* **README tree structure** - Changed code fence language from `tree` to `text`; removed spurious empty line in tree; corrected `README.md` label to `readme.md` to match actual filename; added `dashboard.json` to tree
+* **dashboards/dashboard.json** - Added placeholder Grafana dashboard JSON file
 * **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
 * **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
 * **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
@@ -18,16 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
 * **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
 
+---
+
+## [1.1.0] — 2025‑12‑05
+
 ### Changed
 
-* **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
-
-* **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.
-* Updated all documentation references to reflect new VLAN names.
-* **Repository reorganization** - Consolidated network documentation from `../Network Structure/` into main blueprint directory.
-* **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
-* **File renamed** - `fgemp` renamed to `current-network-baseline.md` for clarity (baseline network state documentation).
-* **Baseline folder created** - New `baseline/` directory for architectural design documents including network blueprints, deployment guides, and system specifications.
+* **README repository structure** - Enhanced tree structure with clickable markdown links to all files and directories for improved navigation
+* **Documentation accessibility** - All documentation files now directly accessible from README tree structure
+* **Baseline folder excluded** - Removed baseline folder from README tree to focus on active documentation
 
 ### Removed
 
