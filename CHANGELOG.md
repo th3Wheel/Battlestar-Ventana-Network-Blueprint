@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+* **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
+* **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
 * **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
 * **`plan/` directory** with feature and infrastructure planning documents.
 * **`docs/raw/network.md`** - Raw network documentation.
