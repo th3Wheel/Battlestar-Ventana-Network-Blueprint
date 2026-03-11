@@ -1,8 +1,8 @@
 # 💠 Battlestar Ventana Network Blueprint
 
-**IP Scheme:** `10.76.X.0/24` (X = VLAN ID)
-**Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.
-**Status:**  unknown
+**IP Scheme:** `10.76.X.0/24` (X = VLAN ID)  
+**Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.  
+**Status:**  unknown  
 
 ---
 
