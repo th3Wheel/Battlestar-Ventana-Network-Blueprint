@@ -1,0 +1,67 @@
+---
+# OPNsense VM evaluation playbook
+# Provisions an OPNsense VM on CrimsonRogue (Proxmox) and validates it against
+# the full Battlestar blueprint VLAN catalogue.
+# VLAN data is sourced from ansible/group_vars/all/vlan-vars.yml (source of truth).
+#
+# Tags:
+#   provision      — Create and boot the OPNsense VM on Proxmox (CrimsonRogue)
+#   configure      — Apply VLAN interfaces, DHCP scopes, and firewall rules via OPNsense API
+#   validate       — Verify DHCP option 6, DNS relay, NAT, and firewall policy for VLANs 20 and 40
+#   full-matrix    — Extend validation to all 11 blueprint VLANs
+#   generate-config — Export OPNsense XML config backup and emit restore script
+#   teardown       — Remove the evaluation VM after results are committed
+
+- name: "Provision — create OPNsense VM on CrimsonRogue via Proxmox API"
+  hosts: CrimsonRogue
+  gather_facts: false
+  tags: [provision]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: provision
+
+- name: "Configure — apply VLANs, DHCP, and firewall rules via OPNsense API"
+  hosts: lab_opnsense_vm
+  gather_facts: false
+  tags: [configure]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: configure
+
+- name: "Validate — verify DHCP option 6, DNS relay, and firewall for VLANs 20 and 40"
+  hosts: lab_opnsense_vm
+  gather_facts: true
+  tags: [validate]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: validate
+
+- name: "Full matrix — validate all 11 blueprint VLANs"
+  hosts: lab_opnsense_vm
+  gather_facts: true
+  tags: [full-matrix]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: full_matrix
+
+- name: "Generate config — export OPNsense XML backup and restore script"
+  hosts: lab_opnsense_vm
+  gather_facts: true
+  tags: [generate-config]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: generate_config
+
+- name: "Teardown — remove OPNsense evaluation VM"
+  hosts: CrimsonRogue
+  gather_facts: false
+  tags: [teardown]
+  roles:
+    - role: opnsense-vm-eval
+      vars:
+        opnsense_eval_task: teardown

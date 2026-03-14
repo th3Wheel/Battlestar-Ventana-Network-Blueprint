@@ -1,6 +1,6 @@
 ---
-goal: Ansible-driven implementation of linux-router and OpenWrt-in-Docker evaluations for Route Pi² against the full Battlestar blueprint VLAN catalogue
-version: 1.0
+goal: Ansible-driven implementation of linux-router, OpenWrt-in-Docker, and OPNsense VM evaluations for Route Pi² against the full Battlestar blueprint VLAN catalogue
+version: 1.1
 date_created: 2026-03-14
 last_updated: 2026-03-14
 owner: Network Automation
@@ -18,7 +18,7 @@ tags:
 
 ![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
 
-This plan provides the Ansible-driven implementation schedule to complete the evaluations defined in [`plans/infrastructure-router-vlans-2.md`](infrastructure-router-vlans-2.md) and deliver all required artifacts within a six-week window. All IP addresses, VLAN IDs, gateway addresses, and DHCP scopes are sourced exclusively from the repository's source-of-truth files (`docs/dhcp-scopes.md`, `docs/naming-conventions.md`, `docs/firewall-matrix.md`). Ansible orchestrates both the lab provisioning and the structured validation steps, producing machine-readable results that feed the decision record.
+This plan provides the Ansible-driven implementation schedule to complete the evaluations defined in [`plans/infrastructure-router-vlans-2.md`](infrastructure-router-vlans-2.md) and deliver all required artifacts within an eight-week window. Three routing stacks are evaluated in parallel tracks: **linux-router**, **OpenWrt-in-Docker**, and **OPNsense running as a Proxmox VM**. All IP addresses, VLAN IDs, gateway addresses, and DHCP scopes are sourced exclusively from the repository's source-of-truth files (`docs/dhcp-scopes.md`, `docs/naming-conventions.md`, `docs/firewall-matrix.md`). Ansible orchestrates both the lab provisioning and the structured validation steps, producing machine-readable results that feed the decision record.
 
 ## 1. Required Components & Servers
 
@@ -58,12 +58,14 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 
 | Artifact | Path | Purpose |
 |----------|------|---------|
-| Inventory | `ansible/inventory/hosts.yml` | Declares all lab hosts, VLAN bridges, and evaluation targets |
+| Inventory | `ansible/inventory/hosts.yml` | Declares all lab hosts, VLAN bridges, and evaluation targets (including OPNsense VM group) |
 | VLAN variables | `ansible/group_vars/all/vlan-vars.yml` | Single source of VLAN data consumed by all playbooks |
 | Linux-router evaluation playbook | `ansible/playbooks/evaluate-linux-router.yml` | Orchestrates Phase 1 and Phase 3 linux-router tasks from vlans-2 |
 | OpenWrt Docker evaluation playbook | `ansible/playbooks/evaluate-openwrt-docker.yml` | Orchestrates Phase 1 and Phase 3 OpenWrt tasks from vlans-2 |
+| OPNsense VM evaluation playbook | `ansible/playbooks/evaluate-opnsense-vm.yml` | Provisions OPNsense VM on CrimsonRogue and validates against all blueprint VLANs |
 | Linux-router eval role | `ansible/roles/linux-router-eval/` | Reusable role: install, configure, test, and collect results |
 | OpenWrt Docker eval role | `ansible/roles/openwrt-docker-eval/` | Reusable role: pull image, launch container, run VLAN tests |
+| OPNsense VM eval role | `ansible/roles/opnsense-vm-eval/` | Reusable role: create Proxmox VM, configure via OPNsense API, validate and export config backup |
 
 ## 2. Implementation Schedule
 
@@ -110,16 +112,33 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 
 ---
 
-### Week 4 — Full Blueprint VLAN Validation (All 11 VLANs)
+### Week 3 (parallel) — OPNsense VM Lab Evaluation (VLANs 20 & 40)
 
-**Goal:** Extend evaluation to the complete VLAN catalogue (10, 20, 30, 31, 40, 50, 60, 70, 81, 82, 90) against the structured matrix.
+**Goal:** Provision OPNsense as a VM on CrimsonRogue via Proxmox and validate dual-VLAN routing using the OPNsense REST API.
+
+| Task | Action | Owner | Effort |
+|------|--------|-------|--------|
+| — | Upload OPNsense ISO to CrimsonRogue Proxmox local storage (`local:iso/OPNsense-24.7-dvd-amd64.iso`) | Network Automation | 0.5h |
+| — | Run `ansible/playbooks/evaluate-opnsense-vm.yml --tags=provision` to create and boot VMID 200 on CrimsonRogue | Network Automation | 1h |
+| — | Complete OPNsense first-boot wizard (console or via web UI at `10.76.40.20`), create API key/secret, store in Ansible Vault | Network Automation | 1h |
+| — | Run `evaluate-opnsense-vm.yml --tags=configure` to push all 11 VLAN definitions and DHCP scopes via OPNsense API | Network Automation | 2h |
+| — | Run `evaluate-opnsense-vm.yml --tags=validate` to verify VLANs 20 and 40, DHCP option 6, and Pi-hole DNS relay | Network Automation | 2h |
+
+**Exit criteria:** OPNsense VM VMID 200 running on CrimsonRogue; `research/opnsense-vm-capabilities.md` committed with pass/fail for VLANs 20 and 40.
+
+---
+
+### Week 4 — Full Blueprint VLAN Validation (All 11 VLANs, All Three Stacks)
+
+**Goal:** Extend evaluation to the complete VLAN catalogue (10, 20, 30, 31, 40, 50, 60, 70, 81, 82, 90) against the structured matrix for all three routing stacks.
 
 | Task (vlans-2) | Action | Owner | Effort |
 |----------------|--------|-------|--------|
 | TASK-010 | Run `evaluate-linux-router.yml --tags=full-matrix` iterating all VLANs from `vlan-vars.yml` | Network Automation | 4h |
 | TASK-013 | Run `evaluate-openwrt-docker.yml --tags=full-matrix` for the same VLAN set | Network Automation | 4h |
+| — | Run `evaluate-opnsense-vm.yml --tags=full-matrix` to assert all 11 VLANs exist in OPNsense and append results to `research/opnsense-vm-capabilities.md` | Network Automation | 3h |
 
-**Exit criteria:** All 11 VLANs tested for both routing stacks; results logged in respective research files.
+**Exit criteria:** All 11 VLANs tested for all three routing stacks; results logged in respective research files.
 
 ---
 
@@ -131,10 +150,11 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 |----------------|--------|-------|--------|
 | TASK-011 | Run `evaluate-linux-router.yml --tags=generate-config` to emit prototype scripts into `infrastructure/linux-router/prototypes/` | Network Automation | 3h |
 | TASK-014 | Run `evaluate-openwrt-docker.yml --tags=generate-config` to emit `docker-compose.yml` and UCI backups into `infrastructure/openwrt-docker/prototypes/` | Network Automation | 3h |
+| — | Run `evaluate-opnsense-vm.yml --tags=generate-config` to export OPNsense XML config backup and Proxmox VM creation script into `infrastructure/opnsense-vm/prototypes/` | Network Automation | 2h |
 | TASK-012 | Update `router-a5e.md#linux-router-validation` with command transcripts | Network Automation | 2h |
 | TASK-015 | Update `router-a5e.md#openwrt-docker-validation` with container validation steps | Network Automation | 2h |
 
-**Exit criteria:** Prototype directories populated; router-a5e.md sections updated and committed.
+**Exit criteria:** Prototype directories populated for all three stacks; router-a5e.md sections updated and committed.
 
 ---
 
@@ -144,9 +164,10 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 
 | Task (vlans-2) | Action | Owner | Effort |
 |----------------|--------|-------|--------|
-| TASK-007 | Author `docs/decisions/linux-router-evaluation.md` with adoption/rejection recommendation | Network Automation | 4h |
+| TASK-007 | Author `docs/decisions/linux-router-evaluation.md` with adoption/rejection recommendation covering all three stacks (linux-router, OpenWrt, OPNsense) | Network Automation | 4h |
 | TASK-008 | Update `router-a5e.md` with evaluation notes and quick-start or rationale | Network Automation | 2h |
 | TASK-009 | Revise `plans/infrastructure-router-vlans-1.md` alternatives section | Network Automation | 1h |
+| — | Run `evaluate-opnsense-vm.yml --tags=teardown` to remove the evaluation VM after results are committed | Network Automation | 0.5h |
 | — | Update `plans/infrastructure-router-vlans-2.md` task table with completion dates | Network Automation | 1h |
 | — | Append completion summary to this plan (Section 9) | Network Automation | 1h |
 
@@ -158,7 +179,8 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 
 - **ALT-001**: Run evaluations manually without Ansible — increases risk of inconsistent results across VLAN sets; rejected in favour of reproducibility.
 - **ALT-002**: Evaluate only VLANs 20 and 40 — insufficient coverage of the full Battlestar VLAN catalogue; rejected per REQ-004 of vlans-2.
-- **ALT-003**: Collapse all six weeks into three by parallelising linux-router and OpenWrt evaluations on separate hosts — acceptable if both CrimsonRogue and AzureDefiant are available simultaneously; reduces schedule to 4 weeks.
+- **ALT-003**: Collapse all weeks into fewer by parallelising evaluations on separate hosts — acceptable if CrimsonRogue, AzureDefiant, and the OPNsense VM are available simultaneously.
+- **ALT-004**: Run OPNsense as a Docker container rather than a full VM — OPNsense is FreeBSD-based and requires a real VM for correct VLAN interface support; rejected in favour of a Proxmox KVM VM on CrimsonRogue.
 
 ## 4. Dependencies
 
@@ -168,34 +190,42 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 - **DEP-004**: CrimsonRogue (ProxmoxNode1) available with VLAN trunk and two bridged NICs for the Radxa A5E test node.
 - **DEP-005**: AzureDefiant (K3sNode1) running Docker Engine with `NET_ADMIN` capability available for OpenWrt containers.
 - **DEP-006**: Pi-hole reachable at `10.76.50.10` (GemenonServiceVault) or mocked in lab for DHCP option 6 validation.
-- **DEP-007**: Ansible ≥ 2.15 installed on the control node with `community.general` collection.
+- **DEP-007**: Ansible ≥ 2.15 installed on the control node with `community.general` and `community.docker` collections.
+- **DEP-008**: OPNsense ISO (`OPNsense-24.7-dvd-amd64.iso`) uploaded to CrimsonRogue Proxmox local storage before running the OPNsense provision tag.
+- **DEP-009**: OPNsense API key and secret stored in Ansible Vault (`ansible/vault.yml`) before running configure/validate tags.
 
 ## 5. Files
 
-- **FILE-001**: `ansible/inventory/hosts.yml` — Lab inventory declaring all evaluation hosts.
+- **FILE-001**: `ansible/inventory/hosts.yml` — Lab inventory declaring all evaluation hosts including OPNsense VM group.
 - **FILE-002**: `ansible/group_vars/all/vlan-vars.yml` — VLAN definitions sourced from blueprint truth files.
 - **FILE-003**: `ansible/playbooks/evaluate-linux-router.yml` — Linux-router evaluation orchestration.
 - **FILE-004**: `ansible/playbooks/evaluate-openwrt-docker.yml` — OpenWrt Docker evaluation orchestration.
-- **FILE-005**: `ansible/roles/linux-router-eval/` — Linux-router evaluation role.
-- **FILE-006**: `ansible/roles/openwrt-docker-eval/` — OpenWrt Docker evaluation role.
-- **FILE-007**: `plans/infrastructure-router-vlans-2.md` — Parent evaluation plan (task definitions and success criteria).
+- **FILE-005**: `ansible/playbooks/evaluate-opnsense-vm.yml` — OPNsense VM evaluation orchestration.
+- **FILE-006**: `ansible/roles/linux-router-eval/` — Linux-router evaluation role.
+- **FILE-007**: `ansible/roles/openwrt-docker-eval/` — OpenWrt Docker evaluation role.
+- **FILE-008**: `ansible/roles/opnsense-vm-eval/` — OPNsense VM evaluation role (Proxmox provisioning + API-driven configuration).
+- **FILE-009**: `plans/infrastructure-router-vlans-2.md` — Parent evaluation plan (task definitions and success criteria).
 
 ## 6. Testing
 
 - **TEST-001**: `ansible-playbook ansible/playbooks/evaluate-linux-router.yml --check` passes without errors before any lab run.
 - **TEST-002**: `ansible-playbook ansible/playbooks/evaluate-openwrt-docker.yml --check` passes without errors before any lab run.
-- **TEST-003**: `ansible-lint ansible/playbooks/` reports no violations against the default profile.
-- **TEST-004**: After Week 2, `research/linux-router-capabilities.md` contains entries for VLAN 20 and VLAN 40 with explicit pass/fail outcomes.
-- **TEST-005**: After Week 4, `research/linux-router-vlan-matrix.json` contains entries for all 11 VLANs with `tested: true` flags.
+- **TEST-003**: `ansible-playbook ansible/playbooks/evaluate-opnsense-vm.yml --check` passes without errors before any lab run.
+- **TEST-004**: `ansible-lint ansible/playbooks/` reports no violations against the default profile.
+- **TEST-005**: After Week 2, `research/linux-router-capabilities.md` contains entries for VLAN 20 and VLAN 40 with explicit pass/fail outcomes.
+- **TEST-006**: After Week 3 (OPNsense track), `research/opnsense-vm-capabilities.md` contains pass/fail entries for VLANs 20 and 40.
+- **TEST-007**: After Week 4, `research/linux-router-vlan-matrix.json` contains entries for all 11 VLANs with `tested: true` flags.
 
 ## 7. Risks & Assumptions
 
 - **RISK-001**: CrimsonRogue hardware unavailability delays Week 1; mitigation is pre-booking a maintenance window and documenting a VM fallback on MintRedoubt.
 - **RISK-002**: AzureDefiant K3s cluster policy may restrict `NET_ADMIN` for OpenWrt containers; mitigation is running the evaluation directly under Docker on MintRedoubt instead.
 - **RISK-003**: VLAN data diverges between `docs/dhcp-scopes.md` and `baseline/Battlestar-Ventana-Blueprint-Summary.md`; mitigation is treating `docs/dhcp-scopes.md` as the authoritative source and logging discrepancies in `docs/spec-review-todos.md`.
+- **RISK-004**: OPNsense first-boot wizard requires manual console interaction before the API is available; mitigation is pre-staging a cloud-init seed or scripted console input via Proxmox VNC in a later revision.
 - **ASSUMPTION-001**: All physical hosts are reachable via Ansible over SSH on their VLAN 40 (InfraCore) management addresses.
 - **ASSUMPTION-002**: The `10.76.X.0/24` subnet scheme is fixed and consistent with current production assignments.
 - **ASSUMPTION-003**: Ansible playbooks target a dedicated lab environment; no production VLANs are affected during the evaluation.
+- **ASSUMPTION-004**: OPNsense VM management IP is `10.76.40.20`; adjust `opnsense_mgmt_ip` in `roles/opnsense-vm-eval/defaults/main.yml` if the actual address differs after first-boot.
 
 ## 8. Related Specifications / Further Reading
 

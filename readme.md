@@ -112,10 +112,12 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   └── [vlan-vars.yml](ansible/group_vars/all/vlan-vars.yml)
 │   ├── playbooks/
 │   │   ├── [evaluate-linux-router.yml](ansible/playbooks/evaluate-linux-router.yml)
-│   │   └── [evaluate-openwrt-docker.yml](ansible/playbooks/evaluate-openwrt-docker.yml)
+│   │   ├── [evaluate-openwrt-docker.yml](ansible/playbooks/evaluate-openwrt-docker.yml)
+│   │   └── [evaluate-opnsense-vm.yml](ansible/playbooks/evaluate-opnsense-vm.yml)
 │   └── roles/
 │       ├── linux-router-eval/
-│       └── openwrt-docker-eval/
+│       ├── openwrt-docker-eval/
+│       └── opnsense-vm-eval/
 │
 └── plans/                                           # Architecture & feature plans
     ├── [architecture-route-pi-squared-1.md](plans/architecture-route-pi-squared-1.md)
