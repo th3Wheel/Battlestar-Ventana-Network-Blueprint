@@ -1,0 +1,37 @@
+# Markdownlint Ignore Patterns
+
+## Ignore VCS and editor metadata
+
+.git/
+.vscode/
+
+## Ignore local Python environment and caches
+
+.venv/
+.ruff_cache/
+
+## Ignore JavaScript dependencies and build artifacts
+
+node_modules/
+dist/
+coverage/
+
+## Ignore Copilot generated local memory/log artifacts
+
+.github/copilot/memory/
+.github/copilot/agent-memory/
+.github/copilot/agent-logs/
+
+## Ignore any doNotLint folder under .github (any depth)
+
+.github/**/doNotLint/
+.github/**/doNotLint/**
+
+## Ignore imported awesome-copilot instruction files
+
+.github/instructions/code-review-generic.instructions.md
+.github/instructions/gilfoyle-code-review.instructions.md
+.github/instructions/markdown.instructions.md
+.github/instructions/self-explanatory-code-commenting.instructions.md
+.github/instructions/shell.instructions.md
+.github/instructions/taming-copilot.instructions.md
