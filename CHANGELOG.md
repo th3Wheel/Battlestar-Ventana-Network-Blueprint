@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+* **`plans/infrastructure-router-vlans-3.md`** — Ansible-driven implementation schedule for completing the linux-router and OpenWrt-in-Docker evaluations defined in `plans/infrastructure-router-vlans-2.md`. Includes 6-week timeline, required components (CrimsonRogue, MintRedoubt, AzureDefiant), and full VLAN catalogue sourced from blueprint truth files.
+* **`ansible/inventory/hosts.yml`** — Ansible inventory for the evaluation lab: physical hosts (CrimsonRogue, MintRedoubt, AzureDefiant), Radxa Cubie A5E router node, and Pi-hole DNS reference, all addressed via VLAN 40 (InfraCore).
+* **`ansible/group_vars/all/vlan-vars.yml`** — Single Ansible source of truth for all 11 blueprint VLANs (IDs, names, subnets, gateways, DHCP ranges, lease times, DNS) sourced from `docs/dhcp-scopes.md` and `docs/naming-conventions.md`.
+* **`ansible/playbooks/evaluate-linux-router.yml`** — Tagged playbook orchestrating linux-router evaluation Phases 1 and 3 (research, matrix, provision, validate, full-matrix, generate-config).
+* **`ansible/playbooks/evaluate-openwrt-docker.yml`** — Tagged playbook orchestrating OpenWrt-in-Docker evaluation Phases 1 and 3.
+* **`ansible/roles/linux-router-eval/`** — Reusable Ansible role covering linux-router installation, VLAN interface creation, validation, and prototype script generation for all 11 blueprint VLANs.
+* **`ansible/roles/openwrt-docker-eval/`** — Reusable Ansible role covering OpenWrt Docker image pull, container provisioning, full VLAN bridge validation, and docker-compose/UCI artifact generation.
+
 ### Fixed
 
 * **README monitoring section** - Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repo per IOC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`

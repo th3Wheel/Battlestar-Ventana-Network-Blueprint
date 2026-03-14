@@ -1,0 +1,157 @@
+---
+# VLAN catalogue sourced from:
+#   docs/dhcp-scopes.md    — subnets, gateways, DHCP ranges, lease times
+#   docs/naming-conventions.md — canonical SSID/VLAN names
+#   docs/firewall-matrix.md    — internet access policy
+#
+# This file is the single Ansible source of truth for VLAN data.
+# All playbooks and roles must reference these variables rather than
+# hard-coding any IP addresses or VLAN IDs.
+
+# Pi-hole DNS server (GemenonServiceVault, VLAN 50)
+pihole_primary_ip: "10.76.50.10"
+
+# Full VLAN catalogue for the Battlestar Ventana network
+vlans:
+  - id: 10
+    name: BattlestarVentana
+    ssid: "Battlestar Ventana"
+    purpose: "Trusted LAN"
+    subnet: "10.76.10.0/24"
+    gateway: "10.76.10.1"
+    dhcp_range_start: "10.76.10.100"
+    dhcp_range_end: "10.76.10.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: unrestricted
+
+  - id: 20
+    name: CylonSynthLink
+    ssid: "CylonSynthLink"
+    purpose: "IoT devices"
+    subnet: "10.76.20.0/24"
+    gateway: "10.76.20.1"
+    dhcp_range_start: "10.76.20.100"
+    dhcp_range_end: "10.76.20.199"
+    lease_time: "12h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: limited
+
+  - id: 30
+    name: CapricaGuestPortal
+    ssid: "CapricaGuestPortal"
+    purpose: "Guest — Internet only"
+    subnet: "10.76.30.0/24"
+    gateway: "10.76.30.1"
+    dhcp_range_start: "10.76.30.100"
+    dhcp_range_end: "10.76.30.199"
+    lease_time: "8h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: unrestricted
+
+  - id: 31
+    name: PiconResidentGate
+    ssid: "PiconResidentGate"
+    purpose: "Elevated Guest (casting, printing)"
+    subnet: "10.76.31.0/24"
+    gateway: "10.76.31.1"
+    dhcp_range_start: "10.76.31.100"
+    dhcp_range_end: "10.76.31.199"
+    lease_time: "8h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: unrestricted
+
+  - id: 40
+    name: BasestarControl
+    ssid: "Basestar Control"
+    purpose: "Infrastructure switches and controllers"
+    subnet: "10.76.40.0/24"
+    gateway: "10.76.40.1"
+    dhcp_range_start: "10.76.40.10"
+    dhcp_range_end: "10.76.40.99"
+    lease_time: "7d"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: blocked
+
+  - id: 50
+    name: GemenonServiceVault
+    ssid: "ServerVault"
+    purpose: "NAS, MQTT, Home Assistant"
+    subnet: "10.76.50.0/24"
+    gateway: "10.76.50.1"
+    dhcp_range_start: ""
+    dhcp_range_end: ""
+    lease_time: ""
+    dns: ""
+    dhcp_enabled: false
+    internet_access: limited
+
+  - id: 60
+    name: VirgonFleetYard
+    ssid: "VirgonFleetYard"
+    purpose: "Printers"
+    subnet: "10.76.60.0/24"
+    gateway: "10.76.60.1"
+    dhcp_range_start: "10.76.60.100"
+    dhcp_range_end: "10.76.60.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: blocked
+
+  - id: 70
+    name: PegasusMediaNode
+    ssid: "PegasusMediaNode"
+    purpose: "Media and Casting"
+    subnet: "10.76.70.0/24"
+    gateway: "10.76.70.1"
+    dhcp_range_start: "10.76.70.100"
+    dhcp_range_end: "10.76.70.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: unrestricted
+
+  - id: 81
+    name: ScorpiaMediaShield
+    ssid: "ScorpiaMediaShield"
+    purpose: "Cameras — Local"
+    subnet: "10.76.81.0/24"
+    gateway: "10.76.81.1"
+    dhcp_range_start: ""
+    dhcp_range_end: ""
+    lease_time: ""
+    dns: ""
+    dhcp_enabled: false
+    internet_access: blocked
+
+  - id: 82
+    name: ScorpiaMediaRelay
+    ssid: "ScorpiaMediaRelay"
+    purpose: "Cameras — Cloud"
+    subnet: "10.76.82.0/24"
+    gateway: "10.76.82.1"
+    dhcp_range_start: "10.76.82.100"
+    dhcp_range_end: "10.76.82.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: limited
+
+  - id: 90
+    name: ScyllaProcessControl
+    ssid: "ScyllaProcessControl"
+    purpose: "Work VLAN (compliance bubble)"
+    subnet: "10.76.90.0/24"
+    gateway: "10.76.90.1"
+    dhcp_range_start: "10.76.90.100"
+    dhcp_range_end: "10.76.90.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_ip }}"
+    dhcp_enabled: true
+    internet_access: unrestricted
