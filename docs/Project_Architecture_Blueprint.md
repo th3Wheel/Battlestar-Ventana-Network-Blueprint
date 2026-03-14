@@ -277,6 +277,11 @@ Test data strategies:
 
 ## 13. Extension and Evolution Patterns
 
+Status note for consistency:
+
+- Service mesh is currently a planned future enhancement and is not yet implemented in the active baseline.
+- Track and review this proposal in `plans/service-mesh-architecture.md` during a future architecture review cycle.
+
 ### Feature Addition Patterns
 - Adding a new VLAN:
   1. Assign subnet `10.76.<VLAN>.0/24` and gateway `.1`
@@ -378,3 +383,4 @@ views:
 ---
 
 Built with accessibility in mind (headings, tables, and descriptive labels). Please still review and test with tools like Accessibility Insights to ensure it meets your needs.
+

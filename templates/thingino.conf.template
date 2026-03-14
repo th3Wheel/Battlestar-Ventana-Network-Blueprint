@@ -1,0 +1,20 @@
+# Deterministic Thingino provisioning template
+
+wifi_ssid=IOT-WIFI
+wifi_password=REPLACE_ME
+wifi_mode=client
+
+ip_mode=static
+ip_address=10.10.20.X
+netmask=255.255.255.0
+gateway=10.10.20.1
+dns=10.10.20.1
+
+hostname=cam-d1-XXX
+
+mqtt_host=10.10.30.10
+mqtt_port=1883
+mqtt_user=camera
+mqtt_pass=REPLACE_ME
+
+ntp_server=10.10.10.10

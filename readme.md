@@ -2,7 +2,7 @@
 
 **IP Scheme:** `10.76.X.0/24` (X = VLAN ID)
 **Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.
-**Status:**  unknown
+**Status:** Active baseline documented; service mesh remains planned (pending future architecture review)
 
 ---
 
@@ -42,6 +42,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
+- [`plans/service-mesh-architecture.md`](plans/service-mesh-architecture.md) — Planned architecture proposal (not currently implemented; flagged for later review)
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
 
 ---
@@ -102,11 +103,11 @@ Battlestar-Ventana-Network-Blueprint/
 │       ├── [09-testing-validation.md](ha/guidelines/09-testing-validation.md)
 │       └── [10-documentation-standards.md](ha/guidelines/10-documentation-standards.md)
 │
-└── plan/                                           # Architecture & feature plans
-    ├── [architecture-route-pi-squared-1.md](plan/architecture-route-pi-squared-1.md)
-    ├── [feature-docker-compose-pihole-1.md](plan/feature-docker-compose-pihole-1.md)
-    ├── [infrastructure-router-vlans-1.md](plan/infrastructure-router-vlans-1.md)
-    └── [infrastructure-router-vlans-2.md](plan/infrastructure-router-vlans-2.md)
+└── plans/                                           # Architecture & feature plans
+    ├── [architecture-route-pi-squared-1.md](plans/architecture-route-pi-squared-1.md)
+    ├── [feature-docker-compose-pihole-1.md](plans/feature-docker-compose-pihole-1.md)
+    ├── [infrastructure-router-vlans-1.md](plans/infrastructure-router-vlans-1.md)
+    └── [infrastructure-router-vlans-2.md](plans/infrastructure-router-vlans-2.md)
 ```
 
 ### 📑 Legend
@@ -118,3 +119,4 @@ Battlestar-Ventana-Network-Blueprint/
 ---
 
 🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*
+

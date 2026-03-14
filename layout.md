@@ -55,7 +55,7 @@ Battlestar-Ventana-Network-Blueprint/
 │   │       ├── a5e-router-config.md           # Radxa A5E router configuration
 │   │       └── docker-host-bootstrap.md       # Docker host setup guide
 │   │
-│   └── plan/                                  # Feature and infrastructure planning
+│   └── plans/                                  # Feature and infrastructure planning
 │       ├── architecture-route-pi-squared-1.md # Architecture planning
 │       ├── feature-docker-compose-pihole-1.md # Pi-hole feature planning
 │       ├── feature-fan-control-deltat-1.md    # Fan control feature planning
@@ -99,7 +99,7 @@ Battlestar-Ventana-Network-Blueprint/
 
 * **docs/**: Core technical specifications (firewall, DHCP, naming, services)
 * **infrastructure/**: Platform-specific deployment configurations
-* **plan/**: Feature development and infrastructure planning documents
+* **plans/**: Feature development and infrastructure planning documents
 
 ### **🖼️ Visual Assets**
 
@@ -120,7 +120,7 @@ Battlestar-Ventana-Network-Blueprint/
 | **Security** | `docs/firewall-matrix.md` | `docs/audit-checklist.md`, `docs/services.md` |
 | **Monitoring** | `dashboards/Homepage Mockup.md` | `alerts/Alertmanager style.yaml`, `ha/lovelace.yaml` |
 | **Architecture** | `docs/Project_Architecture_Blueprint.md` | `baseline/` files, all docs/ files |
-| **Deployment** | `baseline/` | `infrastructure/` files, `plan/` files |
+| **Deployment** | `baseline/` | `infrastructure/` files, `plans/` files |
 
 ---
 
@@ -143,3 +143,4 @@ Battlestar-Ventana-Network-Blueprint/
 ---
 
 *This layout reflects the current repository structure as of November 2025. For the most up-to-date information, refer to the actual directory contents.*
+
