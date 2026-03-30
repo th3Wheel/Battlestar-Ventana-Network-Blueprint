@@ -41,11 +41,6 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
-- [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules  
-- [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times  
-- [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist  
-- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)  
-- [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes  
 
 ---
 
@@ -63,54 +58,63 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ```text
 Battlestar-Ventana-Network-Blueprint/
-├── [readme.md](readme.md)                          # Master blueprint doc
-├── [CHANGELOG.md](CHANGELOG.md)                    # Versioned history of changes
-├── [layout.md](layout.md)                          # Network layout
-├── [network-map.md](network-map.md)                # Network topology map
+├── readme.md                          # Master blueprint doc
+├── CHANGELOG.md                       # Versioned history of changes
+├── layout.md                          # Network layout
+├── network-map.md                     # Network topology map
 │
-├── alerts/                                         # Prometheus alert rules
-│   └── [Alertmanager style.yaml](alerts/Alertmanager%20style.yaml)
+├── alerts/                            # Prometheus alert rules
+│   └── Alertmanager style.yaml
 │
-├── dashboards/                                     # Grafana dashboards
-│   ├── [dashboard.json](dashboards/dashboard.json)
-│   └── [Homepage Mockup.md](dashboards/Homepage%20Mockup.md)
+├── dashboards/                        # Grafana dashboards
+│   ├── dashboard.json
+│   └── Homepage Mockup.md
 │
-├── docs/                                           # Supporting documentation
-│   ├── [audit-checklist.md](docs/audit-checklist.md)
-│   ├── [dhcp-scopes.md](docs/dhcp-scopes.md)
-│   ├── [firewall-matrix.md](docs/firewall-matrix.md)
-│   ├── [host-tracker.md](docs/host-tracker.md)
-│   ├── [jaeger-pool.md](docs/jaeger-pool.md)
-│   ├── [naming-conventions.md](docs/naming-conventions.md)
-│   ├── [other-devices.md](docs/other-devices.md)
-│   ├── [physical-hosts.md](docs/physical-hosts.md)
-│   ├── [Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md)
-│   ├── [services.md](docs/services.md)
+├── docs/                              # Supporting documentation
+│   ├── audit-checklist.md
+│   ├── dhcp-scopes.md
+│   ├── firewall-matrix.md
+│   ├── host-tracker.md
+│   ├── jaeger-pool.md
+│   ├── naming-conventions.md
+│   ├── other-devices.md
+│   ├── physical-hosts.md
+│   ├── Project_Architecture_Blueprint.md
+│   ├── services.md
 │   └── raw/
-│       └── [network.md](docs/raw/network.md)
+│       └── network.md
 │
-├── ha/                                             # Home Assistant
-│   ├── [dashboard.yaml](ha/dashboard.yaml)
-│   ├── [home-assistant-programming-guidelines.instructions.md](ha/home-assistant-programming-guidelines.instructions.md)
-│   ├── [lovelace.yaml](ha/lovelace.yaml)
+├── ha/                                # Home Assistant
+│   ├── dashboard.yaml
+│   ├── lovelace.yaml
 │   └── guidelines/
-│       ├── [01-architecture-principles.md](ha/guidelines/01-architecture-principles.md)
-│       ├── [02-configuration-management.md](ha/guidelines/02-configuration-management.md)
-│       ├── [03-automation-development.md](ha/guidelines/03-automation-development.md)
-│       ├── [04-sensor-entity-management.md](ha/guidelines/04-sensor-entity-management.md)
-│       ├── [05-dashboard-design.md](ha/guidelines/05-dashboard-design.md)
-│       ├── [06-security-practices.md](ha/guidelines/06-security-practices.md)
-│       ├── [07-performance-optimization.md](ha/guidelines/07-performance-optimization.md)
-│       ├── [08-storage-monitoring.md](ha/guidelines/08-storage-monitoring.md)
-│       ├── [09-testing-validation.md](ha/guidelines/09-testing-validation.md)
-│       └── [10-documentation-standards.md](ha/guidelines/10-documentation-standards.md)
+│       ├── 01-architecture-principles.md
+│       └── … (02–10)
 │
-└── plan/                                           # Architecture & feature plans
-    ├── [architecture-route-pi-squared-1.md](plan/architecture-route-pi-squared-1.md)
-    ├── [feature-docker-compose-pihole-1.md](plan/feature-docker-compose-pihole-1.md)
-    ├── [infrastructure-router-vlans-1.md](plan/infrastructure-router-vlans-1.md)
-    └── [infrastructure-router-vlans-2.md](plan/infrastructure-router-vlans-2.md)
+└── plan/                              # Architecture & feature plans
+    ├── architecture-route-pi-squared-1.md
+    ├── feature-docker-compose-pihole-1.md
+    ├── infrastructure-router-vlans-1.md
+    └── infrastructure-router-vlans-2.md
 ```
+
+### 🔗 Quick navigation
+
+- [readme.md](readme.md) — Master blueprint doc
+- [CHANGELOG.md](CHANGELOG.md) — Versioned history of changes
+- [layout.md](layout.md) — Network layout
+- [network-map.md](network-map.md) — Network topology map
+- [alerts/Alertmanager style.yaml](alerts/Alertmanager%20style.yaml) — Prometheus alert rules
+- [dashboards/dashboard.json](dashboards/dashboard.json) — Grafana dashboard
+- [dashboards/Homepage Mockup.md](dashboards/Homepage%20Mockup.md) — Homepage mockup
+- [docs/audit-checklist.md](docs/audit-checklist.md) — Operational health checklist
+- [docs/dhcp-scopes.md](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
+- [docs/firewall-matrix.md](docs/firewall-matrix.md) — Firewall access matrix
+- [docs/naming-conventions.md](docs/naming-conventions.md) — SSID/VLAN naming rules
+- [docs/services.md](docs/services.md) — Service/ports traffic matrix
+- [docs/Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md) — Full architecture blueprint
+- [ha/lovelace.yaml](ha/lovelace.yaml) — Home Assistant dashboard config
+- [ha/guidelines/06-security-practices.md](ha/guidelines/06-security-practices.md) — HA security practices
 
 ### 📑 Legend
 
