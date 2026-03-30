@@ -8,18 +8,16 @@
 
 ## 📡 VLAN / SSID mapping
 
-- **Battlestar Ventana (10):** Trusted LAN
-- **CylonSynthLink (20):** IoT devices
-- **CapricaGuestPortal (30):** Guest – Internet only
-- **PiconResidentGate (31):** Elevated guest (casting, printing)
-
-- **Basestar Control (40):** Infrastructure switches/controllers
-
-- **GemenonServiceVault (50):** NAS, MQTT, Home Assistant
-- **VirgonFleetYard (60):** Printers
-- **PegasusMediaNode (70):** Media / Casting
-- **ScorpiaMediaShield (81):** Cameras – Local
-- **ScorpiaMediaRelay (82):** Cameras – Cloud
+- **Battlestar Ventana (10):** Trusted LAN  
+- **CylonSynthLink (20):** IoT devices  
+- **CapricaGuestPortal (30):** Guest – Internet only  
+- **PiconResidentGate (31):** Elevated guest (casting, printing)  
+- **Basestar Control (40):** Infrastructure switches/controllers  
+- **GemenonServiceVault (50):** NAS, MQTT, Home Assistant  
+- **VirgonFleetYard (60):** Printers  
+- **PegasusMediaNode (70):** Media / Casting  
+- **ScorpiaMediaShield (81):** Cameras – Local  
+- **ScorpiaMediaRelay (82):** Cameras – Cloud  
 
 - **ScyllaProcessControl (90):** Work VLAN
 
@@ -31,8 +29,8 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📊 Monitoring & dashboards
 
-- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
-- Prometheus: [`alerts/Alertmanager style.yaml`](alerts/Alertmanager%20style.yaml)
+- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)  
+- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)  
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
@@ -43,15 +41,20 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
+- [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules  
+- [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times  
+- [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist  
+- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)  
+- [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes  
 
 ---
 
 ## 🧪 Audit checklist (quick view)
 
-- **Guest VLAN:** Isolated from LANs
-- **IoT VLAN:** Restricted to telemetry only
-- **Cameras:** View‑only from Trusted
-- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP
+- **Guest VLAN:** Isolated from LANs  
+- **IoT VLAN:** Restricted to telemetry only  
+- **Cameras:** View‑only from Trusted  
+- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP  
 - **ServerVault:** Outbound limited to updates and sync
 
 ---
