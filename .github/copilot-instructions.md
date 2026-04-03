@@ -15,8 +15,8 @@ Use this file for workspace-wide defaults. Keep detailed policy in linked docs.
 
 Use these commands for validation:
 
-1. `markdownlint **/*.md -p .markdownlintignore`
-2. `markdownlint **/*.md -p .markdownlintignore --fix`
+1. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore`
+2. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore --fix`
 
 VS Code task equivalents:
 

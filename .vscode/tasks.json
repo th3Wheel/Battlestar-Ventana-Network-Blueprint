@@ -7,6 +7,8 @@
       "command": "markdownlint",
       "args": [
         "**/*.md",
+        "-c",
+        ".markdownlint.jsonc",
         "-p",
         ".markdownlintignore"
       ],
@@ -18,6 +20,8 @@
       "command": "markdownlint",
       "args": [
         "**/*.md",
+        "-c",
+        ".markdownlint.jsonc",
         "-p",
         ".markdownlintignore",
         "--fix"
