@@ -8,19 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Fixed
-
-* **Critical naming inconsistency resolved:** Work VLAN 90 name standardized to **ScyllaProcessControl** across all documents (was incorrectly listed as "ScyllaDataControl" in firewall-matrix.md, baseline documents)
-* **Baseline documents updated:** Camera VLAN names updated to current naming (ScorpiaMediaShield/ScorpiaMediaRelay) from deprecated names (ScorpiaShieldNet/CanceronSignalRelay)
-* **Project_Architecture_Blueprint.md:** Corrected invalid future date (2025-10-14) to current date format (Last Updated: 2026-02-18)
-* **readme.md:** Fixed malformed code block fence (removed space in \`\`\` tree marker)
-* **readme.md:** Updated status from "unknown" to "Active" for clarity
-* **readme.md:** Corrected repo structure tree to match actual filenames (readme.md not README.md) and actual directory contents
-* **naming-conventions.md:** Replaced Unicode hyphens (U+2011) with standard ASCII hyphens for consistency
-* **Project_Architecture_Blueprint.md:** Improved clarity of circular dependency statement
-* **firewall-matrix.md:** Clarified IaC implementation status as "PLANNED" (was ambiguous with "COMPLETED" marker elsewhere)
-* **Perimeter LED segments:** Clarified WLED segment `stop` semantics (exclusive), made preset "All White" deterministic across segments 0–5, and synced the WLED backup snapshot to preserve the 6-segment layout.
-
 ### Added
 
 * **`.gitattributes`** — Added repository-wide line ending normalization: all text files enforce LF (`eol=lf`), and binary files (`*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.pdf`) are marked explicitly to prevent corruption; SVG files are intentionally left as text.
@@ -29,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **`.github/skills/led_analysis/LICENSE.txt`** — MIT license file for the `led_analysis` skill, satisfying the `license: Complete terms in LICENSE.txt` reference in `SKILL.md`.
 * **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
 * **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
-* **`docs/spec-review-todos.md`** - Comprehensive tracking document for outstanding specification review items (30 TODOs across high/medium/low priority)
 * **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
 * **`plan/` directory** with feature and infrastructure planning documents.
 * **`docs/raw/network.md`** - Raw network documentation.
