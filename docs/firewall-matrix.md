@@ -137,7 +137,7 @@ flowchart TB
 
 ---
 
-## 🌐 Zone-Level Firewall Flow 
+## 🌐 Zone-Level Firewall Flow
 
 **Zone-level visualization** clustering VLANs into functional zones (Trusted, Semi-Trusted, Untrusted, Infrastructure, Services, Surveillance) and showing zone-to-zone firewall relationships. Complements the detailed VLAN matrix above.
 
@@ -292,4 +292,3 @@ This diagram shows:
 - Initialize the firewall rules in infrastructure-as-code (e.g., Terraform, Ansible).
 - Link to monitoring dashboards showing traffic patterns per VLAN
 - Flesh out the **Topology & Firewall Flow** section with more details on specific flows and rules providing an accurate, exhaustive, and comprehensive representation of the network segmentation and security policies.
- 
