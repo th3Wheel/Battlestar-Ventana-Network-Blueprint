@@ -26,15 +26,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   links.
 - **`.github/copilot-instructions.md`** — Added a focused review expectations
   section for severity-first findings and actionable remediation notes.
-- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repo per IaC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
-- **README tree structure** — Changed code fence language from `tree` to `text`; removed spurious empty line in tree; corrected `README.md` label to `readme.md` to match actual filename; added `dashboard.json` to tree; moved markdown links out of code fence into a separate clickable navigation section
-- **README repository structure** — Enhanced repo structure section with a plain-text tree for visual reference and a separate "Quick navigation" section with clickable links to all key files
+- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
+- **README tree structure** — Changed code fence language from `tree` to
+  `text`; removed spurious empty line in tree; corrected `README.md` label to
+  `readme.md` to match actual filename; added `dashboard.json` to tree; moved
+  markdown links out of code fence into a separate clickable navigation section
+- **README repository structure** — Enhanced repository structure section with a plain-text tree for visual reference and a separate "Quick navigation" section with clickable links to all key files
 - **Documentation accessibility** — All key documentation files now directly accessible from the README quick navigation section
-- **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of truth; removed `.markdownlint.json`. Carried forward `MD024.siblings_only`, `MD033=false`, `MD041=false`, `MD060=false`, and raised `MD013 line_length` from 200 to 240.
+- **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of
+  truth; removed `.markdownlint.json`. Carried forward
+  `MD024.siblings_only`, `MD033=false`, `MD041=false`, `MD060=false`, and
+  raised `MD013 line_length` from 200 to 240.
 - **`.vscode/tasks.json`** — Pinned both `markdownlint: check` and `markdownlint: fix` tasks to explicitly pass `-c .markdownlint.jsonc` so local runs use the same config as CI.
 - **`.github/copilot-instructions.md`** — Updated build commands to include the `-c .markdownlint.jsonc` flag, matching the pinned task definition.
-- **`.github/workflows/super-linter.yml`** — Expanded triggers to run on every push (all branches) and on pull requests targeting `master`. Set `LINTER_RULES_PATH` and `MARKDOWN_CONFIG_FILE` so the remote linter resolves `.markdownlint.jsonc` consistently with local runs.
-- **`.github/skills/led-analysis/SKILL.md`** — Merged README content into SKILL.md as the single canonical skill definition file. Renamed skill folder from `led_analysis` to `led-analysis` to comply with skill naming rules (lowercase letters, numbers, and hyphens only). Removed the now-redundant `README.md`.
+- **`.github/workflows/super-linter.yml`** — Expanded triggers to run on every
+  push (all branches) and on pull requests targeting `master`. Set
+  `LINTER_RULES_PATH` and `MARKDOWN_CONFIG_FILE` so the remote linter resolves
+  `.markdownlint.jsonc` consistently with local runs.
+- **`.github/skills/led-analysis/SKILL.md`** — Merged README content into
+  SKILL.md as the single canonical skill definition file. Renamed skill folder
+  from `led_analysis` to `led-analysis` to comply with skill naming rules
+  (lowercase letters, numbers, and hyphens only). Removed the now-redundant
+  `README.md`.
 
 ---
 
@@ -60,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **VLAN 31 renamed** from _ResidentGate_ to **GuestElevated**.
 
-- **README.md** updated to link `services.md` and include a legend for repo map.
+- **README.md** updated to link `services.md` and include a legend for repository map.
 
 ### Deprecated
 
@@ -76,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Security
 
-- Clarified **Work VLAN (90)** Internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
+- Clarified **Work VLAN (90)** internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
 
-- Clarified **GuestElevated VLAN (31)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
-- Clarified **Guest VLAN (30)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+- Clarified **GuestElevated VLAN (31)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+- Clarified **Guest VLAN (30)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
