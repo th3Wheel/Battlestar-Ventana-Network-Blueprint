@@ -10,17 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-* **`.gitattributes`** — Added repository-wide line ending normalization: all text files enforce LF (`eol=lf`), and binary files (`*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.pdf`) are marked explicitly to prevent corruption; SVG files are intentionally left as text.
+- **`.gitattributes`** — Added repository-wide line ending normalization: all text files enforce LF (`eol=lf`), and binary files (`*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.pdf`) are marked explicitly to prevent corruption; SVG files are intentionally left as text.
 
-* **`.github/skills/led_analysis/SKILL.md`** — Copilot skill definition for LED product analysis, wiring guidance, and alternative recommendations.
-* **`.github/skills/led_analysis/LICENSE.txt`** — MIT license file for the `led_analysis` skill, satisfying the `license: Complete terms in LICENSE.txt` reference in `SKILL.md`.
-* **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
-* **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
-* **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
-* **`plan/` directory** with feature and infrastructure planning documents.
-* **`docs/raw/network.md`** - Raw network documentation.
-* **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
-* **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
+- **`.github/skills/led_analysis/SKILL.md`** — Copilot skill definition for LED product analysis, wiring guidance, and alternative recommendations.
+- **`.github/skills/led_analysis/LICENSE.txt`** — MIT license file for the `led_analysis` skill, satisfying the `license: Complete terms in LICENSE.txt` reference in `SKILL.md`.
+- **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
+- **`.github/dependabot.yml`** - Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
+- **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
+- **`plan/` directory** with feature and infrastructure planning documents.
+- **`docs/raw/network.md`** - Raw network documentation.
+- **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
+- **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
 
 ### Changed
 
@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **README tree structure** — Changed code fence language from `tree` to
   `text`; removed spurious empty line in tree; corrected `README.md` label to
   `readme.md` to match actual filename; added `dashboard.json` to tree; moved
-  markdown links out of code fence into a separate clickable navigation section
+  Markdown links out of code fence into a separate clickable navigation section
 - **README repository structure** — Enhanced repository structure section with a plain-text tree for visual reference and a separate "Quick navigation" section with clickable links to all key files
 - **Documentation accessibility** — All key documentation files now directly accessible from the README quick navigation section
 - **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of
