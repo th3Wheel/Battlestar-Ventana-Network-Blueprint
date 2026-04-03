@@ -1,0 +1,11 @@
+{
+  "devices": [
+    {
+      "name": "Perimeter-WLED",
+      "type": "wled",
+      "output": "10.10.3.16",
+      "colorOrder": "GRB"
+    }
+  ],
+  "leds": []
+}

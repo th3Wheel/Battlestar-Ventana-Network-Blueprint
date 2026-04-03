@@ -1,33 +1,36 @@
-# Markdownlint Ignore Patterns
+# Markdownlint ignore patterns
 
-## Ignore VCS and editor metadata
+# VCS and editor metadata
 
 .git/
 .vscode/
 
-## Ignore local Python environment and caches
+# Local environments and caches
 
 .venv/
 .ruff_cache/
 
-## Ignore JavaScript dependencies and build artifacts
+# Dependencies and build artifacts
 
 node_modules/
 dist/
 coverage/
 
-## Ignore Copilot generated local memory/log artifacts
+# Home Assistant guideline library content
+
+ha/guidelines/
+
+# Copilot local memory and logs
 
 .github/copilot/memory/
 .github/copilot/agent-memory/
 .github/copilot/agent-logs/
 
-## Ignore any doNotLint folder under .github (any depth)
+# Any doNotLint folder under .github
 
-.github/**/doNotLint/
-.github/**/doNotLint/**
+.github/\*\*/doNotLint/
 
-## Ignore imported awesome-copilot instruction files
+# Imported awesome-copilot instruction files
 
 .github/instructions/code-review-generic.instructions.md
 .github/instructions/gilfoyle-code-review.instructions.md

@@ -77,7 +77,7 @@ flowchart TB
     IoT["20 – CylonSynthLink\nIoT Devices"]
     Guest["30 – CapricaGuestPortal\nGuest Internet"]
     Resident["31 – PiconResidentGate\nResidents LAN"]
-    Work["90 – ScyllaDataControl\nWork VLAN"]
+    Work["90 – ScyllaProcessControl\nWork VLAN"]
     Media["70 – PegasusMediaNode\nMedia / Casting"]
     Printers["60 – VirgonFleetYard\nPrinters"]
     Server["50 – ServerVault\nNAS / HA / MQTT"]
@@ -289,6 +289,6 @@ This diagram shows:
 - Integrate VLAN-to-zone mapping for dynamic segmentation.
 - Visualize matrix in Mermaid for topology-aware audit overlays.
 - Automate generation of this matrix from firewall configs for real-time accuracy.
-- Initialize the firewall rules in infrastructure-as-code (e.g., Terraform, Ansible).
+- ⏳ **PLANNED:** Initialize the firewall rules in infrastructure-as-code (e.g., Terraform, Ansible)
 - Link to monitoring dashboards showing traffic patterns per VLAN
 - Flesh out the **Topology & Firewall Flow** section with more details on specific flows and rules providing an accurate, exhaustive, and comprehensive representation of the network segmentation and security policies.
