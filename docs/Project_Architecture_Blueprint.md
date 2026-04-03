@@ -17,7 +17,7 @@ Technologies and artifacts detected:
 - Operational runbooks and inventories: `host-tracker.md`, `other-devices.md`, `services.md`, `naming-conventions.md`
 - Observability/UX:
   - Grafana dashboards (dashboards/)
-  - Alertmanager style configuration (alerts/)
+  - Prometheus alert rules (alerts/)
 - Home Assistant configuration (ha/) for smart home services
 
 Architectural patterns in use:
@@ -223,7 +223,7 @@ Dependency rules:
 - Addressing data: `dhcp-scopes.md` defines subnets, gateways, DNS per VLAN
 - Inventory data: `host-tracker.md`, `other-devices.md`, `naming-conventions.md`
 - Event/telemetry: MQTT (IoT→ServerVault), syslog (Cameras→ServerVault), app logs
-- Observability data: Grafana dashboards, Alertmanager styles
+- Observability data: Grafana dashboards, Prometheus alert rules
 - Retention: Define per-source retention on ServerVault (recommendation: 7–30 days logs, 30–90 days camera footage per storage capacity)
 
 Transformations and mapping:
@@ -383,10 +383,10 @@ Test data strategies:
 | 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
 | 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
 
-### Example: Alertmanager Style (excerpt)
+### Example: Alert Rules (excerpt)
 
 ```yaml
-# alerts/Alertmanager style.yaml (excerpt)
+# alerts/AlertRules.yaml (excerpt)
 route:
   group_by: ['alertname', 'severity']
   group_wait: 30s

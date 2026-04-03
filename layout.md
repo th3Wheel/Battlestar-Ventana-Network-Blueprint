@@ -10,7 +10,7 @@ This document provides the complete directory structure and file organization fo
 Battlestar-Ventana-Network-Blueprint/
 │
 ├── 📄 Core Documentation
-│   ├── README.md                              # Master blueprint overview, VLAN mapping, audit checklist
+│   ├── readme.md                              # Master blueprint overview, VLAN mapping, audit checklist
 │   ├── CHANGELOG.md                           # Versioned history of changes
 │   └── layout.md                              # Repository structure and organization guide
 │
@@ -28,9 +28,9 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   ├── Homepage Mockup.md                 # Homepage dashboard design
 │   │   └── true-scale SVG diagr.png           # Network topology diagram
 │   ├── alerts/
-│   │   └── Alertmanager style.yaml            # Alertmanager styling configuration
+│   │   └── AlertRules.yaml                    # Prometheus alert rules
 │   └── ha/
-│       ├── dashboard.yaml                     # Home Assistant dashboard config
+│       ├── Dashboard.yaml                     # Home Assistant dashboard config
 │       └── lovelace.yaml                      # Home Assistant Lovelace UI config
 │
 ├── 📚 Technical Documentation
@@ -79,7 +79,7 @@ Battlestar-Ventana-Network-Blueprint/
 
 ### **📄 Core Documentation**
 
-- **README.md**: Primary entry point with VLAN overview, firewall matrix, and audit checklist
+- **readme.md**: Primary entry point with VLAN overview, firewall matrix, and audit checklist
 - **CHANGELOG.md**: Versioned history of all changes and updates
 - **layout.md**: Repository structure and organization guide
 
@@ -118,7 +118,7 @@ Battlestar-Ventana-Network-Blueprint/
 | ---------------- | -------------------------------------------------- | ---------------------------------------------------- |
 | **VLAN Design**  | `baseline/Battlestar Ventana Network Blueprint.md` | `docs/naming-conventions.md`, `docs/dhcp-scopes.md`  |
 | **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`        |
-| **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/Alertmanager style.yaml`, `ha/lovelace.yaml` |
+| **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/AlertRules.yaml`, `ha/lovelace.yaml`         |
 | **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                   |
 | **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files               |
 

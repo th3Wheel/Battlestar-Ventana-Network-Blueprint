@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   links.
 - **`.github/copilot-instructions.md`** — Added a focused review expectations
   section for severity-first findings and actionable remediation notes.
-- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/Alertmanager style.yaml`
+- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/AlertRules.yaml`
 - **README tree structure** — Changed code fence language from `tree` to
   `text`; removed spurious empty line in tree; corrected `README.md` label to
   `readme.md` to match actual filename; added `dashboard.json` to tree; moved

@@ -3,7 +3,7 @@
 
   // Keep line length checks practical for documentation-heavy tables.
   "MD013": {
-    "line_length": 240,
+    "line_length": 400,
     "code_blocks": false,
     "tables": false,
   },

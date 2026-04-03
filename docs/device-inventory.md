@@ -1,6 +1,8 @@
 # Device Inventory
 
-A comprehensive inventory of network hardware and devices deployed in the Battlestar Ventana network. This list reflects actual equipment, physical locations, and configuration details as currently implemented. All entries are based on verified network documentation and asset records.
+> **⚠️ PROTOTYPE / EXAMPLE DATA** — The entries below are illustrative placeholders only. IP addresses use `10.0.x.x` ranges for demonstration purposes, which do **not** reflect the repository's actual network scheme (`10.76.X.0/24`). Replace all values with real deployment data before using this table operationally.
+
+A comprehensive inventory of network hardware and devices deployed in the Battlestar Ventana network.
 
 | Device Name        | Type           | Host Name           | Location           | Current IP address | Planned IP address | VLAN   | MAC Address       | Firmware Version   | Serial Number     | Manufacturer |Notes                        |  
 |--------------------|----------------|--------------------|--------------------|-----------------|-------------------|------------------------------|

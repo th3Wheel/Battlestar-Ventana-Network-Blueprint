@@ -3,7 +3,7 @@
     "gemini-api-docs-mcp": {
       "type": "remote",
       "url": "https://gemini-api-docs-mcp.dev",
-      "enabled": true
+      "enabled": false
     }
   }
 }

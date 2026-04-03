@@ -1,7 +1,6 @@
 ---
 name: led-analysis
 description: Processes LED strip, panel, and module product data into structured analysis, wiring guidance, and alternative recommendations. Use when asked to analyze LED products, interpret LED strip specifications, generate wiring diagrams, evaluate chipset compatibility, or recommend compatible LED controllers and power supplies.
-license: Complete terms in LICENSE.txt
 ---
 
 # LED Analysis Skill
