@@ -1,4 +1,4 @@
- ## 0. Variables
+## 0. Variables
 
 ```bash
 # Router
@@ -128,6 +128,7 @@ systemctl start keepalived
 ```
 
 Run on **pihole2** (BACKUP) — same as above but change:
+
 ```conf
 state BACKUP
 priority 100
@@ -138,6 +139,7 @@ priority 100
 ## 4. Router DHCP Relay → VIP
 
 On router CT:
+
 ```bash
 cat >/etc/default/isc-dhcp-relay <<EOF
 SERVERS="$PIHOLE_VIP"
@@ -164,9 +166,11 @@ systemctl restart isc-dhcp-relay
 
 1. Ping `$PIHOLE_VIP` — should respond from master.
 2. Stop keepalived on master:
+
    ```bash
    systemctl stop keepalived
    ```
+
 3. VIP should move to backup within ~2s.
 4. Restart master keepalived — VIP returns.
 

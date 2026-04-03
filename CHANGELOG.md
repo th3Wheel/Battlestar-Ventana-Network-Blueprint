@@ -1,7 +1,7 @@
 # 📜 CHANGELOG — Battlestar Ventana Network Blueprint
 
-All notable changes to this project will be documented in this file.  
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
+All notable changes to this project will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
@@ -24,32 +24,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-* **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
+- **`.github/copilot-instructions.md`** — Reworked as a concise, link-first
+  workspace guide with build/lint commands, core gotchas, and canonical doc
+  links.
+- **`.github/copilot-instructions.md`** — Added a focused review expectations
+  section for severity-first findings and actionable remediation notes.
+- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/AlertRules.yaml`
+- **README tree structure** — Changed code fence language from `tree` to
+  `text`; removed spurious empty line in tree; corrected `README.md` label to
+  `readme.md` to match actual filename; added `dashboard.json` to tree; moved
+  markdown links out of code fence into a separate clickable navigation section
+- **README repository structure** — Enhanced repository structure section with a plain-text tree for visual reference and a separate "Quick navigation" section with clickable links to all key files
+- **Documentation accessibility** — All key documentation files now directly accessible from the README quick navigation section
+- **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of
+  truth; removed `.markdownlint.json`. Carried forward
+  `MD024.siblings_only`, `MD033=false`, `MD041=false`, `MD060=false`, and
+  raised `MD013 line_length` from 200 to 240.
+- **`.vscode/tasks.json`** — Pinned both `markdownlint: check` and `markdownlint: fix` tasks to explicitly pass `-c .markdownlint.jsonc` so local runs use the same config as CI.
+- **`.github/copilot-instructions.md`** — Updated build commands to include the `-c .markdownlint.jsonc` flag, matching the pinned task definition.
+- **`.github/workflows/super-linter.yml`** — Expanded triggers to run on every
+  push (all branches) and on pull requests targeting `master`. Set
+  `LINTER_RULES_PATH` and `MARKDOWN_CONFIG_FILE` so the remote linter resolves
+  `.markdownlint.jsonc` consistently with local runs.
+- **`.github/skills/led-analysis/SKILL.md`** — Merged README content into
+  SKILL.md as the single canonical skill definition file. Renamed skill folder
+  from `led_analysis` to `led-analysis` to comply with skill naming rules
+  (lowercase letters, numbers, and hyphens only). Removed the now-redundant
+  `README.md`.
 
-* **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.
-* Updated all documentation references to reflect new VLAN names.
-* **Repository reorganization** - Consolidated network documentation from `../Network Structure/` into main blueprint directory.
-* **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
-* **File renamed** - `fgemp` renamed to `current-network-baseline.md` for clarity (baseline network state documentation).
-* **Baseline folder created** - New `baseline/` directory for architectural design documents including network blueprints, deployment guides, and system specifications.
+---
+
+## [1.1.0] — 2025‑12‑05
 
 ### Removed
 
-* **Legacy Network Structure files** - Moved core documentation into main blueprint directory for better organization.
+- **Legacy Network Structure files** — Moved core documentation into main blueprint directory for better organization.
 
-* **Redundant documentation files** - Consolidated duplicate content.
-
-### Deprecated
-
-* Placeholder for features marked for removal.
-
-### Fixed
-
-* Placeholder for bug fixes.
-
-### Security
-
-* Placeholder for security patches.
+- **Redundant documentation files** — Consolidated duplicate content.
 
 ---
 
@@ -57,31 +68,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-* **Internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
+- **Internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
 
-* **`services.md` scaffold** with per‑VLAN service/port placeholders.
+- **`services.md` scaffold** with per‑VLAN service/port placeholders.
 
 ### Changed
 
-* **VLAN 31 renamed** from *ResidentGate* to **GuestElevated**.
+- **VLAN 31 renamed** from _ResidentGate_ to **GuestElevated**.
 
-* **README.md** updated to link `services.md` and include a legend for repo map.
+- **README.md** updated to link `services.md` and include a legend for repository map.
 
 ### Deprecated
 
-* None.
+- None.
 
 ### Removed
 
-* None.
+- None.
 
 ### Fixed
 
-* None.
+- None.
 
 ### Security
 
-* Clarified **Work VLAN (90)** Internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
+- Clarified **Work VLAN (90)** internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
 
-* Clarified **GuestElevated VLAN (31)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
-* Clarified **Guest VLAN (30)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+- Clarified **GuestElevated VLAN (31)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+- Clarified **Guest VLAN (30)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
