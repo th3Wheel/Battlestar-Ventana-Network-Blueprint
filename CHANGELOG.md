@@ -18,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **`docs/raw/network.md`** — Raw network documentation.
 - **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
 - **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
-- **`DISCOVERY_REPORT.md`** and **`.api-discovery/openapi.synthetic.json`** — API discovery report and synthetic OpenAPI specification.
 
 ### Changed
 
@@ -31,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **README tree structure** — Changed code fence language from `tree` to `text`; removed spurious empty line in tree; corrected `README.md` label to `readme.md` to match actual filename; added `dashboard.json` to tree; moved markdown links out of code fence into a separate clickable navigation section
 - **README repository structure** — Enhanced repo structure section with a plain-text tree for visual reference and a separate "Quick navigation" section with clickable links to all key files
 - **Documentation accessibility** — All key documentation files now directly accessible from the README quick navigation section
+- **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of truth; removed `.markdownlint.json`. Carried forward `MD024.siblings_only`, `MD033=false`, `MD041=false`, `MD060=false`, and raised `MD013 line_length` from 200 to 240.
+- **`.vscode/tasks.json`** — Pinned both `markdownlint: check` and `markdownlint: fix` tasks to explicitly pass `-c .markdownlint.jsonc` so local runs use the same config as CI.
+- **`.github/copilot-instructions.md`** — Updated build commands to include the `-c .markdownlint.jsonc` flag, matching the pinned task definition.
+- **`.github/workflows/super-linter.yml`** — Expanded triggers to run on every push (all branches) and on pull requests targeting `master`. Set `LINTER_RULES_PATH` and `MARKDOWN_CONFIG_FILE` so the remote linter resolves `.markdownlint.jsonc` consistently with local runs.
+- **`.github/skills/led-analysis/SKILL.md`** — Merged README content into SKILL.md as the single canonical skill definition file. Renamed skill folder from `led_analysis` to `led-analysis` to comply with skill naming rules (lowercase letters, numbers, and hyphens only). Removed the now-redundant `README.md`.
 
 ---
 
