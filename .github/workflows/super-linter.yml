@@ -20,6 +20,21 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install community.docker community.general community.kubernetes community.kubernetes.core community.kubernetes.hub community.kubernetes.helm community.kubernetes.helmhub community.kubernetes.openshift community.kubernetes.skopeo community.kubernetes.utils 1password.1password community.general.ansible-lint
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: "master"
+          LINTER_RULES_PATH: "."
+          MARKDOWN_CONFIG_FILE: ".markdownlint.jsonc"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
