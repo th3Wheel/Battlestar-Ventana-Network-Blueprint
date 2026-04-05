@@ -63,12 +63,11 @@
         state: present
       become: true
 
-    - name: Copy linux-router script from fetched source
-      ansible.builtin.copy:
-        src: "/tmp/linux-router-src/lnxrouter"
+    - name: Download lnxrouter script directly from upstream
+      ansible.builtin.get_url:
+        url: "https://raw.githubusercontent.com/garywill/linux-router/master/lnxrouter"
         dest: "/usr/local/bin/lnxrouter"
         mode: "0755"
-        remote_src: true
       become: true
 
     - name: Create VLAN interfaces for evaluation VLANs (20 and 40)

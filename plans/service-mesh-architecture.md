@@ -370,7 +370,7 @@ curl -s http://localhost:50750/api/dashboards/linkerd-namespace.json > \
 
 ### Alert Rules
 
-Add to `alerts/alert_rules.yaml`:
+Add to `alerts/Alertmanager style.yaml`:
 
 ```yaml
 groups:
@@ -553,9 +553,9 @@ spec:
 - mTLS Guide: https://linkerd.io/2.14/features/automatic-mtls/
 
 ### Internal Documentation
-- [Firewall Matrix](firewall-matrix.md) - VLAN access rules
-- [Services Documentation](services.md) - Service/port mappings
-- [Project Architecture Blueprint](Project_Architecture_Blueprint.md) - Overall architecture
+- [Firewall Matrix](../docs/firewall-matrix.md) - VLAN access rules
+- [Services Documentation](../docs/services.md) - Service/port mappings
+- [Project Architecture Blueprint](../docs/Project_Architecture_Blueprint.md) - Overall architecture
 
 ### Community Resources
 - Linkerd Slack: https://slack.linkerd.io/
