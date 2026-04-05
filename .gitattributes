@@ -1,25 +1,10 @@
-# Ensure consistent line endings
-* text=auto
+# Normalize line endings to LF for all text files
+* text=auto eol=lf
 
-# Treat shell scripts as LF
-*.sh text eol=lf
-
-# Treat YAML as text
-*.yml text
-*.yaml text
-
-# Treat Markdown as text
-*.md text
-
-# Treat Ansible as text
-*.j2 text
-*.conf text
-
-# Normalize JSON
-*.json text
-
-# Handle Windows batch files
-*.bat text eol=crlf
-
-# Handle PowerShell scripts
-*.ps1 text eol=crlf
+# Explicitly declare binary files to prevent any conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

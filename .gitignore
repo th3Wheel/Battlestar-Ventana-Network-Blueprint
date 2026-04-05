@@ -1,72 +1,22 @@
-# OS
+# Dependencies
+node_modules/
+
+# Python virtual environments
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# OS/editor junk
 .DS_Store
 Thumbs.db
 
-# VS Code
-.vscode/
-.history/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Ansible
-*.retry
-
-# Shell
-*.swp
-*.swo
-
-# Logs
-*.log
-logs/
-
-# Node
-node_modules/
-
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.*
-
-# Misc
-*.bak
-*.tmp
-*.orig
-
-# Ignore secrets and credentials
-secrets.*
-*.env
-.env.*
-
-# Ignore generated files
-output/
-build/
-dist/
-
-# Ignore Jupyter/IPython
-.ipynb_checkpoints/
-
-# Ignore Windows
-Desktop.ini
-$RECYCLE.BIN/
-
-# Ignore Mac
-.AppleDouble
-.LSOverride
-Icon?
-
-# Ignore temporary files
-~*
-*.tmp
-*.temp
-
-# Ignore Markdown preview artifacts
-*.md.html
-
-CHANGELOG.md
+# Generated / local tooling artifacts (do not commit)
+.api-discovery/
 DISCOVERY_REPORT.md
 debug.log
-.github/copilot/memory/*
+**/Copilot-Processing.md
+
+# Copilot scratch / memory (local)
+.github/copilot/memory
