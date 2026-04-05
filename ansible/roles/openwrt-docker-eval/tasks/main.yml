@@ -106,7 +106,7 @@
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:
         path: "{{ research_output_dir }}/openwrt-docker-capabilities.md"
-        line: "- Full-matrix VLAN validation completed: {{ ansible_date_time.date }}"
+        line: "- Full-matrix VLAN validation completed: {{ now().strftime('%Y-%m-%d') }}"
         create: true
       delegate_to: localhost
 

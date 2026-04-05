@@ -202,6 +202,7 @@
       loop_control:
         label: "VLAN {{ item.id }}"
       register: full_matrix_results
+      ignore_errors: true
 
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:

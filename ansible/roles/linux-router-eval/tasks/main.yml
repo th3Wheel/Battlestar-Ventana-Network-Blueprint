@@ -121,7 +121,7 @@
     - name: Log validation results to research file
       ansible.builtin.lineinfile:
         path: "{{ research_output_dir }}/linux-router-capabilities.md"
-        line: "- VLAN {{ item.item.id }} interface check: {{ 'PASS' if item.rc == 0 else 'FAIL' }} ({{ ansible_date_time.date }})"
+        line: "- VLAN {{ item.item.id }} interface check: {{ 'PASS' if item.rc == 0 else 'FAIL' }} ({{ now(fmt='%Y-%m-%d') }})"
         create: true
       loop: "{{ vlan_link_check.results }}"
       loop_control:
@@ -153,7 +153,7 @@
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:
         path: "{{ research_output_dir }}/linux-router-capabilities.md"
-        line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item.rc == 0 else 'FAIL' }} | tested: true | date: {{ ansible_date_time.date }}"
+        line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item.rc == 0 else 'FAIL' }} | tested: true | date: {{ now(fmt='%Y-%m-%d') }}"
         create: true
       loop: "{{ full_matrix_check.results }}"
       loop_control:
