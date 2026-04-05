@@ -17,47 +17,52 @@ cards:
         icon: mdi:white-balance-sunny
         tap_action:
           action: call-service
-          service: wled.preset
+          service: select.select_option
+          target:
+            entity_id: select.wled_preset
           data:
-            preset: 1
-            entity_id: light.perimeter_led
+            option: "All White"
 
       - type: button
         name: Mirror Sides
         icon: mdi:mirror-rectangle
         tap_action:
           action: call-service
-          service: wled.preset
+          service: select.select_option
+          target:
+            entity_id: select.wled_preset
           data:
-            preset: 2
-            entity_id: light.perimeter_led
+            option: "Mirror Sides"
 
       - type: button
         name: Top Focus
         icon: mdi:arrow-up-bold
         tap_action:
           action: call-service
-          service: wled.preset
+          service: select.select_option
+          target:
+            entity_id: select.wled_preset
           data:
-            preset: 3
-            entity_id: light.perimeter_led
+            option: "Top Focus (23u)"
 
       - type: button
         name: Mid Only
         icon: mdi:arrow-expand-vertical
         tap_action:
           action: call-service
-          service: wled.preset
+          service: select.select_option
+          target:
+            entity_id: select.wled_preset
           data:
-            preset: 4
-            entity_id: light.perimeter_led
+            option: "Mid Only (14u/10u)"
 
       - type: button
         name: Bottom Accent
         icon: mdi:arrow-down-bold
         tap_action:
           action: call-service
-          service: wled.preset
+          service: select.select_option
+          target:
+            entity_id: select.wled_preset
           data:
-            preset: 5
-            entity_id: light.perimeter_led
+            option: "Bottom Accent (8u/12u)"
