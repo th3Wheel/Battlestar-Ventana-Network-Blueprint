@@ -29,19 +29,19 @@ This document recommends **Linkerd** as the service mesh implementation and outl
 
 The following matrix compares the two leading service mesh solutions for this environment:
 
-| Criteria                    | Linkerd                          | Istio                           | Weight | Winner   |
-|-----------------------------|----------------------------------|---------------------------------|--------|----------|
-| **Resource Overhead**       | ~10-20MB per proxy               | ~50-100MB per proxy             | High   | Linkerd  |
-| **Complexity**              | Simple, opinionated              | Complex, highly configurable    | High   | Linkerd  |
-| **mTLS by Default**         | Automatic, zero-config           | Requires configuration          | High   | Linkerd  |
-| **Performance**             | Ultra-lightweight (Rust proxy)   | Feature-rich (Envoy)            | Medium | Linkerd  |
-| **Feature Set**             | Core features, focused           | Comprehensive, extensible       | Medium | Istio    |
-| **Multi-cluster Support**   | Basic                            | Advanced                        | Low    | Istio    |
-| **Observability**           | Excellent built-in dashboards    | Flexible, requires setup        | High   | Linkerd  |
-| **Community & Support**     | Growing, CNCF graduated          | Large, mature ecosystem         | Medium | Istio    |
-| **Homelab Suitability**     | Ideal for resource constraints   | Better for enterprise/large     | High   | Linkerd  |
-| **Learning Curve**          | Minimal                          | Steep                           | High   | Linkerd  |
-| **Operational Burden**      | Low                              | High                            | High   | Linkerd  |
+| Criteria                  | Linkerd                        | Istio                        | Weight | Winner  |
+| ------------------------- | ------------------------------ | ---------------------------- | ------ | ------- |
+| **Resource Overhead**     | ~10-20MB per proxy             | ~50-100MB per proxy          | High   | Linkerd |
+| **Complexity**            | Simple, opinionated            | Complex, highly configurable | High   | Linkerd |
+| **mTLS by Default**       | Automatic, zero-config         | Requires configuration       | High   | Linkerd |
+| **Performance**           | Ultra-lightweight (Rust proxy) | Feature-rich (Envoy)         | Medium | Linkerd |
+| **Feature Set**           | Core features, focused         | Comprehensive, extensible    | Medium | Istio   |
+| **Multi-cluster Support** | Basic                          | Advanced                     | Low    | Istio   |
+| **Observability**         | Excellent built-in dashboards  | Flexible, requires setup     | High   | Linkerd |
+| **Community & Support**   | Growing, CNCF graduated        | Large, mature ecosystem      | Medium | Istio   |
+| **Homelab Suitability**   | Ideal for resource constraints | Better for enterprise/large  | High   | Linkerd |
+| **Learning Curve**        | Minimal                        | Steep                        | High   | Linkerd |
+| **Operational Burden**    | Low                            | High                         | High   | Linkerd |
 
 ### Recommendation: Linkerd
 
@@ -129,6 +129,7 @@ Each meshed service pod/container includes:
 - **Init Container**: Sets up iptables rules to redirect traffic through proxy
 
 Traffic flow:
+
 1. Outbound traffic from app → intercepted by proxy → encrypted mTLS → destination proxy
 2. Destination proxy → decrypts → forwards to destination app
 3. All traffic automatically authenticated and encrypted without application awareness
@@ -140,43 +141,47 @@ Traffic flow:
 Services are prioritized into encryption tiers based on sensitivity and traffic patterns:
 
 ### Tier 1: Critical (Phase 1 - Week 1-2)
+
 **Priority**: Immediate  
 **Rationale**: Highest security risk, contains sensitive data or credentials
 
-| Service          | VLAN | Risk Factor                          | Justification                                    |
-|------------------|------|--------------------------------------|--------------------------------------------------|
-| Home Assistant   | 50   | Contains authentication tokens       | Central control plane for IoT and automation     |
-| MQTT Broker      | 50   | Plaintext telemetry by default       | Transmits sensor data, control commands          |
-| NAS Services     | 50   | File shares, backup data             | Contains personal/sensitive files                |
+| Service        | VLAN | Risk Factor                    | Justification                                |
+| -------------- | ---- | ------------------------------ | -------------------------------------------- |
+| Home Assistant | 50   | Contains authentication tokens | Central control plane for IoT and automation |
+| MQTT Broker    | 50   | Plaintext telemetry by default | Transmits sensor data, control commands      |
+| NAS Services   | 50   | File shares, backup data       | Contains personal/sensitive files            |
 
 ### Tier 2: High (Phase 2 - Week 3-4)
+
 **Priority**: High  
 **Rationale**: Frequently accessed, moderate sensitivity
 
-| Service          | VLAN | Risk Factor                          | Justification                                    |
-|------------------|------|--------------------------------------|--------------------------------------------------|
-| DNS/DHCP         | 40   | Network poisoning risk               | Infrastructure service, all VLANs depend on it   |
-| Cameras (Local)  | 81   | Video streams, privacy-sensitive     | Local processing, moderate traffic               |
-| Media Server     | 70   | Content access                       | High traffic volume, moderate sensitivity        |
+| Service         | VLAN | Risk Factor                      | Justification                                  |
+| --------------- | ---- | -------------------------------- | ---------------------------------------------- |
+| DNS/DHCP        | 40   | Network poisoning risk           | Infrastructure service, all VLANs depend on it |
+| Cameras (Local) | 81   | Video streams, privacy-sensitive | Local processing, moderate traffic             |
+| Media Server    | 70   | Content access                   | High traffic volume, moderate sensitivity      |
 
 ### Tier 3: Medium (Phase 3 - Week 5-6)
+
 **Priority**: Medium  
 **Rationale**: Lower risk or lower traffic volume
 
-| Service          | VLAN | Risk Factor                          | Justification                                    |
-|------------------|------|--------------------------------------|--------------------------------------------------|
-| IoT Devices      | 20   | Telemetry data                       | Already isolated VLAN, limited attack surface    |
-| Printers         | 60   | Print job metadata                   | Low sensitivity, occasional use                  |
-| Cameras (Cloud)  | 82   | Encrypted to cloud already           | External encryption provided, redundant benefit  |
+| Service         | VLAN | Risk Factor                | Justification                                   |
+| --------------- | ---- | -------------------------- | ----------------------------------------------- |
+| IoT Devices     | 20   | Telemetry data             | Already isolated VLAN, limited attack surface   |
+| Printers        | 60   | Print job metadata         | Low sensitivity, occasional use                 |
+| Cameras (Cloud) | 82   | Encrypted to cloud already | External encryption provided, redundant benefit |
 
 ### Tier 4: Low (Phase 4 - Week 7+)
+
 **Priority**: Optional  
 **Rationale**: Minimal benefit or already isolated
 
-| Service          | VLAN | Risk Factor                          | Justification                                    |
-|------------------|------|--------------------------------------|--------------------------------------------------|
-| Guest Devices    | 30   | Internet-only, no LAN access         | Fully isolated, no inter-VLAN communication      |
-| Work VLAN        | 90   | VPN-tunneled already                 | Traffic encrypted at VPN layer                   |
+| Service       | VLAN | Risk Factor                  | Justification                               |
+| ------------- | ---- | ---------------------------- | ------------------------------------------- |
+| Guest Devices | 30   | Internet-only, no LAN access | Fully isolated, no inter-VLAN communication |
+| Work VLAN     | 90   | VPN-tunneled already         | Traffic encrypted at VPN layer              |
 
 ---
 
@@ -241,7 +246,7 @@ linkerd viz dashboard &
 
 #### Tier 1 Services (Critical)
 
-**Home Assistant (VLAN 50)**
+##### Home Assistant (VLAN 50)
 
 ```bash
 # Annotate namespace for auto-injection
@@ -256,7 +261,7 @@ kubectl get deploy -n servervault home-assistant -o yaml | \
 linkerd -n servervault check --proxy
 ```
 
-**MQTT Broker (VLAN 50)**
+##### MQTT Broker (VLAN 50)
 
 ```bash
 # Inject MQTT deployment
@@ -268,7 +273,7 @@ kubectl get deploy -n servervault mqtt-broker -o yaml | \
 linkerd -n servervault tap deploy/mqtt-broker
 ```
 
-**NAS Services (VLAN 50)**
+##### NAS Services (VLAN 50)
 
 ```bash
 # Inject NAS service
@@ -314,34 +319,35 @@ Add Linkerd metrics to existing Prometheus:
 ```yaml
 # prometheus.yml addition
 scrape_configs:
-  - job_name: 'linkerd-controller'
+  - job_name: "linkerd-controller"
     kubernetes_sd_configs:
-    - role: pod
-      namespaces:
-        names: ['linkerd']
+      - role: pod
+        namespaces:
+          names: ["linkerd"]
     relabel_configs:
-    - source_labels: [__meta_kubernetes_pod_label_linkerd_io_control_plane_component]
-      action: keep
-      regex: .+
+      - source_labels:
+          [__meta_kubernetes_pod_label_linkerd_io_control_plane_component]
+        action: keep
+        regex: .+
 
-  - job_name: 'linkerd-proxy'
+  - job_name: "linkerd-proxy"
     kubernetes_sd_configs:
-    - role: pod
+      - role: pod
     relabel_configs:
-    - source_labels: [__meta_kubernetes_pod_container_name]
-      action: keep
-      regex: ^linkerd-proxy$
+      - source_labels: [__meta_kubernetes_pod_container_name]
+        action: keep
+        regex: ^linkerd-proxy$
 ```
 
 #### Key Metrics to Monitor
 
-| Metric                              | Description                          | Alert Threshold      |
-|-------------------------------------|--------------------------------------|----------------------|
-| `request_total`                     | Total requests through mesh          | Baseline +/- 20%     |
-| `response_latency_ms_p99`           | 99th percentile latency              | > 500ms              |
-| `tcp_open_connections`              | Active mTLS connections              | < 10 (low adoption)  |
-| `identity_cert_expiry_timestamp`    | Certificate expiration time          | < 7 days             |
-| `response_errors_total`             | Failed requests                      | > 1% error rate      |
+| Metric                           | Description                 | Alert Threshold     |
+| -------------------------------- | --------------------------- | ------------------- |
+| `request_total`                  | Total requests through mesh | Baseline +/- 20%    |
+| `response_latency_ms_p99`        | 99th percentile latency     | > 500ms             |
+| `tcp_open_connections`           | Active mTLS connections     | < 10 (low adoption) |
+| `identity_cert_expiry_timestamp` | Certificate expiration time | < 7 days            |
+| `response_errors_total`          | Failed requests             | > 1% error rate     |
 
 ---
 
@@ -370,7 +376,7 @@ curl -s http://localhost:50750/api/dashboards/linkerd-namespace.json > \
 
 ### Alert Rules
 
-Add to `alerts/Alertmanager style.yaml`:
+Add to `alerts/alert_rules.yaml`:
 
 ```yaml
 groups:
@@ -436,13 +442,13 @@ kubectl annotate namespace servervault config.linkerd.io/trace-collector-samplin
 
 ### Phase Breakdown
 
-| Phase | Timeline | Services                          | Success Criteria                                    |
-|-------|----------|-----------------------------------|-----------------------------------------------------|
-| 0     | Week 0   | Control plane deployment          | `linkerd check` passes, dashboard accessible        |
-| 1     | Week 1-2 | Home Assistant, MQTT, NAS         | 100% mTLS coverage, <5% latency increase            |
-| 2     | Week 3-4 | DNS/DHCP, Cameras (Local), Media  | No service disruptions, metrics flowing to Grafana  |
-| 3     | Week 5-6 | IoT devices, Printers             | >95% mesh adoption across critical services         |
-| 4     | Week 7+  | Optional: Guest, Work VLAN        | Full mesh deployment, automated cert rotation       |
+| Phase | Timeline | Services                         | Success Criteria                                   |
+| ----- | -------- | -------------------------------- | -------------------------------------------------- |
+| 0     | Week 0   | Control plane deployment         | `linkerd check` passes, dashboard accessible       |
+| 1     | Week 1-2 | Home Assistant, MQTT, NAS        | 100% mTLS coverage, <5% latency increase           |
+| 2     | Week 3-4 | DNS/DHCP, Cameras (Local), Media | No service disruptions, metrics flowing to Grafana |
+| 3     | Week 5-6 | IoT devices, Printers            | >95% mesh adoption across critical services        |
+| 4     | Week 7+  | Optional: Guest, Work VLAN       | Full mesh deployment, automated cert rotation      |
 
 ### Rollback Plan
 
@@ -500,8 +506,8 @@ spec:
     kind: Server
     name: mqtt-server
   requiredAuthenticationRefs:
-  - kind: ServiceAccount
-    name: home-assistant
+    - kind: ServiceAccount
+      name: home-assistant
 ```
 
 ---
@@ -529,16 +535,19 @@ spec:
 ### Day 2 Operations
 
 **Weekly Tasks:**
+
 - Review mTLS coverage dashboard: `linkerd viz stat deploy --all-namespaces`
 - Check certificate expiry: `linkerd identity --all-namespaces`
 - Validate no plaintext traffic: `linkerd tap --all-namespaces | grep 'tls=""'`
 
 **Monthly Tasks:**
+
 - Rotate trust anchor if < 3 months until expiry
 - Review and update authorization policies
 - Audit mesh adoption rate across services
 
 **Emergency Procedures:**
+
 - Certificate rotation failure: Manual issuer cert renewal via `linkerd upgrade`
 - Control plane outage: Workloads continue with last-known certificates (24hr grace)
 - Proxy crash loop: Check application compatibility, exclude problematic ports
@@ -548,18 +557,21 @@ spec:
 ## 11. References and Resources
 
 ### Official Documentation
-- Linkerd Documentation: https://linkerd.io/docs/
-- Linkerd Architecture: https://linkerd.io/2.14/reference/architecture/
-- mTLS Guide: https://linkerd.io/2.14/features/automatic-mtls/
+
+- Linkerd Documentation: <https://linkerd.io/docs/>
+- Linkerd Architecture: <https://linkerd.io/2.14/reference/architecture/>
+- mTLS Guide: <https://linkerd.io/2.14/features/automatic-mtls/>
 
 ### Internal Documentation
+
 - [Firewall Matrix](../docs/firewall-matrix.md) - VLAN access rules
 - [Services Documentation](../docs/services.md) - Service/port mappings
 - [Project Architecture Blueprint](../docs/Project_Architecture_Blueprint.md) - Overall architecture
 
 ### Community Resources
-- Linkerd Slack: https://slack.linkerd.io/
-- CNCF Linkerd Project: https://www.cncf.io/projects/linkerd/
+
+- Linkerd Slack: <https://slack.linkerd.io/>
+- CNCF Linkerd Project: <https://www.cncf.io/projects/linkerd/>
 
 ---
 
@@ -588,4 +600,4 @@ If requirements change to need advanced traffic management:
 
 ---
 
-🔗 *The service mesh architecture provides transparent mTLS encryption across the Battlestar Ventana network, enhancing security without application modifications. Linkerd's lightweight design makes it ideal for homelab deployments.*
+🔗 _The service mesh architecture provides transparent mTLS encryption across the Battlestar Ventana network, enhancing security without application modifications. Linkerd's lightweight design makes it ideal for homelab deployments._

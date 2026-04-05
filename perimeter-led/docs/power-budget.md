@@ -30,10 +30,12 @@ This document details the electrical power requirements for the 24 V perimeter
 ## Totals
 
 ### Per Side
+
 - **~2.7 A**
 - **~64.8 W**
 
 ### Entire System
+
 - **~5.4 A**
 - **~129.6 W**
 

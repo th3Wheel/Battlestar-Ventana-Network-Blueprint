@@ -14,10 +14,6 @@ tags:
   - ansible
 ---
 
-# Introduction
-
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
-
 This plan defines the deterministic steps to deploy Pi-hole with Unbound DNS resolver on the Radxa Zero 3E platform using Ansible. Network values (subnet, gateway, VLAN ID, and static IP targets) must be derived from the repository source of truth in `docs/dhcp-scopes.md` instead of being hardcoded in templates or playbooks.
 
 ## 1. Requirements & Constraints
@@ -41,13 +37,13 @@ This plan defines the deterministic steps to deploy Pi-hole with Unbound DNS res
 
 - GOAL-001: Build Ansible automation that renders and deploys the Pi-hole + Unbound compose stack with network settings derived from source-of-truth data.
 
-| Task | Description | Completed | Date |
-|------|-------------|-----------|------|
-| TASK-001 | Create Ansible role `infrastructure/ansible/roles/pihole_stack/` to render and deploy `docker-compose.pihole.yaml` on target hosts. |  |  |
-| TASK-002 | Add source-of-truth mapping task that reads/normalizes VLAN and gateway data for VLAN 20 from `docs/dhcp-scopes.md` into Ansible vars (for example `vlan_id`, `subnet_cidr`, `gateway_ip`, `pihole_ip`). |  |  |
-| TASK-003 | Template compose output at `infrastructure/radxa/docker-compose.pihole.yaml.j2` using only Ansible vars (no hardcoded network/IP literals). |  |  |
-| TASK-004 | Deploy and validate with Ansible (`community.docker.docker_compose_v2`), including health checks and restart policies. |  |  |
-| TASK-005 | Run validation with `ansible-playbook --check` and `docker compose config` on rendered output. |  |  |
+| Task     | Description                                                                                                                                                                                              | Completed | Date |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
+| TASK-001 | Create Ansible role `infrastructure/ansible/roles/pihole_stack/` to render and deploy `docker-compose.pihole.yaml` on target hosts.                                                                      |           |      |
+| TASK-002 | Add source-of-truth mapping task that reads/normalizes VLAN and gateway data for VLAN 20 from `docs/dhcp-scopes.md` into Ansible vars (for example `vlan_id`, `subnet_cidr`, `gateway_ip`, `pihole_ip`). |           |      |
+| TASK-003 | Template compose output at `infrastructure/radxa/docker-compose.pihole.yaml.j2` using only Ansible vars (no hardcoded network/IP literals).                                                              |           |      |
+| TASK-004 | Deploy and validate with Ansible (`community.docker.docker_compose_v2`), including health checks and restart policies.                                                                                   |           |      |
+| TASK-005 | Run validation with `ansible-playbook --check` and `docker compose config` on rendered output.                                                                                                           |           |      |
 
 ## 3. Alternatives
 

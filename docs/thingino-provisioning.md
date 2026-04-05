@@ -4,16 +4,16 @@ This section contains the reproducible provisioning system for Thingino-based Ci
 
 ## Structure
 
-- templates/thingino.conf.template  
-- templates/camera-map.yaml  
-- scripts/generate-configs.sh  
+- templates/thingino.conf.template
+- templates/camera-map.yaml
+- scripts/generate-configs.sh
 - cameras/ (generated output)
 
 ## Workflow
 
-1. Edit camera-map.yaml  
-2. Run generate-configs.sh  
-3. Copy each generated thingino.conf to SD card root  
+1. Edit camera-map.yaml
+2. Run generate-configs.sh
+3. Copy each generated thingino.conf to SD card root
 4. Boot camera to auto‑provision
 
 ## Provisioning Flow
@@ -33,4 +33,5 @@ H --> L[Provision complete]
 
 E -- No --> I[Fallback: Camera starts AP mode]
 I --> J[Manual provisioning via web UI]
-J --> L[Provision complete]
+J --> L
+```

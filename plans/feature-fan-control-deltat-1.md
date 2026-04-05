@@ -86,4 +86,3 @@ This plan defines the deterministic steps required to validate, document, and re
 - [memory-bank/tasks/TASK002-prepare-fan-control-1.1.0.md](../memory-bank/tasks/TASK002-prepare-fan-control-1.1.0.md)
 - [fan-control-deltaT/docs/FAN_CONTROL.md](../fan-control-deltaT/docs/FAN_CONTROL.md)
 - [fan-control-deltaT/CHANGELOG.md](../fan-control-deltaT/CHANGELOG.md)
-
