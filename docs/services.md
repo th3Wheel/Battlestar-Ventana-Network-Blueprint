@@ -204,6 +204,13 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Strictly limited per firewall matrix. MQTT topics for telemetry subscriptions and publication. Firmware updates via HTTPS.
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
+- **Service:** Hyperion HD ambient lighting frame streaming
+- **Ports:** Hyperion Flatbuffers (UDP 19444)
+- **Direction:** IoT → ServerVault
+- **Protocol:** UDP (frame streaming only)
+- **Notes:** ESP32 camera sensors stream captured TV frames to Hyperion HD server for ambient lighting processing over UDP 19444 only. Hyperion JSON API (TCP 19445) and Web UI (TCP 8090) remain restricted to trusted management VLANs per firewall matrix and are not exposed to IoT devices.
+- **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
+
 #### Outbound to Internet (🌐)
 
 - **Service:** Firmware updates, cloud sync
@@ -315,6 +322,13 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Direction:** ← IoT (20)
 - **Protocol:** TCP
 - **Notes:** Limited access per firewall matrix; no other services exposed to untrusted zone
+- **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
+
+- **Service:** Hyperion HD ambient lighting frame reception
+- **Ports:** Hyperion Flatbuffers (UDP 19444)
+- **Direction:** ← IoT (20)
+- **Protocol:** UDP
+- **Notes:** Hyperion HD server receives frame streams from ESP32 camera sensors on IoT VLAN for ambient lighting processing; management interfaces (Hyperion JSON API TCP 19445, Web UI TCP 8090) are restricted to trusted admin VLANs per firewall matrix
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
 #### Inbound from Surveillance Zone (81, 82)
