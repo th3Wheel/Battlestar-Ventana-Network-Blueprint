@@ -1,16 +1,18 @@
 
-Sidebar navigation for Just-the-Docs
+# Sidebar navigation for Just-the-Docs
 
 nav:
-
-title: "Thingino Provisioning" url: /children:
-
-title: "Overview" url: /overview/
-
-title: "IP Allocation" url: /ip-allocation/
-
-title: "Topology Map" url: /topology/
-
-title: "Templates" url: /templates/
-
-title: "Scripts" url: /scripts/
+  - title: "Thingino Provisioning"
+    url: /
+    children:
+      - title: "Overview"
+        url: /overview/
+      - title: "IP Allocation"
+        url: /ip-allocation/
+      - title: "Topology Map"
+        url: /topology/
+      - title: "Templates"
+        url: /templates/
+      - title: "Scripts"
+        url: /scripts/
+

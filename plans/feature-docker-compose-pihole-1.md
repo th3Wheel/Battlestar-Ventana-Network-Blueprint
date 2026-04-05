@@ -6,12 +6,12 @@ last_updated: 2026-03-14
 owner: Network Automation
 status: Planned
 tags:
-	- feature
-	- docker
-	- pi-hole
-	- radxa
-	- vlan20
-	- ansible
+  - feature
+  - docker
+  - pi-hole
+  - radxa
+  - vlan20
+  - ansible
 ---
 
 # Introduction

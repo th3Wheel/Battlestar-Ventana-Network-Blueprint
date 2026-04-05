@@ -24,7 +24,7 @@ networks:
   vlan{{ item.id }}-bridge:
     driver: macvlan
     driver_opts:
-      parent: "eth0.{{ item.id }}"
+      parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
     ipam:
       config:
         - subnet: "{{ item.subnet }}"

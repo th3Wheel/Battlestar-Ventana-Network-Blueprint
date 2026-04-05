@@ -51,7 +51,7 @@
         name: "vlan{{ item.id }}-bridge"
         driver: macvlan
         driver_options:
-          parent: "eth0.{{ item.id }}"
+          parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
         ipam_config:
           - subnet: "{{ item.subnet }}"
             gateway: "{{ item.gateway }}"
@@ -85,7 +85,7 @@
         name: "vlan{{ item.id }}-bridge"
         driver: macvlan
         driver_options:
-          parent: "eth0.{{ item.id }}"
+          parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
         ipam_config:
           - subnet: "{{ item.subnet }}"
             gateway: "{{ item.gateway }}"

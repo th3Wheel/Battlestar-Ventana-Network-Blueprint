@@ -29,7 +29,8 @@ D --> E{Config file detected?}
 E -- Yes --> F[Import network settings]
 F --> G[Join IoT VLAN Wi-Fi]
 G --> H[Camera reachable at static IP]
+H --> L[Provision complete]
 
 E -- No --> I[Fallback: Camera starts AP mode]
 I --> J[Manual provisioning via web UI]
-K --> L[Provision complete]
+J --> L[Provision complete]
