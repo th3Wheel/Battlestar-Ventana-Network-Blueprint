@@ -1,6 +1,6 @@
-## Homepage Dashboard Mockup
+# Homepage Dashboard Mockup
 
-### Live Scan Stats Panel
+## Live Scan Stats Panel
 
 - Total scans today: `{{scan_count}}`
 
@@ -15,7 +15,7 @@
 
   - Red: Critical alerts
 
-### Severity Tiles
+## Severity Tiles
 
 - Critical: `{{critical_count}}` 🔴
 
@@ -25,7 +25,7 @@
 
 - Each tile links to filtered alert view
 
-### VLAN Overlays
+## VLAN Overlays
 
 - Interactive map of VLANs with hover tooltips:
   - VLAN ID
@@ -43,7 +43,7 @@
 
   - Red: Non-compliant
 
-### Quick Actions
+## Quick Actions
 
 - Rescan network
 
@@ -55,9 +55,9 @@
 
 Here's a wireframe concept for the Homepage dashboard layout:
 
-### Homepage Dashboard Wireframe
+## Homepage Dashboard Wireframe
 
-#### Top Row: Live Scan Stats Panel
+### Top Row: Live Scan Stats Panel
 
 - 📊 **Scan Count**: `{{scan_count}}`
 
@@ -72,7 +72,7 @@ Here's a wireframe concept for the Homepage dashboard layout:
 
   - ❌ Red: Critical alerts
 
-#### Middle Row: Severity Tiles
+### Middle Row: Severity Tiles
 
 - 🔴 **Critical**: `{{critical_count}}`
 
@@ -84,7 +84,7 @@ Here's a wireframe concept for the Homepage dashboard layout:
 
 - Hover reveals timestamp and affected VLANs
 
-#### Bottom Row: VLAN Overlay Map
+### Bottom Row: VLAN Overlay Map
 
 - Interactive SVG map with hover logic:
   - 🧭 Tooltip shows VLAN ID, purpose, device count, compliance status
@@ -96,7 +96,7 @@ Here's a wireframe concept for the Homepage dashboard layout:
 
     - 🟥 Red: Non-compliant
 
-#### Sidebar: Quick Actions
+### Sidebar: Quick Actions
 
 - 🔄 Rescan Network
 
