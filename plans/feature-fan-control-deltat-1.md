@@ -34,10 +34,10 @@ This plan defines the deterministic steps required to validate, document, and re
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-001 | Execute `docker exec homeassistant ha core check --config /config` (or equivalent HA CLI) ensuring `fan-control-deltaT/packages/fan_control_package.yaml` is loaded; capture output under `plan/logs/fan-control-deltaT/ha-core-check.txt`. |  |  |
+| TASK-001 | Execute `docker exec homeassistant ha core check --config /config` (or equivalent HA CLI) ensuring `fan-control-deltaT/packages/fan_control_package.yaml` is loaded; capture output under `plans/logs/fan-control-deltaT/ha-core-check.txt`. |  |  |
 | TASK-002 | Compare entities defined in `fan-control-deltaT/packages/fan_control_package.yaml` against Home Assistant Developer Tools > States; create any missing helpers/scripts via UI automation export and store exported YAML under `fan-control-deltaT/packages/exported_helpers/` for verification. |  |  |
-| TASK-003 | Import `fan-control-deltaT/dashboards/fan_control_dashboard.yaml` into Home Assistant, enable the view, and record screenshot evidence in `plan/artifacts/fan-control-deltaT/dashboard/`; ensure ΔT badges, mean/σ bands, and quick actions render without errors. |  |  |
-| TASK-004 | Run smoke scenarios: toggle manual fan mode, trigger ΔT anomaly notification, and verify automation responses; document results in `plan/logs/fan-control-deltaT/smoke-tests.md` with timestamps and entity IDs. |  |  |
+| TASK-003 | Import `fan-control-deltaT/dashboards/fan_control_dashboard.yaml` into Home Assistant, enable the view, and record screenshot evidence in `plans/artifacts/fan-control-deltaT/dashboard/`; ensure ΔT badges, mean/σ bands, and quick actions render without errors. |  |  |
+| TASK-004 | Run smoke scenarios: toggle manual fan mode, trigger ΔT anomaly notification, and verify automation responses; document results in `plans/logs/fan-control-deltaT/smoke-tests.md` with timestamps and entity IDs. |  |  |
 
 ### Implementation Phase 2
 
@@ -45,7 +45,7 @@ This plan defines the deterministic steps required to validate, document, and re
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-005 | Update `fan-control-deltaT/docs/FAN_CONTROL.md` with notify service configuration guidance, required custom cards (mini-graph-card), and links to validation artifacts under `plan/artifacts/fan-control-deltaT/`. |  |  |
+| TASK-005 | Update `fan-control-deltaT/docs/FAN_CONTROL.md` with notify service configuration guidance, required custom cards (mini-graph-card), and links to validation artifacts under `plans/artifacts/fan-control-deltaT/`. |  |  |
 | TASK-006 | Add ΔT feature notes to `fan-control-deltaT/CHANGELOG.md` (unreleased section) and ensure version bump metadata in `.release-please-manifest.json` reflects `1.1.0`. |  |  |
 | TASK-007 | Commit validated dashboard/package changes using Conventional Commit messages (`feat:`), push branch, and approve release-please PR once checks pass. |  |  |
 | TASK-008 | After release-please merge, verify GitHub release assets and publish updated dashboard/package bundle to documentation (`fan-control-deltaT/docs/FAN_CONTROL.md`) including artifact links. |  |  |
@@ -67,7 +67,7 @@ This plan defines the deterministic steps required to validate, document, and re
 - **FILE-002**: `fan-control-deltaT/dashboards/fan_control_dashboard.yaml` — Lovelace dashboard view.
 - **FILE-003**: `fan-control-deltaT/docs/FAN_CONTROL.md` — User-facing documentation.
 - **FILE-004**: `fan-control-deltaT/CHANGELOG.md` and `.release-please-manifest.json` — Release metadata.
-- **FILE-005**: `plan/logs/fan-control-deltaT/` and `plan/artifacts/fan-control-deltaT/` — Validation evidence directories created during execution.
+- **FILE-005**: `plans/logs/fan-control-deltaT/` and `plans/artifacts/fan-control-deltaT/` — Validation evidence directories created during execution.
 
 ## 6. Testing
 

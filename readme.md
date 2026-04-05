@@ -30,7 +30,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 ## 📊 Monitoring & dashboards
 
 - Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
-- Prometheus: [`alerts/AlertRules.yaml`](alerts/AlertRules.yaml)
+- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
@@ -65,7 +65,7 @@ Battlestar-Ventana-Network-Blueprint/
 ├── network-map.md                     # Network topology map
 │
 ├── alerts/                            # Prometheus alert rules
-│   └── AlertRules.yaml
+│   └── alert_rules.yaml
 │
 ├── dashboards/                        # Grafana dashboards
 │   ├── dashboard.json
@@ -106,7 +106,7 @@ Battlestar-Ventana-Network-Blueprint/
 - [CHANGELOG.md](CHANGELOG.md) — Versioned history of changes
 - [layout.md](layout.md) — Network layout
 - [network-map.md](network-map.md) — Network topology map
-- [alerts/AlertRules.yaml](alerts/AlertRules.yaml) — Prometheus alert rules
+- [alerts/alert_rules.yaml](alerts/alert_rules.yaml) — Prometheus alert rules
 - [dashboards/dashboard.json](dashboards/dashboard.json) — Grafana dashboard
 - [dashboards/Homepage Mockup.md](dashboards/Homepage%20Mockup.md) — Homepage mockup
 - [docs/audit-checklist.md](docs/audit-checklist.md) — Operational health checklist

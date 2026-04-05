@@ -155,12 +155,12 @@ For each component, this section summarizes purpose, internal structure, interac
 
 Layers:
 
-1) Physical/Link Layer → switches, cabling
-2) Network Layer → VLANs, routing, DHCP/DNS
-3) Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
-4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5) Observability Layer → dashboards, alerting, logs, SIEM integration
-6) Automation Layer → desired IaC/config management (future)
+1. Physical/Link Layer → switches, cabling
+2. Network Layer → VLANs, routing, DHCP/DNS
+3. Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
+4. Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
+5. Observability Layer → dashboards, alerting, logs, SIEM integration
+6. Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
 
@@ -355,6 +355,11 @@ Test data strategies:
 
 ## 13. Extension and Evolution Patterns
 
+Status note for consistency:
+
+- Service mesh is currently a planned future enhancement and is not yet implemented in the active baseline.
+- Track and review this proposal in `plans/service-mesh-architecture.md` during a future architecture review cycle.
+
 ### Feature Addition Patterns
 
 - Adding a new VLAN:
@@ -378,17 +383,17 @@ Test data strategies:
 
 ### Example: Service/Ports Contract (excerpt)
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|------------------------|----------|-------|
-| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
-| 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
+| Source → Destination    | Allowed Services/Ports              | Protocol | Notes                |
+| ----------------------- | ----------------------------------- | -------- | -------------------- |
+| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
+| 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
 ### Example: Alert Rules (excerpt)
 
 ```yaml
-# alerts/AlertRules.yaml (excerpt)
+# alerts/alert_rules.yaml (excerpt)
 route:
-  group_by: ['alertname', 'severity']
+  group_by: ["alertname", "severity"]
   group_wait: 30s
   group_interval: 5m
 ```

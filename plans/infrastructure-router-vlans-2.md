@@ -58,7 +58,7 @@ This plan defines the deterministic steps required to evaluate the linux-router 
 |------|-------------|-----------|------|
 | TASK-007 | Author `projects/route-pi-squared/docs/decisions/linux-router-evaluation.md` summarizing feasibility outcomes, blockers, recommended next steps (adopt, defer, or reject), and a comparative appendix describing the OpenWrt-in-Docker findings. |  |  |
 | TASK-008 | Update `projects/route-pi-squared/docs/router-a5e.md` with linux-router evaluation notes, step-by-step guidance (if viable), or rationale for continued systemd-networkd usage, alongside an OpenWrt-in-Docker quick-start and limitations section. |  |  |
-| TASK-009 | Revise the existing router infrastructure plan (`plan/infrastructure-router-vlans-1.md`) alternatives section to reference the finalized linux-router decision and include the OpenWrt-in-Docker option with guidance on when to consider it. |  |  |
+| TASK-009 | Revise the existing router infrastructure plan (`plans/infrastructure-router-vlans-1.md`) alternatives section to reference the finalized linux-router decision and include the OpenWrt-in-Docker option with guidance on when to consider it. |  |  |
 
 ### Implementation Phase 3
 
@@ -94,7 +94,7 @@ This plan defines the deterministic steps required to evaluate the linux-router 
 - **FILE-003**: `projects/route-pi-squared/docs/router-a5e.md` — Operational documentation updates.
 - **FILE-004**: `projects/route-pi-squared/research/linux-router-vlan-matrix.json` — Structured dataset derived from the Battlestar blueprint.
 - **FILE-005**: `projects/route-pi-squared/infrastructure/linux-router/prototypes/` — Prototype configuration scripts aligned with blueprint VLANs.
-- **FILE-006**: `plan/infrastructure-router-vlans-1.md` — Alternatives section to be refreshed with the final decision.
+- **FILE-006**: `plans/infrastructure-router-vlans-1.md` — Alternatives section to be refreshed with the final decision.
 - **FILE-007**: `projects/route-pi-squared/research/openwrt-docker-capabilities.md` — Research log capturing OpenWrt-in-Docker findings, commands, and validation artefacts.
 - **FILE-008**: `projects/route-pi-squared/infrastructure/openwrt-docker/prototypes/` — Container deployment manifests and UCI backups for reproducing the OpenWrt evaluation.
 
@@ -119,7 +119,7 @@ This plan defines the deterministic steps required to evaluate the linux-router 
 
 ## 8. Related Specifications / Further Reading
 
-- `plan/infrastructure-router-vlans-1.md`
+- `plans/infrastructure-router-vlans-1.md`
 - `projects/route-pi-squared/docs/router-a5e.md`
 - `network-structure/Battlestar Ventana Network Blueprint.md`
 - [Network Structure/🚀 Proxmox Router + Dual Pi-hole HA Deployment.md](../Network Structure/🚀 Proxmox Router + Dual Pi-hole HA Deployment.md)

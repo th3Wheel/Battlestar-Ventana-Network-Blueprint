@@ -6,7 +6,7 @@ This document provides the complete directory structure and file organization fo
 
 ## 🏗️ **Complete Repository Structure**
 
-``` mermaid
+```mermaid
 Battlestar-Ventana-Network-Blueprint/
 │
 ├── 📄 Core Documentation
@@ -28,7 +28,7 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   ├── Homepage Mockup.md                 # Homepage dashboard design
 │   │   └── true-scale SVG diagr.png           # Network topology diagram
 │   ├── alerts/
-│   │   └── AlertRules.yaml                    # Prometheus alert rules
+│   │   └── alert_rules.yaml                   # Prometheus alert rules
 │   └── ha/
 │       ├── Dashboard.yaml                     # Home Assistant dashboard config
 │       └── lovelace.yaml                      # Home Assistant Lovelace UI config
@@ -114,13 +114,13 @@ Battlestar-Ventana-Network-Blueprint/
 
 ## 🔗 **Key File Relationships**
 
-| Component        | Primary File                                       | Related Files                                        |
-| ---------------- | -------------------------------------------------- | ---------------------------------------------------- |
-| **VLAN Design**  | `baseline/Battlestar Ventana Network Blueprint.md` | `docs/naming-conventions.md`, `docs/dhcp-scopes.md`  |
-| **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`        |
-| **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/AlertRules.yaml`, `ha/lovelace.yaml`         |
-| **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                   |
-| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files               |
+| Component        | Primary File                                       | Related Files                                       |
+| ---------------- | -------------------------------------------------- | --------------------------------------------------- |
+| **VLAN Design**  | `baseline/Battlestar Ventana Network Blueprint.md` | `docs/naming-conventions.md`, `docs/dhcp-scopes.md` |
+| **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`       |
+| **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/alert_rules.yaml`, `ha/lovelace.yaml`       |
+| **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                  |
+| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files              |
 
 ---
 

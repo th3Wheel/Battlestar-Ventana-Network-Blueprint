@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - **`.gitattributes`** — Added repository-wide line ending normalization: all text files enforce LF (`eol=lf`), and binary files (`*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.pdf`) are marked explicitly to prevent corruption; SVG files are intentionally left as text.
+- **`plans/infrastructure-router-vlans-3.md`** — Ansible-driven implementation schedule for completing the linux-router and OpenWrt-in-Docker evaluations defined in `plans/infrastructure-router-vlans-2.md`. Includes 8-week timeline, required components (CrimsonRogue, MintRedoubt, AzureDefiant), and full VLAN catalogue sourced from blueprint truth files.
+- **`ansible/inventory/hosts.yml`** — Ansible inventory for the evaluation lab: physical hosts (CrimsonRogue, MintRedoubt, AzureDefiant), Radxa Cubie A5E router node, and Pi-hole DNS reference, all addressed via VLAN 40 (InfraCore).
+- **`ansible/group_vars/all/vlan-vars.yml`** — Single Ansible source of truth for all 11 blueprint VLANs (IDs, names, subnets, gateways, DHCP ranges, lease times, DNS) sourced from `docs/dhcp-scopes.md` and `docs/naming-conventions.md`.
+- **`ansible/playbooks/evaluate-linux-router.yml`** — Tagged playbook orchestrating linux-router evaluation Phases 1 and 3 (research, matrix, provision, validate, full-matrix, generate-config).
+- **`ansible/playbooks/evaluate-openwrt-docker.yml`** — Tagged playbook orchestrating OpenWrt-in-Docker evaluation Phases 1 and 3.
+- **`ansible/playbooks/evaluate-opnsense-vm.yml`** — Tagged playbook provisioning an OPNsense VM on CrimsonRogue (Proxmox) and validating all 11 blueprint VLANs via the OPNsense REST API.
+- **`ansible/roles/linux-router-eval/`** — Reusable Ansible role covering linux-router installation, VLAN interface creation, validation, and prototype script generation for all 11 blueprint VLANs.
+- **`ansible/roles/openwrt-docker-eval/`** — Reusable Ansible role covering OpenWrt Docker image pull, container provisioning, full VLAN bridge validation, and docker-compose/UCI artifact generation.
+- **`ansible/roles/opnsense-vm-eval/`** — Reusable Ansible role covering OPNsense VM creation via Proxmox API, VLAN/DHCP/firewall configuration via OPNsense REST API, full-matrix validation, XML config backup export, and VM teardown.
 
 - **`.github/skills/led_analysis/SKILL.md`** — Copilot skill definition for LED product analysis, wiring guidance, and alternative recommendations.
 - **`.github/skills/led_analysis/LICENSE.txt`** — MIT license file for the `led_analysis` skill, satisfying the `license: Complete terms in LICENSE.txt` reference in `SKILL.md`.
@@ -29,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   links.
 - **`.github/copilot-instructions.md`** — Added a focused review expectations
   section for severity-first findings and actionable remediation notes.
-- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/AlertRules.yaml`
+- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json` (dashboards are stored in repository per IaC goal); corrected Prometheus alert file reference to `alerts/alert_rules.yaml`
 - **README tree structure** — Changed code fence language from `tree` to
   `text`; removed spurious empty line in tree; corrected `README.md` label to
   `readme.md` to match actual filename; added `dashboard.json` to tree; moved
