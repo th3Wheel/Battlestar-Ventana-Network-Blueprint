@@ -60,10 +60,19 @@
           - dnsmasq
           - iptables
           - bridge-utils
+          - dnsutils
+          - git
         state: present
       become: true
 
-    - name: Copy linux-router script from fetched source
+    - name: Clone linux-router repository on target host
+      ansible.builtin.git:
+        repo: "https://github.com/garywill/linux-router.git"
+        dest: "/tmp/linux-router-src"
+        version: master
+        depth: 1
+
+    - name: Copy linux-router script from cloned source
       ansible.builtin.copy:
         src: "/tmp/linux-router-src/lnxrouter"
         dest: "/usr/local/bin/lnxrouter"

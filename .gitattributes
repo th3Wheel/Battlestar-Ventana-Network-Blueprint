@@ -1,0 +1,25 @@
+# Ensure consistent line endings
+* text=auto
+
+# Treat shell scripts as LF
+*.sh text eol=lf
+
+# Treat YAML as text
+*.yml text
+*.yaml text
+
+# Treat Markdown as text
+*.md text
+
+# Treat Ansible as text
+*.j2 text
+*.conf text
+
+# Normalize JSON
+*.json text
+
+# Handle Windows batch files
+*.bat text eol=crlf
+
+# Handle PowerShell scripts
+*.ps1 text eol=crlf

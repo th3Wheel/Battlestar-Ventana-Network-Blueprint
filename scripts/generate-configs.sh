@@ -7,11 +7,18 @@ MAP="templates/camera-map.yaml"
 TEMPLATE="templates/thingino.conf.template"
 OUTDIR="cameras"
 
+# Check for yq and prefer mikefarah/yq for explicit raw output
+if ! command -v yq &> /dev/null; then
+  echo "Error: yq is not installed" >&2
+  exit 1
+fi
+
 mkdir -p "$OUTDIR"
 
-for cam in $(yq '.cameras[].id' "$MAP"); do
-  ip=$(yq ".cameras[] | select(.id == \"$cam\") | .ip" "$MAP")
-  host=$(yq ".cameras[] | select(.id == \"$cam\") | .hostname" "$MAP")
+while IFS= read -r cam; do
+  [ -z "$cam" ] && continue
+  ip=$(yq -r ".cameras[] | select(.id == \"$cam\") | .ip" "$MAP")
+  host=$(yq -r ".cameras[] | select(.id == \"$cam\") | .hostname" "$MAP")
 
   mkdir -p "$OUTDIR/$host"
 
