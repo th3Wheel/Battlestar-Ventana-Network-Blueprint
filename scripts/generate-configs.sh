@@ -20,6 +20,9 @@ while IFS= read -r cam; do
   ip=$(yq -r ".cameras[] | select(.id == \"$cam\") | .ip" "$MAP")
   host=$(yq -r ".cameras[] | select(.id == \"$cam\") | .hostname" "$MAP")
 
+  [ "$ip" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no IP address" >&2; exit 1; }
+  [ "$host" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no hostname" >&2; exit 1; }
+
   mkdir -p "$OUTDIR/$host"
 
   sed \
@@ -27,6 +30,6 @@ while IFS= read -r cam; do
     -e "s/hostname=.*/hostname=$host/" \
     "$TEMPLATE" \
     > "$OUTDIR/$host/thingino.conf"
-done
+done < <(yq -r '.cameras[].id' "$MAP")
 
 echo "Generated configs in $OUTDIR/"
