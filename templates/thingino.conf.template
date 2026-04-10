@@ -1,5 +1,4 @@
 # Deterministic Thingino provisioning template
-
 wifi_ssid=IOT-WIFI
 wifi_password=REPLACE_ME
 wifi_mode=client
@@ -17,4 +16,4 @@ mqtt_port=1883
 mqtt_user=camera
 mqtt_pass=REPLACE_ME
 
-ntp_server=10.10.10.10
+ntp_server=10.10.10.10
