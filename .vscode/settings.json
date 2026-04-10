@@ -1,24 +1,37 @@
 {
-    "cSpell.words": [
-        "Galactica"
-    ],
-    "markdownlint.ignore": [
-        "**/.git/**",
-        "**/.vscode/**",
-        "**/.venv/**",
-        "**/.ruff_cache/**",
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/coverage/**",
-        "**/.github/**/doNotLint/**",
-        "**/.github/instructions/code-review-generic.instructions.md",
-        "**/.github/instructions/gilfoyle-code-review.instructions.md",
-        "**/.github/instructions/markdown.instructions.md",
-        "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
-        "**/.github/instructions/shell.instructions.md",
-        "**/.github/instructions/taming-copilot.instructions.md",
-        "**/.github/copilot/memory/**",
-        "**/.github/copilot/agent-memory/**",
-        "**/.github/copilot/agent-logs/**"
-    ]
+  "cSpell.words": [
+    "Battlestar",
+    "Galactica",
+    "helmhub",
+    "mqtt",
+    "Radxa",
+    "skopeo",
+    "Thingino",
+    "unthrottled",
+    "Ventana"
+  ],
+  "markdownlint.ignore": [
+    "**/.git/**",
+    "**/.vscode/**",
+    "**/.venv/**",
+    "**/.ruff_cache/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.github/**/doNotLint/**",
+    "**/.github/instructions/code-review-generic.instructions.md",
+    "**/.github/instructions/gilfoyle-code-review.instructions.md",
+    "**/.github/instructions/markdown.instructions.md",
+    "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
+    "**/.github/instructions/shell.instructions.md",
+    "**/.github/instructions/taming-copilot.instructions.md",
+    "**/.github/copilot/memory/**",
+    "**/.github/copilot/agent-memory/**",
+    "**/.github/copilot/agent-logs/**"
+  ],
+  "ansible.mcpServer.enabled": true,
+  "ansible.ansible.reuseTerminal": true,
+  "ansible.validation.lint.autoFixOnSave": true,
+  "ansible.executionEnvironment.enabled": true,
+  "notebook.defaultFormatter": "redhat.ansible"
 }
