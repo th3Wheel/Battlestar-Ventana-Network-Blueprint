@@ -116,13 +116,19 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **30 Guest** | Internet | 100 req/sec/IP | Guest web browsing |
+| **30 Guest** | Internet | 100 req/sec/IP | Guest web browsing (no LAN access) |
 | **20 IoT** | ServerVault (50) | 10 req/sec/IP | Firmware updates only |
-| **10, 90 Trusted** | ServerVault (50) | 500 req/sec/IP | Dashboard/API access |
-| **31 GuestElevated** | ServerVault (50) | 100 req/sec/IP | Limited web services |
+| **10, 90 Trusted** | ServerVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
+| **31 GuestElevated** | ServerVault (50) | 100 req/sec/IP | Limited web services, Plex access |
+| **70 Media** | ServerVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
 
 **Alert Threshold:** 80% of configured limit  
 **Implementation:** Nginx rate limiting, K8s NetworkPolicy, UFW rate limits
+
+**Notes:**
+- HTTP/HTTPS limits apply to request rate, not bandwidth (see Media Streaming section for bandwidth limits)
+- Plex uses HTTPS/32400 for metadata, transcoding control, and authentication
+- High-bandwidth media streaming is covered separately in "Media Streaming Services" section
 
 ---
 
@@ -157,10 +163,15 @@ This matrix defines rate limits for specific services between source and destina
 |-------------|-------------|-------|-------|
 | **10 Trusted** | ServerVault (50) | 100 conn/sec | File sharing |
 | **31 GuestElevated** | ServerVault (50) | 20 conn/sec | Limited file access |
-| **70 Media** | ServerVault (50) | 50 conn/sec | Media file streaming |
+| **70 Media** | ServerVault (50) | 50 conn/sec | Media file access for streaming devices |
 
 **Alert Threshold:** 80% of limit  
 **Implementation:** Samba `max connections`, NFSv4 connection limits
+
+**Notes:**
+- Media devices (70) access ServerVault for local media file streaming
+- Connections are per-device; limit accommodates multiple simultaneous streams
+- Consider higher limits if running multiple 4K streams concurrently
 
 ---
 
@@ -168,12 +179,52 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **81 Cameras Local** | ServerVault (50) | 10 streams | Local camera feeds |
+| **81 Cameras Local** | ServerVault (50) | 10 streams | Local camera feeds recording to NAS |
 | **82 Cameras Cloud** | Internet | 10 streams | Cloud relay |
-| **10 Trusted** | 81/82 Cameras | 20 streams | Camera viewing |
+| **10 Trusted** | 81/82 Cameras | 20 streams | Camera viewing from trusted devices |
+| **31 GuestElevated** | 81/82 Cameras | 5 streams | Limited camera viewing for residents |
 
 **Alert Threshold:** 8 streams (80%)  
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
+
+**Notes:**
+- Camera recording to NAS (81/82 → 50): Continuous streams limited to prevent storage saturation
+- Live viewing (10/31 → 81/82): On-demand streams with per-VLAN limits
+- Recording streams are prioritized over live viewing in QoS policies
+
+---
+
+### Media Streaming Services (Plex, Torbox, etc.)
+
+Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth allocation than standard web traffic.
+
+| Source VLAN | Destination | Service | Limit | Notes |
+|-------------|-------------|---------|-------|-------|
+| **10 Trusted** | ServerVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
+| **70 Media** | ServerVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
+| **31 GuestElevated** | ServerVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
+| **10 Trusted** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
+| **70 Media** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
+
+**Alert Threshold:** 80% of bandwidth limit  
+**Implementation:** 
+- Application-level: Plex transcoding quality settings, bandwidth limits per user
+- Network-level: tc QoS shaping, per-VLAN bandwidth allocation
+- Monitor: Plex dashboard metrics, Tautulli for session tracking
+
+**Notes:**
+- **Plex streaming from ServerVault (50)**: Bandwidth limits account for multiple concurrent streams
+  - 4K stream: ~40-80 Mbps per stream
+  - 1080p stream: ~10-20 Mbps per stream
+  - 720p stream: ~4-8 Mbps per stream
+- **Guest network streaming**: Blocked from VLAN 30 (untrusted guest) but allowed from VLAN 31 (GuestElevated/residents)
+- **Internet streaming services**: Use general VLAN bandwidth limits (see VLAN Tier Limits section)
+- **Transcoding**: Server-side transcoding on ServerVault can spike CPU/bandwidth; monitor with alerts
+
+**Untrusted → Trusted Media Policy:**
+- Direct streaming from VLAN 30 (Guest) to VLAN 10 (Trusted) or VLAN 70 (Media): **BLOCKED** per firewall-matrix.md
+- Guest users can access internet streaming services directly (Netflix, YouTube) via their own internet connection
+- Residents on VLAN 31 (GuestElevated) can access Plex on ServerVault with reduced bandwidth limits
 
 ---
 
