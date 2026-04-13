@@ -250,6 +250,128 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 ---
 
+### DHCP (Port 67/68 UDP)
+
+| Source VLAN | Destination | Limit | Notes |
+|-------------|-------------|-------|-------|
+| **All VLANs** | ServerVault (50) | 10 requests/sec/IP | DHCP lease requests |
+| **All VLANs** | InfraCore (40) | 10 requests/sec/IP | Backup DHCP server |
+
+**Alert Threshold:** 8 requests/sec/IP  
+**Implementation:** DHCP server rate limiting, `iptables` limit module
+
+**Notes:**
+- DHCP requests are typically infrequent (renew every few hours)
+- High request rates may indicate DHCP starvation attack
+- Limit prevents exhaustion of DHCP pool
+- Normal clients send ~1 request per boot/renew cycle
+
+---
+
+### SNMP (Port 161/162 UDP/TCP)
+
+| Source VLAN | Destination | Limit | Notes |
+|-------------|-------------|-------|-------|
+| **10 Trusted** | InfraCore (40) | 100 queries/sec/IP | Network monitoring |
+| **40 InfraCore** | All managed devices | 200 queries/sec | Polling from monitoring systems |
+| **All Others** | Any | **Blocked** | SNMP restricted to management |
+
+**Alert Threshold:** 80 queries/sec/IP  
+**Implementation:** SNMP daemon rate limiting, SNMPv3 with authentication
+
+**Notes:**
+- SNMP monitoring tools can generate high query rates during polling
+- SNMPv3 authentication required; SNMPv1/v2c discouraged for security
+- Restrict SNMP to management VLAN (10, 40) only
+- Monitor for SNMP amplification attack patterns
+
+---
+
+### Printing Services (IPP/LPD/JetDirect)
+
+| Source VLAN | Destination | Service/Port | Limit | Notes |
+|-------------|-------------|--------------|-------|-------|
+| **10 Trusted** | Printers (60) | IPP (631) | 10 jobs/min/IP | Standard printing |
+| **31 GuestElevated** | Printers (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
+| **10, 31** | Printers (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
+| **60 Printers** | ServerVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
+
+**Alert Threshold:** 80% of configured limit  
+**Implementation:** CUPS rate limiting, printer firmware job limits
+
+**Notes:**
+- IPP (Internet Printing Protocol) is modern standard; prefer over LPD
+- LPD (Line Printer Daemon) is legacy but still in use
+- JetDirect (9100) used by printers to submit jobs to print server
+- Limits prevent print job flooding and paper/toner waste
+- Consider per-user quotas in CUPS configuration
+
+---
+
+### Casting/Streaming (DLNA/Chromecast)
+
+| Source VLAN | Destination | Service/Port | Limit | Notes |
+|-------------|-------------|--------------|-------|-------|
+| **10 Trusted** | Media (70) | DLNA (1900) | 20 sessions/IP | Media discovery |
+| **31 GuestElevated** | Media (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
+| **10, 31** | Media (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
+| **90 Work** | Media (70) | Chromecast (8008-8009) | 3 streams/IP | Work device casting |
+
+**Alert Threshold:** 80% of session limit  
+**Implementation:** mDNS/Avahi rate limiting, Chromecast device limits
+
+**Notes:**
+- DLNA (1900 UDP) uses multicast for device discovery
+- Chromecast control uses TCP ports 8008-8009
+- Multiple discovery sessions normal during device browsing
+- Active casting streams limited to prevent bandwidth saturation
+- Consider per-device rather than per-IP limits for shared devices
+
+---
+
+### PostgreSQL (Port 5432 TCP)
+
+| Source VLAN | Destination | Limit | Notes |
+|-------------|-------------|-------|-------|
+| **40 InfraCore** | ServerVault (50) | 100 conn/sec | Infrastructure database access |
+| **50 ServerVault** | Internal DB | 200 conn/sec | Local service connections |
+| **All Others** | Any | **Blocked** | Database access restricted |
+
+**Alert Threshold:** 80 conn/sec  
+**Implementation:** PostgreSQL `max_connections`, connection pooling (PgBouncer)
+
+**Notes:**
+- Database connections should use connection pooling to reduce overhead
+- High connection rates may indicate connection leak or attack
+- Restrict PostgreSQL access to infrastructure and services only
+- Use application-level connection pooling (PgBouncer, PgPool)
+- Monitor with `pg_stat_activity` for connection tracking
+
+---
+
+### Syslog (Port 514 UDP/TCP)
+
+| Source VLAN | Destination | Limit | Notes |
+|-------------|-------------|-------|-------|
+| **All VLANs** | ServerVault (50) | 100 messages/sec/IP | Log aggregation |
+| **81/82 Cameras** | ServerVault (50) | 50 messages/sec/IP | Camera event logs |
+| **40 InfraCore** | ServerVault (50) | 200 messages/sec | Switch/router logs |
+
+**Alert Threshold:** 80 messages/sec/IP  
+**Implementation:** rsyslog rate limiting (`imudp`/`imtcp` rate limit)
+
+**Notes:**
+- Syslog rate limiting prevents log flooding and disk saturation
+- Camera motion events can generate high log rates
+- Infrastructure devices (switches, firewalls) can burst during events
+- Use rsyslog rate limiting directives:
+  ```
+  module(load="imudp" ratelimit.interval="1" ratelimit.burst="100")
+  ```
+- Monitor syslog disk usage and rotate logs appropriately
+
+---
+
 ## 🛠️ Implementation Targets
 
 ### 1. UFW (Uncomplicated Firewall) — Host-Level
