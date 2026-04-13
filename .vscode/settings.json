@@ -1,5 +1,24 @@
 {
     "cSpell.words": [
         "Galactica"
+    ],
+    "markdownlint.ignore": [
+        "**/.git/**",
+        "**/.vscode/**",
+        "**/.venv/**",
+        "**/.ruff_cache/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/coverage/**",
+        "**/.github/**/doNotLint/**",
+        "**/.github/instructions/code-review-generic.instructions.md",
+        "**/.github/instructions/gilfoyle-code-review.instructions.md",
+        "**/.github/instructions/markdown.instructions.md",
+        "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
+        "**/.github/instructions/shell.instructions.md",
+        "**/.github/instructions/taming-copilot.instructions.md",
+        "**/.github/copilot/memory/**",
+        "**/.github/copilot/agent-memory/**",
+        "**/.github/copilot/agent-logs/**"
     ]
 }

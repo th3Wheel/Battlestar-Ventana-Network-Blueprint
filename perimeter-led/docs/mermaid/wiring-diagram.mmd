@@ -1,0 +1,34 @@
+flowchart LR
+    subgraph NET["IoT-Lighting VLAN"]
+        GW["Gateway 10.10.0.1"]
+        HA["Home Assistant"]
+        LEDCTRL["ESP32 WLED Controller\nperimeter-led\n10.10.3.16"]
+    end
+
+    subgraph ROOM["Main Bedroom"]
+        PSU["24V PSU"]
+        L23["Left 23u (Top)"]
+        L14["Left 14u (Mid)"]
+        L8["Left 8u (Bottom)"]
+        R23["Right 23u (Top)"]
+        R10["Right 10u (Mid)"]
+        R12["Right 12u (Bottom)"]
+    end
+
+    GW --> LEDCTRL
+    HA --> LEDCTRL
+
+    LEDCTRL -->|GPIO16 DATA| L23
+    LEDCTRL -->|GPIO16 DATA| L14
+    LEDCTRL -->|GPIO16 DATA| L8
+
+    LEDCTRL -->|GPIO17 DATA| R23
+    LEDCTRL -->|GPIO17 DATA| R10
+    LEDCTRL -->|GPIO17 DATA| R12
+
+    PSU --> L23
+    PSU --> L14
+    PSU --> L8
+    PSU --> R23
+    PSU --> R10
+    PSU --> R12

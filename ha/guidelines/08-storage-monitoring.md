@@ -8,6 +8,7 @@ applyTo: "**/*.yaml,**/*.py,**/*.sh,**/ha/**,**/*.jinja2"
 ## 1. NFS Drive Monitoring
 
 **Shell Script for NFS Monitoring:**
+
 ```bash
 #!/bin/bash
 # update_nfs_monitoring_sensors.sh
@@ -65,6 +66,7 @@ fi
 ```
 
 **Alternative Script for Supervisor Container:**
+
 ```bash
 #!/bin/bash
 # get_nfs_drive_stats.sh
@@ -104,6 +106,7 @@ fi
 ```
 
 **Home Assistant Configuration:**
+
 ```yaml
 # configuration.yaml
 shell_command:
@@ -254,6 +257,7 @@ binary_sensor:
 ## 2. Backup System Monitoring
 
 **Backup Status Monitoring:**
+
 ```yaml
 # Monitor backup completion and health
 sensor:
@@ -277,6 +281,7 @@ sensor:
 ```
 
 **Backup Automation:**
+
 ```yaml
 automation:
   - alias: "Daily Backup"
@@ -316,6 +321,7 @@ automation:
 ## 3. Storage Health Monitoring
 
 **SMART Monitoring:**
+
 ```yaml
 # Monitor disk health using SMART
 sensor:
@@ -339,6 +345,7 @@ sensor:
 ```
 
 **RAID Monitoring (if applicable):**
+
 ```yaml
 sensor:
   - platform: command_line
@@ -356,6 +363,7 @@ sensor:
 ## 4. Storage Dashboard
 
 **Complete Storage Overview:**
+
 ```yaml
 title: "Storage & Backup Monitor"
 cards:
@@ -475,6 +483,7 @@ cards:
 ## 5. Storage Maintenance
 
 **Automated Cleanup:**
+
 ```yaml
 automation:
   - alias: "Cleanup Old Backups"
@@ -496,6 +505,7 @@ shell_command:
 ```
 
 **Storage Optimization:**
+
 ```yaml
 # Monitor and optimize storage usage
 automation:
@@ -518,30 +528,35 @@ automation:
 ## 6. Best Practices
 
 **Monitoring Strategy:**
+
 * Monitor both availability and performance
 * Set up alerts for critical thresholds
 * Use historical data for capacity planning
 * Implement redundant storage solutions
 
 **Backup Strategy:**
+
 * Regular automated backups
 * Test backup restoration procedures
 * Store backups in multiple locations
 * Encrypt sensitive backup data
 
 **Storage Health:**
+
 * Monitor disk health metrics
 * Implement RAID for redundancy
 * Regular disk maintenance and checks
 * Plan for storage capacity growth
 
 **Security:**
+
 * Encrypt sensitive data at rest
 * Secure backup storage locations
 * Implement access controls for storage systems
 * Regular security audits of storage infrastructure
 
 **Performance:**
+
 * Optimize storage access patterns
 * Use appropriate file systems
 * Implement caching where beneficial

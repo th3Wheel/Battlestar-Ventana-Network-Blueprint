@@ -1,0 +1,1 @@
+print("LED Analysis Linting Framework Loaded")
