@@ -8,6 +8,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 ## 1. Secrets Management
 
 **Use secrets.yaml:**
+
 * Store all sensitive information in `secrets.yaml`
 * Never hardcode passwords, API keys, or tokens
 * Reference secrets in configuration files
