@@ -22,7 +22,6 @@ while IFS= read -r cam; do
 
   [ "$ip" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no IP address" >&2; exit 1; }
   [ "$host" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no hostname" >&2; exit 1; }
-
   mkdir -p "$OUTDIR/$host"
 
   sed \
