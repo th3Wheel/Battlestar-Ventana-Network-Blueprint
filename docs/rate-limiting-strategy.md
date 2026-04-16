@@ -463,7 +463,9 @@ iptables -A INPUT -p tcp --dport 80 -m hashlimit \
 
 For services running in K8s clusters, use NetworkPolicy with rate-limiting annotations.
 
-#### Example: NetworkPolicy with rate limiting
+**Note:** The `rate-limit.kubernetes.io/*` annotations shown below are **non-standard** and require a custom CNI plugin or network policy controller that supports rate limiting (e.g., Calico, Cilium with rate limiting enabled, or Istio service mesh). Standard Kubernetes NetworkPolicy does not natively support rate limiting. For standard Kubernetes without these extensions, use the Nginx Ingress rate limiting example instead.
+
+#### Example: NetworkPolicy with rate limiting (requires Calico/Cilium)
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -472,6 +474,7 @@ metadata:
   name: servervault-rate-limit
   namespace: servervault
   annotations:
+    # Non-standard: Requires Calico, Cilium, or custom CNI
     rate-limit.kubernetes.io/requests-per-second: "100"
     rate-limit.kubernetes.io/burst: "50"
 spec:
@@ -495,7 +498,9 @@ spec:
       port: 443
 ```
 
-#### Example: Nginx Ingress rate limiting
+#### Example: Nginx Ingress rate limiting (standard)
+
+**Note:** The `nginx.ingress.kubernetes.io/*` annotations are **specific to the Nginx Ingress Controller** and will only work when that controller is deployed in your cluster.
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -503,6 +508,7 @@ kind: Ingress
 metadata:
   name: rate-limited-ingress
   annotations:
+    # Nginx Ingress Controller specific annotations
     nginx.ingress.kubernetes.io/limit-rps: "100"
     nginx.ingress.kubernetes.io/limit-burst-multiplier: "5"
     nginx.ingress.kubernetes.io/limit-whitelist: "10.76.10.0/24"
@@ -660,18 +666,16 @@ acl_file /etc/mosquitto/acl.conf
 ```conf
 # /etc/mosquitto/acl.conf
 
-# IoT devices (VLAN 20) - strict limits
+# IoT devices (VLAN 20) - strict topic permissions
 user iot-device-*
 topic read telemetry/#
-max_inflight 20
-max_qos 1
 
-# Trusted devices (VLAN 10) - higher limits
+# Trusted devices (VLAN 10) - broader topic permissions
 user trusted-*
 topic readwrite #
-max_inflight 100
-max_qos 2
 ```
+
+**Note:** ACL files only support user/topic permissions. The `max_inflight_messages` and `max_qos` settings must be configured in the main `mosquitto.conf` file on a per-listener or global basis, not in the ACL file.
 
 ---
 
