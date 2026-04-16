@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`docs/rate-limiting-strategy.md`** — Fixed conflicting `--hashlimit-name` values in iptables examples. The logging example (lines 872-887) now uses `http_limit_logging` instead of `http_limit` to prevent hashlimit table conflicts if both examples are deployed together. This ensures separate packet accounting for HTTP rate limiting and logging rules.
+
 ### Added
 
 * **`plan/` directory** with feature and infrastructure planning documents.

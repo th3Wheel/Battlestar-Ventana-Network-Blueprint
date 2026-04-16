@@ -874,13 +874,13 @@ Log rate-limiting events to syslog/SIEM for forensic analysis.
 ```bash
 # Log rate-limited packets before dropping
 iptables -A INPUT -p tcp --dport 80 -m hashlimit \
-  --hashlimit-name http_limit \
+  --hashlimit-name http_limit_logging \
   --hashlimit-above 100/sec \
   --hashlimit-mode srcip \
   -j LOG --log-prefix "RATE-LIMIT-DROP HTTP: "
 
 iptables -A INPUT -p tcp --dport 80 -m hashlimit \
-  --hashlimit-name http_limit \
+  --hashlimit-name http_limit_logging \
   --hashlimit-above 100/sec \
   --hashlimit-mode srcip \
   -j DROP
