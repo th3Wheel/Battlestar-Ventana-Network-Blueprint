@@ -41,7 +41,7 @@ This strategy implements **defense-in-depth** rate limiting at multiple layers:
 | VLAN | Name | Zone | Bandwidth Limit | Concurrent Connections | Notes |
 |------|------|------|-----------------|------------------------|-------|
 | **10** | Battlestar Ventana | Trusted | 1000 Mbps | 10,000 | Primary trusted devices |
-| **90** | ScyllaDataControl | Trusted | **Unlimited** | 5,000 | Work VLAN — unthrottled per spec |
+| **90** | ScyllaProcessControl | Trusted | **Unlimited** | 5,000 | Work VLAN — unthrottled per spec |
 
 **Rationale:** Trusted zones require high bandwidth for legitimate operations (backups, development, media streaming). Work VLAN (90) is explicitly unthrottled for VPN and remote work operations.
 
@@ -74,7 +74,7 @@ This strategy implements **defense-in-depth** rate limiting at multiple layers:
 
 | VLAN | Name | Zone | Bandwidth Limit | Concurrent Connections | Notes |
 |------|------|------|-----------------|------------------------|-------|
-| **40** | BasestarControl | Infrastructure | 500 Mbps | 1,000 | Switch management |
+| **40** | Basestar Control | Infrastructure | 500 Mbps | 1,000 | Switch management |
 | **50** | GemenonServiceVault | Services | 1000 Mbps | 5,000 | Central services hub |
 
 **Rationale:** Infrastructure and services require high limits for management traffic and service-to-service communication.
@@ -104,7 +104,7 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **All VLANs** | ServerVault (50) | 100 req/sec/IP | Prevent DNS amplification |
+| **All VLANs** | GemenonServiceVault (50) | 100 req/sec/IP | Prevent DNS amplification |
 | **All VLANs** | External DNS | 50 req/sec/IP | Reduce external exposure |
 
 **Alert Threshold:** 80 req/sec/IP  
@@ -117,10 +117,10 @@ This matrix defines rate limits for specific services between source and destina
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
 | **30 Guest** | Internet | 100 req/sec/IP | Guest web browsing (no LAN access) |
-| **20 IoT** | ServerVault (50) | 10 req/sec/IP | Firmware updates only |
-| **10, 90 Trusted** | ServerVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
-| **31 GuestElevated** | ServerVault (50) | 100 req/sec/IP | Limited web services, Plex access |
-| **70 Media** | ServerVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
+| **20 IoT** | GemenonServiceVault (50) | 10 req/sec/IP | Firmware updates only |
+| **10, 90 Trusted** | GemenonServiceVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
+| **31 PiconResidentGate** | GemenonServiceVault (50) | 100 req/sec/IP | Limited web services, Plex access |
+| **70 Media** | GemenonServiceVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
 
 **Alert Threshold:** 80% of configured limit  
 **Implementation:** Nginx rate limiting, K8s NetworkPolicy, UFW rate limits
@@ -136,8 +136,8 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **20 IoT** | ServerVault (50) | 50 msg/sec/device | IoT telemetry |
-| **10 Trusted** | ServerVault (50) | 100 msg/sec/device | Management/automation |
+| **20 IoT** | GemenonServiceVault (50) | 50 msg/sec/device | IoT telemetry |
+| **10 Trusted** | GemenonServiceVault (50) | 100 msg/sec/device | Management/automation |
 
 **Alert Threshold:** 40 msg/sec/device  
 **Implementation:** Mosquitto `max_inflight_messages`, `max_queued_messages`
@@ -148,8 +148,8 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | InfraCore (40) | 5 conn/min/IP | Management access |
-| **10 Trusted** | ServerVault (50) | 10 conn/min/IP | Administrative access |
+| **10 Trusted** | Basestar Control (40) | 5 conn/min/IP | Management access |
+| **10 Trusted** | GemenonServiceVault (50) | 10 conn/min/IP | Administrative access |
 | **All Others** | Any | **Blocked** | SSH restricted to trusted |
 
 **Alert Threshold:** 4 conn/min/IP  
@@ -161,15 +161,15 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | ServerVault (50) | 100 conn/sec | File sharing |
-| **31 GuestElevated** | ServerVault (50) | 20 conn/sec | Limited file access |
-| **70 Media** | ServerVault (50) | 50 conn/sec | Media file access for streaming devices |
+| **10 Trusted** | GemenonServiceVault (50) | 100 conn/sec | File sharing |
+| **31 PiconResidentGate** | GemenonServiceVault (50) | 20 conn/sec | Limited file access |
+| **70 Media** | GemenonServiceVault (50) | 50 conn/sec | Media file access for streaming devices |
 
 **Alert Threshold:** 80% of limit  
 **Implementation:** Samba `max connections`, NFSv4 connection limits
 
 **Notes:**
-- Media devices (70) access ServerVault for local media file streaming
+- Media devices (70) access GemenonServiceVault for local media file streaming
 - Connections are per-device; limit accommodates multiple simultaneous streams
 - Consider higher limits if running multiple 4K streams concurrently
 
@@ -179,10 +179,10 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **81 Cameras Local** | ServerVault (50) | 10 streams | Local camera feeds recording to NAS |
+| **81 Cameras Local** | GemenonServiceVault (50) | 10 streams | Local camera feeds recording to NAS |
 | **82 Cameras Cloud** | Internet | 10 streams | Cloud relay |
 | **10 Trusted** | 81/82 Cameras | 20 streams | Camera viewing from trusted devices |
-| **31 GuestElevated** | 81/82 Cameras | 5 streams | Limited camera viewing for residents |
+| **31 PiconResidentGate** | 81/82 Cameras | 5 streams | Limited camera viewing for residents |
 
 **Alert Threshold:** 8 streams (80%)  
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
@@ -196,13 +196,13 @@ This matrix defines rate limits for specific services between source and destina
 
 ### Media Streaming Services (Plex, Torbox, etc.)
 
-Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth allocation than standard web traffic.
+Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher bandwidth allocation than standard web traffic.
 
 | Source VLAN | Destination | Service | Limit | Notes |
 |-------------|-------------|---------|-------|-------|
-| **10 Trusted** | ServerVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
-| **70 Media** | ServerVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
-| **31 GuestElevated** | ServerVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
+| **10 Trusted** | GemenonServiceVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
+| **70 Media** | GemenonServiceVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
+| **31 PiconResidentGate** | GemenonServiceVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
 | **10 Trusted** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
 | **70 Media** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
 
@@ -213,18 +213,18 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 - Monitor: Plex dashboard metrics, Tautulli for session tracking
 
 **Notes:**
-- **Plex streaming from ServerVault (50)**: Bandwidth limits account for multiple concurrent streams
+- **Plex streaming from GemenonServiceVault (50)**: Bandwidth limits account for multiple concurrent streams
   - 4K stream: ~40-80 Mbps per stream
   - 1080p stream: ~10-20 Mbps per stream
   - 720p stream: ~4-8 Mbps per stream
-- **Guest network streaming**: Blocked from VLAN 30 (untrusted guest) but allowed from VLAN 31 (GuestElevated/residents)
+- **Guest network streaming**: Blocked from VLAN 30 (untrusted guest) but allowed from VLAN 31 (PiconResidentGate/residents)
 - **Internet streaming services**: Use general VLAN bandwidth limits (see VLAN Tier Limits section)
-- **Transcoding**: Server-side transcoding on ServerVault can spike CPU/bandwidth; monitor with alerts
+- **Transcoding**: Server-side transcoding on GemenonServiceVault can spike CPU/bandwidth; monitor with alerts
 
 **Untrusted → Trusted Media Policy:**
 - Direct streaming from VLAN 30 (Guest) to VLAN 10 (Trusted) or VLAN 70 (Media): **BLOCKED** per firewall-matrix.md
 - Guest users can access internet streaming services directly (Netflix, YouTube) via their own internet connection
-- Residents on VLAN 31 (GuestElevated) can access Plex on ServerVault with reduced bandwidth limits
+- Residents on VLAN 31 (PiconResidentGate) can access Plex on GemenonServiceVault with reduced bandwidth limits
 
 ---
 
@@ -254,8 +254,8 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **All VLANs** | ServerVault (50) | 10 requests/sec/IP | DHCP lease requests |
-| **All VLANs** | InfraCore (40) | 10 requests/sec/IP | Backup DHCP server |
+| **All VLANs** | GemenonServiceVault (50) | 10 requests/sec/IP | DHCP lease requests |
+| **All VLANs** | Basestar Control (40) | 10 requests/sec/IP | Backup DHCP server |
 
 **Alert Threshold:** 8 requests/sec/IP  
 **Implementation:** DHCP server rate limiting, `iptables` limit module
@@ -272,8 +272,8 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | InfraCore (40) | 100 queries/sec/IP | Network monitoring |
-| **40 InfraCore** | All managed devices | 200 queries/sec | Polling from monitoring systems |
+| **10 Trusted** | Basestar Control (40) | 100 queries/sec/IP | Network monitoring |
+| **40 Basestar Control** | All managed devices | 200 queries/sec | Polling from monitoring systems |
 | **All Others** | Any | **Blocked** | SNMP restricted to management |
 
 **Alert Threshold:** 80 queries/sec/IP  
@@ -292,9 +292,9 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
 | **10 Trusted** | Printers (60) | IPP (631) | 10 jobs/min/IP | Standard printing |
-| **31 GuestElevated** | Printers (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
+| **31 PiconResidentGate** | Printers (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
 | **10, 31** | Printers (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
-| **60 Printers** | ServerVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
+| **60 Printers** | GemenonServiceVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
 
 **Alert Threshold:** 80% of configured limit  
 **Implementation:** CUPS rate limiting, printer firmware job limits
@@ -313,7 +313,7 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
 | **10 Trusted** | Media (70) | DLNA (1900) | 20 sessions/IP | Media discovery |
-| **31 GuestElevated** | Media (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
+| **31 PiconResidentGate** | Media (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
 | **10, 31** | Media (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
 | **90 Work** | Media (70) | Chromecast (8008-8009) | 3 streams/IP | Work device casting |
 
@@ -333,8 +333,8 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **40 InfraCore** | ServerVault (50) | 100 conn/sec | Infrastructure database access |
-| **50 ServerVault** | Internal DB | 200 conn/sec | Local service connections |
+| **40 Basestar Control** | GemenonServiceVault (50) | 100 conn/sec | Infrastructure database access |
+| **50 GemenonServiceVault** | Internal DB | 200 conn/sec | Local service connections |
 | **All Others** | Any | **Blocked** | Database access restricted |
 
 **Alert Threshold:** 80 conn/sec  
@@ -353,9 +353,9 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **All VLANs** | ServerVault (50) | 100 messages/sec/IP | Log aggregation |
-| **81/82 Cameras** | ServerVault (50) | 50 messages/sec/IP | Camera event logs |
-| **40 InfraCore** | ServerVault (50) | 200 messages/sec | Switch/router logs |
+| **All VLANs** | GemenonServiceVault (50) | 100 messages/sec/IP | Log aggregation |
+| **81/82 Cameras** | GemenonServiceVault (50) | 50 messages/sec/IP | Camera event logs |
+| **40 Basestar Control** | GemenonServiceVault (50) | 200 messages/sec | Switch/router logs |
 
 **Alert Threshold:** 80 messages/sec/IP  
 **Implementation:** rsyslog rate limiting (`imudp`/`imtcp` rate limit)
@@ -376,7 +376,7 @@ Media streaming from ServerVault uses HTTP/HTTPS but requires higher bandwidth a
 
 ### 1. UFW (Uncomplicated Firewall) — Host-Level
 
-UFW provides simple rate limiting for individual hosts. Recommended for ServerVault and management nodes.
+UFW provides simple rate limiting for individual hosts. Recommended for GemenonServiceVault and management nodes.
 
 #### Example: Rate limit SSH connections
 
@@ -860,7 +860,7 @@ Log rate-limiting events to syslog/SIEM for forensic analysis.
 # iptables rate limit drops
 :msg, contains, "RATE-LIMIT-DROP" /var/log/rate-limit.log
 
-# Forward security logs to SIEM (ServerVault) - use TLS for production
+# Forward security logs to SIEM (GemenonServiceVault) - use TLS for production
 :msg, contains, "RATE-LIMIT-DROP" @@10.76.50.10:514
 :msg, contains, "UFW LIMIT" @@10.76.50.10:514
 ```
@@ -889,7 +889,7 @@ iptables -A INPUT -p tcp --dport 80 -m hashlimit \
 ### Phase 1: Gateway/Router (Immediate)
 
 - [ ] Deploy iptables rules for SYN flood protection on gateway
-- [ ] Configure UFW rate limiting on ServerVault (VLAN 50)
+- [ ] Configure UFW rate limiting on GemenonServiceVault (VLAN 50)
 - [ ] Enable tc bandwidth limits on router VLAN interfaces
 - [ ] Configure switch QoS policies for VLANs 20, 30, 31
 - [ ] Enable SYN cookies on all gateway nodes
@@ -958,7 +958,7 @@ wrk -t 10 -c 200 -d 30s http://servervault.ventana.local/
 
 ```bash
 # Test VLAN bandwidth limits with iperf3
-# Server on ServerVault (50)
+# Server on GemenonServiceVault (50)
 iperf3 -s -p 5201
 
 # Client on IoT VLAN (20) - should max at 50 Mbps
