@@ -23,6 +23,8 @@ jobs:
       - name: Install Ansible
         run: python3 -m pip install ansible ansible-lint
 
+      # Collection installation is intentionally omitted to keep linting deterministic
+      # and avoid failing the job on invalid/unresolvable collection names.
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
