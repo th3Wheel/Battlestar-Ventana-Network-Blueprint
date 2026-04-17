@@ -1,0 +1,47 @@
+name: Validate Camera Map
+
+on:
+  push:
+    paths:
+      - "templates/camera-map.yaml"
+      - "scripts/**"
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install mikefarah/yq
+        run: |
+          YQ_VERSION="v4.44.1"
+          curl -sL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
+            -o /tmp/yq
+          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+
+      - name: Validate camera-map.yaml structure
+        run: |
+          yq e '.cameras[].id' templates/camera-map.yaml > /dev/null
+          yq e '.cameras[].ip' templates/camera-map.yaml > /dev/null
+          yq e '.cameras[].hostname' templates/camera-map.yaml > /dev/null
+
+      - name: Check for duplicate IPs
+        run: |
+          ips=$(yq e '.cameras[].ip' templates/camera-map.yaml)
+          if [ "$(echo "$ips" | sort | uniq -d)" != "" ]; then
+            echo "Duplicate IPs detected"
+            exit 1
+          fi
+
+      - name: Check for duplicate hostnames
+        run: |
+          hosts=$(yq e '.cameras[].hostname' templates/camera-map.yaml)
+          if [ "$(echo "$hosts" | sort | uniq -d)" != "" ]; then
+            echo "Duplicate hostnames detected"
+            exit 1
+          fi
+
+      - name: Validation complete
+        run: echo "camera-map.yaml validated successfully"

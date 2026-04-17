@@ -1,0 +1,46 @@
+---
+# OpenWrt-in-Docker evaluation playbook
+# Implements tasks from plans/infrastructure-router-vlans-2.md (Phase 1 and Phase 3)
+# VLAN data is sourced from ansible/group_vars/all/vlan-vars.yml (source of truth)
+#
+# Tags:
+#   research       — TASK-005: document OpenWrt Docker capabilities
+#   provision      — TASK-006: launch container with VLAN 20 and 40 bridges
+#   full-matrix    — TASK-013: iterate all 11 VLANs in the container
+#   generate-config — TASK-014: emit docker-compose.yml and UCI backups
+
+- name: "Phase 1 — Research: document OpenWrt Docker capabilities (TASK-005)"
+  hosts: localhost
+  gather_facts: false
+  tags: [research]
+  roles:
+    - role: openwrt-docker-eval
+      vars:
+        openwrt_eval_task: research
+
+- name: "Phase 1 — Provision: launch OpenWrt container (TASK-006)"
+  hosts: lab_docker
+  gather_facts: true
+  tags: [provision]
+  roles:
+    - role: openwrt-docker-eval
+      vars:
+        openwrt_eval_task: provision
+
+- name: "Phase 3 — Full matrix: validate all 11 VLANs in OpenWrt container (TASK-013)"
+  hosts: lab_docker
+  gather_facts: false
+  tags: [full-matrix]
+  roles:
+    - role: openwrt-docker-eval
+      vars:
+        openwrt_eval_task: full_matrix
+
+- name: "Phase 3 — Generate config: emit docker-compose.yml and UCI backups (TASK-014)"
+  hosts: lab_docker
+  gather_facts: false
+  tags: [generate-config]
+  roles:
+    - role: openwrt-docker-eval
+      vars:
+        openwrt_eval_task: generate_config

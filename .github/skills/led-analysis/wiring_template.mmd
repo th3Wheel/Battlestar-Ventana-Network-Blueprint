@@ -1,0 +1,5 @@
+flowchart LR
+    PSU[Power Supply] -->|V+| LEDStrip
+    PSU -->|GND| LEDStrip
+    Controller -->|DATA| LEDStrip
+    Controller -->|GND| PSU

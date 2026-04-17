@@ -1,6 +1,6 @@
 # 🧭 Project Architecture Blueprint — Battlestar Ventana Network Blueprint
 
-Generated: 2025-10-14
+**Last Updated:** 2026-02-18
 
 This blueprint documents the effective architecture of the Battlestar Ventana homelab network and its supporting operational documentation. It consolidates patterns present across the repository (docs, dashboards, alerts, HA configs) and provides guidance for consistent extension and maintenance.
 
@@ -17,7 +17,7 @@ Technologies and artifacts detected:
 - Operational runbooks and inventories: `host-tracker.md`, `other-devices.md`, `services.md`, `naming-conventions.md`
 - Observability/UX:
   - Grafana dashboards (dashboards/)
-  - Alertmanager style configuration (alerts/)
+  - Prometheus alert rules (alerts/)
 - Home Assistant configuration (ha/) for smart home services
 
 Architectural patterns in use:
@@ -155,18 +155,18 @@ For each component, this section summarizes purpose, internal structure, interac
 
 Layers:
 
-1) Physical/Link Layer → switches, cabling
-2) Network Layer → VLANs, routing, DHCP/DNS
-3) Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
-4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5) Observability Layer → dashboards, alerting, logs, SIEM integration
-6) Automation Layer → desired IaC/config management (future)
+1. Physical/Link Layer → switches, cabling
+2. Network Layer → VLANs, routing, DHCP/DNS
+3. Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
+4. Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
+5. Observability Layer → dashboards, alerting, logs, SIEM integration
+6. Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
 
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
-- No circular dependencies; Services do not depend on Untrusted/Semi-Trusted availability
+- No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
 
 ### 5.1 Enhanced Security Layer Components
 
@@ -223,7 +223,7 @@ Dependency rules:
 - Addressing data: `dhcp-scopes.md` defines subnets, gateways, DNS per VLAN
 - Inventory data: `host-tracker.md`, `other-devices.md`, `naming-conventions.md`
 - Event/telemetry: MQTT (IoT→ServerVault), syslog (Cameras→ServerVault), app logs
-- Observability data: Grafana dashboards, Alertmanager styles
+- Observability data: Grafana dashboards, Prometheus alert rules
 - Retention: Define per-source retention on ServerVault (recommendation: 7–30 days logs, 30–90 days camera footage per storage capacity)
 
 Transformations and mapping:
@@ -355,6 +355,11 @@ Test data strategies:
 
 ## 13. Extension and Evolution Patterns
 
+Status note for consistency:
+
+- Service mesh is currently a planned future enhancement and is not yet implemented in the active baseline.
+- Track and review this proposal in `plans/service-mesh-architecture.md` during a future architecture review cycle.
+
 ### Feature Addition Patterns
 
 - Adding a new VLAN:
@@ -378,17 +383,17 @@ Test data strategies:
 
 ### Example: Service/Ports Contract (excerpt)
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|------------------------|----------|-------|
-| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
-| 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
+| Source → Destination    | Allowed Services/Ports              | Protocol | Notes                |
+| ----------------------- | ----------------------------------- | -------- | -------------------- |
+| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
+| 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
-### Example: Alertmanager Style (excerpt)
+### Example: Alert Rules (excerpt)
 
 ```yaml
-# alerts/Alertmanager style.yaml (excerpt)
+# alerts/alert_rules.yaml (excerpt)
 route:
-  group_by: ['alertname', 'severity']
+  group_by: ["alertname", "severity"]
   group_wait: 30s
   group_interval: 5m
 ```

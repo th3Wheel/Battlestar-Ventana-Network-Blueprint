@@ -8,6 +8,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 ## 1. System Monitoring
 
 **Resource Monitoring:**
+
 ```yaml
 # Monitor system resources
 sensor:
@@ -38,6 +39,7 @@ sensor:
 ```
 
 **Performance Dashboard:**
+
 ```yaml
 title: "System Performance"
 cards:
@@ -84,6 +86,7 @@ cards:
 ## 2. Database Optimization
 
 **Database Maintenance:**
+
 ```yaml
 # Enable database optimization
 recorder:
@@ -105,6 +108,7 @@ automation:
 ```
 
 **Database Monitoring:**
+
 ```yaml
 sensor:
   - platform: sql
@@ -124,6 +128,7 @@ sensor:
 ```
 
 **Index Optimization:**
+
 ```sql
 -- Create indexes for frequently queried columns
 CREATE INDEX CONCURRENTLY idx_states_entity_id_last_updated ON states (entity_id, last_updated DESC);
@@ -139,6 +144,7 @@ ANALYZE recorder_runs;
 ## 3. Template Optimization
 
 **Cache Expensive Templates:**
+
 ```yaml
 # Use variables to cache complex calculations
 template:
@@ -155,6 +161,7 @@ template:
 ```
 
 **Optimize Template Conditions:**
+
 ```yaml
 # Use efficient condition checking
 template:
@@ -167,6 +174,7 @@ template:
 ```
 
 **Avoid Expensive Operations:**
+
 ```yaml
 # Bad: Expensive regex operations
 {% set devices = states | selectattr('entity_id', 'match', 'sensor\..*') | list %}
@@ -178,6 +186,7 @@ template:
 ## 4. Automation Optimization
 
 **Efficient Triggers:**
+
 ```yaml
 # Use specific triggers instead of polling
 automation:
@@ -196,6 +205,7 @@ automation:
 ```
 
 **Debouncing and Delays:**
+
 ```yaml
 # Prevent rapid triggering
 automation:
@@ -215,6 +225,7 @@ automation:
 ```
 
 **Batch Operations:**
+
 ```yaml
 # Group related actions
 automation:
@@ -240,6 +251,7 @@ automation:
 ## 5. Integration Optimization
 
 **Polling Intervals:**
+
 ```yaml
 # Adjust polling frequencies based on needs
 sensor:
@@ -255,6 +267,7 @@ sensor:
 ```
 
 **Connection Pooling:**
+
 ```yaml
 # Configure connection limits
 mqtt:
@@ -271,6 +284,7 @@ mqtt:
 ```
 
 **Caching Strategies:**
+
 ```yaml
 # Cache external API responses
 sensor:
@@ -287,6 +301,7 @@ sensor:
 ## 6. Hardware Optimization
 
 **Storage Optimization:**
+
 ```yaml
 # Use SSD for better performance
 # Configure proper swap space
@@ -301,6 +316,7 @@ sensor:
 ```
 
 **Network Optimization:**
+
 ```yaml
 # Optimize network settings
 # Use wired connections when possible
@@ -316,6 +332,7 @@ sensor:
 ```
 
 **Power Management:**
+
 ```yaml
 # Configure power settings for performance vs efficiency
 # Monitor power consumption
@@ -332,6 +349,7 @@ sensor:
 ## 7. Memory Management
 
 **Memory Monitoring:**
+
 ```yaml
 sensor:
   - platform: systemmonitor
@@ -348,6 +366,7 @@ sensor:
 ```
 
 **Memory Optimization:**
+
 ```yaml
 # Configure memory limits for add-ons
 hassio:
@@ -367,6 +386,7 @@ python_script:
 ## 8. Performance Testing
 
 **Load Testing:**
+
 ```yaml
 # Test system performance under load
 automation:
@@ -382,6 +402,7 @@ automation:
 ```
 
 **Benchmarking:**
+
 ```python
 # performance_test.py
 import time
@@ -422,26 +443,31 @@ class PerformanceTest(hass.Hass):
 ## 9. Best Practices
 
 **Monitoring First:**
+
 * Implement comprehensive monitoring before optimization
 * Use data to identify bottlenecks
 * Monitor the impact of changes
 
 **Incremental Changes:**
+
 * Make one change at a time
 * Measure impact before next change
 * Roll back if performance degrades
 
 **Resource Planning:**
+
 * Plan for growth and scaling
 * Monitor resource utilization trends
 * Implement auto-scaling where possible
 
 **Documentation:**
+
 * Document performance configurations
 * Record optimization decisions and results
 * Share performance knowledge across teams
 
 **Continuous Improvement:**
+
 * Regularly review system performance
 * Stay updated with performance best practices
 * Implement performance budgets for new features
