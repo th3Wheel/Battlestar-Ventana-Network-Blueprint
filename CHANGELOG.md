@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **Internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
+- **internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
 
 - **`services.md` scaffold** with per‑VLAN service/port placeholders.
 
