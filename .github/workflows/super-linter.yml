@@ -30,7 +30,11 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ANSIBLE: false
           DEFAULT_BRANCH: "master"
           LINTER_RULES_PATH: "."
           MARKDOWN_CONFIG_FILE: ".markdownlint.jsonc"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint Ansible
+        run: ansible-lint ansible/
