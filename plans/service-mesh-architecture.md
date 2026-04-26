@@ -525,7 +525,7 @@ spec:
 
 1. **Resource Limits**: Set appropriate proxy resource requests/limits
 2. **Keep-Alive**: Enable HTTP/2 connection pooling
-3. **Locality**: colocate frequently communicating services in same VLAN
+3. **Locality**: Co-locate frequently communicating services in same VLAN
 4. **Skip Ports**: Exclude high-throughput, low-security ports from mesh
 
 ---
