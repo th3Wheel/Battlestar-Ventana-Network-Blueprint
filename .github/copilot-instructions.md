@@ -18,7 +18,7 @@ This document provides guidance for GitHub Copilot when working with the Battles
 - **Semi-Trusted (31, 60, 70)**: Function-specific access only
 - **Untrusted (20, 30)**: Internet-only or minimal telemetry
 - **Services (50)**: ServerVault - central service hub
-- **Infrastructure (40)**: BasestarControl - management plane
+- **Infrastructure (40)**: InfraCore (Basestar Control VLAN) - management plane
 - **Surveillance (81, 82)**: Camera networks with view-only access
 
 ---
@@ -213,7 +213,8 @@ When adding features or changes:
 - Update `docs/Project_Architecture_Blueprint.md` for architectural changes
 - Update `docs/firewall-matrix.md` for firewall rule changes
 - Update `docs/dhcp-scopes.md` for network changes
-- Add entry to `CHANGELOG.md` following Keep a Changelog format
+- Add entry to `CHANGELOG.md` under the `[Unreleased]` section following Keep a Changelog format
+- Ensure documentation-only or hardening-guidance updates are recorded as concise `Added`/`Changed` entries
 - Update relevant diagrams if network topology changes
 
 ### Naming Conventions
@@ -221,8 +222,8 @@ When adding features or changes:
 Follow the Battlestar Galactica theme:
 
 - VLANs named after colonies, ships, or locations
-- Services named functionally (ServerVault, BasestarControl)
-- Documentation files use kebab-case: `firewall-matrix.md`
+- Services named functionally (ServerVault, InfraCore)
+- Documentation files should use kebab-case for new files (e.g., `firewall-matrix.md`); legacy docs like `Project_Architecture_Blueprint.md` keep their existing names
 - Scripts use snake_case: `deploy_service.sh`
 
 ---

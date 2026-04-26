@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **`docs/raw/network.md`** - Raw network documentation.
 * **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
 * **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
+* **`.github/copilot-instructions.md`** - Comprehensive development guidance for security patterns, automation, and documentation standards.
+* **`docs/hardening-rollout-plan.md`** - Phased deployment schedule for security hardening (12 weeks, 6 phases) with dependencies, rollback procedures, and success metrics.
+* **`.markdownlint.json`** - Markdown linting configuration for repository-wide consistency.
 
 ### Changed
 
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 * **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
 * **File renamed** - `fgemp` renamed to `current-network-baseline.md` for clarity (baseline network state documentation).
 * **Baseline folder created** - New `baseline/` directory for architectural design documents including network blueprints, deployment guides, and system specifications.
+* **`docs/Project_Architecture_Blueprint.md`** - Enhanced with security layer components including rate-limiting, service mesh, automation framework, and SIEM integration details.
 
 ### Removed
 

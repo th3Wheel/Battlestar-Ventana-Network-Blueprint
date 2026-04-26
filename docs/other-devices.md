@@ -6,8 +6,7 @@ Structured naming for IoT, printers, cameras, and appliances.
 - Increment the index for each new device in a zone/role context  
 - Retired entries are ~~struck out~~ and may be reused after removal
 
-``
-
+```markdown
 | Hostname             | Zone        | Role   | Index | Status   | Assigned Function          |
 |----------------------|-------------|--------|-------|----------|----------------------------|
 | iot-sens-01          | IoT         | sens   | 01    | Active   | Glass break sensor (front) |

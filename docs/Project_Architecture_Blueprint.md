@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit Internet egress policy per VLAN
-- Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/InfraCore
 
 ---
 
@@ -84,7 +84,7 @@ flowchart TB
     V50[50 – ServerVault]
   end
   subgraph Infra[Infrastructure]
-    V40[40 – BasestarControl]
+    V40[40 – InfraCore]
   end
   subgraph Surveillance[Surveillance]
     V81[81 – ScorpiaMediaShield]
@@ -109,7 +109,7 @@ Component interactions focus on directional flows enforced by rules in `firewall
 
 For each component, this section summarizes purpose, internal structure, interaction, and evolution.
 
-### 4.1 BasestarControl (VLAN 40)
+### 4.1 InfraCore (VLAN 40 - Basestar Control)
 
 - Purpose: Core switching, controllers, management plane
 - Internal: Core switch/router, control services (DNS/DHCP often delegated), management interfaces
