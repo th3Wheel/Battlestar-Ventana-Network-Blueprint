@@ -24,7 +24,7 @@ jobs:
       - name: Install Ansible dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip install "ansible-core>=2.15" ansible-lint
+          pip install "ansible-core==2.18.1" "ansible-lint==24.12.2"
           ansible-galaxy collection install -r ansible/requirements.yml
 
       - name: Lint Code Base

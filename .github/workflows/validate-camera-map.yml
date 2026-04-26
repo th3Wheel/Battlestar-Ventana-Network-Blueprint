@@ -16,10 +16,17 @@ jobs:
 
       - name: Install mikefarah/yq
         run: |
+          set -euo pipefail
           YQ_VERSION="v4.44.1"
-          curl -sL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
-            -o /tmp/yq
-          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+          YQ_BINARY="yq_linux_amd64"
+          YQ_BASE_URL="https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}"
+          curl -fsSL "${YQ_BASE_URL}/${YQ_BINARY}" -o "/tmp/${YQ_BINARY}"
+          curl -fsSL "${YQ_BASE_URL}/checksums" -o /tmp/checksums
+          (
+            cd /tmp
+            grep " ${YQ_BINARY}\$" checksums | sha256sum -c -
+          )
+          sudo install -m 0755 "/tmp/${YQ_BINARY}" /usr/local/bin/yq
 
       - name: Validate camera-map.yaml structure
         run: |
