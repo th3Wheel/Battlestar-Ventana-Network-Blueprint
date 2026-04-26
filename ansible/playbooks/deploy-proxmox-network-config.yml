@@ -1,0 +1,110 @@
+---
+# Deploy host-specific Proxmox /etc/network/interfaces files with safety checks.
+#
+# Usage:
+#   ansible-playbook ansible/playbooks/deploy-proxmox-network-config.yml --check
+#   ansible-playbook ansible/playbooks/deploy-proxmox-network-config.yml -e "proxmox_apply_network_config=true"
+#   ansible-playbook ansible/playbooks/deploy-proxmox-network-config.yml -e "proxmox_apply_network_config=true proxmox_reload_network=true"
+
+- name: Validate and deploy Proxmox network config
+  hosts: physical_hosts
+  gather_facts: false
+  become: true
+
+  vars:
+    proxmox_apply_network_config: false
+    proxmox_reload_network: false
+    proxmox_candidate_path: /etc/network/interfaces.copilot.candidate
+    proxmox_interfaces_profile: "{{ hostvars[inventory_hostname].proxmox_interfaces_profile | default('legacy') }}"
+    proxmox_interfaces_source_file: "{{ hostvars[inventory_hostname]['proxmox_interfaces_source_file_' + proxmox_interfaces_profile] | default('') }}"
+    proxmox_interfaces_repo_path: "{{ playbook_dir }}/../../infrastructure/proxmox/{{ proxmox_interfaces_source_file }}"
+
+  tasks:
+    - name: Validate selected profile
+      ansible.builtin.assert:
+        that:
+          - proxmox_interfaces_profile in ['legacy', 'cutover']
+        fail_msg: "Invalid proxmox_interfaces_profile='{{ proxmox_interfaces_profile }}'. Use 'legacy' or 'cutover'."
+
+    - name: Validate host-specific variables are defined
+      ansible.builtin.assert:
+        that:
+          - proxmox_interfaces_source_file | length > 0
+          - proxmox_mgmt_nic is defined
+          - proxmox_mgmt_nic | length > 0
+          - proxmox_mgmt_nic != '__MGMT_NIC__'
+        fail_msg: >-
+          Missing or placeholder host_vars for {{ inventory_hostname }}.
+          Ensure proxmox_mgmt_nic and proxmox_interfaces_source_file_* are set in ansible/inventory/host_vars/{{ inventory_hostname }}.yml.
+
+    - name: Verify source interfaces file exists in repository
+      ansible.builtin.stat:
+        path: "{{ proxmox_interfaces_repo_path }}"
+      delegate_to: localhost
+      become: false
+      register: proxmox_repo_file
+
+    - name: Assert source interfaces file exists in repository
+      ansible.builtin.assert:
+        that:
+          - proxmox_repo_file.stat.exists
+          - proxmox_repo_file.stat.isreg
+        fail_msg: "Cannot find source file: {{ proxmox_interfaces_repo_path }}"
+
+    - name: Verify management NIC exists on host
+      ansible.builtin.command: "ip -o link show {{ proxmox_mgmt_nic }}"
+      changed_when: false
+
+    - name: Render candidate interfaces config on target
+      ansible.builtin.copy:
+        content: "{{ lookup('ansible.builtin.file', proxmox_interfaces_repo_path) | replace('__MGMT_NIC__', proxmox_mgmt_nic) }}"
+        dest: "{{ proxmox_candidate_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Pre-check candidate file with ifquery
+      ansible.builtin.command: "ifquery --list --interfaces {{ proxmox_candidate_path }}"
+      changed_when: false
+
+    - name: Capture timestamp for backup naming
+      ansible.builtin.command: date +%Y%m%d%H%M%S
+      changed_when: false
+      register: proxmox_backup_ts
+      when: proxmox_apply_network_config | bool
+
+    - name: Backup current interfaces file
+      ansible.builtin.copy:
+        src: /etc/network/interfaces
+        dest: "/etc/network/interfaces.pre-copilot-{{ proxmox_backup_ts.stdout }}"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0644"
+      when: proxmox_apply_network_config | bool
+
+    - name: Install candidate as active interfaces file
+      ansible.builtin.copy:
+        src: "{{ proxmox_candidate_path }}"
+        dest: /etc/network/interfaces
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0644"
+      when: proxmox_apply_network_config | bool
+
+    - name: Reload networking with ifreload
+      ansible.builtin.command: ifreload -a
+      changed_when: true
+      when:
+        - proxmox_apply_network_config | bool
+        - proxmox_reload_network | bool
+
+    - name: Report selected profile and source file
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "Profile: {{ proxmox_interfaces_profile }}"
+          - "Source file: {{ proxmox_interfaces_source_file }}"
+          - "Applied: {{ proxmox_apply_network_config | bool }}"
+          - "Reloaded: {{ proxmox_reload_network | bool }}"

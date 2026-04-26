@@ -1,0 +1,4 @@
+---
+# Central Proxmox network deployment variables.
+# Set this once when the CrimsonRogue management NIC is confirmed.
+crimsonrogue_mgmt_nic: __MGMT_NIC__

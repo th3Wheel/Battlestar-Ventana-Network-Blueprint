@@ -1,0 +1,5 @@
+---
+proxmox_interfaces_profile: legacy
+proxmox_interfaces_source_file_legacy: ambernomad-etc-network-interfaces.conf
+proxmox_interfaces_source_file_cutover: ambernomad-etc-network-interfaces-cutover.conf
+proxmox_mgmt_nic: enp0s31f6

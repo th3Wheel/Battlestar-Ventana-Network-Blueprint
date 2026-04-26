@@ -1,0 +1,6 @@
+---
+proxmox_interfaces_profile: legacy
+proxmox_interfaces_source_file_legacy: crimsonrogue-etc-network-interfaces-legacy.conf
+proxmox_interfaces_source_file_cutover: crimsonrogue-etc-network-interfaces-cutover.conf
+# Single source of truth is ansible/group_vars/all/proxmox-network-vars.yml.
+proxmox_mgmt_nic: "{{ crimsonrogue_mgmt_nic }}"
