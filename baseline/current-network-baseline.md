@@ -1,6 +1,7 @@
 # 🏠 Home Network Documentation
 
 ## 1. Overview
+
 - **Purpose**: Segmented for auditability, isolation, and operational clarity
 - **Core Devices**: Router, switches, APs, NAS, sensor dashboard
 - **Conventions**: Canonical SSID/VLAN naming, MAC mapping, SVG visuals
@@ -61,11 +62,13 @@
 ## 7. MAC Address Mapping
 
 ### Amber Nomad
+
 - `enp0s31f6` → `00:23:24:f1:00:96` (vmbr0 / 10.10.5.5)  
 - `enxa0cec8bd1a0c` → `a0:ce:c8:bd:1a:0c` (vmbr1 / 10.10.10.5)  
 - `wlp2s0` → `00:28:f8:86:92:05` (Wi-Fi, down)  
 
 ### Azure Defiant
+
 - `enp2s0` → `40:8d:5c:f7:6a:46` (vmbr1 / VLAN 10)  
 - `enp0s31f6` → `40:8d:5c:f6:1e:ef` (vmbr0 / VLAN 5)  
 - `wlp3s0` → `00:db:df:b3:2b:26` (Wi-Fi, unused)  

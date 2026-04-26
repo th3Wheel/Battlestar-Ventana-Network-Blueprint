@@ -1,6 +1,6 @@
 # 🧭 Project Architecture Blueprint — Battlestar Ventana Network Blueprint
 
-Generated: 2025-10-14
+**Last Updated:** 2026-02-18
 
 This blueprint documents the effective architecture of the Battlestar Ventana homelab network and its supporting operational documentation. It consolidates patterns present across the repository (docs, dashboards, alerts, HA configs) and provides guidance for consistent extension and maintenance.
 
@@ -17,7 +17,7 @@ Technologies and artifacts detected:
 - Operational runbooks and inventories: `host-tracker.md`, `other-devices.md`, `services.md`, `naming-conventions.md`
 - Observability/UX:
   - Grafana dashboards (dashboards/)
-  - Alertmanager style configuration (alerts/)
+  - Prometheus alert rules (alerts/)
 - Home Assistant configuration (ha/) for smart home services
 
 Architectural patterns in use:
@@ -166,7 +166,55 @@ Dependency rules:
 
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
-- No circular dependencies; Services do not depend on Untrusted/Semi-Trusted availability
+- No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
+
+### 5.1 Enhanced Security Layer Components
+
+#### Rate-Limiting and Traffic Shaping
+
+- Implement connection rate limits at firewall level per VLAN
+- Throttle Guest (30) and GuestElevated (31) Internet bandwidth to prevent abuse
+- Apply per-service rate limits on ServerVault (50) endpoints:
+  - MQTT: 100 messages/second per device
+  - HTTPS: 60 requests/minute per IP for public endpoints
+  - DNS: 50 queries/second per client to prevent DNS amplification
+- QoS policies for Surveillance (81/82) to ensure camera streams maintain priority
+
+#### Service Mesh Architecture
+
+- Implement reverse proxy layer at ServerVault (50) for all HTTP/HTTPS services
+- Service discovery through internal DNS with health checks
+- Mutual TLS (mTLS) for service-to-service communication within ServerVault
+- Circuit breaker patterns for external service dependencies
+- Load balancing for redundant services (HA configurations)
+- Sidecar proxy pattern for observability and security policy enforcement
+
+#### Automation Framework
+
+- Infrastructure-as-Code (IaC) for network configuration:
+  - Terraform modules for firewall rules and VLAN definitions
+  - Ansible playbooks for device provisioning and service deployment
+- Configuration drift detection with automated remediation
+- Automated backup and disaster recovery procedures
+- Self-healing mechanisms for critical services
+- Automated patch management with staged rollouts
+- GitOps workflow for all infrastructure changes
+
+#### SIEM and Alerting Integration
+
+- Centralized security event logging at ServerVault (50):
+  - Firewall logs with rule hit tracking
+  - Authentication attempt logs (SSH, HTTPS, MQTT)
+  - Anomaly detection for unusual traffic patterns
+- Alert rules for security events:
+  - Failed authentication threshold exceeded
+  - Unusual data volume from IoT devices
+  - Cross-zone communication attempts outside policy
+  - Surveillance camera offline or tampering detection
+- Integration with external SIEM platforms:
+  - Syslog forwarding for enterprise SIEM ingestion
+  - API endpoints for security orchestration
+- Threat intelligence feed integration for known malicious IPs/domains
 
 ### 5.1 Enhanced Security Layer Components
 
@@ -223,7 +271,7 @@ Dependency rules:
 - Addressing data: `dhcp-scopes.md` defines subnets, gateways, DNS per VLAN
 - Inventory data: `host-tracker.md`, `other-devices.md`, `naming-conventions.md`
 - Event/telemetry: MQTT (IoT→ServerVault), syslog (Cameras→ServerVault), app logs
-- Observability data: Grafana dashboards, Alertmanager styles
+- Observability data: Grafana dashboards, Prometheus alert rules
 - Retention: Define per-source retention on ServerVault (recommendation: 7–30 days logs, 30–90 days camera footage per storage capacity)
 
 Transformations and mapping:
@@ -355,6 +403,11 @@ Test data strategies:
 
 ## 13. Extension and Evolution Patterns
 
+Status note for consistency:
+
+- Service mesh is currently a planned future enhancement and is not yet implemented in the active baseline.
+- Track and review this proposal in `plans/service-mesh-architecture.md` during a future architecture review cycle.
+
 ### Feature Addition Patterns
 
 - Adding a new VLAN:
@@ -378,17 +431,17 @@ Test data strategies:
 
 ### Example: Service/Ports Contract (excerpt)
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|------------------------|----------|-------|
-| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
-| 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
+| Source → Destination    | Allowed Services/Ports              | Protocol | Notes                |
+| ----------------------- | ----------------------------------- | -------- | -------------------- |
+| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
+| 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
-### Example: Alertmanager Style (excerpt)
+### Example: Alert Rules (excerpt)
 
 ```yaml
-# alerts/Alertmanager style.yaml (excerpt)
+# alerts/alert_rules.yaml (excerpt)
 route:
-  group_by: ['alertname', 'severity']
+  group_by: ["alertname", "severity"]
   group_wait: 30s
   group_interval: 5m
 ```

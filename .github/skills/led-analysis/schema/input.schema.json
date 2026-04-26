@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "product_name": { "type": "string" },
+    "product_description": { "type": "string" },
+    "voltage": { "type": ["number", "null"] },
+    "chipset": { "type": ["string", "null"] },
+    "power_watts": { "type": ["number", "null"] },
+    "length_meters": { "type": ["number", "null"] },
+    "connector_type": { "type": ["string", "null"] }
+  },
+  "required": ["product_name", "product_description"]
+}
