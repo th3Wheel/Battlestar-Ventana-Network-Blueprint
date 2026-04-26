@@ -13,17 +13,48 @@ Use this file for workspace-wide defaults. Keep detailed policy in linked docs.
 
 ## Build And Test
 
-Use these commands for validation:
+### No Application Build
 
-1. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore`
-2. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore --fix`
+This is documentation-only. **NO** npm install, pip install, make, compile, or test suite exists.
+
+### Validation Commands
+
+**Markdown Linting** (ALWAYS run when modifying `.md` files):
+
+```bash
+markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore
+```
+
+**Auto-fix** Markdown errors:
+
+```bash
+markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore --fix
+```
 
 VS Code task equivalents:
 
 - `markdownlint: check`
 - `markdownlint: fix`
 
-There is no application build pipeline in this repository.
+**YAML Validation** (run when modifying `.yaml` or `.yml` files):
+
+```bash
+python3 -c "
+import yaml
+for f in ['alerts/alert_rules.yaml', 'ha/lovelace.yaml', 'ha/Dashboard.yaml']:
+    yaml.safe_load(open(f)); print(f'✓ {f}')
+"
+```
+
+**JSON Validation** (run when modifying `.json` files):
+
+```bash
+python3 -c "
+import json
+for f in ['.markdownlint.jsonc', '.vscode/settings.json']:
+    json.load(open(f)); print(f'✓ {f}')
+"
+```
 
 ## Core Conventions
 
@@ -51,7 +82,7 @@ Review output should be concise and actionable:
 
 ## Project Gotchas
 
-- `infrastructure/` is a symlink to external content; do not modify it in this repository.
+- `infrastructure/` symlink has been removed (was pointing to local Windows path).
 - Do not remove historical changelog entries; add new items under `[Unreleased]`.
 - Avoid changing VLAN IDs, IP ranges, or established naming without coordinated doc updates.
 - For Markdown, follow repository rules in instruction files rather than ad-hoc formatting.
@@ -94,4 +125,4 @@ When changes target these areas, consult the corresponding docs first:
 - VLAN or subnet changes: `docs/dhcp-scopes.md`, `docs/Project_Architecture_Blueprint.md`
 - Naming updates: `docs/naming-conventions.md`
 - Home Assistant updates: `ha/home-assistant-programming-guidelines.instructions.md`
-- Infrastructure plans: `plan/*.md` and `baseline/*.md`
+- Infrastructure plans: `plans/*.md` and `baseline/*.md`
