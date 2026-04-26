@@ -1,0 +1,13 @@
+{
+  "name": "Perimeter-LED",
+  "leds": 46,
+  "zones": [
+    { "name": "L-23", "start": 0,  "count": 23 },
+    { "name": "L-14", "start": 0,  "count": 14 },
+    { "name": "L-8",  "start": 0,  "count": 8  },
+
+    { "name": "R-23", "start": 23, "count": 23 },
+    { "name": "R-10", "start": 23, "count": 10 },
+    { "name": "R-12", "start": 23, "count": 12 }
+  ]
+}

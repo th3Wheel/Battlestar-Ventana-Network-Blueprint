@@ -1,0 +1,9 @@
+{
+  "product_name": "RGB Matrix Panel",
+  "product_description": "5 V panel with HUB75 interface",
+  "voltage": 5,
+  "chipset": null,
+  "power_watts": 40,
+  "length_meters": null,
+  "connector_type": "HUB75"
+}

@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph CORE["Core Network"]
+        GW["Gateway / Router\n10.10.0.1"]
+        SW["Core Switch"]
+    end
+
+    subgraph VLAN_IOT["VLAN: IoT Lighting"]
+        SW_IOT["IoT Lighting Access Switch"]
+        WLED["Perimeter LED WLED\nESP32\n10.10.3.16"]
+        HA["Home Assistant\n(on trusted VLAN)"]
+    end
+
+    GW --- SW
+    SW --- SW_IOT
+
+    SW_IOT --- WLED
+
+    HA --- GW
+    GW --- SW_IOT
+
+    classDef vlan fill:#f5f5ff,stroke:#555,stroke-width:1px;
+    class VLAN_IOT vlan;

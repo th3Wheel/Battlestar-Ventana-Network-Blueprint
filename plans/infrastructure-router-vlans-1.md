@@ -65,7 +65,7 @@ This plan defines the deterministic steps to create router configuration and VLA
 - **ALT-001**: Use OPNsense instead of Debian routing — rejected due to resource constraints on Radxa Cubie A5E.
 - **ALT-002**: Use host networking instead of VLAN tagging — rejected to maintain network isolation and segmentation.
 - **ALT-003**: Use dnsmasq instead of isc-dhcp-server — rejected to maintain consistency with existing patterns.
-- **ALT-004**: Use linux-router (https://github.com/garywill/linux-router) instead of systemd-networkd — rejected due to lack of VLAN 802.1Q tagging support required for Route Pi² network segmentation.
+- **ALT-004**: Use linux-router (<https://github.com/garywill/linux-router>) instead of systemd-networkd — rejected due to lack of VLAN 802.1Q tagging support required for Route Pi² network segmentation.
 
 ### linux-router Alternative Analysis
 
@@ -139,6 +139,7 @@ If VLAN support is added to linux-router, it could become a viable alternative w
 **Completion Date:** 2025-10-07
 
 **Deliverables Created:**
+
 - ✅ `projects/route-pi-squared/infrastructure/radxa/a5e-router-config.md` - Comprehensive router configuration with systemd-networkd, DHCP, firewall, and monitoring
 - ✅ `projects/route-pi-squared/docs/router-a5e.md` - Complete setup guide with troubleshooting and validation procedures
 

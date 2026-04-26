@@ -1,6 +1,6 @@
 # 🧭 Project Architecture Blueprint — Battlestar Ventana Network Blueprint
 
-Generated: 2025-10-14
+**Last Updated:** 2026-02-18
 
 This blueprint documents the effective architecture of the Battlestar Ventana homelab network and its supporting operational documentation. It consolidates patterns present across the repository (docs, dashboards, alerts, HA configs) and provides guidance for consistent extension and maintenance.
 
@@ -17,7 +17,7 @@ Technologies and artifacts detected:
 - Operational runbooks and inventories: `host-tracker.md`, `other-devices.md`, `services.md`, `naming-conventions.md`
 - Observability/UX:
   - Grafana dashboards (dashboards/)
-  - Alertmanager style configuration (alerts/)
+  - Prometheus alert rules (alerts/)
 - Home Assistant configuration (ha/) for smart home services
 
 Architectural patterns in use:
@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit Internet egress policy per VLAN
-* Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/BasestarControl
 
 ---
 
@@ -42,22 +42,22 @@ The system organizes the home network into clearly defined security zones backed
 
 Guiding principles:
 
-* Least privilege and explicit allowlists
-* Clear, durable boundaries (VLANs, subnets, roles, and naming)
-* Observability-first (dashboards, alert styles) to verify policy in practice
-* Documentation-as-source for repeatability and audits
+- Least privilege and explicit allowlists
+- Clear, durable boundaries (VLANs, subnets, roles, and naming)
+- Observability-first (dashboards, alert styles) to verify policy in practice
+- Documentation-as-source for repeatability and audits
 
 Key boundaries:
 
-* Trusted user subnets (10, 90) → full access to core services, limited view to surveillance
-* Semi-trusted (31, 60, 70) → restricted access to services required for function
-* Untrusted (20, 30) → minimal or Internet-only
-* Services (50) and Infra (40) → central management planes
-* Surveillance (81/82) → view-only from trusted/services
+- Trusted user subnets (10, 90) → full access to core services, limited view to surveillance
+- Semi-trusted (31, 60, 70) → restricted access to services required for function
+- Untrusted (20, 30) → minimal or Internet-only
+- Services (50) and Infra (40) → central management planes
+- Surveillance (81/82) → view-only from trusted/services
 
 Hybrid adaptation:
 
-* Combines zone-based segmentation with service-contract tables for implementation-ready firewalling
+- Combines zone-based segmentation with service-contract tables for implementation-ready firewalling
 
 ---
 
@@ -117,12 +117,14 @@ For each component, this section summarizes purpose, internal structure, interac
 - Evolution: Introduce automation/IaC for consistent switch/router policy; role-based admin access
 
 ### 4.2 ServerVault (VLAN 50)
+
 - Purpose: Central services (NAS/HA/MQTT, logging, media indexes)
 - Internal: Storage, MQTT broker, syslog targets, application services
 - Interactions: Consumes management from Infra; provides select services to zones per Service/Ports table
 - Evolution: Add service discovery/catalog; standardize reverse proxy/TLS; backup + DR
 
 ### 4.3 Trusted LAN (VLAN 10) and Work (VLAN 90)
+
 - Purpose: End-user compute networks
 - Interactions:
   - Trusted(10): Full to Infra/Services, view-only to Surveillance
@@ -130,16 +132,19 @@ For each component, this section summarizes purpose, internal structure, interac
 - Evolution: Conditional access, posture checks, per-user segmentation (e.g., Wi-Fi profiles)
 
 ### 4.4 Semi-Trusted (31 Resident, 60 Printers, 70 Media)
+
 - Purpose: Function-driven subnets with constrained privileges
 - Interactions: Limited to Services for specific ports (printing, media, files), Internet where appropriate
 - Evolution: Tighten casts/uploads to least privilege; log interactions for audit
 
 ### 4.5 Untrusted (20 IoT, 30 Guest)
+
 - Purpose: High-risk or unverified devices
 - Interactions: Internet-only (30), limited telemetry to Services (20→50)
 - Evolution: Per-device allowlists, device identity, and network access control (NAC)
 
 ### 4.6 Surveillance (81/82)
+
 - Purpose: Camera networks
 - Interactions: Local (81) streams to Services (50); Cloud (82) relays to Internet; view-only from Trusted/Services
 - Evolution: Bandwidth QoS; storage policy; retention and privacy controls
@@ -150,18 +155,66 @@ For each component, this section summarizes purpose, internal structure, interac
 
 Layers:
 
-1) Physical/Link Layer → switches, cabling
-2) Network Layer → VLANs, routing, DHCP/DNS
-3) Security Layer → firewall/ACLs, Service/Ports allowlists
-4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5) Observability Layer → dashboards, alerting, logs
-6) Automation Layer → desired IaC/config management (future)
+1. Physical/Link Layer → switches, cabling
+2. Network Layer → VLANs, routing, DHCP/DNS
+3. Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
+4. Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
+5. Observability Layer → dashboards, alerting, logs, SIEM integration
+6. Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
 
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
-- No circular dependencies; Services do not depend on Untrusted/Semi-Trusted availability
+- No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
+
+### 5.1 Enhanced Security Layer Components
+
+#### Rate-Limiting and Traffic Shaping
+
+- Implement connection rate limits at firewall level per VLAN
+- Throttle Guest (30) and GuestElevated (31) Internet bandwidth to prevent abuse
+- Apply per-service rate limits on ServerVault (50) endpoints:
+  - MQTT: 100 messages/second per device
+  - HTTPS: 60 requests/minute per IP for public endpoints
+  - DNS: 50 queries/second per client to prevent DNS amplification
+- QoS policies for Surveillance (81/82) to ensure camera streams maintain priority
+
+#### Service Mesh Architecture
+
+- Implement reverse proxy layer at ServerVault (50) for all HTTP/HTTPS services
+- Service discovery through internal DNS with health checks
+- Mutual TLS (mTLS) for service-to-service communication within ServerVault
+- Circuit breaker patterns for external service dependencies
+- Load balancing for redundant services (HA configurations)
+- Sidecar proxy pattern for observability and security policy enforcement
+
+#### Automation Framework
+
+- Infrastructure-as-Code (IaC) for network configuration:
+  - Terraform modules for firewall rules and VLAN definitions
+  - Ansible playbooks for device provisioning and service deployment
+- Configuration drift detection with automated remediation
+- Automated backup and disaster recovery procedures
+- Self-healing mechanisms for critical services
+- Automated patch management with staged rollouts
+- GitOps workflow for all infrastructure changes
+
+#### SIEM and Alerting Integration
+
+- Centralized security event logging at ServerVault (50):
+  - Firewall logs with rule hit tracking
+  - Authentication attempt logs (SSH, HTTPS, MQTT)
+  - Anomaly detection for unusual traffic patterns
+- Alert rules for security events:
+  - Failed authentication threshold exceeded
+  - Unusual data volume from IoT devices
+  - Cross-zone communication attempts outside policy
+  - Surveillance camera offline or tampering detection
+- Integration with external SIEM platforms:
+  - Syslog forwarding for enterprise SIEM ingestion
+  - API endpoints for security orchestration
+- Threat intelligence feed integration for known malicious IPs/domains
 
 ---
 
@@ -170,7 +223,7 @@ Dependency rules:
 - Addressing data: `dhcp-scopes.md` defines subnets, gateways, DNS per VLAN
 - Inventory data: `host-tracker.md`, `other-devices.md`, `naming-conventions.md`
 - Event/telemetry: MQTT (IoT→ServerVault), syslog (Cameras→ServerVault), app logs
-- Observability data: Grafana dashboards, Alertmanager styles
+- Observability data: Grafana dashboards, Prometheus alert rules
 - Retention: Define per-source retention on ServerVault (recommendation: 7–30 days logs, 30–90 days camera footage per storage capacity)
 
 Transformations and mapping:
@@ -191,21 +244,38 @@ Validation:
 ## 7. Cross-Cutting Concerns Implementation
 
 ### Authentication & Authorization
+
 - Network-level auth via segmentation; service-level auth on ServerVault apps
 - Admin access constrained to Trusted→Infra with strong auth (SSH/HTTPS)
+- Rate-limiting on authentication endpoints to prevent brute force attacks
+- Automated account lockout after failed attempts with SIEM alerting
 
 ### Error Handling & Resilience
+
 - Prefer stateless services behind reverse proxy; restart-on-failure policies
 - Redundant storage or backup for critical data on ServerVault
+- Circuit breaker patterns in service mesh to prevent cascade failures
+- Automated health checks and self-healing automation
 
 ### Logging & Monitoring
+
 - Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; alert styles defined in `alerts/`
+- SIEM integration for security event correlation and threat detection
+- Automated anomaly detection with configurable thresholds
+- Real-time alerting for security and operational events
 
 ### Validation
+
 - Input validation for firewall rules (ports, protocols); config linting
+- Automated configuration validation before deployment
+- Infrastructure-as-Code validation via CI/CD pipelines
 
 ### Configuration Management
+
 - Secrets externalized; environment-specific overrides; plan migration to IaC (Terraform/Ansible) as noted in future enhancements
+- GitOps workflow with version control for all configuration changes
+- Automated configuration drift detection and remediation
+- Immutable infrastructure principles for service deployments
 
 ---
 
@@ -225,12 +295,15 @@ Resilience patterns:
 ## 9. Technology-Specific Architectural Patterns (Detected)
 
 ### Markdown + Mermaid
+
 - Source of truth for diagrams and policies; renderable in multiple tools
 
 ### Home Assistant (ha/)
+
 - YAML-driven automations and dashboards; aligns with semi-trusted device control
 
 ### Grafana/Alertmanager (dashboards/, alerts/)
+
 - Dashboard-first observability; alert theming via styles
 
 ---
@@ -238,19 +311,24 @@ Resilience patterns:
 ## 10. Implementation Patterns
 
 ### Interface/Contract Patterns
+
 - Service contracts expressed as tables (source→destination, ports, protocols)
 - VLAN-to-zone mapping enables templated rule generation
 
 ### Service Implementation Patterns
+
 - Centralize services in ServerVault; expose least ports; terminate TLS at reverse proxy when possible
 
 ### Repository/Inventory Patterns
+
 - Device inventories and naming conventions feed both policy and dashboards
 
 ### Controller/API Patterns
+
 - For self-hosted apps, standardize on HTTPS, OAuth/OpenID where available, and role-based access
 
 ### Domain Model Implementation
+
 - Treat VLANs, Zones, Services, and Contracts as first-class documented entities for tooling automation
 
 ---
@@ -277,7 +355,13 @@ Test data strategies:
 
 ## 13. Extension and Evolution Patterns
 
+Status note for consistency:
+
+- Service mesh is currently a planned future enhancement and is not yet implemented in the active baseline.
+- Track and review this proposal in `plans/service-mesh-architecture.md` during a future architecture review cycle.
+
 ### Feature Addition Patterns
+
 - Adding a new VLAN:
   1. Assign subnet `10.76.<VLAN>.0/24` and gateway `.1`
   2. Add DHCP scope row in `dhcp-scopes.md`
@@ -286,9 +370,11 @@ Test data strategies:
   5. Update dashboards/alerts for visibility
 
 ### Modification Patterns
+
 - Change service exposure by updating Service/Ports entries and revalidating via tests and dashboards
 
 ### Integration Patterns
+
 - For external systems, implement an adapter/proxy in ServerVault; add anti-corruption layer with strict ingress rules
 
 ---
@@ -297,17 +383,17 @@ Test data strategies:
 
 ### Example: Service/Ports Contract (excerpt)
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|------------------------|----------|-------|
-| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
-| 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
+| Source → Destination    | Allowed Services/Ports              | Protocol | Notes                |
+| ----------------------- | ----------------------------------- | -------- | -------------------- |
+| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
+| 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
-### Example: Alertmanager Style (excerpt)
+### Example: Alert Rules (excerpt)
 
 ```yaml
-# alerts/Alertmanager style.yaml (excerpt)
+# alerts/alert_rules.yaml (excerpt)
 route:
-  group_by: ['alertname', 'severity']
+  group_by: ["alertname", "severity"]
   group_wait: 30s
   group_interval: 5m
 ```
@@ -328,21 +414,25 @@ views:
 ## 15. Architectural Decision Records (ADRs)
 
 ### ADR-001: Zone-based Segmentation with VLANs
+
 - Context: Mixed-trust devices on a single physical network
 - Decision: Use VLANs per functional/risk grouping; enforce directional rules
 - Consequences: Clear boundaries, simpler auditing; requires managed switching
 
 ### ADR-002: Address Convention 10.76.X.0/24
+
 - Context: Need human-readable mapping from VLAN ID to subnet
 - Decision: Adopt 10.76.<VLAN>.0/24 with `.1` gateways
 - Consequences: Easy mental model; /24 simplifies DHCP and ACLs
 
 ### ADR-003: Work VLAN (90) Internet-first
+
 - Context: Separate work devices and ensure performance
 - Decision: Allow Internet and media casting only; management via local DNS/DHCP bootstrap
 - Consequences: Reduced lateral movement; explicit exceptions via Media casting
 
 ### ADR-004: Surveillance Split (81 local, 82 cloud)
+
 - Context: Privacy and reliability
 - Decision: Separate local camera streaming from cloud relays
 - Consequences: Finer control; independent failure domains
@@ -361,16 +451,19 @@ views:
 ## 17. Blueprint for New Development
 
 ### Development Workflow
+
 1. Define the change (new VLAN, service, or rule)
 2. Update DHCP scope, firewall matrix, and diagrams
 3. Validate with lint/tests and a dry-run audit
 4. Observe traffic and alerts post-change; tune as needed
 
 ### Implementation Templates
+
 - DHCP scope row format and Service/Ports table row format as shown above
 - Diagram blocks in Mermaid using existing styles
 
 ### Common Pitfalls
+
 - Opening bi-directional ports without need
 - Skipping documentation updates (causes drift)
 - Missing observability coverage for new flows

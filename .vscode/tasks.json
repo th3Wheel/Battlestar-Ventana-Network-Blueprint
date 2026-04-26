@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "markdownlint: check",
+      "type": "shell",
+      "command": "markdownlint",
+      "args": [
+        "**/*.md",
+        "-c",
+        ".markdownlint.jsonc",
+        "-p",
+        ".markdownlintignore"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "markdownlint: fix",
+      "type": "shell",
+      "command": "markdownlint",
+      "args": [
+        "**/*.md",
+        "-c",
+        ".markdownlint.jsonc",
+        "-p",
+        ".markdownlintignore",
+        "--fix"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

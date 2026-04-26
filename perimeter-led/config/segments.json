@@ -1,0 +1,10 @@
+{
+  "segments": [
+    { "id": 0, "start": 0,  "stop": 23, "name": "L-23" },
+    { "id": 1, "start": 0,  "stop": 14, "name": "L-14" },
+    { "id": 2, "start": 0,  "stop": 8,  "name": "L-8"  },
+    { "id": 3, "start": 23, "stop": 46, "name": "R-23" },
+    { "id": 4, "start": 23, "stop": 33, "name": "R-10" },
+    { "id": 5, "start": 23, "stop": 35, "name": "R-12" }
+  ]
+}
