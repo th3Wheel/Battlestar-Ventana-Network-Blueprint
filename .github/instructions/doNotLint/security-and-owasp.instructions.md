@@ -369,7 +369,7 @@ Use: `strict-origin-when-cross-origin`
 
 Value: `camera=(), microphone=(), geolocation=(), payment=()`
 
-### H8: CORS Wildcard with Credentials
+### H8: CORS Wildcard Origin
 
 - **Severity**: CRITICAL
 - **Detection**: `(?:cors|Access-Control-Allow-Origin).*\*`
