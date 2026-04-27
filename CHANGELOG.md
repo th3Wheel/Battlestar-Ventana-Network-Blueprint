@@ -11,6 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - **`.gitattributes`** — Added repository-wide line ending normalization: all text files enforce LF (`eol=lf`), and binary files (`*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.pdf`) are marked explicitly to prevent corruption; SVG files are intentionally left as text.
+- **`.github/instructions/doNotLint/ansible.instructions.md`** — Added Ansible conventions and best practices instruction from awesome-copilot.
+- **`.github/instructions/doNotLint/markdown-accessibility.instructions.md`** — Added Markdown accessibility guidance instruction from awesome-copilot.
+- **`.github/instructions/doNotLint/update-docs-on-code-change.instructions.md`** — Added documentation sync guidance instruction from awesome-copilot.
+- **`infrastructure/proxmox/ambernomad-etc-network-interfaces.conf`** — Added concrete Proxmox `/etc/network/interfaces` draft for `AmberNomad` with legacy `vmbr0` management IP (`10.10.5.5`) active and target VLAN 40 management IP (`10.76.40.11`) commented for controlled cutover.
+- **`infrastructure/proxmox/ambernomad-etc-network-interfaces-cutover.conf`** — Added cutover-active variant for `AmberNomad` with VLAN 40 management (`10.76.40.11`) active and legacy management (`10.10.5.5`) commented for rollback.
+- **`infrastructure/proxmox/azuredefiant-etc-network-interfaces-legacy.conf`** — Added legacy-active Proxmox network draft for `AzureDefiant` (`10.10.5.6` active, `10.76.40.12` commented).
+- **`infrastructure/proxmox/azuredefiant-etc-network-interfaces-cutover.conf`** — Added cutover-active Proxmox network draft for `AzureDefiant` (`10.76.40.12` active, `10.10.5.6` commented).
+- **`infrastructure/proxmox/crimsonrogue-etc-network-interfaces-legacy.conf`** — Added legacy-active Proxmox network draft for `CrimsonRogue` (`10.10.5.10` active, `10.76.40.10` commented) with documented NIC placeholder.
+- **`infrastructure/proxmox/crimsonrogue-etc-network-interfaces-cutover.conf`** — Added cutover-active Proxmox network draft for `CrimsonRogue` (`10.76.40.10` active, `10.10.5.10` commented) with documented NIC placeholder.
+- **`infrastructure/proxmox/README.md`** — Added index and usage notes for all hypervisor legacy/cutover network interface draft files.
+- **`ansible/playbooks/deploy-proxmox-network-config.yml`** — Added safe precheck-first deployment playbook for host-specific Proxmox `/etc/network/interfaces` files with candidate rendering, NIC validation, backup, optional apply, and optional `ifreload`.
+- **`ansible/inventory/host_vars/AmberNomad.yml`** — Added host-specific variables for management NIC and legacy/cutover source file selection.
+- **`ansible/inventory/host_vars/AzureDefiant.yml`** — Added host-specific variables for management NIC and legacy/cutover source file selection.
+- **`ansible/inventory/host_vars/CrimsonRogue.yml`** — Added host-specific variables for management NIC and legacy/cutover source file selection, including explicit placeholder for undocumented NIC.
+- **`ansible/group_vars/all/proxmox-network-vars.yml`** — Added centralized `crimsonrogue_mgmt_nic` variable so CrimsonRogue NIC can be set in one place.
+
+- **`ha/README.md`** — Added a Home Assistant documentation hub with a guidelines index and a setup baseline checklist for HA documentation/config validation.
 
 - **`.github/skills/led_analysis/SKILL.md`** — Copilot skill definition for LED product analysis, wiring guidance, and alternative recommendations.
 - **`.github/skills/led_analysis/LICENSE.txt`** — MIT license file for the `led_analysis` skill, satisfying the `license: Complete terms in LICENSE.txt` reference in `SKILL.md`.
@@ -24,6 +41,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **`ansible/inventory/hosts.yml`** — Decommissioned `MintRedoubt` by removing it from active `physical_hosts` inventory targeting.
+- **`docs/physical-hosts.md`** — Marked `MintRedoubt` as retired (`~~MintRedoubt~~`) per hostname retirement policy.
+- **`ansible/inventory/hosts.yml`** — Added `AmberNomad` (`10.10.5.5`) as `ProxmoxNode2` with a pre-migration note that its management IP is outside InfraCore VLAN 40 and must move to `10.76.40.0/24` when integrated.
+- **`ansible/inventory/hosts.yml`** — Reclassified `AzureDefiant` as `ProxmoxNode3` and updated its description to reflect current K3s/Docker workload hosting.
+- **`docs/physical-hosts.md`** — Updated physical host role mapping (`AzureDefiant` -> `ProxmoxNode3`) and added active host entry for `AmberNomad` (`ProxmoxNode2`).
+- **`docs/device-inventory.md`** — Added canonical source-of-truth cross-reference for physical hypervisor assignments to `docs/physical-hosts.md` and `ansible/inventory/hosts.yml`.
+- **`.github/instructions/doNotLint/agent-skills.instructions.md`** — Updated to latest awesome-copilot upstream version.
+- **`.github/instructions/doNotLint/instructions.instructions.md`** — Updated to latest awesome-copilot upstream version.
+- **`.github/instructions/doNotLint/security-and-owasp.instructions.md`** — Updated to latest awesome-copilot upstream version.
+- **`ansible/group_vars/all/vlan-vars.yml`** — Added `pihole_secondary_vip` and per-VLAN `dns_secondary` entries to model dual Pi-hole DNS VIPs while preserving the existing `dns` primary field.
+- **`ansible/roles/linux-router-eval/templates/lnxrouter-vlan.sh.j2`** — Updated generated `lnxrouter` DHCP command and comments to emit both VLAN DNS entries (`dns`, `dns_secondary`) when a secondary resolver is configured.
+- **`ansible/roles/opnsense-vm-eval/tasks/main.yml`** — Updated DHCP scope payload to use both VLAN DNS entries and added secondary Pi-hole DNS reachability validation in the report output.
+- **`docs/naming-conventions.md`** — Synchronized VLAN 31 and VLAN 40 canonical names with the Ansible VLAN source of truth (`CapricaResidentPortal`, `BasestarVentana`).
+- **`docs/firewall-matrix.md` and `docs/services.md`** — Normalized legacy VLAN labels (e.g., `GuestElevated`, `InfraCore`, `ServerVault`) to canonical names from the Ansible VLAN source of truth.
+- **`ansible/group_vars/all/vlan-vars.yml`** — Added a `hypervisor_management` source-of-truth block for Proxmox/QEMU nodes with explicit legacy-to-target management IP conversion mapping (`10.10.5.X -> 10.76.40.X`) and authoritative node-level targets.
+- **`ansible/group_vars/all/vlan-vars.yml`** — Added `network_discovery.find_local_api` settings for devices/people presence ingestion, with API key sourced from vaulted variable (`vault_find_local_api_key`).
+- **`ansible/inventory/hosts.yml`** — Migrated `AmberNomad` management endpoint from `10.10.5.5` to `10.76.40.11` and finalized its VLAN 40 management-plane description.
+- **`ansible/bootstrap-env.ps1`** — Added a `-DryRun` mode (alias: `-dry-run`) to preview venv creation and dependency installation steps without making local changes.
+- **`ansible/README.md`** — Documented dry-run bootstrap usage for safer Ansible environment setup on Windows.
+- **`ansible/README.md`** — Added usage documentation for `deploy-proxmox-network-config.yml` including precheck, apply, and apply+reload command patterns.
+- **`ansible/README.md`** — Added host-limited rollout examples (`--limit`) for one-hypervisor-at-a-time safe deployment.
 - **`.github/copilot-instructions.md`** — Reworked as a concise, link-first
   workspace guide with build/lint commands, core gotchas, and canonical doc
   links.
@@ -51,6 +89,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   from `led_analysis` to `led-analysis` to comply with skill naming rules
   (lowercase letters, numbers, and hyphens only). Removed the now-redundant
   `README.md`.
+- **`ha/home-assistant-programming-guidelines.instructions.md`** — Updated
+  fenced code block to include an explicit language identifier for markdownlint
+  compatibility.
 
 ---
 
