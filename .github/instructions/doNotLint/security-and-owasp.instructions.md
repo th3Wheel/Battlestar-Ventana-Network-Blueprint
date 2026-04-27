@@ -427,7 +427,7 @@ Validate and filter keys from user input before merging into objects.
 ### FE5: Open Redirect
 
 - **Severity**: IMPORTANT
-- **Detection**: `(?:window\.location|location\.href|router\.push)\s*=\s*(?:req\.|params\.|query\.)`
+- **Detection**: `(?:(?:window\.location|location\.href)\s*=\s*|router\.push\s*\(\s*)(?:req\.|params\.|query\.)`
 - **OWASP**: A01
 
 ```typescript
