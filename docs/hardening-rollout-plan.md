@@ -92,7 +92,7 @@ This document outlines the phased deployment schedule for implementing security 
    - **MQTT Broker (ServerVault)**:
      - 100 messages/second per device
      - 1000 messages/second total
-   - **DNS (BasestarControl)**:
+   - **DNS (InfraCore)**:
      - 50 queries/second per client
      - Block DNS amplification attempts
    - **HTTP/HTTPS Services**:
@@ -204,7 +204,7 @@ This document outlines the phased deployment schedule for implementing security 
    - Import existing infrastructure into Terraform state
 
 2. **Configuration Management**
-   - Deploy Ansible control node on BasestarControl (VLAN 40)
+   - Deploy Ansible control node on InfraCore (VLAN 40)
    - Create playbooks for:
      - Service deployment
      - Configuration updates

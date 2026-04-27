@@ -21,7 +21,7 @@
 
 ## 🖥️ Hostnames
 
-### Physical Hosts (Hypervisors / Bare-metal)
+### Physical Hosts (Hypervisors / Bare‑metal)
 
 - Pattern: `<Color/Element><Descriptor>` (PascalCase)  
 - Examples: `CrimsonRogue`, `MintRedoubt`, `AzureDefiant`  
@@ -37,7 +37,7 @@
 
 ### Other Devices (IoT, Printers, Cameras, Appliances)
 
-- Pattern: `<zone>-<role>-<index>` (lowercase, hyphen-separated)  
+- Pattern: `<zone>-<role>-<index>` (lowercase, hyphen‑separated)  
 - Role options: `ctrl`, `sens`, `cast`, `stor`, `view`, `print`, `relay`, `edge`  
 - Examples: `iot-sens-01`, `media-cast-02`, `printer-print-01`, `cameralocal-view-03`  
 - Reuse Policy: Indexes increment sequentially; retired indexes may be reused  
