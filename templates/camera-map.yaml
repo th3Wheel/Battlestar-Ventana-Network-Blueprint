@@ -9,5 +9,5 @@ cameras:
     hostname: cam-d1-002
 
   - id: "003"
-    ip: 10.10.20.53
-    hostname: cam-d1-003
+    ip: 10.76.81.12
+    hostname: cam-d1-003.local
