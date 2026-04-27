@@ -470,7 +470,7 @@ ALWAYS validate on server too. Use zod, joi, or class-validator.
 
 - **Severity**: CRITICAL
 - **Detection**: `npm audit --audit-level=high` exits non-zero
-- **OWASP**: A03
+- **OWASP**: A06
 
 ### D2: Lockfile Out of Sync
 
@@ -482,19 +482,19 @@ ALWAYS validate on server too. Use zod, joi, or class-validator.
 
 - **Severity**: IMPORTANT
 - **Detection**: Manual review of new dependency names
-- **OWASP**: A03
+- **OWASP**: A06
 
 ### D4: Postinstall Scripts in New Dependency
 
 - **Severity**: IMPORTANT
 - **Detection**: `"postinstall"` in new dependency's package.json
-- **OWASP**: A03
+- **OWASP**: A06
 
 ### D5: Unpinned Versions in Production
 
 - **Severity**: SUGGESTION
 - **Detection**: `":\s*["']\*["']|":\s*["']latest["']`
-- **OWASP**: A03
+- **OWASP**: A06
 
 ---
 
@@ -568,7 +568,7 @@ app.use(express.json({ limit: '100kb' }));
 
 - **Severity**: CRITICAL
 - **Detection**: User input concatenated into LLM prompts without sanitization
-- **OWASP**: A05 (Injection)
+- **OWASP**: A03 (Injection)
 
 ```typescript
 // BAD — user input directly in prompt
@@ -585,7 +585,7 @@ const response = await llm.complete({
 
 - **Severity**: CRITICAL
 - **Detection**: LLM response passed to `db.query()`, `exec()`, or template literals without validation
-- **OWASP**: A05 (Injection)
+- **OWASP**: A03 (Injection)
 
 Never trust LLM output as safe. Treat it as untrusted user input — parameterize queries, escape shell arguments, sanitize HTML before rendering.
 
