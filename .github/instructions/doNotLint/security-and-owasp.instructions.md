@@ -54,7 +54,7 @@ Your primary directive is to ensure all code you generate, review, or refactor i
 
 ## Authentication Anti-Patterns (AU2-AU8)
 
-### AU2: JWT Without Expiration Check
+### AU2: JWT Without Expiration
 
 - **Severity**: CRITICAL
 - **Detection**: `jwt\.sign\((?![^)]*\b(?:expiresIn|exp)\b)[^)]*\)`
@@ -86,7 +86,7 @@ res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
 
 - **Severity**: CRITICAL
 - **Detection**: `(?:createHash|md5|sha1|sha256)\s*\(.*password`
-- **OWASP**: A04
+- **OWASP**: A02
 
 ```typescript
 // BAD — fast hash, no salt
@@ -299,7 +299,7 @@ Use masked secrets in CI. Never echo environment variables containing secrets.
 
 - **Severity**: IMPORTANT
 - **Detection**: `(?:stack|trace|query|sql).*(?:res\.json|res\.send|c\.JSON)`
-- **OWASP**: A10
+- **OWASP**: A05
 
 ```typescript
 // GOOD — generic error to client, details only in logs
@@ -373,7 +373,7 @@ Value: `camera=(), microphone=(), geolocation=(), payment=()`
 
 - **Severity**: CRITICAL
 - **Detection**: `(?:cors|Access-Control-Allow-Origin).*\*`
-- **OWASP**: A02
+- **OWASP**: A05
 
 ```typescript
 // GOOD
@@ -391,7 +391,7 @@ app.use(cors({
 
 - **Severity**: CRITICAL
 - **Detection**: `(?:innerHTML|v-html|dangerouslySetInner)` without DOMPurify
-- **OWASP**: A05
+- **OWASP**: A03
 
 Always sanitize with DOMPurify before rendering user-controlled HTML.
 
@@ -399,7 +399,7 @@ Always sanitize with DOMPurify before rendering user-controlled HTML.
 
 - **Severity**: CRITICAL
 - **Detection**: `eval\s*\(`
-- **OWASP**: A05
+- **OWASP**: A03
 
 Use structured data parsers (JSON.parse) instead.
 
@@ -548,7 +548,7 @@ Always verify webhook signatures (Stripe, GitHub HMAC, etc.).
 
 - **Severity**: IMPORTANT
 - **Detection**: `(?:stack|trace|query|sql).*(?:res\.json|res\.send)`
-- **OWASP**: A10
+- **OWASP**: A05
 
 ### AP6: Missing Request Body Size Limit
 
@@ -735,7 +735,7 @@ res.cookie('session', value, {
 ### EX4: Error Handler Exposing Stack Trace
 
 - **Severity**: IMPORTANT
-- **OWASP**: A10
+- **OWASP**: A05
 
 Only expose error details in development mode.
 
@@ -763,7 +763,7 @@ Use system CA pool (default) instead.
 
 - **Severity**: CRITICAL
 - **Detection**: `fmt\.Sprintf\s*\(.*(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE)`
-- **OWASP**: A05
+- **OWASP**: A03
 
 ```go
 // GOOD — parameterized
