@@ -1,7 +1,7 @@
 # 📜 CHANGELOG — Battlestar Ventana Network Blueprint
 
-All notable changes to this project will be documented in this file.
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+All notable changes to this project will be documented in this file.  
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
@@ -31,6 +31,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **`.github/skills/led-analysis/SKILL.md`** — Copilot skill definition for LED product analysis, wiring guidance, and alternative recommendations.
 - **`.github/copilot-instructions.md`** — Repository-level Copilot coding agent instructions covering project overview, tech stack, architecture context, naming conventions, security patterns, automation patterns, and common task workflows.
 - **`.github/dependabot.yml`** — Dependabot configuration for automated GitHub Actions dependency updates (weekly schedule).
+* **`infrastructure/` directory** with Proxmox and Radxa deployment configurations.
+* **`plan/` directory** with feature and infrastructure planning documents.
+* **`docs/raw/network.md`** - Raw network documentation.
+* **Multiple deployment guides** including Proxmox router setups, Pi-hole HA configurations, and network documentation indexes.
+* **Visual diagrams** including room layout, workflow diagrams, and infrastructure schematics.
+* **`docs/hardening-rollout-plan.md`** - Phased deployment schedule for security hardening (12 weeks, 6 phases) with dependencies, rollback procedures, and success metrics.
+* **`.markdownlint.json`** - Markdown linting configuration for repository-wide consistency.
 
 ### Changed
 
@@ -38,24 +45,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **`docs/physical-hosts.md`** — Marked `MintRedoubt` as retired (`~~MintRedoubt~~`) per hostname retirement policy.
 - **`ansible/inventory/hosts.yml`** — Added `AmberNomad` (`10.10.5.5`) as `ProxmoxNode2` with a pre-migration note that its management IP is outside InfraCore VLAN 40 and must move to `10.76.40.0/24` when integrated.
 - **`ansible/inventory/hosts.yml`** — Reclassified `AzureDefiant` as `ProxmoxNode3` and updated its description to reflect current K3s/Docker workload hosting.
-- **`docs/physical-hosts.md`** — Updated physical host role mapping (`AzureDefiant` → `ProxmoxNode3`) and added active host entry for `AmberNomad` (`ProxmoxNode2`).
-- **`.github/copilot-instructions.md`** — Reworked as a concise, link-first workspace guide with build/lint commands, core gotchas, and canonical doc links.
-- **README monitoring section** — Restored Grafana reference to `dashboards/dashboard.json`; corrected Prometheus alert file reference to `alerts/alert_rules.yaml`.
-- **`.markdownlint.jsonc`** — Consolidated as the single markdownlint source of truth; removed `.markdownlint.json`. Raised `MD013 line_length` from 200 to 240.
-- **`.github/workflows/super-linter.yml`** — Expanded triggers to run on every push (all branches) and on pull requests targeting `master`.
-- **`.github/skills/led-analysis/SKILL.md`** — Renamed skill folder from `led_analysis` to `led-analysis` to comply with skill naming rules.
+* **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
 
----
-
-## [1.1.0] — 2025‑12‑05
+* **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.
+* Updated all documentation references to reflect new VLAN names.
+* **Repository reorganization** - Consolidated network documentation from `../Network Structure/` into main blueprint directory.
+* **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
+* **File renamed** - `fgemp` renamed to `current-network-baseline.md` for clarity (baseline network state documentation).
+* **Baseline folder created** - New `baseline/` directory for architectural design documents including network blueprints, deployment guides, and system specifications.
+* **`docs/Project_Architecture_Blueprint.md`** - Enhanced with security layer components including rate-limiting, service mesh, automation framework, and SIEM integration details.
 
 ### Removed
 
-- **`infrastructure/` symlink** — Removed broken symlink pointing to local development environment. This symlink was not portable and caused access issues in CI/CD and other environments.
+* **Legacy Network Structure files** - Moved core documentation into main blueprint directory for better organization.
 
-- **Legacy Network Structure files** — Moved core documentation into main blueprint directory for better organization.
+* **Redundant documentation files** - Consolidated duplicate content.
 
-- **Redundant documentation files** — Consolidated duplicate content.
+### Deprecated
+
+* Placeholder for features marked for removal.
+
+### Fixed
+
+* Placeholder for bug fixes.
+
+### Security
+
+* Clarified **Work VLAN (90)** Internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
+
+* Clarified **GuestElevated VLAN (31)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+* Clarified **Guest VLAN (30)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
 
 ---
 
@@ -63,31 +82,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **Internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
+* **Internet Access Policy table** in `firewall-matrix.md` to summarize outbound rules.
 
-- **`services.md` scaffold** with per‑VLAN service/port placeholders.
+* **`services.md` scaffold** with per‑VLAN service/port placeholders.
 
 ### Changed
 
-- **VLAN 31 renamed** from _ResidentGate_ to **GuestElevated**.
+* **VLAN 31 renamed** from *ResidentGate* to **GuestElevated**.
 
-- **README.md** updated to link `services.md` and include a legend for repository map.
+* **README.md** updated to link `services.md` and include a legend for repo map.
 
 ### Deprecated
 
-- None.
+* None.
 
 ### Removed
 
-- None.
+* None.
 
 ### Fixed
 
-- None.
+* None.
 
 ### Security
 
-- Clarified **Work VLAN (90)** internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
+* Clarified **Work VLAN (90)** Internet policy: unthrottled but must use local DNS/DHCP for VPN bootstrap.
 
-- Clarified **GuestElevated VLAN (31)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
-- Clarified **Guest VLAN (30)** internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+* Clarified **GuestElevated VLAN (31)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
+* Clarified **Guest VLAN (30)** Internet policy: throttled, no local DNS/DHCP, must use VPN for DNS/DHCP.
