@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=
+---
+version: 3
+
+build_arg_defaults:
+  EE_BASE_IMAGE: "ghcr.io/ansible/awx-ee:latest"
+
+dependencies:
+  python_interpreter:
+    package_system: python311
+  python: requirements.txt
+  galaxy: collections/requirements.yml
+
+options:
+  package_manager_path: /usr/bin/microdnf

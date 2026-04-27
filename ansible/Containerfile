@@ -1,0 +1,14 @@
+ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:latest
+FROM $EE_BASE_IMAGE
+
+# Install Python dependencies
+COPY requirements.txt /build/requirements.txt
+RUN pip3 install --no-cache-dir -r /build/requirements.txt
+
+# Install Ansible collections
+COPY collections/requirements.yml /build/collections/requirements.yml
+RUN ansible-galaxy collection install -r /build/collections/requirements.yml \
+    && chmod -R ug+rwx /usr/share/ansible/collections
+
+LABEL org.opencontainers.image.title="battlestar-ventana-ee" \
+      org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"

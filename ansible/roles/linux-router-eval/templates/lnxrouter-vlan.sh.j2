@@ -8,7 +8,7 @@
 # Gateway: {{ item.gateway }}
 {% if item.dhcp_enabled %}
 # DHCP:    {{ item.dhcp_range_start }}–{{ item.dhcp_range_end }} ({{ item.lease_time }})
-# DNS:     {{ pihole_primary_ip }}
+# DNS:     {{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %}, {{ item.dns_secondary }}{% endif %}
 {% else %}
 # DHCP:    static assignments only
 {% endif %}
@@ -30,7 +30,7 @@ ip addr add {{ item.gateway }}/24 dev "${IFACE}" 2>/dev/null || true
 lnxrouter \
   --no-virt \
   -i "${IFACE}" \
-  --dhcp-dns {{ pihole_primary_ip }} \
+  --dhcp-dns {{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %},{{ item.dns_secondary }}{% endif %} \
   --dhcp-no-dns \
   --config-append "dhcp-range={{ item.dhcp_range_start }},{{ item.dhcp_range_end }},{{ item.lease_time }}" \
   &
