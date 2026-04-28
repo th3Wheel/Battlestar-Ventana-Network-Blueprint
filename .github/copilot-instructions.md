@@ -23,31 +23,6 @@
 
 ## Observability & inventories
 - Dashboards in `dashboards/`, alerts in `alerts/`, and Home Assistant in `ha/` should stay in sync with network changes.
-- Device inventory references: `docs/host-tracker.md`, `docs/physical-hosts.md`, and `docs/other-devices.md`.## Purpose
-- Documentation-first network blueprint; prioritize updates to VLAN design, firewall policy, and service tables over code changes.
-
-## Architecture & sources of truth
-- Addressing uses `10.76.<VLAN>.0/24` with `.1` gateways; see `baseline/Battlestar-Ventana-Blueprint-Summary.md` and `docs/dhcp-scopes.md`.
-- Directional, least-privilege rules live in `docs/firewall-matrix.md`; service/port allowlists live in `docs/services.md` and must match.
-- Zone model and rationale are summarized in `docs/Project_Architecture_Blueprint.md`.
-- Naming is Battlestar Galactica for VLANs/SSIDs and Pacific Rim for hosts; see `docs/naming-conventions.md`.
-
-## Repo-specific workflows
-- Linting is wired in `package.json`: `npm run lint` (eslint/markdownlint/yamllint) and `npm run fix` for auto-fixes.
-- Ansible automation lives in `bootstrap/*.yml` and `roles/*` (e.g., `roles/proxmox_pihole_lxc_template/` and `bootstrap/proxmox_pihole_lxc_template.yml`).
-
-## MCP & automation integrations
-- MCP configuration is in `mcp-config.json` and `README-MCP.md` (Context7 + XPipe).
-- XPipe command packs live in `infrastructure/xpipe/` with `<action>-<service>: exec: <command>` naming.
-- Secrets are injected via 1Password CLI; use env vars like `CONTEXT7_API_KEY` and `XPIPE_API_TOKEN`, never commit tokens.
-
-## Update rules & concrete examples
-- When changing allowed flows, update both `docs/services.md` and `docs/firewall-matrix.md`; add DHCP/DNS notes in `docs/dhcp-scopes.md` if needed.
-- Keep existing Mermaid/table styles consistent with `docs/firewall-matrix.md` and `docs/Project_Architecture_Blueprint.md`.
-- Example dependency: Work VLAN (90) must reach ServerVault DNS/DHCP (`10.76.50.x`) to bootstrap VPN before Internet access (see `docs/services.md`).
-
-## Observability & inventories
-- Dashboards in `dashboards/`, alerts in `alerts/`, and Home Assistant in `ha/` should stay in sync with network changes.
 - Device inventory references: `docs/host-tracker.md`, `docs/physical-hosts.md`, and `docs/other-devices.md`.
 
 ## 🛡️ Safety, Security & Policy Foundation (HIGHEST PRIORITY)
@@ -101,32 +76,3 @@ All actions must prioritize user safety, data protection, and compliance with re
    - Ensure consistency across documentation using Context7's semantic analysis
 
 **FAILURE TO USE CONTEXT7 MAY RESULT IN INCOMPLETE CHANGES, BROKEN CROSS-REFERENCES, OR INCONSISTENT DOCUMENTATION.**
-
-
-## Purpose
- - Documentation-first network blueprint; prioritize updates to VLAN design, firewall policy, and service tables over code changes.
-
-## Architecture & sources of truth
- - Addressing uses `10.76.<VLAN>.0/24` with `.1` gateways; see `baseline/Battlestar-Ventana-Blueprint-Summary.md` and `docs/dhcp-scopes.md`.
- - Directional, least-privilege rules live in `docs/firewall-matrix.md`; service/port allowlists live in `docs/services.md` and must match.
- - Zone model and rationale are summarized in `docs/Project_Architecture_Blueprint.md`.
- - Naming is Battlestar Galactica for VLANs/SSIDs and Pacific Rim for hosts; see `docs/naming-conventions.md`.
-
-## Repo-specific workflows
- - Linting is wired in `package.json`: `npm run lint` (eslint/markdownlint/yamllint) and `npm run fix` for auto-fixes.
- - Ansible automation lives in `bootstrap/*.yml` and `roles/*` (e.g., `roles/proxmox_pihole_lxc_template/` and `bootstrap/proxmox_pihole_lxc_template.yml`).
-
-## MCP & automation integrations
- - MCP configuration is in `mcp-config.json` and `README-MCP.md` (Context7 + XPipe).
- - XPipe command packs live in `infrastructure/xpipe/` with `<action>-<service>: exec: <command>` naming.
- - Secrets are injected via 1Password CLI; use env vars like `CONTEXT7_API_KEY` and `XPIPE_API_TOKEN`, never commit tokens.
-
-## Update rules & concrete examples
- - When changing allowed flows, update both `docs/services.md` and `docs/firewall-matrix.md`; add DHCP/DNS notes in `docs/dhcp-scopes.md` if needed.
- - Keep existing Mermaid/table styles consistent with `docs/firewall-matrix.md` and `docs/Project_Architecture_Blueprint.md`.
- - Example dependency: Work VLAN (90) must reach ServerVault DNS/DHCP (`10.76.50.x`) to bootstrap VPN before Internet access (see `docs/services.md`).
-
-## Observability & inventories
- - Dashboards in `dashboards/`, alerts in `alerts/`, and Home Assistant in `ha/` should stay in sync with network changes.
- - Device inventory references: `docs/host-tracker.md`, `docs/physical-hosts.md`, and `docs/other-devices.md`.
-- Prefer tables and Mermaid diagrams already used in [docs/Project_Architecture_Blueprint.md](../docs/Project_Architecture_Blueprint.md) and [docs/firewall-matrix.md](../docs/firewall-matrix.md); keep symbols/legends consistent.

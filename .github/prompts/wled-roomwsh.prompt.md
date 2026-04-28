@@ -1,34 +1,15 @@
 # GitHub Agent Prompt: Add Hyperion + WLED Room Lighting Config
 
-Task:Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
+Task: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
 
 📁 Target Repo Structure
 
 Please create or update the following files in the repo:
 
-- `infrastructure/hyperion-wled/README.md`
-- `infrastructure/hyperion-wled/hyperion.config.json`   
-- `infrastructure/hyperion-wled/wled-roomwsh.json`
-- `infrastructure/hyperion-wled/SETUP.md`   
-## File Contents
-Here’s a complete, ready-to-use prompt you can give to a GitHub Copilot Workspace agent or GitHub Actions workflow to integrate your Hyperion + WLED configuration into your repo:
-
-✅ GitHub Agent Prompt: Add Hyperion + WLED Room Lighting Config
-
-Task:Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
-
-📁 Target Repo Structure
-
-Please create or update the following files in the repo:
-
-/configs/hyperion/
-  ├── device-wled-ws2815.json
-  ├── leds-room-layout.json
-  ├── instances-room-split.json
-  ├── priorities.json
-  ├── screen-capture-hybrid.json
-  └── segments-wled-map.json
-
+- `docs/hyperion-wled/README.md`
+- `docs/hyperion-wled/hyperion.config.json`
+- `docs/hyperion-wled/wled-roomwsh.json`
+- `docs/hyperion-wled/SETUP.md`
 📦 File Contents
 
 device-wled-ws2815.json
