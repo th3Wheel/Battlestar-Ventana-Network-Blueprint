@@ -1,0 +1,71 @@
+# Pi-hole + Unbound DNS stack — ServerVault (VLAN 50: 10.76.50.0/24)
+#
+# Pi-hole provides network-wide ad blocking and local DNS resolution.
+# Unbound provides a local recursive DNS resolver with DNSSEC validation,
+# used as Pi-hole's upstream to eliminate reliance on third-party DNS providers.
+#
+# Prerequisites:
+#   - Docker Engine 24.0+ and Docker Compose v2.0+
+#   - External macvlan network "vlan50" created on the host:
+#       docker network create -d macvlan \
+#         --subnet=10.76.50.0/24 --gateway=10.76.50.1 \
+#         -o parent=eth0.50 vlan50
+#   - Persistent data directories:
+#       sudo mkdir -p /srv/pihole/{pihole,dnsmasq,unbound}
+#       sudo chown -R root:root /srv/pihole
+#
+# Environment variables required at runtime (set in a .env file or secret manager):
+#   PIHOLE_WEBPASSWORD — admin web UI password
+
+services:
+  unbound:
+    image: mvance/unbound:1.22.0
+    container_name: unbound
+    restart: unless-stopped
+    volumes:
+      - /srv/pihole/unbound:/opt/unbound/etc/unbound:ro
+    networks:
+      pihole-internal:
+        ipv4_address: 172.20.0.2
+    healthcheck:
+      test: ["CMD", "drill", "@127.0.0.1", "cloudflare.com"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  pihole:
+    image: pihole/pihole:2026.04.1
+    container_name: pihole
+    restart: unless-stopped
+    depends_on:
+      - unbound
+    environment:
+      TZ: "America/Chicago"
+      WEBPASSWORD: "${PIHOLE_WEBPASSWORD}"
+      PIHOLE_DNS_: "172.20.0.2#5335"
+      DNSSEC: "true"
+      DNSMASQ_LISTENING: "all"
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "8053:80/tcp"
+    volumes:
+      - /srv/pihole/pihole:/etc/pihole
+      - /srv/pihole/dnsmasq:/etc/dnsmasq.d
+    networks:
+      - vlan50
+      - pihole-internal
+    healthcheck:
+      test: ["CMD", "dig", "+short", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  vlan50:
+    external: true
+  pihole-internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/29

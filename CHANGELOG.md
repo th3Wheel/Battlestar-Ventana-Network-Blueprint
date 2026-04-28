@@ -67,7 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-* Placeholder for bug fixes.
+- **`infrastructure/xpipe/commands.yaml`** — Recreated XPipe command definitions for `core-network` and `pihole` stacks; all `up`, `down`, and `logs` commands now reference docker-compose files that exist in the repository.
+- **`infrastructure/core-network/docker-compose.yml`** — Added missing Docker Compose manifest for core network services (Traefik reverse proxy, syslog-ng collector) on ServerVault VLAN 50.
+- **`infrastructure/pihole/docker-compose.yml`** — Added missing Docker Compose manifest for Pi-hole + Unbound DNS stack on ServerVault VLAN 50.
 
 ### Security
 

@@ -1,0 +1,63 @@
+# Core network infrastructure services — ServerVault (VLAN 50: 10.76.50.0/24)
+#
+# Provides the reverse proxy (Traefik) and syslog collector that underpin all
+# other services running on ServerVault.
+#
+# Prerequisites:
+#   - Docker Engine 24.0+ and Docker Compose v2.0+
+#   - External macvlan network "vlan50" created on the host:
+#       docker network create -d macvlan \
+#         --subnet=10.76.50.0/24 --gateway=10.76.50.1 \
+#         -o parent=eth0.50 vlan50
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.dashboard=false"
+      - "--log.level=INFO"
+      - "--accesslog=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certs:/certs
+    networks:
+      - vlan50
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  syslog:
+    image: balabit/syslog-ng:4.11.0
+    container_name: syslog-ng
+    restart: unless-stopped
+    ports:
+      - "514:514/udp"
+      - "514:514/tcp"
+    volumes:
+      - syslog-data:/var/log/syslog-ng
+    networks:
+      - vlan50
+    healthcheck:
+      test: ["CMD", "syslog-ng-ctl", "stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  traefik-certs:
+  syslog-data:
+
+networks:
+  vlan50:
+    external: true

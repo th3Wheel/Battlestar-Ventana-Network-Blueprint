@@ -1,0 +1,32 @@
+version: "1"
+
+# XPipe quick-command definitions for Docker Compose stacks.
+# Run these from the ServerVault host (VLAN 50 — 10.76.50.0/24).
+# All paths are relative to the repository root on the remote host.
+
+groups:
+  - name: core-network
+    description: Core network infrastructure services
+    commands:
+      - name: up
+        description: Start core network services
+        script: docker compose -f infrastructure/core-network/docker-compose.yml up -d
+      - name: down
+        description: Stop core network services
+        script: docker compose -f infrastructure/core-network/docker-compose.yml down
+      - name: logs
+        description: Stream core network service logs
+        script: docker compose -f infrastructure/core-network/docker-compose.yml logs -f
+
+  - name: pihole
+    description: Pi-hole DNS ad-blocking services
+    commands:
+      - name: up
+        description: Start Pi-hole and Unbound services
+        script: docker compose -f infrastructure/pihole/docker-compose.yml up -d
+      - name: down
+        description: Stop Pi-hole and Unbound services
+        script: docker compose -f infrastructure/pihole/docker-compose.yml down
+      - name: logs
+        description: Stream Pi-hole and Unbound service logs
+        script: docker compose -f infrastructure/pihole/docker-compose.yml logs -f
