@@ -5,8 +5,8 @@ version: "1"
 #
 # Each script changes to the repository root before running Compose so the
 # commands work regardless of the working directory XPipe uses at execution
-# time.  Set REPO_DIR on the remote host to override the default path:
-#   export REPO_DIR=/opt/Battlestar-Ventana-Network-Blueprint
+# time.  REPO_DIR must be exported on the remote host before use:
+#   export REPO_DIR=/opt/repos/Battlestar-Ventana-Network-Blueprint
 #
 # Each stack exposes five commands:
 #   up       — bring the stack up in detached mode
@@ -21,35 +21,35 @@ groups:
     commands:
       - name: up
         description: Start core network services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/core-network/docker-compose.yml up -d
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml up -d
       - name: down
         description: Stop core network services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/core-network/docker-compose.yml down
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml down
       - name: logs
         description: Stream core network service logs
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/core-network/docker-compose.yml logs -f
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml logs -f
       - name: status
         description: Show running state of core-network containers (keep-alive health check)
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/core-network/docker-compose.yml ps
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml ps
       - name: restart
         description: Restart core network services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/core-network/docker-compose.yml restart
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml restart
 
   - name: pihole
     description: Pi-hole DNS ad-blocking services
     commands:
       - name: up
         description: Start Pi-hole and Unbound services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/pihole/docker-compose.yml up -d
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml up -d
       - name: down
         description: Stop Pi-hole and Unbound services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/pihole/docker-compose.yml down
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml down
       - name: logs
         description: Stream Pi-hole and Unbound service logs
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/pihole/docker-compose.yml logs -f
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml logs -f
       - name: status
         description: Show running state of Pi-hole containers (keep-alive health check)
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/pihole/docker-compose.yml ps
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml ps
       - name: restart
         description: Restart Pi-hole and Unbound services
-        script: cd "${REPO_DIR:-$HOME/Battlestar-Ventana-Network-Blueprint}" && docker compose -f infrastructure/pihole/docker-compose.yml restart
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml restart
