@@ -68,7 +68,7 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   ├── pihole/
 │   │   │   └── docker-compose.yml             # Pi-hole + Unbound DNS stack
 │   │   └── xpipe/
-│   │       └── commands.yaml                  # XPipe quick-command definitions for Docker stacks
+│   │       └── commands.yaml                  # XPipe quick commands: up/down/logs/status(keep-alive)/restart per stack
 │   └── ansible/                               # Ansible automation for lab hosts
 │
 └── ⚙️ Development Configuration

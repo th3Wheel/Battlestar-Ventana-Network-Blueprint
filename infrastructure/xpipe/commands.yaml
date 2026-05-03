@@ -3,6 +3,13 @@ version: "1"
 # XPipe quick-command definitions for Docker Compose stacks.
 # Run these from the ServerVault host (VLAN 50 — 10.76.50.0/24).
 # All paths are relative to the repository root on the remote host.
+#
+# Each stack exposes five commands:
+#   up       — bring the stack up in detached mode
+#   down     — stop and remove containers
+#   logs     — tail/stream service logs
+#   status   — show running container states (used as keep-alive health check)
+#   restart  — restart all containers in the stack (simultaneous, brief downtime)
 
 groups:
   - name: core-network
@@ -17,6 +24,12 @@ groups:
       - name: logs
         description: Stream core network service logs
         script: docker compose -f infrastructure/core-network/docker-compose.yml logs -f
+      - name: status
+        description: Show running state of core-network containers (keep-alive health check)
+        script: docker compose -f infrastructure/core-network/docker-compose.yml ps
+      - name: restart
+        description: Restart core network services
+        script: docker compose -f infrastructure/core-network/docker-compose.yml restart
 
   - name: pihole
     description: Pi-hole DNS ad-blocking services
@@ -30,3 +43,9 @@ groups:
       - name: logs
         description: Stream Pi-hole and Unbound service logs
         script: docker compose -f infrastructure/pihole/docker-compose.yml logs -f
+      - name: status
+        description: Show running state of Pi-hole containers (keep-alive health check)
+        script: docker compose -f infrastructure/pihole/docker-compose.yml ps
+      - name: restart
+        description: Restart Pi-hole and Unbound services
+        script: docker compose -f infrastructure/pihole/docker-compose.yml restart
