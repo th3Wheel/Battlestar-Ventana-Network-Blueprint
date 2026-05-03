@@ -3,6 +3,15 @@
 # Provides the reverse proxy (Traefik) and syslog collector that underpin all
 # other services running on ServerVault.
 #
+# Network topology for this stack:
+#   vlan50          — external macvlan; gives traefik/syslog a direct VLAN 50 IP
+#                     for ingress from physical network clients.
+#   servervault-net — internal bridge (declared external: true); shared with other
+#                     stacks so those containers can reach traefik/syslog by service
+#                     name.  All proxied or logging client containers MUST also join
+#                     servervault-net.  Create it once on the host:
+#                       docker network create servervault-net
+#
 # Source-of-truth references for all IPs and ports used in this file:
 #   ansible/group_vars/all/vlan-vars.yml  — VLAN 50 subnet/gateway
 #   docs/dhcp-scopes.md                   — VLAN 50 subnet/gateway
@@ -17,6 +26,8 @@
 #         --gateway=10.76.50.1 \
 #         -o parent=eth0.50 vlan50
 #     Subnet and gateway sourced from: ansible/group_vars/all/vlan-vars.yml (id: 50)
+#   - External bridge network "servervault-net" created on the host:
+#       docker network create servervault-net
 
 services:
   traefik:
@@ -43,6 +54,7 @@ services:
       - traefik-certs:/certs
     networks:
       - vlan50
+      - servervault-net
     healthcheck:
       test: ["CMD", "traefik", "healthcheck"]
       interval: 30s
@@ -62,6 +74,7 @@ services:
       - syslog-data:/var/log/syslog-ng
     networks:
       - vlan50
+      - servervault-net
     healthcheck:
       test: ["CMD", "syslog-ng-ctl", "stats"]
       interval: 30s
@@ -74,4 +87,6 @@ volumes:
 
 networks:
   vlan50:
+    external: true
+  servervault-net:
     external: true
