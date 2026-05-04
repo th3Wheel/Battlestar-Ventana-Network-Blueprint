@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit Internet egress policy per VLAN
-- Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/InfraCore
 
 ---
 
@@ -84,7 +84,7 @@ flowchart TB
     V50[50 – ServerVault]
   end
   subgraph Infra[Infrastructure]
-    V40[40 – BasestarControl]
+    V40[40 – InfraCore]
   end
   subgraph Surveillance[Surveillance]
     V81[81 – ScorpiaMediaShield]
@@ -109,7 +109,7 @@ Component interactions focus on directional flows enforced by rules in `firewall
 
 For each component, this section summarizes purpose, internal structure, interaction, and evolution.
 
-### 4.1 BasestarControl (VLAN 40)
+### 4.1 InfraCore (VLAN 40 - Basestar Control)
 
 - Purpose: Core switching, controllers, management plane
 - Internal: Core switch/router, control services (DNS/DHCP often delegated), management interfaces
@@ -155,18 +155,66 @@ For each component, this section summarizes purpose, internal structure, interac
 
 Layers:
 
-1. Physical/Link Layer → switches, cabling
-2. Network Layer → VLANs, routing, DHCP/DNS
-3. Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
-4. Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5. Observability Layer → dashboards, alerting, logs, SIEM integration
-6. Automation Layer → desired IaC/config management (future)
+1) Physical/Link Layer → switches, cabling
+2) Network Layer → VLANs, routing, DHCP/DNS
+3) Security Layer → firewall/ACLs, Service/Ports allowlists, rate-limiting, service mesh
+4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
+5) Observability Layer → dashboards, alerting, logs, SIEM integration
+6) Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
 
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
 - No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
+
+### 5.1 Enhanced Security Layer Components
+
+#### Rate-Limiting and Traffic Shaping
+
+- Implement connection rate limits at firewall level per VLAN
+- Throttle Guest (30) and GuestElevated (31) Internet bandwidth to prevent abuse
+- Apply per-service rate limits on ServerVault (50) endpoints:
+  - MQTT: 100 messages/second per device
+  - HTTPS: 60 requests/minute per IP for public endpoints
+  - DNS: 50 queries/second per client to prevent DNS amplification
+- QoS policies for Surveillance (81/82) to ensure camera streams maintain priority
+
+#### Service Mesh Architecture
+
+- Implement reverse proxy layer at ServerVault (50) for all HTTP/HTTPS services
+- Service discovery through internal DNS with health checks
+- Mutual TLS (mTLS) for service-to-service communication within ServerVault
+- Circuit breaker patterns for external service dependencies
+- Load balancing for redundant services (HA configurations)
+- Sidecar proxy pattern for observability and security policy enforcement
+
+#### Automation Framework
+
+- Infrastructure-as-Code (IaC) for network configuration:
+  - Terraform modules for firewall rules and VLAN definitions
+  - Ansible playbooks for device provisioning and service deployment
+- Configuration drift detection with automated remediation
+- Automated backup and disaster recovery procedures
+- Self-healing mechanisms for critical services
+- Automated patch management with staged rollouts
+- GitOps workflow for all infrastructure changes
+
+#### SIEM and Alerting Integration
+
+- Centralized security event logging at ServerVault (50):
+  - Firewall logs with rule hit tracking
+  - Authentication attempt logs (SSH, HTTPS, MQTT)
+  - Anomaly detection for unusual traffic patterns
+- Alert rules for security events:
+  - Failed authentication threshold exceeded
+  - Unusual data volume from IoT devices
+  - Cross-zone communication attempts outside policy
+  - Surveillance camera offline or tampering detection
+- Integration with external SIEM platforms:
+  - Syslog forwarding for enterprise SIEM ingestion
+  - API endpoints for security orchestration
+- Threat intelligence feed integration for known malicious IPs/domains
 
 ### 5.1 Enhanced Security Layer Components
 
