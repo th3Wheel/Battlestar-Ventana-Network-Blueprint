@@ -1,4 +1,4 @@
-ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:latest
+ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:24.6.0
 FROM $EE_BASE_IMAGE
 
 # Install Python dependencies

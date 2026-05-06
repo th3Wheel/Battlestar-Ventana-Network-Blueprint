@@ -3,7 +3,7 @@
 version: 3
 
 build_arg_defaults:
-  EE_BASE_IMAGE: "ghcr.io/ansible/awx-ee:latest"
+  EE_BASE_IMAGE: "ghcr.io/ansible/awx-ee:24.6.0"
 
 dependencies:
   python_interpreter:
