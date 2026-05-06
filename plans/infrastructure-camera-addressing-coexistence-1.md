@@ -151,7 +151,7 @@ Deliverables:
 | Naming references | `docs/naming-conventions.md`, `docs/other-devices.md` | Shift to entity-key-first model |
 | Address references | `docs/ip-allocation.md`, `docs/thingino-provisioning.md` | Normalize to coexistence state columns |
 | Host inventory | `docs/physical-hosts.md`, `docs/device-inventory.md` | Add migration fields and ownership metadata |
-| Automation | `scripts/generate-configs.sh`, `tasks/cameras.yml` | Enforce schema validation and summary exports |
+| Automation | `scripts/generate-configs.sh` | Enforce schema validation and summary exports |
 | Governance | `CHANGELOG.md`, CI/task checks | Add mandatory consistency gates |
 
 ## ⚠️ Risks and Mitigations
