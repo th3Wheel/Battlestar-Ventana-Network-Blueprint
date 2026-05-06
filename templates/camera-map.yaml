@@ -1,11 +1,11 @@
 # Declarative source of truth for deterministic config generation
 cameras:
   - id: "001"
-    ip: 10.10.20.51
+    ip: 10.76.81.10
     hostname: cam-d1-001
 
   - id: "002"
-    ip: 10.10.20.52
+    ip: 10.76.81.11
     hostname: cam-d1-002
 
   - id: "003"
