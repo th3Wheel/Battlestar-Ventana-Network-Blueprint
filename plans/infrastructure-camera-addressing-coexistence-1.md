@@ -52,7 +52,7 @@ entity_id: "printer-01"
 entity_type: "printer"
 hostname_current: "printer-print-01"
 ip_current: "10.10.30.21"
-ip_target: "10.76.30.21"
+ip_target: "10.76.60.21"
 active_scheme: "legacy"
 ```
 
