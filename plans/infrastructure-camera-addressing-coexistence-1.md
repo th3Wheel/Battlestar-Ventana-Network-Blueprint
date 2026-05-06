@@ -84,7 +84,7 @@ Out of scope for this phase:
 
 ## 🛠️ Implementation Phases
 
-## Phase 0 - Inventory and Ownership Freeze
+### Phase 0 - Inventory and Ownership Freeze
 
 1. Enumerate all files that reference IPs/hostnames.
 2. Classify each as source, generated, or reference-only.
@@ -96,7 +96,7 @@ Deliverables:
 - Entity-reference inventory report.
 - Source/generated/reference ownership matrix.
 
-## Phase 1 - Canonical Schema and Registry
+### Phase 1 - Canonical Schema and Registry
 
 1. Define a shared schema for entity identity and migration fields.
 2. Standardize per-domain source files to align with schema.
@@ -108,7 +108,7 @@ Deliverables:
 - Canonical schema definition.
 - Updated source mapping files and validation.
 
-## Phase 2 - Generator and Consumer Refactor
+### Phase 2 - Generator and Consumer Refactor
 
 1. Refactor generators to read canonical schema.
 2. Refactor docs/sync scripts to consume generated summaries.
@@ -120,7 +120,7 @@ Deliverables:
 - Refactored generators and consumers.
 - Standardized inventory export artifact.
 
-## Phase 3 - Documentation Normalization
+### Phase 3 - Documentation Normalization
 
 1. Normalize docs to use `entity_id` as primary key.
 2. Convert repeated static tables to synchronized sections.
@@ -132,7 +132,7 @@ Deliverables:
 - Updated `docs/` references with aligned model.
 - Canonical addressing index page.
 
-## Phase 4 - Governance and CI Guardrails
+### Phase 4 - Governance and CI Guardrails
 
 1. Add CI checks for direct edits in generated artifacts.
 2. Add consistency checks between source mappings and docs.
