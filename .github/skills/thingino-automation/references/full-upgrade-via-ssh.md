@@ -7,7 +7,7 @@ Perform a full Thingino firmware update from SSH and automatically restore confi
 ## Preconditions
 
 - Correct firmware file for target camera hardware.
-- SD card inserted with prepared `runonce.sh`.
+- microSD card inserted with prepared `runonce.sh`.
 - `runonce.done` removed before upgrade reboot.
 - SSH access to camera.
 
@@ -49,7 +49,7 @@ sysupgrade -x /tmp/firmware_filename.bin
 ## Guardrails
 
 - Do not reuse firmware blindly across camera models.
-- Keep one known-good SD image and one known-good firmware artifact for rollback planning.
+- Keep one known-good microSD card image and one known-good firmware artifact for rollback planning.
 - Test on one camera before updating a larger group.
 
 ## Source

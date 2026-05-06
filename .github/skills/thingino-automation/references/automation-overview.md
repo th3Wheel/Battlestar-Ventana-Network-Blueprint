@@ -1,13 +1,13 @@
 # Automation Overview
 
-## What Thingino Can Automate from SD
+## What Thingino Can Automate from a microSD Card
 
-Thingino supports SD-card driven automation for firmware updates, bootloader environment changes, and boot-time script execution.
+Thingino supports microSD card-driven automation for firmware updates, bootloader environment changes, and boot-time script execution.
 
-## Firmware Auto-Update via SD-card
+## Firmware Auto-Update via microSD Card
 
-- Copy firmware image to SD root and rename to `autoupdate-full.bin`.
-- Reboot with SD inserted. Bootloader flashes this image during boot.
+- Copy firmware image to microSD card root and rename to `autoupdate-full.bin`.
+- Reboot with microSD card inserted. Bootloader flashes this image during boot.
 - On success, Thingino creates `autoupdate-full.done` to prevent repeated reflashing.
 - Remove `autoupdate-full.done` before reusing the same card for another camera.
 
@@ -18,7 +18,7 @@ For bootloader-only updates:
 
 ## Bootloader Environment with uEnv.txt
 
-Create `uEnv.txt` in SD root with key/value pairs:
+Create `uEnv.txt` in microSD card root with key/value pairs:
 
 ```text
 parameter1=value
@@ -29,7 +29,7 @@ parameter4=
 
 Behavior:
 
-- Insert SD and reboot to import values.
+- Insert microSD card and reboot to import values.
 - Existing values are updated or added.
 - Keys with empty assignment are unset.
 
@@ -38,9 +38,9 @@ Important note:
 - Wi-Fi setup through `uEnv.txt` is deprecated in recent 2026 firmware builds.
 - Use `run.sh` or `runonce.sh` for Wi-Fi provisioning.
 
-## Boot Scripts from SD
+## Boot Scripts from microSD Card
 
-Thingino recognizes two script filenames in SD root:
+Thingino recognizes two script filenames in microSD card root:
 
 - `run.sh`: executed on every boot while present.
 - `runonce.sh`: executed once, then `runonce.done` is created.

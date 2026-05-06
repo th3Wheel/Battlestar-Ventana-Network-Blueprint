@@ -6,8 +6,8 @@ Use `runonce.sh` to restore Wi-Fi and camera settings automatically after a full
 
 ## Prerequisites
 
-- SD card formatted as FAT32.
-- `runonce.sh` placed in SD root.
+- microSD card formatted as FAT32.
+- `runonce.sh` placed in microSD card root.
 - `runonce.done` absent when you want execution on next boot.
 
 ## Typical Flow
