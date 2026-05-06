@@ -33,19 +33,19 @@ sensor.vlan_10_bw
 
 ## VLAN Reference
 
-| VLAN | Name          | Purpose                |
-| ---- | ------------- | ---------------------- |
-| 10   | Trusted       | Management systems     |
-| 20   | IoT           | Smart devices          |
-| 30   | Guest         | Temporary access       |
-| 31   | ResidentGate  | Controlled access      |
-| 40   | InfraCore     | Network infrastructure |
-| 50   | ServerVault   | Servers and storage    |
-| 60   | Printers      | Print services         |
-| 70   | Media         | Entertainment systems  |
-| 81   | Cameras Local | Local surveillance     |
-| 82   | Cameras Cloud | Cloud surveillance     |
-| 90   | Work          | Business systems       |
+| VLAN | Name                   | Purpose                |
+| ---- | ---------------------- | ---------------------- |
+| 10   | BattlestarVentana      | Management systems     |
+| 20   | CylonSynthLink         | Smart devices          |
+| 30   | CapricaGuestPortal     | Temporary access       |
+| 31   | CapricaResidentPortal  | Controlled access      |
+| 40   | BasestarVentana        | Network infrastructure |
+| 50   | GemenonServiceVault    | Servers and storage    |
+| 60   | VirgonFleetYard        | Print services         |
+| 70   | PegasusMediaNode       | Entertainment systems  |
+| 81   | ScorpiaMediaShield     | Local surveillance     |
+| 82   | ScorpiaMediaRelay      | Cloud surveillance     |
+| 90   | ScyllaProcessControl   | Business systems       |
 
 ## Core configuration.yaml
 

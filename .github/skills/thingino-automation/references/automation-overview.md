@@ -4,7 +4,7 @@
 
 Thingino supports SD-card driven automation for firmware updates, bootloader environment changes, and boot-time script execution.
 
-## SD Firmware Auto-Update
+## Firmware Auto-Update via SD-card
 
 - Copy firmware image to SD root and rename to `autoupdate-full.bin`.
 - Reboot with SD inserted. Bootloader flashes this image during boot.
