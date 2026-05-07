@@ -1,6 +1,6 @@
-# 🎛 Other Device Tracker
+## 🎛 Other Device Tracker
 
-Structured naming for IoT, printers, cameras, and appliances.
+Structured naming for IoT, printers, cameras, and appliances.  
 
 - Format: `<location>-<type>[-<qualifier>][-<index>]` — see `docs/naming-conventions.md`
 - `<qualifier>` and `<index>` are optional; use qualifier first, then index only if still ambiguous
@@ -12,15 +12,15 @@ Structured naming for IoT, printers, cameras, and appliances.
 | `entry-sound-glass`    | Sound / glass break | Active | Glass break sensor — front entry                                |
 | `backdoor-sound-glass` | Sound / glass break | Active | Glass break sensor — rear back door                             |
 | `living-roku`          | Roku streamer       | Active | Roku Express — living room                                      |
-| `living-firestick`     | Fire TV Stick       | Active | Fire TV Stick — living room                                       |
-| `br2-firestick`        | Fire TV Stick       | Active | Fire TV Stick — second bedroom                                    |
-| `mbr-firestick`        | Fire TV Stick       | Active | Fire TV Stick — master bedroom                                    |
+| `living-firestick`     | Fire TV Stick       | Active | Fire TV Stick — living room                                     |
+| `br2-firestick`        | Fire TV Stick       | Active | Fire TV Stick — second bedroom                                  |
+| `mbr-firestick`        | Fire TV Stick       | Active | Fire TV Stick — master bedroom                                  |
 | `dining-cam`           | Camera              | Active | Nest Cam — dining room                                          |
 | `driveway-cam`         | Camera              | Active | Nest Cam — driveway                                             |
 | `printer-print-01`     | Printer             | Active | Brother mono laser                                              |
 | `printer-print-02`     | Printer             | Active | Brother color inkjet                                            |
 | `office-relay`         | Relay               | Active | Ethernet → Zigbee relay — office                                |
-| `hallway-therm`        | Thermostat          | Active | Ecobee thermostat — hallway                                      |
+| `hallway-therm`        | Thermostat          | Active | Ecobee thermostat — hallway                                     |
 | `kitchen-temp`         | Temp / humidity     | Active | Temperature/humidity sensor — kitchen                           |
 | `living-temp`          | Temp / humidity     | Active | Temperature/humidity sensor — living room                       |
 | `dining-temp`          | Temp / humidity     | Active | Temperature/humidity sensor — dining room                       |

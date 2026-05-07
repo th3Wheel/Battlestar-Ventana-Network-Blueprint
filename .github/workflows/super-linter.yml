@@ -21,10 +21,10 @@ jobs:
           fetch-depth: 0
 
       - name: Install Ansible
-        run: python3 -m pip install ansible ansible-lint
+        run: python3 -m pip install -r ansible/requirements.txt ansible-lint
 
       - name: Install Ansible collections
-        run: ansible-galaxy collection install community.docker community.general community.kubernetes community.kubernetes.core community.kubernetes.hub community.kubernetes.helm community.kubernetes.helmhub community.kubernetes.openshift community.kubernetes.skopeo community.kubernetes.utils 1password.1password
+        run: ansible-galaxy collection install -r ansible/collections/requirements.yml
 
       - name: Lint Code Base
         uses: github/super-linter@v4

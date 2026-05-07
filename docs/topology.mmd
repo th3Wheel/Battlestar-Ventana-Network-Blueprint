@@ -1,10 +1,18 @@
+
 flowchart TD
 
-subgraph VLAN20[IoT VLAN 10.10.20.0/24] C1[cam-d1-001\n10.10.20.51] C2[cam-d1-002\n10.10.20.52] C3[cam-d1-003\n10.10.20.53] end
+subgraph VLAN81["ScorpiaMediaShield — VLAN 81 (10.76.81.0/24)"]
+  C1[cam-d1-001\n10.76.81.10]
+  C2[cam-d1-002\n10.76.81.11]
+  C3[cam-d1-003\n10.76.81.12]
+end
 
-C1 --> SW1[IoT Switch] C2 --> SW1 C3 --> SW1
+C1 --> SW1[Surveillance Switch]
+C2 --> SW1
+C3 --> SW1
 
-SW1 --> FW[Firewall / Router] FW --> LAN[Main LAN] FW --> WAN[Internet]
+SW1 --> FW[Firewall / Router]
+FW --> LAN[Main LAN]
+FW --> WAN[Internet]
 
-WAN --> Cloud[Optional External Services]
-
+WAN --> Cloud[Optional External Services]
