@@ -1,14 +1,43 @@
 {
   "cSpell.words": [
+    "ambernomad",
+    "automations",
+    "azuredefiant",
+    "Basestar",
     "Battlestar",
+    "Caprica",
+    "Cherno",
+    "choco",
+    "crimsonrogue",
+    "cutover",
+    "Cylon",
+    "dnsmasq",
+    "dnsutils",
     "Galactica",
+    "Gemenon",
+    "gilfoyle",
     "helmhub",
+    "homeassistant",
+    "hostnames",
+    "ifreload",
+    "lineinfile",
+    "lnxrouter",
+    "mgmt",
+    "microdnf",
     "mqtt",
+    "opnsense",
+    "pihole",
+    "precheck",
     "Radxa",
+    "Scorpia",
+    "selectattr",
     "skopeo",
     "Thingino",
     "unthrottled",
-    "Ventana"
+    "Ventana",
+    "venv",
+    "Virgon",
+    "vmbr"
   ],
   "markdownlint.ignore": [
     "**/.git/**",
@@ -33,5 +62,31 @@
   "ansible.ansible.reuseTerminal": true,
   "ansible.validation.lint.autoFixOnSave": true,
   "ansible.executionEnvironment.enabled": true,
-  "notebook.defaultFormatter": "redhat.ansible"
+  "notebook.defaultFormatter": "redhat.ansible",
+  "python-envs.pythonProjects": [
+    {
+      "path": ".venv",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
+    }
+  ],
+  "python.terminal.useEnvFile": true,
+  "chat.tools.terminal.autoApprove": {
+    "/^git status ; git diff HEAD -- scripts/fing-inventory-check\\.sh baseline/fing-snapshots/\\.gitkeep \\.gitignore$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  },
+  "ansible.lightspeed.suggestions.enabled": false,
+  "ansible.lightspeed.enabled": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vsmqtt.brokerProfiles": [
+    {
+      "name": "HassIO",
+      "host": "localhost",
+      "port": 1883,
+      "clientId": "vsmqtt_client_b71e"
+    }
+  ],
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf"
 }

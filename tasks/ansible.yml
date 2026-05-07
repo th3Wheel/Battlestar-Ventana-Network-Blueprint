@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  bootstrap-dry-run:
+    desc: Bootstrap Ansible environment (dry-run)
+    cmds:
+      - pwsh ./ansible/bootstrap-env.ps1 -DryRun
+
+  bootstrap:
+    desc: Bootstrap Ansible environment
+    cmds:
+      - pwsh ./ansible/bootstrap-env.ps1
+
+  smoke-test:
+    desc: Smoke-test router evaluation playbooks (--check)
+    cmds:
+      - ansible-playbook
+        ansible/playbooks/evaluate-linux-router.yml
+        ansible/playbooks/evaluate-openwrt-docker.yml
+        ansible/playbooks/evaluate-opnsense-vm.yml
+        --check
+
+  deploy-pihole-ha-check:
+    desc: Deploy Pi-hole Keepalived HA (--check)
+    cmds:
+      - ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml --check
+
+  deploy-pihole-ha:
+    desc: Deploy Pi-hole Keepalived HA
+    cmds:
+      - ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml
