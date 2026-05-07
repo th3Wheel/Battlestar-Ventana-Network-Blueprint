@@ -113,7 +113,7 @@
 
     - name: Test DNS reachability to Pi-hole primary
       ansible.builtin.command:
-        cmd: "dig +short +timeout=5 example.com @{{ pihole_primary_ip }}"
+        cmd: "dig +short +timeout=5 example.com @{{ pihole_primary_vip }}"
       register: dns_check
       changed_when: false
       failed_when: dns_check.rc != 0
@@ -149,6 +149,10 @@
       register: full_matrix_check
       changed_when: false
       become: true
+      failed_when: >-
+        full_matrix_check.rc != 0 and
+        'Cannot find device' not in (full_matrix_check.stderr | default('')) and
+        'does not exist' not in (full_matrix_check.stderr | default(''))
 
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:

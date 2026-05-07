@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  setup-prereqs-dry-run:
+    desc: Set up dotfile prerequisites (dry-run)
+    cmds:
+      - pwsh ./scripts/setup-dotfiles-env.ps1 -DryRun
+
+  setup-prereqs:
+    desc: Set up dotfile prerequisites
+    cmds:
+      - pwsh ./scripts/setup-dotfiles-env.ps1
+
+  deploy-dry-run:
+    desc: Deploy dotfiles (dry-run)
+    cmds:
+      - bash scripts/deploy-dotfiles.sh --dry-run
+
+  deploy:
+    desc: Deploy dotfiles
+    cmds:
+      - bash scripts/deploy-dotfiles.sh
