@@ -69,6 +69,20 @@
       "problemMatcher": []
     },
     {
+      "label": "cameras: generate configs",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/generate-configs.sh"],
+      "problemMatcher": []
+    },
+    {
+      "label": "fing: inventory check",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/fing-inventory-check.sh"],
+      "problemMatcher": []
+    },
+    {
       "label": "dotfiles: deploy (dry-run)",
       "type": "shell",
       "command": "bash",

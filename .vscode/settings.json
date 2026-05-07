@@ -6,6 +6,7 @@
     "Basestar",
     "Battlestar",
     "Caprica",
+    "Cherno",
     "choco",
     "crimsonrogue",
     "cutover",
@@ -16,6 +17,7 @@
     "Gemenon",
     "gilfoyle",
     "helmhub",
+    "homeassistant",
     "hostnames",
     "ifreload",
     "lineinfile",
@@ -74,5 +76,17 @@
       "approve": true,
       "matchCommandLine": true
     }
-  }
+  },
+  "ansible.lightspeed.suggestions.enabled": false,
+  "ansible.lightspeed.enabled": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vsmqtt.brokerProfiles": [
+    {
+      "name": "HassIO",
+      "host": "localhost",
+      "port": 1883,
+      "clientId": "vsmqtt_client_b71e"
+    }
+  ],
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf"
 }
