@@ -2,12 +2,25 @@
 cameras:
   - id: "001"
     ip: 10.10.20.51
+    future_ip: 10.76.81.51
     hostname: cam-d1-001
 
   - id: "002"
     ip: 10.10.20.52
+    future_ip: 10.76.81.52
     hostname: cam-d1-002
 
   - id: "003"
     ip: 10.76.81.12
+    future_ip: 10.76.81.12
     hostname: cam-d1-003.local
+
+  - id: "004"
+    ip: 10.10.20.53
+    future_ip: 10.76.81.53
+    hostname: cam-garage-centre
+
+  - id: "005"
+    ip: 10.10.20.54
+    future_ip: 10.76.81.54
+    hostname: cam-garage-backwall
