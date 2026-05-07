@@ -41,6 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **`scripts/generate-configs.sh`** — Extended deterministic camera config generation to also emit per-camera `runonce.sh` scripts with camera-specific static IP, derived gateway, and hostname values.
+- **`scripts/deploy-dotfiles.sh`** — Added Windows-aware `yq` binary resolution (including `yq.exe`, Chocolatey, and Scoop paths) so `task dotfiles:deploy` works in Bash environments where PATH does not expose the package-manager shim.
+- **`tasks/cameras.yml`** — Updated `cameras:generate-configs` to prefer Git Bash on Windows (`C:\Program Files\Git\bin\bash.exe`) and fall back to `bash`, reducing WSL session warning noise during task execution.
+- **`docs/thingino-provisioning.md`** — Updated Thingino provisioning workflow to include executing generated `runonce.sh` during first-boot setup.
+
 - **`ansible/inventory/hosts.yml`** — Decommissioned `MintRedoubt` by removing it from active `physical_hosts` inventory targeting.
 - **`docs/physical-hosts.md`** — Marked `MintRedoubt` as retired (`~~MintRedoubt~~`) per hostname retirement policy.
 - **`ansible/inventory/hosts.yml`** — Added `AmberNomad` (`10.10.5.5`) as `ProxmoxNode2` with a pre-migration note that its management IP is outside InfraCore VLAN 40 and must move to `10.76.40.0/24` when integrated.
