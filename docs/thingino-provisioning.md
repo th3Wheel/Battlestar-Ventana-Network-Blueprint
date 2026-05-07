@@ -15,6 +15,7 @@ This section contains the reproducible provisioning system for Thingino-based Ci
 2. Run generate-configs.sh
 3. Copy each generated thingino.conf to SD card root
 4. Boot camera to auto‑provision
+5. Run runonce.sh on first login for Wi-Fi env vars and reboot
 
 ## Provisioning Flow
 

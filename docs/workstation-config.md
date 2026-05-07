@@ -27,7 +27,7 @@ Then test deploy with `bash scripts/deploy-dotfiles.sh --dry-run`.
 
 ## 💻 Windows Terminal Preview
 
-**Template:** [\ emplates/dotfiles/windows-terminal/settings.json\](../templates/dotfiles/windows-terminal/settings.json)
+**Template:** [\templates/dotfiles/windows-terminal/settings.json\](../templates/dotfiles/windows-terminal/settings.json)
 
 **Deploy target:** \%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json\
 
