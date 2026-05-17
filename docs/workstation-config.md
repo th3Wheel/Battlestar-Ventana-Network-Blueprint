@@ -10,6 +10,7 @@ Each section contains the managed configuration surfaces used for reference and 
 - [Dotfiles Prerequisites Setup](#-dotfiles-prerequisites-setup)
 - [Shared Starship Config](#-shared-starship-config)
 - [Windows Terminal](#-windows-terminal)
+- [WezTerm](#-wezterm)
 - [PowerShell Core Profile](#-powershell-core-profile)
 - [VS Code PowerShell Profile](#-vs-code-powershell-profile)
 - [Windows PowerShell 5.1 Profile](#-windows-powershell-51-profile)
@@ -67,6 +68,20 @@ Deploy with `bash scripts/deploy-dotfiles.sh` (add `--dry-run` to preview).
 
 The deploy script now auto-detects installed Windows Terminal package families
 and applies the managed settings to Preview, stable, or both when present.
+
+---
+
+## 🪟 WezTerm
+
+**Template:** [templates/dotfiles/wezterm/.wezterm.lua](../templates/dotfiles/wezterm/.wezterm.lua)
+
+**Deploy targets:** `%USERPROFILE%\.wezterm.lua` and `$HOME/.wezterm.lua`
+
+Deploy with `bash scripts/deploy-dotfiles.sh` (add `--dry-run` to preview).
+
+Applies to: WezTerm on Windows, WSL, and Linux hosts. The managed config keeps
+font fallback, tab bar behavior, padding, and background opacity aligned with
+the terminal appearance used elsewhere in the dotfiles set.
 
 ---
 

@@ -22,6 +22,12 @@ dotfiles:
       - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
       - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"
 
+  - id: wezterm-config
+    description: "WezTerm configuration for Windows, WSL, and Linux hosts"
+    source: wezterm/.wezterm.lua
+    target_windows: "%USERPROFILE%\\.wezterm.lua"
+    target_linux: "$HOME/.wezterm.lua"
+
   - id: powershell-core-profile
     description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, zoxide, shared prompt config, VS Code shell integration, PowerToys CommandNotFound"
     source: powershell/pwsh/Microsoft.PowerShell_profile.ps1

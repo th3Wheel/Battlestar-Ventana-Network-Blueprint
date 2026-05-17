@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - **`scripts/dotfiles-upstream-manifest.txt`** — Added a repo-pinned manifest for verified upstream fallback installers used by Linux and WSL dotfiles prerequisite setup.
 - **`scripts/update-dotfiles-env.sh`** — Added a standalone Linux/WSL wrapper that forces the repo-pinned upstream update path for `starship` and `zoxide`, intended for remote operator workflows when distro packages lag.
+- **`templates/dotfiles/wezterm/.wezterm.lua`** — Added a managed WezTerm configuration template so terminal appearance can be deployed through the same dotfiles manifest on Windows and Linux hosts.
 - **`docs/remote-operations-todos.md`** — Added a focused backlog document for incorporating XPipe, Remote Desktop Manager, and Ansible into a coherent remote-operations workflow.
 - **`.github/instructions/doNotLint/security-and-owasp.instructions.md`** — Expanded with anti-pattern catalogues (AU2-AU8, AZ1-AZ6, S1-S6, H1-H8, FE1-FE8, D1-D5, AP1-AP6, AI1-AI3, L1-L4), framework patterns for React/Next.js, Angular, Express and Go, Security Headers Template, JWT Validation Checklist, Secure Cookie Flags, and a full Security Checklist.
 - **`ansible/inventory/hosts.yml`** — New Ansible inventory file for lab and Proxmox hypervisor targeting; documents all hosts in `physical_hosts` and supporting groups with management IPs, roles, and descriptions.
@@ -64,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **`templates/dotfiles/manifest.yml`** — Added a WezTerm config entry targeting `%USERPROFILE%\\.wezterm.lua` on Windows and `$HOME/.wezterm.lua` on Linux and WSL.
+- **`docs/workstation-config.md`** — Documented WezTerm as another managed terminal target alongside Windows Terminal.
 - **`scripts/deploy-dotfiles.sh`** — Added auto-detection for both Windows Terminal Preview and stable package targets and now deploys the managed terminal settings to any installed package family that is present.
 - **`templates/dotfiles/manifest.yml`** — Replaced the single Windows Terminal Preview target with candidate targets for both Preview and stable package families.
 - **`docs/workstation-config.md`** — Updated the Windows Terminal documentation to reflect dual-target auto-detection for Preview and stable installs.
