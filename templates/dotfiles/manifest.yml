@@ -1,5 +1,6 @@
 # Dotfile manifest — maps source templates to their target paths on Windows and Linux hosts.
-# target_windows: path using %WINENV% variables (expanded at deploy time via cmd.exe in WSL)
+# target_windows: path using %WINENV% variables (expanded at deploy time)
+# target_windows_candidates: list of Windows targets to auto-detect and deploy when present
 # target_linux: path using $HOME or ~/ for Linux, WSL, and Ubuntu servers
 #
 # Deploy with:
@@ -15,9 +16,11 @@ dotfiles:
     target_linux: "$HOME/.config/starship.toml"
 
   - id: windows-terminal
-    description: "Windows Terminal Preview settings"
+    description: "Windows Terminal settings for Preview and stable package installs"
     source: windows-terminal/settings.json
-    target_windows: "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
+    target_windows_candidates:
+      - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
+      - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"
 
   - id: powershell-core-profile
     description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, zoxide, shared prompt config, VS Code shell integration, PowerToys CommandNotFound"
@@ -40,6 +43,6 @@ dotfiles:
     target_linux: "$HOME/.profile"
 
   - id: bashrc
-    description: "Interactive bash configuration for WSL, Damien, and Ubuntu servers"
+    description: "Interactive bash configuration for WSL, Debian, and Ubuntu servers"
     source: shell/bash/.bashrc
     target_linux: "$HOME/.bashrc"

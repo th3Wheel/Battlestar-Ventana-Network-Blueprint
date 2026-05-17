@@ -85,13 +85,26 @@ is_windows_shell() {
 # Falls back to printing the raw path when not running under WSL.
 resolve_windows_path() {
   local raw="$1"
-  if is_wsl; then
-    local expanded
+  local expanded=""
+
+  if command -v cmd.exe &>/dev/null; then
     expanded=$(cmd.exe /c "echo $raw" 2>/dev/null | tr -d '\r\n')
-    wslpath "$expanded"
-  else
-    echo "$raw"
+
+    if is_wsl && command -v wslpath &>/dev/null; then
+      wslpath "$expanded"
+      return
+    fi
+
+    if command -v cygpath &>/dev/null; then
+      cygpath -u "$expanded"
+      return
+    fi
+
+    echo "$expanded"
+    return
   fi
+
+  echo "$raw"
 }
 
 resolve_linux_path() {
@@ -120,6 +133,12 @@ manifest_value() {
   "$YQ_BIN" -r "($query) // \"\"" "$MANIFEST"
 }
 
+target_path_is_available() {
+  local target_path="$1"
+
+  [[ -e "$target_path" || -d "$(dirname "$target_path")" ]]
+}
+
 if $DRY_RUN; then
   echo "=== dry-run mode — no files will be written ==="
   echo ""
@@ -143,21 +162,21 @@ for i in $(seq 0 $((count - 1))); do
   target_keys=()
   case "$SCOPE" in
     windows)
-      target_keys=(target_windows)
+      target_keys=(target_windows target_windows_candidates)
       ;;
     linux)
-      target_keys=(target_linux)
+      target_keys=(target_linux target_linux_candidates)
       ;;
     all)
-      target_keys=(target_windows target_linux)
+      target_keys=(target_windows target_windows_candidates target_linux target_linux_candidates)
       ;;
     auto)
       if is_wsl; then
-        target_keys=(target_windows target_linux)
+        target_keys=(target_windows target_windows_candidates target_linux target_linux_candidates)
       elif is_windows_shell; then
-        target_keys=(target_windows)
+        target_keys=(target_windows target_windows_candidates)
       else
-        target_keys=(target_linux)
+        target_keys=(target_linux target_linux_candidates)
       fi
       ;;
     *)
@@ -167,39 +186,67 @@ for i in $(seq 0 $((count - 1))); do
   esac
 
   for target_key in "${target_keys[@]}"; do
-    target_raw=$(manifest_value ".dotfiles[$i].$target_key")
-
-    if [[ -z "$target_raw" ]]; then
-      continue
-    fi
-
-    if [[ "$target_key" == "target_linux" ]]; then
-      target_path=$(resolve_linux_path "$target_raw")
+    if [[ "$target_key" == *_candidates ]]; then
+      mapfile -t target_raw_values < <("$YQ_BIN" -r ".dotfiles[$i].$target_key[]?" "$MANIFEST" 2>/dev/null || true)
     else
-      target_path=$(resolve_windows_path "$target_raw")
-    fi
-
-    if [[ -z "$target_path" || "$target_path" == "null" ]]; then
-      continue
-    fi
-
-    echo "[$id] $desc"
-    echo "  src : $source_path"
-    echo "  dest: $target_path"
-
-    if $DRY_RUN; then
-      echo "  [dry-run] would copy to $target_path"
-    else
-      mkdir -p "$(dirname "$target_path")"
-      if [[ -f "$target_path" ]]; then
-        cp "$target_path" "${target_path}${BACKUP_SUFFIX}"
-        echo "  backed up: ${target_path}${BACKUP_SUFFIX}"
+      target_raw=$(manifest_value ".dotfiles[$i].$target_key")
+      target_raw_values=()
+      if [[ -n "$target_raw" && "$target_raw" != "null" ]]; then
+        target_raw_values=("$target_raw")
       fi
-      cp "$source_path" "$target_path"
-      echo "  deployed"
     fi
 
-    echo ""
+    if [[ ${#target_raw_values[@]} -eq 0 ]]; then
+      continue
+    fi
+
+    matched_candidate=false
+
+    for target_raw in "${target_raw_values[@]}"; do
+      if [[ -z "$target_raw" || "$target_raw" == "null" ]]; then
+        continue
+      fi
+
+      if [[ "$target_key" == target_linux* ]]; then
+        target_path=$(resolve_linux_path "$target_raw")
+      else
+        target_path=$(resolve_windows_path "$target_raw")
+      fi
+
+      if [[ -z "$target_path" || "$target_path" == "null" ]]; then
+        continue
+      fi
+
+      if [[ "$target_key" == *_candidates ]] && ! target_path_is_available "$target_path"; then
+        continue
+      fi
+
+      matched_candidate=true
+
+      echo "[$id] $desc"
+      echo "  src : $source_path"
+      echo "  dest: $target_path"
+
+      if $DRY_RUN; then
+        echo "  [dry-run] would copy to $target_path"
+      else
+        mkdir -p "$(dirname "$target_path")"
+        if [[ -f "$target_path" ]]; then
+          cp "$target_path" "${target_path}${BACKUP_SUFFIX}"
+          echo "  backed up: ${target_path}${BACKUP_SUFFIX}"
+        fi
+        cp "$source_path" "$target_path"
+        echo "  deployed"
+      fi
+
+      echo ""
+    done
+
+    if [[ "$target_key" == *_candidates ]] && [[ "$matched_candidate" == false ]]; then
+      echo "[$id] $desc"
+      echo "  [skip] no installed target matched for $target_key"
+      echo ""
+    fi
   done
 done
 

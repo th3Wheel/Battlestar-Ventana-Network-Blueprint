@@ -64,6 +64,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- **`scripts/deploy-dotfiles.sh`** — Added auto-detection for both Windows Terminal Preview and stable package targets and now deploys the managed terminal settings to any installed package family that is present.
+- **`templates/dotfiles/manifest.yml`** — Replaced the single Windows Terminal Preview target with candidate targets for both Preview and stable package families.
+- **`docs/workstation-config.md`** — Updated the Windows Terminal documentation to reflect dual-target auto-detection for Preview and stable installs.
 - **`scripts/setup-dotfiles-env.sh`** — Changed Linux/WSL prerequisite setup to prefer trusted package managers for `starship` and `zoxide`, fall back to repo-pinned verified upstream installers when needed, support `--tool` scoping, and replace direct `curl | sh/bash` execution with cached checksum verification.
 - **`tasks/dotfiles.yml`** — Added Linux dry-run and apply tasks for the standalone upstream update wrapper.
 - **`docs/workstation-config.md`** — Documented the Linux and WSL package-manager-first prerequisite flow, the verified upstream fallback policy, and the dedicated upstream update wrapper for remote operator use.

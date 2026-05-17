@@ -9,7 +9,7 @@ Each section contains the managed configuration surfaces used for reference and 
 
 - [Dotfiles Prerequisites Setup](#-dotfiles-prerequisites-setup)
 - [Shared Starship Config](#-shared-starship-config)
-- [Windows Terminal Preview](#-windows-terminal-preview)
+- [Windows Terminal](#-windows-terminal)
 - [PowerShell Core Profile](#-powershell-core-profile)
 - [VS Code PowerShell Profile](#-vs-code-powershell-profile)
 - [Windows PowerShell 5.1 Profile](#-windows-powershell-51-profile)
@@ -54,13 +54,19 @@ Applies to: PowerShell, WSL bash, and Ubuntu bash. Centralizes prompt tuning so 
 
 ---
 
-## 💻 Windows Terminal Preview
+## 💻 Windows Terminal
 
-**Template:** [\templates/dotfiles/windows-terminal/settings.json\](../templates/dotfiles/windows-terminal/settings.json)
+**Template:** [templates/dotfiles/windows-terminal/settings.json](../templates/dotfiles/windows-terminal/settings.json)
 
-**Deploy target:** \%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json\
+**Deploy targets:**
+
+- `%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json`
+- `%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`
 
 Deploy with `bash scripts/deploy-dotfiles.sh` (add `--dry-run` to preview).
+
+The deploy script now auto-detects installed Windows Terminal package families
+and applies the managed settings to Preview, stable, or both when present.
 
 ---
 
