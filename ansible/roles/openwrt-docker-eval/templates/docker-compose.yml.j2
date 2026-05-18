@@ -6,7 +6,7 @@
 
 services:
   openwrt:
-    image: openwrt/rootfs:latest
+    image: "{{ openwrt_rootfs_image }}"
     container_name: openwrt-eval
     restart: unless-stopped
     cap_add:

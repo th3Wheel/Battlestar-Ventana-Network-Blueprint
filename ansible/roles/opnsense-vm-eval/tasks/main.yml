@@ -98,7 +98,7 @@
             enable: "1"
             range_from: "{{ item.dhcp_range_start }}"
             range_to: "{{ item.dhcp_range_end }}"
-            dnsserver: "{{ pihole_primary_ip }}"
+            dnsserver: "{{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %},{{ item.dns_secondary }}{% endif %}"
         status_code: [200, 201]
       loop: "{{ vlans | selectattr('dhcp_enabled') | list }}"
       loop_control:
@@ -140,7 +140,7 @@
 
     - name: Test Pi-hole DNS reachability through OPNsense
       ansible.builtin.uri:
-        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_primary_ip }}"
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_primary_vip }}"
         method: GET
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
@@ -148,6 +148,17 @@
         validate_certs: false
         status_code: 200
       register: dns_reach_check
+
+    - name: Test Pi-hole secondary DNS reachability through OPNsense
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_secondary_vip }}"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: dns_secondary_reach_check
 
     - name: Create research output directory
       ansible.builtin.file:
@@ -171,7 +182,8 @@
           ## VLAN Validation Results (VLANs 20 and 40)
 
           - VLAN presence check: completed
-          - Pi-hole DNS reachability ({{ pihole_primary_ip }}): {{ 'PASS' if dns_reach_check.status == 200 else 'FAIL' }}
+          - Pi-hole DNS reachability ({{ pihole_primary_vip }}): {{ 'PASS' if dns_reach_check.status == 200 else 'FAIL' }}
+          - Pi-hole secondary DNS reachability ({{ pihole_secondary_vip }}): {{ 'PASS' if dns_secondary_reach_check.status == 200 else 'FAIL' }}
 
           ## Full Matrix Results
 
