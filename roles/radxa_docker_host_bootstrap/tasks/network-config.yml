@@ -1,0 +1,63 @@
+---
+# Network Configuration Tasks
+# Configures VLAN 20 for Pi-hole service network using systemd-networkd
+
+- name: Identify primary Ethernet interface
+  ansible.builtin.command:
+    cmd: "ip -o link show | awk -F': ' '{print $2}' | grep -E '^en|^eth' | head -1"
+  register: primary_interface
+  changed_when: false
+
+- name: Set primary interface fact
+  ansible.builtin.set_fact:
+    primary_iface: '{{ primary_interface.stdout }}'
+
+- name: Create systemd-networkd configuration for primary interface
+  ansible.builtin.template:
+    src: 20-end0.network.j2
+    dest: /etc/systemd/network/20-{{ primary_iface }}.network
+    mode: '0644'
+  notify: restart systemd-networkd
+
+- name: Create VLAN netdev configuration
+  ansible.builtin.template:
+    src: 30-end0.20.netdev.j2
+    dest: /etc/systemd/network/30-{{ primary_iface }}.20.netdev
+    mode: '0644'
+  notify: restart systemd-networkd
+
+- name: Create VLAN network configuration
+  ansible.builtin.template:
+    src: 40-end0.20.network.j2
+    dest: /etc/systemd/network/40-{{ primary_iface }}.20.network
+    mode: '0644'
+  notify: restart systemd-networkd
+
+- name: Enable systemd-networkd service
+  ansible.builtin.systemd:
+    name: systemd-networkd
+    enabled: true
+    state: started
+
+- name: Restart systemd-networkd to apply changes
+  ansible.builtin.systemd:
+    name: systemd-networkd
+    state: restarted
+
+- name: Wait for network interfaces to come up
+  ansible.builtin.pause:
+    seconds: 10
+
+- name: Validate VLAN 20 connectivity to gateway
+  ansible.builtin.command:
+    cmd: ping -c 4 {{ radxa_vlan_gateway }}
+  register: ping_gateway
+  changed_when: false
+  failed_when: ping_gateway.rc != 0
+
+- name: Validate VLAN 20 connectivity to Pi-hole node
+  ansible.builtin.command:
+    cmd: ping -c 4 {{ radxa_pihole_ip }}
+  register: ping_pihole
+  changed_when: false
+  failed_when: ping_pihole.rc != 0
