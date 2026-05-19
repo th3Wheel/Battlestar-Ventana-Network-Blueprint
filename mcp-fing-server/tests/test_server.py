@@ -4,8 +4,7 @@ Tests tool registration, parameter validation, and error handling.
 """
 
 import pytest
-import json
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock
 from datetime import datetime
 
 from mcp_fing_server.server import FingMCPServer
@@ -265,6 +264,13 @@ async def test_handle_get_system_info(mcp_server):
     
     assert result["fing_version"] == "5.0.0"
     assert result["uptime"] == 86400
+
+
+@pytest.mark.asyncio
+async def test_handle_get_events_bool_limit_rejected(mcp_server):
+    """Test that a boolean value for limit is rejected (bool is a subclass of int)."""
+    with pytest.raises(ValueError, match="must be a positive integer"):
+        await mcp_server._handle_get_events({"limit": True})
 
 
 @pytest.mark.asyncio

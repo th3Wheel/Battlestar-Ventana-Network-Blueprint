@@ -91,7 +91,7 @@ class EventModel(BaseModel):
     
     id: str = Field(description="Event identifier")
     type: str = Field(description="Event type")
-    timestamp: datetime = Field(description="Event timestamp (ISO 8601)")
+    timestamp: Optional[datetime] = Field(default=None, description="Event timestamp (ISO 8601)")
     device_id: Optional[str] = Field(default=None, description="Related device ID")
     person_id: Optional[str] = Field(default=None, description="Related person ID")
     description: str = Field(description="Event description")

@@ -3,10 +3,12 @@ Fing Local API client wrapper.
 Handles all HTTP communication with the Fing Local REST API.
 """
 
-import json
+import ipaddress
 import logging
-from typing import Optional, Dict, Any, List
-from datetime import datetime
+import os
+from datetime import datetime, timezone
+from typing import Optional, Dict, Any
+from urllib.parse import urlparse, quote
 
 import httpx
 from pydantic import ValidationError
@@ -26,6 +28,14 @@ from .models import (
 
 logger = logging.getLogger(__name__)
 
+_PRIVATE_NETS = [
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("::1/128"),
+]
+
 
 class FingAPIError(Exception):
     """Base exception for Fing API errors."""
@@ -40,18 +50,63 @@ class FingAPIClient:
     responses into typed Pydantic models.
     """
     
-    def __init__(self, base_url: str = "http://localhost:48080", timeout: float = 30.0):
+    def __init__(
+        self,
+        base_url: str = "http://localhost:49090/1",
+        api_key: Optional[str] = None,
+        timeout: float = 30.0,
+    ):
         """
         Initialize Fing API client.
         
         Args:
-            base_url: Base URL for Fing Local API (default: http://localhost:48080)
+            base_url: Base URL for Fing Local API (default: http://localhost:49090/1)
+            api_key: API key for authentication. If not provided, reads FING_API_KEY env var.
             timeout: Request timeout in seconds (default: 30.0)
+            
+        Raises:
+            ValueError: If base_url does not point to a local/private address.
         """
+        self._validate_base_url(base_url)
         self.base_url = base_url.rstrip("/")
+        self.api_key = api_key or os.getenv("FING_API_KEY")
         self.timeout = timeout
         self.client = httpx.AsyncClient(timeout=timeout)
         logger.info(f"Initialized Fing API client with base URL: {self.base_url}")
+    
+    def _validate_base_url(self, url: str) -> None:
+        """
+        Validate that base_url points to localhost or a private-network address.
+        
+        Raises:
+            ValueError: If the URL scheme is invalid or the host is not local/private.
+        """
+        try:
+            parsed = urlparse(url)
+        except Exception as exc:
+            raise ValueError(f"Invalid URL: {exc}") from exc
+
+        if parsed.scheme not in ("http", "https"):
+            raise ValueError(f"URL scheme must be http or https, got: {parsed.scheme!r}")
+
+        hostname = parsed.hostname
+        if not hostname:
+            raise ValueError("URL must include a hostname")
+
+        if hostname == "localhost":
+            return
+
+        try:
+            addr = ipaddress.ip_address(hostname)
+        except ValueError:
+            raise ValueError(
+                f"URL hostname must be 'localhost' or a private IP address, got: {hostname!r}"
+            )
+
+        if not any(addr in net for net in _PRIVATE_NETS):
+            raise ValueError(
+                f"URL must point to a local or private address, got: {hostname!r}"
+            )
     
     async def close(self) -> None:
         """Close the HTTP client."""
@@ -84,12 +139,16 @@ class FingAPIClient:
         
         try:
             logger.debug(f"Making {method} request to {url}")
-            logger.debug(f"Params: {params}, Body: {json_data}")
+            
+            # Attach API key as query param; never log the key itself
+            request_params: Dict[str, Any] = dict(params) if params else {}
+            if self.api_key:
+                request_params["auth"] = self.api_key
             
             response = await self.client.request(
                 method=method,
                 url=url,
-                params=params,
+                params=request_params or None,
                 json=json_data,
             )
             
@@ -102,7 +161,7 @@ class FingAPIClient:
                 return {}
             
             data = response.json()
-            logger.debug(f"Response data: {json.dumps(data, indent=2)}")
+            logger.debug(f"Response received: {len(response.content)} bytes")
             
             return data
             
@@ -151,7 +210,7 @@ class FingAPIClient:
         
         if isinstance(value, (int, float)):
             try:
-                return datetime.fromtimestamp(value)
+                return datetime.fromtimestamp(value, tz=timezone.utc)
             except (ValueError, OSError):
                 logger.warning(f"Could not parse timestamp: {value}")
                 return None
@@ -170,9 +229,9 @@ class FingAPIClient:
             Normalized device dictionary
         """
         normalized = {
-            "id": data.get("id", ""),
+            "id": data.get("id"),
             "name": data.get("name"),
-            "mac": data.get("mac", ""),
+            "mac": data.get("mac"),
             "ip": data.get("ip"),
             "vendor": data.get("vendor"),
             "last_seen": self._normalize_timestamp(data.get("last_seen")),
@@ -233,7 +292,7 @@ class FingAPIClient:
         return {
             "id": data.get("id", ""),
             "type": data.get("type", ""),
-            "timestamp": self._normalize_timestamp(data.get("timestamp")) or datetime.now(),
+            "timestamp": self._normalize_timestamp(data.get("timestamp")),
             "device_id": data.get("device_id"),
             "person_id": data.get("person_id"),
             "description": data.get("description", ""),
@@ -255,7 +314,7 @@ class FingAPIClient:
         params = {"include_inactive": include_inactive} if include_inactive else None
         
         try:
-            data = await self._make_request("GET", "/api/v1/devices", params=params)
+            data = await self._make_request("GET", "/devices", params=params)
             
             # Handle different response formats
             devices_data = data if isinstance(data, list) else data.get("devices", [])
@@ -286,7 +345,7 @@ class FingAPIClient:
             FingAPIError: If API call fails or device not found
         """
         try:
-            data = await self._make_request("GET", f"/api/v1/devices/{device_id}")
+            data = await self._make_request("GET", f"/devices/{quote(device_id, safe='')}")
             
             device = DeviceDetailModel(**self._normalize_device(data, detailed=True))
             
@@ -308,7 +367,7 @@ class FingAPIClient:
             FingAPIError: If API call fails
         """
         try:
-            data = await self._make_request("GET", "/api/v1/people")
+            data = await self._make_request("GET", "/people")
             
             # Handle different response formats
             people_data = data if isinstance(data, list) else data.get("people", [])
@@ -339,7 +398,7 @@ class FingAPIClient:
             FingAPIError: If API call fails or person not found
         """
         try:
-            data = await self._make_request("GET", f"/api/v1/people/{person_id}")
+            data = await self._make_request("GET", f"/people/{quote(person_id, safe='')}")
             
             person = PersonDetailModel(**self._normalize_person(data, detailed=True))
             
@@ -374,7 +433,7 @@ class FingAPIClient:
         }
         
         try:
-            data = await self._make_request("POST", "/api/v1/network/scan", json_data=json_data)
+            data = await self._make_request("POST", "/network/scan", json_data=json_data)
             
             scan_result = ScanResultModel(
                 scan_id=data.get("scan_id", ""),
@@ -416,7 +475,7 @@ class FingAPIClient:
             params["since"] = since.isoformat()
         
         try:
-            data = await self._make_request("GET", "/api/v1/events", params=params or None)
+            data = await self._make_request("GET", "/events", params=params or None)
             
             # Handle different response formats
             events_data = data if isinstance(data, list) else data.get("events", [])
@@ -444,7 +503,7 @@ class FingAPIClient:
             FingAPIError: If API call fails
         """
         try:
-            data = await self._make_request("GET", "/api/v1/system")
+            data = await self._make_request("GET", "/system")
             
             system_info = SystemInfoModel(
                 fing_version=data.get("fing_version", "unknown"),

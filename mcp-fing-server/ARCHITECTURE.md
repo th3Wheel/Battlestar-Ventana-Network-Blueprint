@@ -1,4 +1,4 @@
-# MCP Fing Server Architecture
+# 🏗️ MCP Fing Server Architecture
 
 ```mermaid
 flowchart TB
@@ -16,7 +16,7 @@ flowchart TB
     end
     
     subgraph "Fing Local Service"
-        Fing[Fing Local API<br/>http://localhost:48080]
+        Fing[Fing Local API<br/>http://localhost:49090/1]
     end
     
     subgraph "Network"
@@ -37,7 +37,7 @@ flowchart TB
     style People fill:#E91E63
 ```
 
-## MCP Tools Provided
+## 🔧 MCP Tools Provided
 
 ```mermaid
 flowchart LR
@@ -74,7 +74,7 @@ flowchart LR
     style T7 fill:#607D8B
 ```
 
-## Data Flow
+## 📊 Data Flow
 
 ```mermaid
 sequenceDiagram
@@ -84,7 +84,7 @@ sequenceDiagram
     participant Network as Network Devices
     
     Client->>MCP: get_devices(include_inactive=false)
-    MCP->>Fing: GET /api/v1/devices
+    MCP->>Fing: GET /devices
     Fing->>Network: Scan for devices
     Network-->>Fing: Device data
     Fing-->>MCP: Raw JSON response
@@ -92,20 +92,20 @@ sequenceDiagram
     MCP-->>Client: Typed DevicesResponse
     
     Client->>MCP: scan_network(network_id="net_001")
-    MCP->>Fing: POST /api/v1/network/scan
+    MCP->>Fing: POST /network/scan
     Fing->>Network: Deep network scan
     Network-->>Fing: Discovered devices
     Fing-->>MCP: Scan result
     MCP-->>Client: ScanResultModel
     
     Client->>MCP: get_people()
-    MCP->>Fing: GET /api/v1/people
+    MCP->>Fing: GET /people
     Fing-->>MCP: People with presence
     MCP->>MCP: Normalize timestamps to ISO 8601
     MCP-->>Client: PeopleResponse
 ```
 
-## Error Handling
+## 🛡️ Error Handling
 
 ```mermaid
 flowchart TD

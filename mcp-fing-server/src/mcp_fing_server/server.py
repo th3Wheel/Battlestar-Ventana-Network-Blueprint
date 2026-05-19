@@ -14,6 +14,7 @@ import sys
 from datetime import datetime
 from typing import Any, Optional
 
+from dotenv import load_dotenv
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
@@ -21,12 +22,26 @@ from pydantic import ValidationError
 
 from .client import FingAPIClient, FingAPIError
 
+
+class _JsonFormatter(logging.Formatter):
+    """Emit each log record as a single-line JSON object with proper escaping."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        message = record.getMessage()
+        if record.exc_info:
+            message += "\n" + self.formatException(record.exc_info)
+        return json.dumps({
+            "timestamp": self.formatTime(record, "%Y-%m-%dT%H:%M:%S%z"),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": message,
+        })
+
+
 # Configure structured logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='{"timestamp": "%(asctime)s", "level": "%(levelname)s", "logger": "%(name)s", "message": "%(message)s"}',
-    datefmt="%Y-%m-%dT%H:%M:%S%z",
-)
+_handler = logging.StreamHandler()
+_handler.setFormatter(_JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[_handler])
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +53,7 @@ class FingMCPServer:
     Provides typed, safe MCP tools for interacting with the Fing Local REST API.
     """
     
-    def __init__(self, fing_api_url: str = "http://localhost:48080"):
+    def __init__(self, fing_api_url: str = "http://localhost:49090/1"):
         """
         Initialize Fing MCP Server.
         
@@ -207,6 +222,11 @@ class FingMCPServer:
                 error_msg = f"Validation error: {str(e)}"
                 logger.error(error_msg)
                 return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
+            
+            except ValueError as e:
+                error_msg = f"Invalid argument: {str(e)}"
+                logger.error(error_msg)
+                return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
                 
             except Exception as e:
                 error_msg = f"Unexpected error: {str(e)}"
@@ -272,9 +292,9 @@ class FingMCPServer:
         limit = arguments.get("limit")
         since_str = arguments.get("since")
         
-        # Validate limit
+        # Validate limit — reject booleans before the int check (bool is a subclass of int)
         if limit is not None:
-            if not isinstance(limit, int) or limit < 1:
+            if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
                 raise ValueError("limit must be a positive integer")
         
         # Parse since timestamp
@@ -316,8 +336,10 @@ class FingMCPServer:
 
 def main() -> None:
     """Main entry point for the MCP server."""
+    load_dotenv()
+
     # Get Fing API URL from environment
-    fing_api_url = os.getenv("FING_API_URL", "http://localhost:48080")
+    fing_api_url = os.getenv("FING_API_URL", "http://localhost:49090/1")
     
     # Create and run server
     server = FingMCPServer(fing_api_url=fing_api_url)

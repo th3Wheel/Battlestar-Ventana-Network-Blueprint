@@ -10,11 +10,8 @@ import httpx
 
 from mcp_fing_server.client import FingAPIClient, FingAPIError
 from mcp_fing_server.models import (
-    DeviceModel,
     DeviceDetailModel,
-    PersonModel,
     PersonDetailModel,
-    EventModel,
     ScanResultModel,
     SystemInfoModel,
 )
@@ -279,29 +276,82 @@ async def test_http_error(async_fing_client):
         assert "HTTP error 404" in str(exc_info.value)
 
 
-@pytest.mark.asyncio
-async def test_normalize_timestamp_string(fing_client):
+def test_normalize_timestamp_string(fing_client):
     """Test timestamp normalization from string."""
     timestamp = fing_client._normalize_timestamp("2026-01-22T07:30:00Z")
     assert isinstance(timestamp, datetime)
 
 
-@pytest.mark.asyncio
-async def test_normalize_timestamp_unix(fing_client):
+def test_normalize_timestamp_unix(fing_client):
     """Test timestamp normalization from Unix timestamp."""
     timestamp = fing_client._normalize_timestamp(1737532200)
     assert isinstance(timestamp, datetime)
 
 
-@pytest.mark.asyncio
-async def test_normalize_timestamp_invalid(fing_client):
+def test_normalize_timestamp_invalid(fing_client):
     """Test timestamp normalization with invalid input."""
     timestamp = fing_client._normalize_timestamp("invalid")
     assert timestamp is None
 
 
-@pytest.mark.asyncio
-async def test_normalize_timestamp_none(fing_client):
+def test_normalize_timestamp_none(fing_client):
     """Test timestamp normalization with None."""
     timestamp = fing_client._normalize_timestamp(None)
     assert timestamp is None
+
+
+def test_normalize_timestamp_unix_is_utc(fing_client):
+    """Test that Unix timestamp normalization produces UTC-aware datetime."""
+    from datetime import timezone as tz
+    timestamp = fing_client._normalize_timestamp(1737532200)
+    assert timestamp is not None
+    assert timestamp.tzinfo == tz.utc
+
+
+def test_validate_base_url_rejects_external(fing_client):
+    """Test that _validate_base_url rejects non-private addresses."""
+    with pytest.raises(ValueError, match="local or private"):
+        fing_client._validate_base_url("http://8.8.8.8:49090/1")
+
+
+def test_validate_base_url_accepts_localhost(fing_client):
+    """Test that _validate_base_url accepts localhost."""
+    fing_client._validate_base_url("http://localhost:49090/1")
+
+
+def test_validate_base_url_accepts_private_ip(fing_client):
+    """Test that _validate_base_url accepts private IP ranges."""
+    fing_client._validate_base_url("http://10.76.50.10:49090/1")
+    fing_client._validate_base_url("http://192.168.1.1:49090/1")
+
+
+@pytest.mark.asyncio
+async def test_get_device_url_encodes_id(async_fing_client):
+    """Test that get_device URL-encodes the device ID."""
+    mock_response = {
+        "id": "dev/001",
+        "name": "Test",
+        "mac": "AA:BB:CC:DD:EE:FF",
+        "online": False,
+    }
+    with patch.object(async_fing_client, '_make_request', new_callable=AsyncMock) as mock_req:
+        mock_req.return_value = mock_response
+        await async_fing_client.get_device("dev/001")
+        call_args = mock_req.call_args
+        assert "dev%2F001" in call_args[0][1]
+
+
+@pytest.mark.asyncio
+async def test_get_person_url_encodes_id(async_fing_client):
+    """Test that get_person URL-encodes the person ID."""
+    mock_response = {
+        "id": "person/001",
+        "name": "Test Person",
+        "presence": {"status": "home"},
+        "associated_devices": [],
+    }
+    with patch.object(async_fing_client, '_make_request', new_callable=AsyncMock) as mock_req:
+        mock_req.return_value = mock_response
+        await async_fing_client.get_person("person/001")
+        call_args = mock_req.call_args
+        assert "person%2F001" in call_args[0][1]

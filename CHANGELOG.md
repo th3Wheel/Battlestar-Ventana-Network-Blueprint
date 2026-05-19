@@ -18,6 +18,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   - Full test suite with 41 passing tests
   - Docker deployment support
   - Comprehensive documentation and examples
+
+### Fixed
+
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Removed raw payload/response body debug logging that could leak API keys and sensitive network data to log sinks
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Fixed `datetime.fromtimestamp()` to use explicit `tz=timezone.utc` to prevent local-timezone drift on Unix timestamp conversion
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Removed silent `""` defaults for required `id` and `mac` fields in device normalization; missing required fields now surface as `ValidationError`
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Removed fabricated `datetime.now()` fallback from event timestamp normalization; missing timestamps now return `None`
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — URL-encodes `device_id` and `person_id` in request paths to prevent path-traversal issues
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Fixed API endpoint paths to match Fing Local API v1 spec (`/devices`, `/people`, `/events`, `/system`) with base URL including version prefix (`/1`)
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Removed unused `List` import
+- **`mcp-fing-server/src/mcp_fing_server/models.py`** — Changed `EventModel.timestamp` to `Optional[datetime]` so events with missing timestamps can be modelled without fabricating data
+- **`mcp-fing-server/src/mcp_fing_server/server.py`** — Replaced hand-built JSON log format string (which produced invalid JSON on messages containing quotes/newlines) with a proper `_JsonFormatter` class
+- **`mcp-fing-server/src/mcp_fing_server/server.py`** — Added `except ValueError` handler before the catch-all `except Exception` so argument validation errors are reported distinctly
+- **`mcp-fing-server/src/mcp_fing_server/server.py`** — Added explicit `isinstance(limit, bool)` guard in `_handle_get_events` because `bool` is a subclass of `int` in Python; `True` and `False` are now correctly rejected
+- **`mcp-fing-server/src/mcp_fing_server/server.py`** — Added `load_dotenv()` call in `main()` so `.env` file is actually loaded at startup as documented
+- **`mcp-fing-server/Dockerfile`** — Added `COPY README.md .` before `pip install -e .` to prevent build failure when `pyproject.toml` declares `readme = "README.md"`
+- **`mcp-fing-server/docker-compose.yml`** — Removed `restart: unless-stopped` (stdio MCP server cannot meaningfully restart as a daemon); updated `FING_API_URL` to correct port/path (`localhost:49090/1`); replaced `host.docker.internal` with `localhost` (correct for `network_mode: host` on Linux); set `tty: false`
+- **`mcp-fing-server/ARCHITECTURE.md`** — Added emoji-prefixed headings to comply with repository documentation style; updated Fing API URL to correct port/path
+- **`mcp-fing-server/tests/test_client.py`** — Removed unused imports (`DeviceModel`, `PersonModel`, `EventModel`); removed `@pytest.mark.asyncio` markers from sync test functions
+- **`mcp-fing-server/tests/test_server.py`** — Removed unused imports (`json`, `patch`, `MagicMock`)
+- **`ansible/group_vars/all/vlan-vars.yml`** — Resolved stale conflict markers committed to `master`; kept PR branch additions (`pihole_secondary_vip`, `dns_secondary` per VLAN, `hypervisor_management` block, `network_discovery` block); normalized VLAN names to canonical values (`CapricaResidentPortal`, `BasestarVentana`)
+
+### Security
+
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Added `_validate_base_url()` method that rejects base URLs pointing to non-local/non-private-network addresses (prevents SSRF if the URL is sourced from user input)
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Fing API key is now passed as `?auth=` query parameter (per Fing Local API spec) and is never written to log output
+- **`mcp-fing-server/src/mcp_fing_server/client.py`** — Added `api_key` parameter to `FingAPIClient.__init__`; falls back to `FING_API_KEY` environment variable automatically
 - **`.github/instructions/doNotLint/security-and-owasp.instructions.md`** — Expanded with anti-pattern catalogues (AU2-AU8, AZ1-AZ6, S1-S6, H1-H8, FE1-FE8, D1-D5, AP1-AP6, AI1-AI3, L1-L4), framework patterns for React/Next.js, Angular, Express and Go, Security Headers Template, JWT Validation Checklist, Secure Cookie Flags, and a full Security Checklist.
 - **`ansible/inventory/hosts.yml`** — New Ansible inventory file for lab and Proxmox hypervisor targeting; documents all hosts in `physical_hosts` and supporting groups with management IPs, roles, and descriptions.
 - **`docs/device-inventory.md`** — New device inventory table with canonical cross-reference to `docs/physical-hosts.md` and `ansible/inventory/hosts.yml` as source of truth for physical hypervisor assignments.
