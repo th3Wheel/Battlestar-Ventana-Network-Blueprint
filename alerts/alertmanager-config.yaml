@@ -116,7 +116,7 @@ inhibit_rules:
       - alertname = "AuthenticationFailureSurge"
     target_matchers:
       - alertname = "ConnectionRateExceeded"
-    equal: ['source_ip']
+    equal: ['vlan']
 
 # Receiver definitions
 receivers:

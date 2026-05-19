@@ -95,9 +95,11 @@ Anomaly detection alerts identify unusual patterns that deviate from normal beha
   labels:
     severity: critical
     category: hard_violation
+    team: security
   annotations:
     summary: "High rate of authentication failures detected"
-    description: "{{ $value }} failed authentication attempts per minute from {{ $labels.source_ip }}"
+    description: "{{ $value | humanize }} failed authentication attempts per minute from {{ $labels.source_ip }}"
+    runbook_url: "https://wiki.example.com/runbooks/auth-failure-surge"
 ```
 
 ### Threshold Violation Examples
@@ -105,14 +107,18 @@ Anomaly detection alerts identify unusual patterns that deviate from normal beha
 #### Bandwidth Threshold Exceeded
 ```yaml
 - alert: BandwidthThresholdExceeded
-  expr: rate(interface_bytes_total[10m]) > (interface_baseline_bytes * 2)
+  expr: |
+    rate(interface_bytes_total[10m]) >
+    (avg_over_time(rate(interface_bytes_total[10m])[24h:10m]) * 2)
   for: 15m
   labels:
     severity: warning
     category: threshold_violation
+    team: operations
   annotations:
     summary: "Bandwidth usage exceeds 2× baseline"
-    description: "Interface {{ $labels.interface }} on VLAN {{ $labels.vlan }} using {{ $value }}bps"
+    description: "Interface {{ $labels.interface }} on VLAN {{ $labels.vlan }} using {{ $value | humanize }}bps"
+    runbook_url: "https://wiki.example.com/runbooks/bandwidth-threshold"
 ```
 
 #### Storage Capacity Warning
@@ -162,13 +168,15 @@ Anomaly detection alerts identify unusual patterns that deviate from normal beha
 ```yaml
 - alert: OffHoursAccessAnomaly
   expr: |
-    count_over_time(access_log_entries{hour=~"0[0-6]|2[2-3]"}[1h]) > 10
+    count_over_time(access_log_entries{hour=~"0[0-7]|2[2-3]"}[1h]) > 10
   labels:
     severity: info
     category: anomaly
+    team: monitoring
   annotations:
     summary: "Unusual off-hours access detected"
-    description: "{{ $value }} access attempts during off-hours from {{ $labels.user }}"
+    description: "{{ $value }} access attempts during off-hours (10pm-7am) from {{ $labels.user }}"
+    runbook_url: "https://wiki.example.com/runbooks/offhours-access"
 ```
 
 #### New Device Behavior
@@ -206,6 +214,7 @@ Alerts should be routed based on **severity** and **category** to appropriate re
 ### Alertmanager
 - Routes alerts to appropriate receivers based on labels
 - Handles alert grouping, inhibition, and silencing
+- Uses secret file references for credentials (for example, smtp_auth_password_file, slack_api_url_file, service_key_file)
 - Configuration: `alerts/alertmanager-config.yaml`
 
 ### Grafana
