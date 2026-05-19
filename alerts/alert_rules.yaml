@@ -1,65 +1,65 @@
-ï»¿groups:
-  - name: vlan_alerts
-    rules:
-      - alert: TrustedUnauthorizedOutbound
-        expr: rate(firewall_unauthorized_outbound_total{vlan="10"}[5m]) > 1
-        for: 10m
-        labels: { severity: critical }
-        annotations:
-          summary: 'Unauthorized outbound from VLAN 10'
-          description: 'Rate >1/min for 10 minutes'
-      - alert: IoTDeviceOffline
-        expr: sum(up{vlan="20", job="iot_devices"} == 0) > 0
-        for: 5m
-        labels: { severity: critical }
-        annotations:
-          summary: 'IoT device offline'
-      - alert: GuestBandwidthSpike
-        expr: rate(firewall_egress_bytes_total{vlan="30"}[10m]) > (guest_baseline_bytes{vlan="30"} * 2)
-        for: 10m
-        labels: { severity: warning }
-        annotations:
-          summary: 'Guest egress >2Ã— baseline'
-      - alert: ResidentGateDeniedAttempts
-        expr: rate(firewall_denied_packets_total{vlan="31"}[5m]) > 10
-        labels: { severity: warning }
-        annotations:
-          summary: 'Excessive denied LAN attempts from ResidentGate'
-      - alert: InfraPortFlaps
-        expr: increase(infra_port_flaps_total{vlan="40"}[24h]) > 2
-        labels: { severity: warning }
-        annotations:
-          summary: 'Port flaps exceed threshold'
-      - alert: ServerStorageHigh
-        expr: max(server_storage_utilization_ratio{vlan="50"}) > 0.85
-        for: 10m
-        labels: { severity: warning }
-        annotations:
-          summary: 'Server storage >85%'
-      - alert: PrinterFailures
-        expr: rate(printer_failed_jobs_total{vlan="60"}[1h]) > 3
-        labels: { severity: warning }
-        annotations:
-          summary: 'Printer failed jobs >3/hr'
-      - alert: MediaPlaybackFailures
-        expr: rate(media_playback_failures_total{vlan="70"}[5m]) > 2
-        labels: { severity: warning }
-        annotations:
-          summary: 'Media playback failures rising'
-      - alert: CamerasLocalOffline
-        expr: sum(camera_offline_total{vlan="81"}) > 0
-        for: 2m
-        labels: { severity: critical }
-        annotations:
-          summary: 'Local camera offline'
-      - alert: CamerasCloudAPIUnreachable
-        expr: sum(cloud_api_up{vlan="82"} == 0) > 0
-        for: 2m
-        labels: { severity: critical }
-        annotations:
-          summary: 'Cloud camera API unreachable'
-      - alert: WorkVPNFailures
-        expr: rate(vpn_failed_logins_total{vlan="90"}[5m]) > 5
-        labels: { severity: warning }
-        annotations:
-          summary: 'Failed VPN logins exceeding threshold'
+groups:
+- name: vlan_alerts
+  rules:
+  - alert: TrustedUnauthorizedOutbound
+    expr: rate(firewall_unauthorized_outbound_total{vlan="10"}[5m]) > 1
+    for: 10m
+    labels: { severity: critical }
+    annotations:
+      summary: "Unauthorized outbound from VLAN 10"
+      description: "Rate >1/min for 10 minutes"
+  - alert: IoTDeviceOffline
+    expr: sum(up{vlan="20", job="iot_devices"} == 0) > 0
+    for: 5m
+    labels: { severity: critical }
+    annotations:
+      summary: "IoT device offline"
+  - alert: GuestBandwidthSpike
+    expr: rate(firewall_egress_bytes_total{vlan="30"}[10m]) > (guest_baseline_bytes{vlan="30"} * 2)
+    for: 10m
+    labels: { severity: warning }
+    annotations:
+      summary: "Guest egress >2× baseline"
+  - alert: ResidentGateDeniedAttempts
+    expr: rate(firewall_denied_packets_total{vlan="31"}[5m]) > 10
+    labels: { severity: warning }
+    annotations:
+      summary: "Excessive denied LAN attempts from ResidentGate"
+  - alert: InfraPortFlaps
+    expr: increase(infra_port_flaps_total{vlan="40"}[24h]) > 2
+    labels: { severity: warning }
+    annotations:
+      summary: "Port flaps exceed threshold"
+  - alert: ServerStorageHigh
+    expr: max(server_storage_utilization_ratio{vlan="50"}) > 0.85
+    for: 10m
+    labels: { severity: warning }
+    annotations:
+      summary: "Server storage >85%"
+  - alert: PrinterFailures
+    expr: rate(printer_failed_jobs_total{vlan="60"}[1h]) > 3
+    labels: { severity: warning }
+    annotations:
+      summary: "Printer failed jobs >3/hr"
+  - alert: MediaPlaybackFailures
+    expr: rate(media_playback_failures_total{vlan="70"}[5m]) > 2
+    labels: { severity: warning }
+    annotations:
+      summary: "Media playback failures rising"
+  - alert: CamerasLocalOffline
+    expr: sum(camera_offline_total{vlan="81"}) > 0
+    for: 2m
+    labels: { severity: critical }
+    annotations:
+      summary: "Local camera offline"
+  - alert: CamerasCloudAPIUnreachable
+    expr: sum(cloud_api_up{vlan="82"} == 0) > 0
+    for: 2m
+    labels: { severity: critical }
+    annotations:
+      summary: "Cloud camera API unreachable"
+  - alert: WorkVPNFailures
+    expr: rate(vpn_failed_logins_total{vlan="90"}[5m]) > 5
+    labels: { severity: warning }
+    annotations:
+      summary: "Failed VPN logins exceeding threshold"
