@@ -5,7 +5,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 
 # Architecture Principles
 
-### 1. Modular Design
+## 1. Modular Design
 
 **Separate Concerns:**
 

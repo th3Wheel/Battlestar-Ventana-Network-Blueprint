@@ -1,0 +1,8 @@
+node_modules/
+.venv/
+venv/
+
+# Exclude Jinja2 templates - they should be formatted with djlint instead
+ha/templates/*.template.yaml
+ha/templates/*.template.jinja2
+ha/templates/*.template.md
