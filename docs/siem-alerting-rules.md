@@ -65,22 +65,26 @@ Anomaly detection alerts identify unusual patterns that deviate from normal beha
   labels:
     severity: critical
     category: hard_violation
+    team: security
   annotations:
     summary: "Unauthorized cross-VLAN access detected"
     description: "VLAN {{ $labels.source_vlan }} attempted unauthorized access to VLAN {{ $labels.dest_vlan }}"
+    runbook_url: "https://wiki.example.com/runbooks/unauthorized-vlan-access"
 ```
 
 #### Guest Network Policy Violation
 ```yaml
 - alert: GuestNetworkPolicyViolation
-  expr: sum(firewall_denied_packets_total{source_vlan=~"30|31",dest_vlan=~"10|20|50|81|82|90"}) > 0
+  expr: sum by (source_vlan, dest_vlan) (firewall_denied_packets_total{source_vlan=~"30|31",dest_vlan=~"10|20|40|50|81|82|90"}) > 0
   for: 1m
   labels:
     severity: critical
     category: hard_violation
+    team: security
   annotations:
     summary: "Guest network attempting to access restricted VLANs"
     description: "Guest VLAN {{ $labels.source_vlan }} tried accessing protected VLAN {{ $labels.dest_vlan }}"
+    runbook_url: "https://wiki.example.com/runbooks/guest-policy-violation"
 ```
 
 #### Failed Authentication Surge

@@ -17,7 +17,7 @@ groups:
           runbook_url: "https://wiki.example.com/runbooks/unauthorized-vlan-access"
 
       - alert: GuestNetworkPolicyViolation
-        expr: sum(firewall_denied_packets_total{source_vlan=~"30|31",dest_vlan=~"10|20|40|50|81|82|90"}) > 5
+        expr: sum by (source_vlan, dest_vlan) (firewall_denied_packets_total{source_vlan=~"30|31",dest_vlan=~"10|20|40|50|81|82|90"}) > 5
         for: 1m
         labels:
           severity: critical
@@ -58,7 +58,7 @@ groups:
 
       - alert: CameraAccessViolation
         expr: |
-          sum(firewall_denied_packets_total{
+          sum by (source_vlan, dest_vlan) (firewall_denied_packets_total{
             dest_vlan=~"81|82",
             source_vlan!~"10|50"
           }) > 0
@@ -76,7 +76,7 @@ groups:
         expr: |
           rate(firewall_denied_packets_total{
             source_vlan="90",
-            dest_vlan!="70"
+            dest_vlan!~"70|40|50|90"
           }[5m]) > 5
         for: 5m
         labels:
@@ -85,7 +85,7 @@ groups:
           team: security
         annotations:
           summary: "Work VLAN attempting unauthorized lateral movement"
-          description: "Work VLAN (90) trying to access restricted VLAN {{ $labels.dest_vlan }}. Work VLAN can only access Media VLAN (70)."
+          description: "Work VLAN (90) trying to access restricted VLAN {{ $labels.dest_vlan }}. Work VLAN is allowed to access Media VLAN (70), management VLANs (40/50), and Internet egress only."
           runbook_url: "https://wiki.example.com/runbooks/work-vlan-violation"
 
   - name: siem_threshold_violations
@@ -95,7 +95,7 @@ groups:
       - alert: BandwidthThresholdExceeded
         expr: |
           rate(interface_bytes_total[10m]) >
-          (avg_over_time(interface_bytes_total[24h]) * 2)
+          (avg_over_time(rate(interface_bytes_total[10m])[24h:10m]) * 2)
         for: 15m
         labels:
           severity: warning
@@ -197,7 +197,7 @@ groups:
       - alert: OffHoursAccessAnomaly
         expr: |
           count_over_time(
-            access_log_entries{hour=~"0[0-6]|2[2-3]"}[1h]
+            access_log_entries{hour=~"0[0-7]|2[2-3]"}[1h]
           ) > 10
         labels:
           severity: info
@@ -248,8 +248,7 @@ groups:
       - alert: GeographicAccessAnomaly
         expr: |
           count by (user, source_country) (
-            (geoip_country != user_home_country)
-            and (rate(access_attempts_total[1h]) > 0)
+            rate(access_attempts_geographic_mismatch_total[1h])
           ) > 0
         labels:
           severity: info
@@ -257,7 +256,7 @@ groups:
           team: monitoring
         annotations:
           summary: "Access from unusual geographic location"
-          description: "User {{ $labels.user }} accessing from {{ $labels.source_country }}, outside normal location {{ $labels.user_home_country }}."
+          description: "User {{ $labels.user }} accessing from {{ $labels.source_country }}, outside their registered home location. Investigate potential account compromise."
           runbook_url: "https://wiki.example.com/runbooks/geographic-anomaly"
 
   - name: siem_service_health
@@ -266,10 +265,10 @@ groups:
       # Service-specific health and policy checks
       - alert: VPNTunnelPolicyViolation
         expr: |
-          sum(vpn_tunnel_established{vlan!="90"}) > 0
+          sum by (vlan) (vpn_tunnel_established{vlan!="90"}) > 0
         for: 5m
         labels:
-          severity: warning
+          severity: critical
           category: hard_violation
           team: security
         annotations:
@@ -279,10 +278,10 @@ groups:
 
       - alert: PrinterVLANViolation
         expr: |
-          sum(printer_device_total{vlan!="60"}) > 0
+          sum by (vlan, device_name) (printer_device_total{vlan!="60"}) > 0
         for: 10m
         labels:
-          severity: warning
+          severity: critical
           category: hard_violation
           team: security
         annotations:

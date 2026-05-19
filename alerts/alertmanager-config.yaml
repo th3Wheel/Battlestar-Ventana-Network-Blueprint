@@ -6,11 +6,11 @@ global:
   smtp_smarthost: 'smtp.example.com:587'
   smtp_from: 'alertmanager@battlestar-ventana.local'
   smtp_auth_username: 'alertmanager@example.com'
-  smtp_auth_password: '${SMTP_PASSWORD}'  # Set via environment variable
+  smtp_auth_password_file: '/etc/alertmanager/secrets/smtp_password'
   smtp_require_tls: true
 
-  # Slack API URL (set via environment variable)
-  slack_api_url: '${SLACK_WEBHOOK_URL}'  # Set via environment variable
+  # Slack API URL loaded from file (avoids env-var expansion issues)
+  slack_api_url_file: '/etc/alertmanager/secrets/slack_webhook_url'
 
   # PagerDuty integration key (placeholder)
   pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
@@ -39,78 +39,83 @@ route:
   # Child routes for specific alert types
   routes:
     # Critical hard violations - page immediately
-    - match:
-        severity: critical
-        category: hard_violation
+    - matchers:
+        - severity = "critical"
+        - category = "hard_violation"
       receiver: 'security-critical'
       group_wait: 10s
       group_interval: 2m
       repeat_interval: 30m
-      continue: true  # Also send to default receiver
+      continue: true  # Also send to default receiver and VLAN-specific routes
 
     # All critical alerts go to PagerDuty
-    - match:
-        severity: critical
+    - matchers:
+        - severity = "critical"
       receiver: 'pagerduty'
       group_wait: 10s
       group_interval: 5m
       repeat_interval: 1h
+      continue: true  # Also allow VLAN-specific routes to receive
 
     # Threshold violations to operations team
-    - match:
-        category: threshold_violation
+    - matchers:
+        - category = "threshold_violation"
       receiver: 'operations-slack'
       group_interval: 10m
       repeat_interval: 6h
+      mute_time_intervals: ['maintenance-window']
+      continue: true
 
     # Anomalies to monitoring dashboard and email digest
-    - match:
-        category: anomaly
+    - matchers:
+        - category = "anomaly"
       receiver: 'monitoring-email'
       group_wait: 5m
       group_interval: 30m
       repeat_interval: 24h
+      mute_time_intervals: ['maintenance-window']
+      continue: true
 
     # VLAN-specific routing
-    - match_re:
-        vlan: '30|31'  # Guest networks
+    - matchers:
+        - vlan =~ "30|31"
       receiver: 'guest-network-alerts'
 
-    - match:
-        vlan: '20'  # IoT devices
+    - matchers:
+        - vlan = "20"
       receiver: 'iot-alerts'
 
-    - match_re:
-        vlan: '81|82'  # Cameras
+    - matchers:
+        - vlan =~ "81|82"
       receiver: 'camera-alerts'
 
-    - match:
-        vlan: '90'  # Work VLAN
+    - matchers:
+        - vlan = "90"
       receiver: 'work-vlan-alerts'
 
 # Inhibition rules - suppress certain alerts when others are firing
 inhibit_rules:
   # Inhibit bandwidth threshold alerts if there's an ongoing DDoS
-  - source_match:
-      alertname: 'DNSQueryRateSpike'
-    target_match:
-      alertname: 'BandwidthThresholdExceeded'
+  - source_matchers:
+      - alertname = "DNSQueryRateSpike"
+    target_matchers:
+      - alertname = "BandwidthThresholdExceeded"
     equal: ['vlan']
 
   # Inhibit anomaly alerts if there's a hard violation
-  - source_match:
-      severity: critical
-      category: hard_violation
-    target_match:
-      severity: info
-      category: anomaly
-    equal: ['vlan', 'source_ip']
+  - source_matchers:
+      - severity = "critical"
+      - category = "hard_violation"
+    target_matchers:
+      - severity = "info"
+      - category = "anomaly"
+    equal: ['vlan']
 
   # Inhibit connection rate alerts if auth failures are detected
-  - source_match:
-      alertname: 'AuthenticationFailureSurge'
-    target_match:
-      alertname: 'ConnectionRateExceeded'
+  - source_matchers:
+      - alertname = "AuthenticationFailureSurge"
+    target_matchers:
+      - alertname = "ConnectionRateExceeded"
     equal: ['source_ip']
 
 # Receiver definitions
@@ -149,7 +154,7 @@ receivers:
   # PagerDuty for all critical alerts
   - name: 'pagerduty'
     pagerduty_configs:
-      - service_key: '${PAGERDUTY_SERVICE_KEY}'  # Set via environment variable
+      - service_key_file: '/etc/alertmanager/secrets/pagerduty_service_key'
         description: '{{ .GroupLabels.alertname }} on VLAN {{ .GroupLabels.vlan }}'
         details:
           summary: '{{ .CommonAnnotations.summary }}'
