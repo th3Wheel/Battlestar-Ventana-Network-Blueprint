@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+includes:
+  markdownlint: ./tasks/markdownlint.yml
+  ansible: ./tasks/ansible.yml
+  dotfiles: ./tasks/dotfiles.yml
+  cameras: ./tasks/cameras.yml
+  fing: ./tasks/fing.yml
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  default:
+    desc: Print a greeting message
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true

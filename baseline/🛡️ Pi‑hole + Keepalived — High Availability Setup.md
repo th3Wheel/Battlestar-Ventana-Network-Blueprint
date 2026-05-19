@@ -1,6 +1,7 @@
 ## 1. Overview
 
 **Goal:**  
+
 * Two Pi‑hole servers (`pihole1` and `pihole2`) share a **Virtual IP (VIP)**.  
 * Clients always point to the VIP for DNS/DHCP.  
 * If the master Pi‑hole goes down, the backup takes over automatically.

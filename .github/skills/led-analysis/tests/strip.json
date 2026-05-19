@@ -1,0 +1,9 @@
+{
+  "product_name": "WS2815 Strip",
+  "product_description": "12 V addressable strip",
+  "voltage": 12,
+  "chipset": "WS2815",
+  "power_watts": 18,
+  "length_meters": 5,
+  "connector_type": "JST-SM"
+}

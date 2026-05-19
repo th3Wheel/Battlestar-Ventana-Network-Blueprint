@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "analysis": { "type": "string" },
+    "wiring": { "type": "string" },
+    "alternatives": { "type": "string" }
+  },
+  "required": ["analysis", "wiring", "alternatives"]
+}
