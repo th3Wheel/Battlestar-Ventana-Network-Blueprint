@@ -6,11 +6,11 @@ This document provides the complete directory structure and file organization fo
 
 ## 🏗️ **Complete Repository Structure**
 
-```
+```mermaid
 Battlestar-Ventana-Network-Blueprint/
 │
 ├── 📄 Core Documentation
-│   ├── README.md                              # Master blueprint overview, VLAN mapping, audit checklist
+│   ├── readme.md                              # Master blueprint overview, VLAN mapping, audit checklist
 │   ├── CHANGELOG.md                           # Versioned history of changes
 │   └── layout.md                              # Repository structure and organization guide
 │
@@ -28,9 +28,9 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   ├── Homepage Mockup.md                 # Homepage dashboard design
 │   │   └── true-scale SVG diagr.png           # Network topology diagram
 │   ├── alerts/
-│   │   └── Alertmanager style.yaml            # Alertmanager styling configuration
+│   │   └── alert_rules.yaml                   # Prometheus alert rules
 │   └── ha/
-│       ├── dasboard..yaml                     # Home Assistant dashboard (typo in filename)
+│       ├── Dashboard.yaml                     # Home Assistant dashboard config
 │       └── lovelace.yaml                      # Home Assistant Lovelace UI config
 │
 ├── 📚 Technical Documentation
@@ -47,15 +47,6 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   ├── jaeger-pool.md                     # Jaeger tracing configuration
 │   │   └── raw/
 │   │       └── network.md                     # Raw network documentation
-│   │
-│   ├── infrastructure/                        # Infrastructure deployment configs
-│   │   ├── proxmox/
-│   │   │   └── _archive/
-│   │   │       ├── pihole-lxc-template.sh     # Archived: replaced by Ansible role
-│   │   │       └── README.md                  # Archive documentation
-│   │   └── radxa/
-│   │       ├── a5e-router-config.md           # Radxa A5E router configuration
-│   │       └── docker-host-bootstrap.md       # Docker host setup guide
 │   │
 │   └── plan/                                  # Feature and infrastructure planning
 │       ├── architecture-route-pi-squared-1.md # Architecture planning
@@ -81,67 +72,67 @@ Battlestar-Ventana-Network-Blueprint/
 
 ### **📄 Core Documentation**
 
-* **README.md**: Primary entry point with VLAN overview, firewall matrix, and audit checklist
-* **CHANGELOG.md**: Versioned history of all changes and updates
-* **layout.md**: Repository structure and organization guide
+- **readme.md**: Primary entry point with VLAN overview, firewall matrix, and audit checklist
+- **CHANGELOG.md**: Versioned history of all changes and updates
+- **layout.md**: Repository structure and organization guide
 
 ### **🏗️ Baseline Architecture**
 
-* **baseline/**: Architectural design documents and baseline network configurations
-* Core network blueprints, deployment guides, and system specifications
-* Current network state documentation and infrastructure planning
+- **baseline/**: Architectural design documents and baseline network configurations
+- Core network blueprints, deployment guides, and system specifications
+- Current network state documentation and infrastructure planning
 
 ### **📊 Monitoring & Dashboards**
 
-* **dashboards/**: Grafana dashboard designs and mockups
-* **alerts/**: Alertmanager styling and alert configurations
-* **ha/**: Home Assistant Lovelace UI configurations
+- **dashboards/**: Grafana dashboard designs and mockups
+- **alerts/**: Alertmanager styling and alert configurations
+- **ha/**: Home Assistant Lovelace UI configurations
 
 ### **📚 Technical Documentation**
 
-* **docs/**: Core technical specifications (firewall, DHCP, naming, services)
-* **infrastructure/**: Platform-specific deployment configurations
-* **plan/**: Feature development and infrastructure planning documents
+- **docs/**: Core technical specifications (firewall, DHCP, naming, services)
+- **infrastructure/**: Platform-specific deployment configurations
+- **plan/**: Feature development and infrastructure planning documents
 
 ### **🖼️ Visual Assets**
 
-* Network diagrams, topology maps, and workflow visualizations
-* Supporting images for documentation
+- Network diagrams, topology maps, and workflow visualizations
+- Supporting images for documentation
 
 ### **⚙️ Development Configuration**
 
-* IDE settings and development environment configuration
+- IDE settings and development environment configuration
 
 ---
 
 ## 🔗 **Key File Relationships**
 
-| Component | Primary File | Related Files |
-|-----------|--------------|---------------|
-| **VLAN Design** | `baseline/Battlestar Ventana Network Blueprint.md` | `docs/naming-conventions.md`, `docs/dhcp-scopes.md` |
-| **Security** | `docs/firewall-matrix.md` | `docs/audit-checklist.md`, `docs/services.md` |
-| **Monitoring** | `dashboards/Homepage Mockup.md` | `alerts/Alertmanager style.yaml`, `ha/lovelace.yaml` |
-| **Architecture** | `docs/Project_Architecture_Blueprint.md` | `baseline/` files, all docs/ files |
-| **Deployment** | `baseline/` | `infrastructure/` files, `plan/` files |
+| Component        | Primary File                                       | Related Files                                       |
+| ---------------- | -------------------------------------------------- | --------------------------------------------------- |
+| **VLAN Design**  | `baseline/Battlestar Ventana Network Blueprint.md` | `docs/naming-conventions.md`, `docs/dhcp-scopes.md` |
+| **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`       |
+| **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/alert_rules.yaml`, `ha/lovelace.yaml`       |
+| **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                  |
+| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files              |
 
 ---
 
 ## 📝 **File Naming Conventions**
 
-* **Documentation**: `lowercase-with-hyphens.md`
-* **Deployment Scripts**: `descriptive-name.sh`
-* **Configuration**: `PascalCase.yaml` or `camelCase.json`
-* **Images**: `descriptive-name.png` or `descriptive-name.svg`
+- **Documentation**: `lowercase-with-hyphens.md`
+- **Deployment Scripts**: `descriptive-name.sh`
+- **Configuration**: `PascalCase.yaml` or `camelCase.json`
+- **Images**: `descriptive-name.png` or `descriptive-name.svg`
 
 ---
 
 ## 🎯 **Maintenance Guidelines**
 
-* Keep this layout document updated when adding new directories or major file reorganizations
-* Use descriptive filenames that clearly indicate content and purpose
-* Group related files in appropriate directories
-* Update cross-references when moving or renaming files
+- Keep this layout document updated when adding new directories or major file reorganizations
+- Use descriptive filenames that clearly indicate content and purpose
+- Group related files in appropriate directories
+- Update cross-references when moving or renaming files
 
 ---
 
-*This layout reflects the current repository structure as of November 2025. For the most up-to-date information, refer to the actual directory contents.*
+_This layout reflects the current repository structure as of November 2025. For the most up-to-date information, refer to the actual directory contents._

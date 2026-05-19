@@ -1,0 +1,22 @@
+# Dotfile manifest — maps source templates to their target paths on the workstation.
+# target_windows: path using %WINENV% variables (expanded at deploy time via cmd.exe in WSL)
+#
+# Deploy with:
+#   bash scripts/deploy-dotfiles.sh --dry-run   # preview
+#   bash scripts/deploy-dotfiles.sh             # apply
+
+dotfiles:
+  - id: windows-terminal
+    description: "Windows Terminal Preview settings"
+    source: windows-terminal/settings.json
+    target_windows: "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
+
+  - id: powershell-core-profile
+    description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, VS Code shell integration, PowerToys CommandNotFound"
+    source: powershell/pwsh/Microsoft.PowerShell_profile.ps1
+    target_windows: "%USERPROFILE%\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
+
+  - id: powershell-5-profile
+    description: "Windows PowerShell 5.1 CurrentUserCurrentHost profile — Chocolatey tab-completion"
+    source: powershell/windows/Microsoft.PowerShell_profile.ps1
+    target_windows: "%USERPROFILE%\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"

@@ -1,6 +1,6 @@
-## Homepage Dashboard Mockup
+# Homepage Dashboard Mockup
 
-**Live Scan Stats Panel**
+## Live Scan Stats Panel
 
 - Total scans today: `{{scan_count}}`
 
@@ -9,14 +9,13 @@
 - Last scan timestamp: `{{last_scan_time}}`
 
 - Conditional color feedback:
-
   - Green: No alerts
 
   - Yellow: Warnings present
 
   - Red: Critical alerts
 
-**Severity Tiles**
+## Severity Tiles
 
 - Critical: `{{critical_count}}` 🔴
 
@@ -26,10 +25,9 @@
 
 - Each tile links to filtered alert view
 
-**VLAN Overlays**
+## VLAN Overlays
 
 - Interactive map of VLANs with hover tooltips:
-
   - VLAN ID
 
   - Purpose (e.g., IoT, Work, Guest)
@@ -39,14 +37,13 @@
   - Compliance status
 
 - Conditional color:
-
   - Green: Fully compliant
 
   - Orange: Partial compliance
 
   - Red: Non-compliant
 
-**Quick Actions**
+## Quick Actions
 
 - Rescan network
 
@@ -58,9 +55,9 @@
 
 Here's a wireframe concept for the Homepage dashboard layout:
 
-### Homepage Dashboard Wireframe
+## Homepage Dashboard Wireframe
 
-**Top Row: Live Scan Stats Panel**
+### Top Row: Live Scan Stats Panel
 
 - 📊 **Scan Count**: `{{scan_count}}`
 
@@ -69,14 +66,13 @@ Here's a wireframe concept for the Homepage dashboard layout:
 - 🕒 **Last Scan**: `{{last_scan_time}}`
 
 - Background color changes based on alert status:
-
   - ✅ Green: No alerts
 
   - ⚠️ Yellow: Warnings
 
   - ❌ Red: Critical alerts
 
-**Middle Row: Severity Tiles**
+### Middle Row: Severity Tiles
 
 - 🔴 **Critical**: `{{critical_count}}`
 
@@ -88,21 +84,19 @@ Here's a wireframe concept for the Homepage dashboard layout:
 
 - Hover reveals timestamp and affected VLANs
 
-**Bottom Row: VLAN Overlay Map**
+### Bottom Row: VLAN Overlay Map
 
 - Interactive SVG map with hover logic:
-
   - 🧭 Tooltip shows VLAN ID, purpose, device count, compliance status
 
   - Color-coded overlays:
-
     - 🟩 Green: Fully compliant
 
     - 🟧 Orange: Partial compliance
 
     - 🟥 Red: Non-compliant
 
-**Sidebar: Quick Actions**
+### Sidebar: Quick Actions
 
 - 🔄 Rescan Network
 

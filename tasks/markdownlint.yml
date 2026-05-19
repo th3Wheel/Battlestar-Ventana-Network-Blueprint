@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  check:
+    desc: Lint all Markdown files
+    cmds:
+      - markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore
+
+  fix:
+    desc: Auto-fix Markdown lint issues
+    cmds:
+      - markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore --fix
