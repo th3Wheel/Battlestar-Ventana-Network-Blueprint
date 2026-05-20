@@ -1,0 +1,38 @@
+---
+# Create a reusable Proxmox Pi-hole LXC template
+#
+# Usage:
+#   # Minimal: required CT ID only
+#   ansible-playbook -i hosts bootstrap/proxmox_pihole_lxc_template.yml \
+#     -e pihole_template_ctid=9200
+#
+#   # With custom variables
+#   ansible-playbook -i hosts bootstrap/proxmox_pihole_lxc_template.yml \
+#     -e pihole_template_ctid=9200 \
+#     -e pihole_template_hostname=pihole-prod \
+#     -e pihole_template_vlan_tag=20
+
+- name: Create Proxmox Pi-hole LXC Template
+  hosts: proxmox_hosts
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: ../roles/proxmox_pihole_lxc_template
+
+  post_tasks:
+    - name: Display template readiness
+      ansible.builtin.debug:
+        msg: |
+          ========================================
+          Template Creation Complete!
+          ========================================
+          Template CT ID: {{ pihole_template_ctid }}
+          Template Hostname: {{ pihole_template_hostname }}
+          Network: {{ pihole_template_ipv4_address }}
+          VLAN Tag: {{ pihole_template_vlan_tag }}
+
+          Next Steps:
+          1. Verify template exists: pct list | grep {{ pihole_template_ctid }}
+          2. Use for cloning: ansible-playbook deploy_pihole_lxc.yml -e source_ctid={{ pihole_template_ctid }}
+          ========================================

@@ -12,6 +12,9 @@ Central index for all hostname pools, device trackers, and service matrices in t
 - IoT / printing / camera / appliance client tracker  
   → [docs/other-devices.md](other-devices.md)
 
+- WLED configurations, presets, and segment mappings  
+  → [docs/wled-configurations.md](wled-configurations.md)
+
 - VLAN firewall policy matrix  
   → [docs/firewall-matrix.md](firewall-matrix.md)
 
@@ -23,7 +26,7 @@ Central index for all hostname pools, device trackers, and service matrices in t
 ```
 
 - Network audit checklist  
-  → [docs/audit-checklist.md](audit-checklist.md)   
+  → [docs/audit-checklist.md](audit-checklist.md)
 
 - Network device inventory & firmware tracker  
   → [docs/device-inventory.md](device-inventory.md)

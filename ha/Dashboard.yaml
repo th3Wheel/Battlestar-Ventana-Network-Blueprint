@@ -1,0 +1,175 @@
+title: 💠 BSG Network Dashboard
+views:
+  - title: Overview
+    theme: midnight
+    cards:
+      - type: grid
+        columns: 3
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Trusted (10)
+            secondary: >
+              Bandwidth: {{ states('sensor.vlan10_bandwidth_mbps') }} Mbps Â· Failed logins/min: {{ states('sensor.vlan10_failed_logins_min') }}
+            icon: mdi:shield-check
+            icon_color: >
+              {% set bw_dev = states('sensor.vlan10_bw_deviation_pct')|float(0) %}
+              {% set fails = states('sensor.vlan10_failed_logins_min')|float(0) %}
+              {% if bw_dev > 20 or fails > 5 %} red
+              {% elif bw_dev > 10 or fails > 2 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+            badge_color: >
+              {% if states('binary_sensor.vlan10_alert') == 'on' %} red {% else %} green {% endif %}
+
+          - type: custom:mushroom-template-card
+            primary: IoT (20)
+            secondary: >
+              Up: {{ states('sensor.vlan20_devices_up') }} Â· >3Ïƒ: {{ states('sensor.vlan20_sigma_anomalies') }}
+            icon: mdi:cog
+            icon_color: >
+              {% set sigma = states('sensor.vlan20_sigma_anomalies')|int(0) %}
+              {% if sigma >= 3 %} red
+              {% elif sigma >= 1 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: Guest (30)
+            secondary: >
+              Clients: {{ states('sensor.vlan30_clients') }} Â· Egress x baseline: {{ states('sensor.vlan30_egress_ratio') }}
+            icon: mdi:wifi
+            icon_color: >
+              {% set ratio = states('sensor.vlan30_egress_ratio')|float(1) %}
+              {% if ratio >= 3 %} red
+              {% elif ratio >= 2 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: ResidentGate (31)
+            secondary: >
+              Devices: {{ states('sensor.vlan31_clients') }} Â·
+              Denied/min: {{ states('sensor.vlan31_denied_min') }} Â·
+              Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
+            icon: mdi:gate
+            icon_color: >
+              {% set denied = states('sensor.vlan31_denied_min')|float(0) %}
+              {% if denied > 10 %} red
+              {% elif denied > 5 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+            hold_action:
+              action: call-service
+              service: switch.turn_on
+              target:
+                entity_id: switch.printer_restart
+
+          - type: custom:mushroom-template-card
+            primary: InfraCore (40)
+            secondary: >
+              Flaps/day: {{ states('sensor.vlan40_port_flaps_day') }} Â· Tag errors/day: {{ states('sensor.vlan40_tag_errors_day') }}
+            icon: mdi:lan
+            icon_color: >
+              {% set flaps = states('sensor.vlan40_port_flaps_day')|int(0) %}
+              {% set tags = states('sensor.vlan40_tag_errors_day')|int(0) %}
+              {% if flaps > 2 or tags > 2 %} red
+              {% elif flaps > 1 or tags > 1 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: ServerVault (50)
+            secondary: >
+              CPU Ïƒ: {{ states('sensor.vlan50_cpu_sigma') }} Â· Restarts/day: {{ states('sensor.vlan50_restarts_day') }} Â· Storage: {{ states('sensor.vlan50_storage_pct') }}%
+            icon: mdi:server
+            icon_color: >
+              {% set storage = states('sensor.vlan50_storage_pct')|float(0) %}
+              {% if storage >= 95 %} red
+              {% elif storage >= 85 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: call-service
+              service: script.servervault_restart_service
+
+          - type: custom:mushroom-template-card
+            primary: Printers (60)
+            secondary: >
+              Failed/hr: {{ states('sensor.vlan60_failed_jobs_hr') }} Â· Toner min: {{ states('sensor.vlan60_toner_min_pct') }}%
+            icon: mdi:printer
+            icon_color: >
+              {% set failed = states('sensor.vlan60_failed_jobs_hr')|int(0) %}
+              {% set toner = states('sensor.vlan60_toner_min_pct')|float(100) %}
+              {% if failed > 3 or toner < 10 %} red
+              {% elif failed > 1 or toner < 20 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: Media (70)
+            secondary: >
+              Streams: {{ states('sensor.vlan70_streams_active') }} Â· Fail/min: {{ states('sensor.vlan70_playback_fail_min') }}
+            icon: mdi:television
+            icon_color: >
+              {% set fail = states('sensor.vlan70_playback_fail_min')|int(0) %}
+              {% if fail >= 3 %} red
+              {% elif fail >= 1 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: Cameras Local (81)
+            secondary: >
+              Motion/day: {{ states('sensor.vlan81_motion_day') }} Â· Offline: {{ states('sensor.vlan81_offline') }}
+            icon: mdi:cctv
+            icon_color: >
+              {% set offline = states('sensor.vlan81_offline')|int(0) %}
+              {% if offline > 0 %} red
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: Cameras Cloud (82)
+            secondary: >
+              API fail/min: {{ states('sensor.vlan82_api_fail_min') }} Â· Unreachable: {{ states('sensor.vlan82_api_unreachable') }}
+            icon: mdi:cloud-alert
+            icon_color: >
+              {% set fail = states('sensor.vlan82_api_fail_min')|float(0) %}
+              {% set down = states('sensor.vlan82_api_unreachable')|int(0) %}
+              {% if down > 0 or fail > 3 %} red
+              {% elif fail > 1 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-template-card
+            primary: Work (90)
+            secondary: >
+              Failed VPN/min: {{ states('sensor.vlan90_failed_vpn_min') }} Â· Unauthorized/min: {{ states('sensor.vlan90_unauth_min') }}
+            icon: mdi:briefcase
+            icon_color: >
+              {% set vpn = states('sensor.vlan90_failed_vpn_min')|int(0) %}
+              {% set unauth = states('sensor.vlan90_unauth_min')|int(0) %}
+              {% if vpn > 5 or unauth > 10 %} red
+              {% elif vpn > 2 or unauth > 5 %} yellow
+              {% else %} green
+              {% endif %}
+            tap_action:
+              action: more-info

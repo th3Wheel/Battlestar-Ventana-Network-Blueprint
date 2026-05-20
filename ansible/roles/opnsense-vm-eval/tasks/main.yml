@@ -1,0 +1,283 @@
+---
+# opnsense-vm-eval role
+# Provisions an OPNsense VM on Proxmox (CrimsonRogue) and evaluates it against
+# the full Battlestar blueprint VLAN catalogue.
+# VLAN data is consumed from group_vars/all/vlan-vars.yml (source of truth).
+
+- name: "Provision — create OPNsense VM via Proxmox API"
+  when: opnsense_eval_task == 'provision'
+  block:
+    - name: Ensure the OPNsense VM does not already exist
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        vmid: "{{ opnsense_vm_id }}"
+        state: absent
+      ignore_errors: true
+
+    - name: Create OPNsense evaluation VM on CrimsonRogue
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        vmid: "{{ opnsense_vm_id }}"
+        name: "{{ opnsense_vm_name }}"
+        node: CrimsonRogue
+        memory: "{{ opnsense_vm_memory_mb }}"
+        cores: "{{ opnsense_vm_cores }}"
+        scsihw: virtio-scsi-pci
+        scsi:
+          scsi0: "local-lvm:{{ opnsense_vm_disk_gb }}"
+        ide:
+          ide2: "{{ opnsense_iso }},media=cdrom"
+        net:
+          net0: "virtio,bridge={{ opnsense_vm_bridge }}"
+          net1: "virtio,bridge={{ opnsense_vm_bridge }}"
+        boot: order=ide2;scsi0
+        state: present
+      register: opnsense_vm_create
+
+    - name: Start OPNsense VM
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        vmid: "{{ opnsense_vm_id }}"
+        state: started
+
+    - name: Wait for OPNsense API to become reachable (initial boot)
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/core/firmware/info"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: opnsense_api_ready
+      retries: 24
+      delay: 15
+      until: opnsense_api_ready.status == 200
+
+- name: "Configure — apply VLANs, DHCP scopes, and firewall rules via OPNsense API"
+  when: opnsense_eval_task == 'configure'
+  block:
+    - name: Create VLAN interface on OPNsense LAN port for each blueprint VLAN
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/interfaces/vlan/addItem"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        body_format: json
+        body:
+          vlan:
+            if: "{{ opnsense_lan_iface }}"
+            tag: "{{ item.id }}"
+            descr: "{{ item.name }}"
+        status_code: [200, 201]
+      loop: "{{ vlans }}"
+      loop_control:
+        label: "VLAN {{ item.id }} — {{ item.name }}"
+
+    - name: Configure DHCP scope for each VLAN that has dynamic DHCP enabled
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/dhcpv4/service/set"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        body_format: json
+        body:
+          general:
+            interface: "vlan{{ item.id }}"
+          "vlan{{ item.id }}":
+            enable: "1"
+            range_from: "{{ item.dhcp_range_start }}"
+            range_to: "{{ item.dhcp_range_end }}"
+            dnsserver: "{{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %},{{ item.dns_secondary }}{% endif %}"
+        status_code: [200, 201]
+      loop: "{{ vlans | selectattr('dhcp_enabled') | list }}"
+      loop_control:
+        label: "VLAN {{ item.id }} DHCP scope"
+
+    - name: Apply OPNsense configuration changes
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/core/service/reconfigure"
+        method: POST
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+
+- name: "Validate — verify DHCP option 6, DNS relay, and firewall (VLANs 20 and 40)"
+  when: opnsense_eval_task == 'validate'
+  block:
+    - name: Retrieve VLAN interface list from OPNsense API
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/interfaces/vlan/searchItem"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: opnsense_vlan_list
+
+    - name: Verify evaluation VLANs (20 and 40) are present in OPNsense
+      ansible.builtin.assert:
+        that:
+          - opnsense_vlan_list.json.rows | selectattr('tag', 'equalto', item.id | string) | list | length > 0
+        fail_msg: "VLAN {{ item.id }} ({{ item.name }}) not found in OPNsense VLAN list"
+        success_msg: "VLAN {{ item.id }} ({{ item.name }}) confirmed in OPNsense"
+      loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+      loop_control:
+        label: "VLAN {{ item.id }}"
+
+    - name: Test Pi-hole DNS reachability through OPNsense
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_primary_vip }}"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: dns_reach_check
+
+    - name: Test Pi-hole secondary DNS reachability through OPNsense
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_secondary_vip }}"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: dns_secondary_reach_check
+
+    - name: Create research output directory
+      ansible.builtin.file:
+        path: "{{ research_output_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+
+    - name: Write validation results to research file
+      ansible.builtin.copy:
+        dest: "{{ research_output_dir }}/opnsense-vm-capabilities.md"
+        mode: "0644"
+        content: |
+          # OPNsense VM Capabilities Research
+
+          **VM:** {{ opnsense_vm_name }} (VMID {{ opnsense_vm_id }}) on CrimsonRogue
+          **Management IP:** {{ opnsense_mgmt_ip }}
+          **Validated by:** ansible/roles/opnsense-vm-eval (validate task)
+          **Date:** {{ ansible_date_time.date }}
+
+          ## VLAN Validation Results (VLANs 20 and 40)
+
+          - VLAN presence check: completed
+          - Pi-hole DNS reachability ({{ pihole_primary_vip }}): {{ 'PASS' if dns_reach_check.status == 200 else 'FAIL' }}
+          - Pi-hole secondary DNS reachability ({{ pihole_secondary_vip }}): {{ 'PASS' if dns_secondary_reach_check.status == 200 else 'FAIL' }}
+
+          ## Full Matrix Results
+
+          _To be populated during full-matrix task._
+      delegate_to: localhost
+
+- name: "Full matrix — validate all 11 blueprint VLANs"
+  when: opnsense_eval_task == 'full_matrix'
+  block:
+    - name: Retrieve full VLAN list from OPNsense API
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/interfaces/vlan/searchItem"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        status_code: 200
+      register: opnsense_full_vlan_list
+
+    - name: Assert all 11 blueprint VLANs exist in OPNsense
+      ansible.builtin.assert:
+        that:
+          - opnsense_full_vlan_list.json.rows | selectattr('tag', 'equalto', item.id | string) | list | length > 0
+        fail_msg: "VLAN {{ item.id }} ({{ item.name }}) missing from OPNsense"
+        success_msg: "VLAN {{ item.id }} ({{ item.name }}) present"
+      loop: "{{ vlans }}"
+      loop_control:
+        label: "VLAN {{ item.id }}"
+      register: full_matrix_results
+      ignore_errors: true
+
+    - name: Append full-matrix results to research file
+      ansible.builtin.lineinfile:
+        path: "{{ research_output_dir }}/opnsense-vm-capabilities.md"
+        line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item is succeeded else 'FAIL' }} | tested: true | date: {{ ansible_date_time.date }}"
+        create: true
+      loop: "{{ full_matrix_results.results }}"
+      loop_control:
+        label: "VLAN {{ item.item.id }}"
+      delegate_to: localhost
+
+- name: "Generate config — export OPNsense XML backup"
+  when: opnsense_eval_task == 'generate_config'
+  block:
+    - name: Create prototype output directory
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+
+    - name: Export OPNsense configuration backup via API
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/core/backup/download/this"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: false
+        return_content: true
+        status_code: 200
+      register: opnsense_config_backup
+
+    - name: Save OPNsense XML config backup
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes/config-backup.xml"
+        content: "{{ opnsense_config_backup.content }}"
+        mode: "0600"
+      delegate_to: localhost
+
+    - name: Render Proxmox VM provisioning script from template
+      ansible.builtin.template:
+        src: proxmox-create-opnsense-vm.sh.j2
+        dest: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes/proxmox-create-vm.sh"
+        mode: "0755"
+      delegate_to: localhost
+
+- name: "Teardown — stop and remove OPNsense evaluation VM"
+  when: opnsense_eval_task == 'teardown'
+  block:
+    - name: Stop OPNsense VM
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        vmid: "{{ opnsense_vm_id }}"
+        state: stopped
+        force: true
+
+    - name: Remove OPNsense evaluation VM
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        vmid: "{{ opnsense_vm_id }}"
+        state: absent

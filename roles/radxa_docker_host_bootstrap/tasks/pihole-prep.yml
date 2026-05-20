@@ -1,0 +1,37 @@
+---
+# Pi-hole Preparation Tasks
+# Creates directories, clones repository, and sets up symlinks
+
+- name: Create Pi-hole Docker directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ radxa_automation_user }}'
+    group: '{{ radxa_automation_user }}'
+    mode: '0755'
+  loop:
+    - '{{ radxa_pihole_base_dir }}/etc-pihole'
+    - '{{ radxa_pihole_base_dir }}/etc-dnsmasq.d'
+
+- name: Create Route Pi² repository directory
+  ansible.builtin.file:
+    path: '{{ radxa_route_pi_repo_dir }}'
+    state: directory
+    owner: '{{ radxa_automation_user }}'
+    group: '{{ radxa_automation_user }}'
+    mode: '0755'
+
+- name: Clone Route Pi² repository
+  ansible.builtin.git:
+    repo: '{{ radxa_route_pi_repo_url }}'
+    dest: '{{ radxa_route_pi_repo_dir }}'
+    version: "{{ radxa_route_pi_repo_branch | default('main') }}"
+  become_user: '{{ radxa_automation_user }}'
+
+- name: Create symlink to Docker Compose manifest
+  ansible.builtin.file:
+    src: '{{ radxa_route_pi_repo_dir }}/projects/route-pi-squared/examples/docker/docker-compose.pihole.yaml'
+    dest: '{{ radxa_pihole_base_dir }}/docker-compose.yaml'
+    state: link
+    owner: '{{ radxa_automation_user }}'
+    group: '{{ radxa_automation_user }}'
