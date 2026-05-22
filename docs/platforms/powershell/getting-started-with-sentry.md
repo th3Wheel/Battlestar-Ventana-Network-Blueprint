@@ -19,9 +19,13 @@ Import-Module Sentry
 # Start the Sentry SDK with the default options.
 # It may be helpful when investigating issues with your setup to pass `-Debug` to `Start-Sentry`.
 # This enables debug logging (`Write-Debug`) for the Sentry client.
-# We enable it here for demonstration purposes when first trying Sentry.
-# You should not do this in your applications unless you are troubleshooting issues with Sentry.
-Start-Sentry -Debug {
+$EnableSentryDebug = $true # Set to $false in production unless troubleshooting.
+$startSentryArgs = @{}
+if ($EnableSentryDebug) {
+    $startSentryArgs.Debug = $true
+}
+
+Start-Sentry @startSentryArgs {
     # A Sentry Data Source Name (DSN) is required.
     # See https://docs.sentry.io/product/sentry-basics/dsn-explainer/
     # You can set it in the SENTRY_DSN environment variable, or you can set it in code here.
@@ -32,11 +36,7 @@ Start-Sentry -Debug {
     $_.TracesSampleRate = 1.0
 }
 
-# Later on in your production script, you should omit the `-Debug` flag:
-Start-Sentry {
-    $_.Dsn = $env:SENTRY_DSN
-    $_.TracesSampleRate = 0.1
-}
+# For production usage, set `$EnableSentryDebug = $false`.
 ```
 
 ## Verify
