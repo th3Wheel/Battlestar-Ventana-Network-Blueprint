@@ -23,39 +23,42 @@ if (-not $resolvedDsn) {
     throw 'Sentry DSN is required. Set SENTRY_DSN or pass -Dsn.'
 }
 
-if ($DebugSdk) {
-    Start-Sentry -Debug {
-        $_.Dsn = $resolvedDsn
-        $_.TracesSampleRate = $TracesSampleRate
+try {
+    if ($DebugSdk) {
+        Start-Sentry -Debug {
+            $_.Dsn = $resolvedDsn
+            $_.TracesSampleRate = $TracesSampleRate
+        }
     }
-}
-else {
-    Start-Sentry {
-        $_.Dsn = $resolvedDsn
-        $_.TracesSampleRate = $TracesSampleRate
+    else {
+        Start-Sentry {
+            $_.Dsn = $resolvedDsn
+            $_.TracesSampleRate = $TracesSampleRate
+        }
     }
+
+    if ($SendTestMessage) {
+        'Something went wrong' | Out-Sentry
+    }
+
+    if ($RunTraceSample) {
+        $transaction = Start-SentryTransaction 'test-transaction-name' 'test-transaction-operation'
+
+        $span = $transaction.StartChild('test-child-operation')
+        Start-Sleep -Milliseconds 50
+        $span.Finish()
+
+        $span = $transaction.StartChild('another-span')
+        Start-Sleep -Milliseconds 25
+        $span.Finish()
+
+        $transaction.Finish()
+    }
+
+    Write-Host 'Sentry SDK initialized.' -ForegroundColor Green
+    if ($SendTestMessage) { Write-Host 'Sent test message to Sentry.' -ForegroundColor Green }
+    if ($RunTraceSample) { Write-Host 'Sent trace sample to Sentry.' -ForegroundColor Green }
 }
-
-if ($SendTestMessage) {
-    'Something went wrong' | Out-Sentry
+finally {
+    Stop-Sentry
 }
-
-if ($RunTraceSample) {
-    $transaction = Start-SentryTransaction 'test-transaction-name' 'test-transaction-operation'
-
-    $span = $transaction.StartChild('test-child-operation')
-    Start-Sleep -Milliseconds 50
-    $span.Finish()
-
-    $span = $transaction.StartChild('another-span')
-    Start-Sleep -Milliseconds 25
-    $span.Finish()
-
-    $transaction.Finish()
-}
-
-Write-Host 'Sentry SDK initialized.' -ForegroundColor Green
-if ($SendTestMessage) { Write-Host 'Sent test message to Sentry.' -ForegroundColor Green }
-if ($RunTraceSample) { Write-Host 'Sent trace sample to Sentry.' -ForegroundColor Green }
-
-Stop-Sentry
