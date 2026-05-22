@@ -43,7 +43,7 @@ function Install-Yq {
     throw @"
 No supported package manager found to install yq automatically.
 Install manually, then rerun:
-- winGet install MikeFarah.yq
+- winget install MikeFarah.yq
 - choco install yq
 - sudo apt install yq (inside WSL)
 "@
