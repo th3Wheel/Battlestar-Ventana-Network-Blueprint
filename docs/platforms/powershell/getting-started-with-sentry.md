@@ -1,0 +1,81 @@
+# Getting Started with Sentry in PowerShell
+
+## Install
+
+Install the module:
+
+```powershell
+Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Force
+```
+
+## Configure SDK
+
+Initialize the SDK as early as possible.
+
+```powershell
+# You need to import the module once in a script.
+Import-Module Sentry
+
+# Start the Sentry SDK with the default options.
+# It may be helpful when investigating issues with your setup to pass `-Debug` to `Start-Sentry`.
+# This enables debug logging (`Write-Debug`) for the Sentry client.
+# We enable it here for demonstration purposes when first trying Sentry.
+# You should not do this in your applications unless you are troubleshooting issues with Sentry.
+Start-Sentry -Debug {
+    # A Sentry Data Source Name (DSN) is required.
+    # See https://docs.sentry.io/product/sentry-basics/dsn-explainer/
+    # You can set it in the SENTRY_DSN environment variable, or you can set it in code here.
+    $_.Dsn = $env:SENTRY_DSN
+
+    # This option will enable Sentry tracing features. You still need to start transactions and spans.
+    # For example, setting the rate to 0.1 would capture 10% of transactions.
+    $_.TracesSampleRate = 1.0
+}
+
+# Later on in your production script, you should omit the `-Debug` flag:
+Start-Sentry {
+    $_.Dsn = $env:SENTRY_DSN
+    $_.TracesSampleRate = 0.1
+}
+```
+
+## Verify
+
+Verify Sentry is correctly configured by sending a message:
+
+```powershell
+"Something went wrong" | Out-Sentry
+```
+
+## Tracing
+
+You can measure the performance of your code by capturing transactions and spans.
+
+```powershell
+# Transaction can be started by providing, at minimum, the name and the operation
+$transaction = Start-SentryTransaction 'test-transaction-name' 'test-transaction-operation'
+
+# Transactions can have child spans (and those spans can have child spans as well)
+$span = $transaction.StartChild('test-child-operation')
+# ...
+# (Perform the operation represented by the span/transaction)
+# ...
+$span.Finish() # Mark the span as finished
+
+$span = $transaction.StartChild('another-span')
+# ...
+$span.Finish()
+
+$transaction.Finish() # Mark the transaction as finished and send it to Sentry
+```
+
+Check out the documentation to learn more about the API and instrumentations:
+
+- https://docs.sentry.io/platforms/powershell/tracing/instrumentation/
+
+## Samples
+
+You can find sample usage of the SDK:
+
+- https://github.com/getsentry/sentry-powershell/tree/main/samples
+- https://github.com/getsentry/sentry-dotnet/tree/main/samples (C#)
