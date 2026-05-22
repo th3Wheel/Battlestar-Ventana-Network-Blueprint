@@ -5,7 +5,7 @@
 Install the required module version from PSGallery:
 
 ```powershell
-Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Force
+Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Scope CurrentUser -Force
 ```
 
 ## Configure SDK
