@@ -2,6 +2,7 @@
 param(
     [switch]$InstallModule,
     [switch]$DebugSdk,
+    [ValidateScript({ -not [double]::IsNaN($_) })]
     [ValidateRange(0.0, 1.0)]
     [double]$TracesSampleRate = 0.1,
     [switch]$SendTestMessage,
