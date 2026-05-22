@@ -79,15 +79,6 @@
   },
   "ansible.lightspeed.suggestions.enabled": false,
   "ansible.lightspeed.enabled": false,
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
-  "terminal.integrated.profiles.windows": {
-    "PowerShell": {
-      "source": "PowerShell"
-    },
-    "Command Prompt": {
-      "path": ["${env:windir}\\System32\\cmd.exe"]
-    }
-  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "vsmqtt.brokerProfiles": [
     {
@@ -97,6 +88,5 @@
       "clientId": "vsmqtt_client_b71e"
     }
   ],
-  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf",
-  "js/ts.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": true
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf"
 }

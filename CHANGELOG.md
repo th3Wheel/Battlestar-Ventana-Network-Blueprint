@@ -10,10 +10,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **`scripts/dotfiles-upstream-manifest.txt`** — Added a repo-pinned manifest for verified upstream fallback installers used by Linux and WSL dotfiles prerequisite setup.
-- **`scripts/update-dotfiles-env.sh`** — Added a standalone Linux/WSL wrapper that forces the repo-pinned upstream update path for `starship` and `zoxide`, intended for remote operator workflows when distro packages lag.
-- **`templates/dotfiles/wezterm/.wezterm.lua`** — Added a managed WezTerm configuration template so terminal appearance can be deployed through the same dotfiles manifest on Windows and Linux hosts.
-- **`docs/remote-operations-todos.md`** — Added a focused backlog document for incorporating XPipe, Remote Desktop Manager, and Ansible into a coherent remote-operations workflow.
 - **`.github/instructions/doNotLint/security-and-owasp.instructions.md`** — Expanded with anti-pattern catalogues (AU2-AU8, AZ1-AZ6, S1-S6, H1-H8, FE1-FE8, D1-D5, AP1-AP6, AI1-AI3, L1-L4), framework patterns for React/Next.js, Angular, Express and Go, Security Headers Template, JWT Validation Checklist, Secure Cookie Flags, and a full Security Checklist.
 - **`ansible/inventory/hosts.yml`** — New Ansible inventory file for lab and Proxmox hypervisor targeting; documents all hosts in `physical_hosts` and supporting groups with management IPs, roles, and descriptions.
 - **`docs/device-inventory.md`** — New device inventory table with canonical cross-reference to `docs/physical-hosts.md` and `ansible/inventory/hosts.yml` as source of truth for physical hypervisor assignments.
@@ -65,19 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **`templates/dotfiles/manifest.yml`** — Added a WezTerm config entry targeting `%USERPROFILE%\\.wezterm.lua` on Windows and `$HOME/.wezterm.lua` on Linux and WSL.
-- **`docs/workstation-config.md`** — Documented WezTerm as another managed terminal target alongside Windows Terminal.
-- **`scripts/deploy-dotfiles.sh`** — Added auto-detection for both Windows Terminal Preview and stable package targets and now deploys the managed terminal settings to any installed package family that is present.
-- **`templates/dotfiles/manifest.yml`** — Replaced the single Windows Terminal Preview target with candidate targets for both Preview and stable package families.
-- **`docs/workstation-config.md`** — Updated the Windows Terminal documentation to reflect dual-target auto-detection for Preview and stable installs.
-- **`scripts/setup-dotfiles-env.sh`** — Changed Linux/WSL prerequisite setup to prefer trusted package managers for `starship` and `zoxide`, fall back to repo-pinned verified upstream installers when needed, support `--tool` scoping, and replace direct `curl | sh/bash` execution with cached checksum verification.
-- **`tasks/dotfiles.yml`** — Added Linux dry-run and apply tasks for the standalone upstream update wrapper.
-- **`docs/workstation-config.md`** — Documented the Linux and WSL package-manager-first prerequisite flow, the verified upstream fallback policy, and the dedicated upstream update wrapper for remote operator use.
-- **`scripts/setup-dotfiles-env.ps1`** — Reordered Windows package manager preference to install new dotfiles prerequisites with Chocolatey before falling back to `winget` or Scoop, while still taking the latest available package version by leaving versions unpinned.
-- **`docs/workstation-config.md`** — Documented the Chocolatey-first package manager preference for `setup-dotfiles-env.ps1` and clarified that package installs remain unpinned to track latest versions.
-- **`scripts/deploy-dotfiles.sh`** — Coalesced missing manifest values to empty strings before path resolution and added a defensive skip for empty or literal `null` target paths, preventing stray `null` files when an entry only defines one platform target.
-- **`scripts/deploy-dotfiles.sh`** — Added `--scope auto` environment detection, fixed `--scope all` to deploy both Windows and Linux targets, corrected WSL path conversion with `wslpath`, and expanded Linux manifest paths that use `$HOME` or `~`.
-- **`docs/workstation-config.md`** — Clarified `deploy-dotfiles.sh --scope auto` behavior for WSL, Windows Bash shells, and Ubuntu hosts.
 - **`scripts/generate-configs.sh`** — Extended deterministic camera config generation to also emit per-camera `runonce.sh` scripts with camera-specific static IP, derived gateway, and hostname values.
 - **`scripts/deploy-dotfiles.sh`** — Added Windows-aware `yq` binary resolution (including `yq.exe`, Chocolatey, and Scoop paths) so `task dotfiles:deploy` works in Bash environments where PATH does not expose the package-manager shim.
 - **`tasks/cameras.yml`** — Updated `cameras:generate-configs` to prefer Git Bash on Windows (`C:\Program Files\Git\bin\bash.exe`) and fall back to `bash`, reducing WSL session warning noise during task execution.
@@ -134,9 +117,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **`ha/home-assistant-programming-guidelines.instructions.md`** — Updated
   fenced code block to include an explicit language identifier for markdownlint
   compatibility.
-- **VLAN 81 renamed** from _ScorpiaShieldNet_ to **ScorpiaMediaShield**.
+- **VLAN 81 renamed** from *ScorpiaShieldNet* to **ScorpiaMediaShield**.
 
-- **VLAN 82 renamed** from _CanceronSignalRelay_ to **ScorpiaMediaRelay**.
+- **VLAN 82 renamed** from *CanceronSignalRelay* to **ScorpiaMediaRelay**.
 - Updated all documentation references to reflect new VLAN names.
 - **Repository reorganization** - Consolidated network documentation from `../Network Structure/` into main blueprint directory.
 - **Documentation consolidation** - Merged multiple layout documents into single comprehensive `layout.md`.
@@ -177,7 +160,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **VLAN 31 renamed** from _ResidentGate_ to **GuestElevated**.
+- **VLAN 31 renamed** from *ResidentGate* to **GuestElevated**.
 
 - **README.md** updated to link `services.md` and include a legend for repo map.
 

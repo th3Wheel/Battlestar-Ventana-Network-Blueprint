@@ -1,3 +1,0 @@
-# tool|url|sha256|cache_name
-starship|https://starship.rs/install.sh|52c64f14a558034ebeb1907ea9364e802b32474576fd3e68265f73bc33cc8fbb|starship-install.sh
-zoxide|https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh|0c25aed6cce9d56ee0596c9a5df8cbe99ffd0f7a7054de0262234dd268b61404|zoxide-install.sh

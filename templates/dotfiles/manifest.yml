@@ -1,54 +1,22 @@
-# Dotfile manifest — maps source templates to their target paths on Windows and Linux hosts.
-# target_windows: path using %WINENV% variables (expanded at deploy time)
-# target_windows_candidates: list of Windows targets to auto-detect and deploy when present
-# target_linux: path using $HOME or ~/ for Linux, WSL, and Ubuntu servers
+# Dotfile manifest — maps source templates to their target paths on the workstation.
+# target_windows: path using %WINENV% variables (expanded at deploy time via cmd.exe in WSL)
 #
 # Deploy with:
-#   bash scripts/deploy-dotfiles.sh --dry-run         # preview auto-detected targets
-#   bash scripts/deploy-dotfiles.sh --scope linux     # Linux targets only
-#   bash scripts/deploy-dotfiles.sh                   # apply
+#   bash scripts/deploy-dotfiles.sh --dry-run   # preview
+#   bash scripts/deploy-dotfiles.sh             # apply
 
 dotfiles:
-  - id: starship-config
-    description: "Shared Starship prompt configuration for PowerShell, WSL, and Ubuntu hosts"
-    source: shared/starship.toml
-    target_windows: "%USERPROFILE%\\.config\\starship.toml"
-    target_linux: "$HOME/.config/starship.toml"
-
   - id: windows-terminal
-    description: "Windows Terminal settings for Preview and stable package installs"
+    description: "Windows Terminal Preview settings"
     source: windows-terminal/settings.json
-    target_windows_candidates:
-      - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
-      - "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json"
-
-  - id: wezterm-config
-    description: "WezTerm configuration for Windows, WSL, and Linux hosts"
-    source: wezterm/.wezterm.lua
-    target_windows: "%USERPROFILE%\\.wezterm.lua"
-    target_linux: "$HOME/.wezterm.lua"
+    target_windows: "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
 
   - id: powershell-core-profile
-    description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, zoxide, shared prompt config, VS Code shell integration, PowerToys CommandNotFound"
+    description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, VS Code shell integration, PowerToys CommandNotFound"
     source: powershell/pwsh/Microsoft.PowerShell_profile.ps1
     target_windows: "%USERPROFILE%\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
 
-  - id: powershell-vscode-profile
-    description: "VS Code PowerShell extension profile (Microsoft.VSCode_profile.ps1)"
-    source: powershell/pwsh/Microsoft.PowerShell_profile.ps1
-    target_windows: "%USERPROFILE%\\OneDrive\\Documents\\PowerShell\\Microsoft.VSCode_profile.ps1"
-
   - id: powershell-5-profile
-    description: "Windows PowerShell 5.1 CurrentUserCurrentHost profile — Starship, zoxide, shared prompt config, Chocolatey tab-completion"
+    description: "Windows PowerShell 5.1 CurrentUserCurrentHost profile — Chocolatey tab-completion"
     source: powershell/windows/Microsoft.PowerShell_profile.ps1
     target_windows: "%USERPROFILE%\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"
-
-  - id: bash-profile
-    description: "Bash login profile for WSL and Ubuntu hosts"
-    source: shell/bash/.profile
-    target_linux: "$HOME/.profile"
-
-  - id: bashrc
-    description: "Interactive bash configuration for WSL, Debian, and Ubuntu servers"
-    source: shell/bash/.bashrc
-    target_linux: "$HOME/.bashrc"

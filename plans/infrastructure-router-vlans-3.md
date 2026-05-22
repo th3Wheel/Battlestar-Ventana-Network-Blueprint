@@ -18,8 +18,7 @@ tags:
 
 ![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
 
-This plan provides the Ansible-driven implementation schedule to complete the evaluations defined in [`plans/infrastructure-router-vlans-2.md`](infrastructure-router-vlans-2.md) and deliver all required artifacts within an eight-week window. Three routing stacks are evaluated in parallel tracks: **linux-router**, **OpenWrt-in-Docker**, and **OPNsense running as a Proxmox VM**. All IP addresses, VLAN IDs, gateway addresses, and DHCP scopes are sourced exclusively from the repository's source-of-truth.
-Ansible orchestrates both the lab provisioning and the structured validation steps, producing machine-readable results that feed the decision record.
+This plan provides the Ansible-driven implementation schedule to complete the evaluations defined in [`plans/infrastructure-router-vlans-2.md`](infrastructure-router-vlans-2.md) and deliver all required artifacts within an eight-week window. Three routing stacks are evaluated in parallel tracks: **linux-router**, **OpenWrt-in-Docker**, and **OPNsense running as a Proxmox VM**. All IP addresses, VLAN IDs, gateway addresses, and DHCP scopes are sourced exclusively from the repository's source-of-truth files (`docs/dhcp-scopes.md`, `docs/naming-conventions.md`, `docs/firewall-matrix.md`). Ansible orchestrates both the lab provisioning and the structured validation steps, producing machine-readable results that feed the decision record.
 
 ## 1. Required Components & Servers
 

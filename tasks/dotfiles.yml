@@ -8,56 +8,16 @@ tasks:
       - pwsh ./scripts/setup-dotfiles-env.ps1 -DryRun
 
   setup-prereqs:
-    desc: Set up dotfile prerequisites (Windows)
+    desc: Set up dotfile prerequisites
     cmds:
       - pwsh ./scripts/setup-dotfiles-env.ps1
-
-  setup-prereqs-linux-dry-run:
-    desc: Set up dotfile prerequisites for Linux/WSL (dry-run)
-    cmds:
-      - bash ./scripts/setup-dotfiles-env.sh --dry-run
-
-  setup-prereqs-linux:
-    desc: Set up dotfile prerequisites for Linux/WSL
-    cmds:
-      - bash ./scripts/setup-dotfiles-env.sh
-
-  update-prereqs-linux-dry-run:
-    desc: Preview repo-pinned upstream updates for Linux/WSL dotfile prerequisites
-    cmds:
-      - bash ./scripts/update-dotfiles-env.sh --dry-run
-
-  update-prereqs-linux:
-    desc: Force repo-pinned upstream updates for Linux/WSL dotfile prerequisites
-    cmds:
-      - bash ./scripts/update-dotfiles-env.sh --refresh-cache
 
   deploy-dry-run:
     desc: Deploy dotfiles (dry-run)
     cmds:
-      - bash scripts/deploy-dotfiles.sh --dry-run --scope all
-
-  deploy-linux-dry-run:
-    desc: Deploy Linux and WSL dotfiles (dry-run)
-    cmds:
-      - bash scripts/deploy-dotfiles.sh --dry-run --scope linux
-
-  deploy-windows-dry-run:
-    desc: Deploy Windows dotfiles only (dry-run)
-    cmds:
-      - bash scripts/deploy-dotfiles.sh --dry-run --scope windows
+      - bash scripts/deploy-dotfiles.sh --dry-run
 
   deploy:
     desc: Deploy dotfiles
     cmds:
-      - bash scripts/deploy-dotfiles.sh --scope all
-
-  deploy-linux:
-    desc: Deploy Linux and WSL dotfiles
-    cmds:
-      - bash scripts/deploy-dotfiles.sh --scope linux
-
-  deploy-windows:
-    desc: Deploy Windows dotfiles only
-    cmds:
-      - bash scripts/deploy-dotfiles.sh --scope windows
+      - bash scripts/deploy-dotfiles.sh
