@@ -65,8 +65,8 @@ else
 fi
 
 if [[ -z "$YQ_BIN" ]]; then
-  echo "Error: yq (mikeFarah/yq) is required." >&2
-  echo "Install examples: winGet install MikeFarah.yq | choco install yq | sudo apt install yq" >&2
+  echo "Error: yq (mikefarah/yq) is required." >&2
+  echo "Install examples: winget install MikeFarah.yq | choco install yq | sudo apt install yq" >&2
   exit 1
 fi
 
