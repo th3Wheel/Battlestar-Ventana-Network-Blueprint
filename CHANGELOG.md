@@ -134,7 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **`ha/home-assistant-programming-guidelines.instructions.md`** — Updated
   fenced code block to include an explicit language identifier for markdownlint
   compatibility.
-- **VLAN 82 renamed** from _ScorpiaShieldNet_ to **ScorpiaMediaShield**.
+- **VLAN 81 renamed** from _ScorpiaShieldNet_ to **ScorpiaMediaShield**.
 
 - **VLAN 82 renamed** from _CanceronSignalRelay_ to **ScorpiaMediaRelay**.
 - Updated all documentation references to reflect new VLAN names.
