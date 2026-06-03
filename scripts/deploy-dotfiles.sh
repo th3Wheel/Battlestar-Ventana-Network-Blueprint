@@ -130,14 +130,13 @@ for i in $(seq 0 $((count - 1))); do
       continue
     fi
   elif [[ -n "$target_windows_raw" ]]; then
-    if ! is_wsl && ! is_linux; then
-      target_path=$(resolve_windows_path "$target_windows_raw")
-    else
+    if is_linux; then
       echo "[$id] $desc"
-      echo "  skip: target_windows is only valid outside WSL/native Linux"
+      echo "  skip: target_windows is not supported on native Linux"
       echo ""
       continue
     fi
+    target_path=$(resolve_windows_path "$target_windows_raw")
   else
     echo "[$id] $desc"
     echo "  skip: no supported target key found (target_windows/target_wsl/target_linux)"

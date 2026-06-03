@@ -6,7 +6,7 @@
       - python3-pip
       - python3-setuptools
     state: present
-  become: false
+  become: true
 
 - name: Install thefuck for current user
   ansible.builtin.pip:
@@ -18,7 +18,7 @@
 
 - name: Ensure ~/.local/bin is in Bash PATH
   ansible.builtin.blockinfile:
-    path: ~/.bashrc
+    path: "{{ ansible_env.HOME }}/.bashrc"
     create: true
     marker: "# {mark} THEFUCK_PATH"
     block: |
@@ -29,7 +29,7 @@
 
 - name: Configure thefuck in Bash profile
   ansible.builtin.blockinfile:
-    path: ~/.bashrc
+    path: "{{ ansible_env.HOME }}/.bashrc"
     create: true
     marker: "# {mark} THEFUCK"
     block: "{{ lookup('template', 'bashrc_thefuck.j2') }}"
@@ -44,7 +44,7 @@
 
 - name: Configure thefuck in Zsh profile
   ansible.builtin.blockinfile:
-    path: ~/.zshrc
+    path: "{{ ansible_env.HOME }}/.zshrc"
     create: true
     marker: "# {mark} THEFUCK"
     block: "{{ lookup('template', 'zshrc_thefuck.j2') }}"
