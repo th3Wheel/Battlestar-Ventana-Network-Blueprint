@@ -5,7 +5,7 @@
 Install the module:
 
 ```powershell
-Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Force
+Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Scope CurrentUser -Force
 ```
 
 ## Configure SDK
@@ -69,13 +69,13 @@ $span.Finish()
 $transaction.Finish() # Mark the transaction as finished and send it to Sentry
 ```
 
-Check out the documentation to learn more about the API and instrumentations:
+Check out the documentation to learn more about the API and integrations:
 
-- https://docs.sentry.io/platforms/powershell/tracing/instrumentation/
+- [Tracing instrumentation](https://docs.sentry.io/platforms/powershell/tracing/instrumentation/)
 
 ## Samples
 
 You can find sample usage of the SDK:
 
-- https://github.com/getsentry/sentry-powershell/tree/main/samples
-- https://github.com/getsentry/sentry-dotnet/tree/main/samples (C#)
+- [sentry-powershell samples](https://github.com/getsentry/sentry-powershell/tree/main/samples)
+- [sentry-dotnet samples (C#)](https://github.com/getsentry/sentry-dotnet/tree/main/samples)
