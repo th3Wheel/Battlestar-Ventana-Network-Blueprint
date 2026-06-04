@@ -1,0 +1,26 @@
+---
+# Default variables for Proxmox Pi-hole LXC template creation
+
+# Container identification
+pihole_template_ctid: '' # Required: numeric CT ID (must be provided at runtime)
+pihole_template_hostname: 'pihole-template'
+
+# Network configuration
+pihole_template_bridge: 'vmbr1'
+pihole_template_ipv4_address: '10.10.20.250/18'
+pihole_template_gateway: '10.10.20.1'
+pihole_template_vlan_tag: '20'
+
+# Storage configuration
+pihole_template_template_storage: 'local' # Storage for Proxmox templates
+pihole_template_rootfs_storage: 'local-lvm' # Storage for container rootfs
+pihole_template_image: 'debian-12-standard_12.2-1_amd64.tar.zst'
+
+# Compute resources
+pihole_template_cpu_cores: '2'
+pihole_template_memory_mb: '1024'
+pihole_template_swap_mb: '0'
+
+# Operational flags
+pihole_template_refresh_catalog: false # Force refresh of Proxmox template catalog
+pihole_template_autostart: false # Automatically start container after creation

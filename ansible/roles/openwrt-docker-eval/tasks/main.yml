@@ -64,7 +64,7 @@
     - name: Launch OpenWrt container attached to evaluation VLAN bridges
       community.docker.docker_container:
         name: openwrt-eval
-        image: openwrt/rootfs:latest
+        image: "{{ openwrt_rootfs_image }}"
         state: started
         restart_policy: unless-stopped
         capabilities:

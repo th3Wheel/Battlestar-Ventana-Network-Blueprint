@@ -1,0 +1,92 @@
+# cAdvisor Docker Compose - TorBox Companion Monitoring
+# ARMv8 compatible container metrics exporter with low-memory footprint
+# Exposes container CPU, memory, I/O, and restart count to Prometheus
+
+version: "3.9"
+
+services:
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2  # ARMv8 compatible
+    container_name: cadvisor
+    restart: unless-stopped
+
+    # Privileged access required for container metrics
+    privileged: true
+
+    # Host network mode for firewalld compatibility
+    network_mode: host
+
+    # Mount points for container metrics collection
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+    # cAdvisor command-line options for ARM optimization
+    command:
+      - '--port=8080'
+      - '--housekeeping_interval=30s'  # Reduce CPU usage
+      - '--max_housekeeping_interval=60s'
+      - '--docker_only=true'  # Only monitor Docker containers
+      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,accelerator,hugetlb,referenced_memory,cpu_topology,resctrl'  # Disable unused metrics for ARM
+      - '--store_container_labels=false'  # Reduce memory footprint
+      - '--allow_dynamic_housekeeping=true'
+
+    # Resource limits for low-memory footprint on Radxa
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+        reservations:
+          cpus: "0.1"
+          memory: "128M"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    # Labels for Prometheus service discovery
+    labels:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8080"
+      prometheus.io/path: "/metrics"
+
+# Deployment notes:
+# 1. cAdvisor runs on port 8080 (host network mode)
+# 2. Firewall rule required:
+#    sudo firewall-cmd --zone=home --add-port=8080/tcp --permanent
+#    sudo firewall-cmd --reload
+# 3. Prometheus scrape config:
+#    - job_name: 'cadvisor'
+#      static_configs:
+#        - targets: ['radxa-host:8080']
+#          labels:
+#            host: 'radxa'
+#            service: 'torbox-companion'
+# 4. Start cAdvisor:
+#    docker compose -f cadvisor-compose.yml up -d
+# 5. Verify metrics:
+#    curl http://localhost:8080/metrics
+
+# ARM-specific optimizations:
+# - Disabled unused metric collectors to reduce CPU load
+# - Increased housekeeping interval to 30s (default: 10s)
+# - Limited memory to 256M to prevent OOM on Radxa
+# - Docker-only mode to skip cgroup complexity
+
+# Key metrics exposed:
+# - container_cpu_usage_seconds_total: CPU usage
+# - container_memory_usage_bytes: Memory usage
+# - container_network_receive_bytes_total: Network RX
+# - container_network_transmit_bytes_total: Network TX
+# - container_fs_reads_bytes_total: Disk reads
+# - container_fs_writes_bytes_total: Disk writes
+# - container_start_time_seconds: Container start time (for restart detection)
+# - container_last_seen: Container health indicator

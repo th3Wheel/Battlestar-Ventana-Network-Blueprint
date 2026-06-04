@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+includes:
+  markdownlint: ./tasks/markdownlint.yml
+  ansible: ./tasks/ansible.yml
+  dotfiles: ./tasks/dotfiles.yml
+  cameras: ./tasks/cameras.yml
+  fing: ./tasks/fing.yml
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  default:
+    desc: Print a greeting message
+    cmds:
+      - echo "{{.GREETING}}"
+    silent: true
+
+  deploy:thefuck:
+    desc: "Install and configure thefuck on all supported hosts via Ansible"
+    cmds:
+      - ansible-playbook ansible/playbooks/install-thefuck.yml --tags thefuck
+
+  dotfiles:deploy:
+    desc: "Deploy all dotfiles from templates/dotfiles/ to target locations"
+    cmds:
+      - bash scripts/deploy-dotfiles.sh
+
+  dotfiles:dry-run:
+    desc: "Preview dotfile deployment without writing any files"
+    cmds:
+      - bash scripts/deploy-dotfiles.sh --dry-run

@@ -1,0 +1,42 @@
+---
+# Default variables for Radxa Docker Host Bootstrap Role
+
+# Network configuration
+radxa_vlan_id: 20
+radxa_subnet: '10.10.20.0/24'
+radxa_host_ip: '10.10.20.11'
+radxa_vlan_gateway: '10.10.20.1'
+radxa_pihole_ip: '10.10.20.10'
+radxa_dns_servers:
+  - '127.0.0.1'
+  - '{{ radxa_pihole_ip }}'
+radxa_subnet_prefix: 24
+
+# System hardening
+radxa_automation_user: 'routepi'
+radxa_automation_comment: 'RoutePi Automation'
+radxa_allowed_networks:
+  - '10.10.0.0/18'
+  - 'fc00::/7'
+radxa_allowed_ports:
+  - 22
+  - 80
+  - 443
+
+# Docker configuration
+radxa_docker_repo_url: 'https://download.docker.com/linux/debian'
+radxa_docker_gpg_key_url: 'https://download.docker.com/linux/debian/gpg'
+radxa_docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose-plugin
+
+# Pi-hole preparation
+radxa_pihole_base_dir: '/srv/pihole-docker'
+radxa_route_pi_repo_dir: '/opt/route-pi-squared'
+radxa_route_pi_repo_url: '' # Must be provided at runtime
+radxa_route_pi_repo_branch: 'main'
+
+# Validation
+radxa_validation_ping_count: 4

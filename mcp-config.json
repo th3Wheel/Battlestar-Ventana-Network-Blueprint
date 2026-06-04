@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"]
+    },
+    "xpipe": {
+      "type": "streamable-http",
+      "url": "http://localhost:21721/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:XPIPE_API_TOKEN}"
+      }
+    },
+
+    "prompts-chat": {
+      "type": "http",
+      "url": "https://prompts.chat/api/mcp"
+    }
+  }
+}

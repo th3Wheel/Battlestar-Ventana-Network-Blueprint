@@ -1,0 +1,9 @@
+---
+public_key_path: '~/.ssh/id_ed25519.pub'
+
+ssh_password: >-
+  {{ lookup(
+      'community.general.onepassword',
+      'SSH Password',
+      field='password'
+  ) }}

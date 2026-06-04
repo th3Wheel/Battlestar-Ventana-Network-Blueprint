@@ -1,0 +1,129 @@
+---
+# Create a reusable Debian 12 LXC template for Pi-hole
+# with nested virtualization and net_admin capabilities
+
+- name: Validate required variables
+  ansible.builtin.fail:
+    msg: 'pihole_template_ctid is required and must be a numeric value'
+  when: pihole_template_ctid | length == 0 or pihole_template_ctid is not number
+
+- name: Check if running on Proxmox host
+  ansible.builtin.fail:
+    msg: 'Must be root on Proxmox host (euid: {{ ansible_effective_user_id }})'
+  when: ansible_effective_user_id | int != 0
+  become: false
+
+- name: Verify required commands are available
+  ansible.builtin.command:
+    cmd: 'which {{ item }}'
+  loop:
+    - pct
+    - pveam
+  changed_when: false
+  register: _command_check
+
+- name: Set template archive path
+  ansible.builtin.set_fact:
+    _template_archive: '/var/lib/vz/template/cache/{{ pihole_template_image }}'
+
+- name: Refresh Proxmox template catalog
+  ansible.builtin.command:
+    cmd: 'pveam update'
+  changed_when: true
+  when: pihole_template_refresh_catalog | bool
+
+- name: Check if Debian template exists
+  ansible.builtin.stat:
+    path: '{{ _template_archive }}'
+  register: _template_stat
+
+- name: Download Debian 12 template
+  ansible.builtin.command:
+    cmd: 'pveam download {{ pihole_template_template_storage }} {{ pihole_template_image }}'
+  changed_when: true
+  when: not _template_stat.stat.exists
+
+- name: Check if container already exists
+  ansible.builtin.command:
+    cmd: 'pct status {{ pihole_template_ctid }}'
+  changed_when: false
+  failed_when: false
+  register: _pct_status
+
+- name: Fail if container ID already exists
+  ansible.builtin.fail:
+    msg: 'CTID {{ pihole_template_ctid }} already exists. Please remove it or choose another ID.'
+  when: _pct_status.rc == 0
+
+- name: Create LXC container
+  ansible.builtin.command:
+    cmd: >
+      pct create {{ pihole_template_ctid }}
+      {{ pihole_template_template_storage }}:vztmpl/{{ pihole_template_image }}
+      --hostname {{ pihole_template_hostname }}
+      --storage {{ pihole_template_rootfs_storage }}
+      --cores {{ pihole_template_cpu_cores }}
+      --memory {{ pihole_template_memory_mb }}
+      --swap {{ pihole_template_swap_mb }}
+      --net0 "name=eth0,bridge={{ pihole_template_bridge }},firewall=1,gw={{ pihole_template_gateway }},ip={{ pihole_template_ipv4_address }},tag={{ pihole_template_vlan_tag }}"
+      --ostype debian
+      --unprivileged 0
+  changed_when: true
+
+- name: Apply container feature flags
+  ansible.builtin.command:
+    cmd: 'pct set {{ pihole_template_ctid }} -features {{ item }}'
+  loop:
+    - 'nesting=1,keyctl=1'
+    - 'mount=nfs'
+    - 'mount=cifs'
+  changed_when: true
+
+- name: Manage container configuration file
+  ansible.builtin.lineinfile:
+    path: '/etc/pve/lxc/{{ pihole_template_ctid }}.conf'
+    line: '{{ item }}'
+    create: false
+    state: present
+  loop:
+    - 'lxc.cap.keep = net_admin'
+    - 'lxc.mount.auto = proc sys'
+    - 'lxc.apparmor.profile = generated'
+  changed_when: true
+
+- name: Start container for package installation
+  ansible.builtin.command:
+    cmd: 'pct start {{ pihole_template_ctid }}'
+  changed_when: true
+
+- name: Wait for container to fully boot
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Update and install baseline packages
+  ansible.builtin.command:
+    cmd: "pct exec {{ pihole_template_ctid }} -- bash -c 'apt-get update && apt-get install -y --no-install-recommends curl dnsutils sudo'"
+  changed_when: true
+
+- name: Clean package manager cache
+  ansible.builtin.command:
+    cmd: "pct exec {{ pihole_template_ctid }} -- bash -c 'apt-get clean && rm -rf /var/lib/apt/lists/*'"
+  changed_when: true
+
+- name: Halt container before template conversion
+  ansible.builtin.command:
+    cmd: 'pct shutdown {{ pihole_template_ctid }} --forceStop 1 --timeout 120'
+  changed_when: true
+
+- name: Convert container to reusable template
+  ansible.builtin.command:
+    cmd: 'pct template {{ pihole_template_ctid }}'
+  changed_when: true
+
+- name: Display success message
+  ansible.builtin.debug:
+    msg: |
+      ✓ Template {{ pihole_template_ctid }} created successfully!
+      Template hostname: {{ pihole_template_hostname }}
+      Network: {{ pihole_template_ipv4_address }} (VLAN {{ pihole_template_vlan_tag }})
+      Ready to use with deploy_pihole_lxc.yml playbook

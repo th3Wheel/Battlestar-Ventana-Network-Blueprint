@@ -27,6 +27,88 @@
         "--fix"
       ],
       "problemMatcher": []
+    },
+    {
+      "label": "ansible: bootstrap (dry-run)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["./ansible/bootstrap-env.ps1", "-DryRun"],
+      "problemMatcher": []
+    },
+    {
+      "label": "ansible: bootstrap",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["./ansible/bootstrap-env.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "ansible: smoke test (--check)",
+      "type": "shell",
+      "command": "ansible-playbook",
+      "args": [
+        "ansible/playbooks/evaluate-linux-router.yml",
+        "ansible/playbooks/evaluate-openwrt-docker.yml",
+        "ansible/playbooks/evaluate-opnsense-vm.yml",
+        "--check"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "ansible: deploy pihole keepalived ha (--check)",
+      "type": "shell",
+      "command": "ansible-playbook",
+      "args": ["ansible/playbooks/deploy-pihole-keepalived-ha.yml", "--check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "ansible: deploy pihole keepalived ha",
+      "type": "shell",
+      "command": "ansible-playbook",
+      "args": ["ansible/playbooks/deploy-pihole-keepalived-ha.yml"],
+      "problemMatcher": []
+    },
+    {
+      "label": "cameras: generate configs",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/generate-configs.sh"],
+      "problemMatcher": []
+    },
+    {
+      "label": "fing: inventory check",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/fing-inventory-check.sh"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotfiles: deploy (dry-run)",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/deploy-dotfiles.sh", "--dry-run"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotfiles: setup prereqs (dry-run)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["./scripts/setup-dotfiles-env.ps1", "-DryRun"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotfiles: setup prereqs",
+      "type": "shell",
+      "command": "pwsh",
+      "args": ["./scripts/setup-dotfiles-env.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotfiles: deploy",
+      "type": "shell",
+      "command": "bash",
+      "args": ["scripts/deploy-dotfiles.sh"],
+      "problemMatcher": []
     }
   ]
 }
