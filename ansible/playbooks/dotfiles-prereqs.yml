@@ -1,0 +1,10 @@
+---
+# Dotfiles prerequisites playbook
+# Installs fzf, zoxide, and starship on the local workstation
+
+- name: "Install dotfiles prerequisites"
+  hosts: localhost
+  gather_facts: true
+  become: false
+  roles:
+    - role: dotfiles-prereqs

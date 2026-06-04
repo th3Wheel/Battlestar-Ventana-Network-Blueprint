@@ -1,0 +1,35 @@
+---
+# dotfiles-prereqs role
+# Installs fzf, zoxide, and starship on the target workstation
+
+- name: Install fzf via apt
+  ansible.builtin.package:
+    name: fzf
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install fzf via pacman
+  ansible.builtin.package:
+    name: fzf
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Install fzf via dnf
+  ansible.builtin.package:
+    name: fzf
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install zoxide via upstream shell installer
+  ansible.builtin.shell:
+    cmd: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    creates: "{{ ansible_env.HOME }}/.local/bin/zoxide"
+
+- name: Install starship via upstream shell installer
+  ansible.builtin.shell:
+    cmd: curl -sS https://starship.rs/install.sh | sh -s -- --yes
+    creates: /usr/local/bin/starship
+  become: true
