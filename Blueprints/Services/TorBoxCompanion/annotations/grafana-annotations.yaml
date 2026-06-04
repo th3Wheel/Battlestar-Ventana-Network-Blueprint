@@ -1,0 +1,119 @@
+# Grafana Annotation Stream Configuration - TorBox Companion
+# Annotates deploys, restarts, and systemd events on Grafana dashboards
+# Accepts webhook POSTs from GitHub Actions and systemd journal
+
+# Annotation API endpoint configuration
+# POST to: http://grafana-host:3000/api/annotations
+# Authentication: API Token required (set in Grafana)
+
+---
+# Example annotation payload for GitHub Actions deployment
+# Use this structure in your CI/CD pipeline
+deployment_annotation:
+  dashboardUID: torbox-companion
+  panelId: null  # null = all panels
+  time: "{{ .Timestamp }}"  # Unix timestamp in milliseconds
+  timeEnd: "{{ .TimestampEnd }}"  # Optional: end time for range annotation
+  tags:
+    - deployment
+    - torbox-companion
+    - automated
+  text: |
+    🚀 Deployment: {{ .Version }}
+    Branch: {{ .Branch }}
+    Commit: {{ .CommitSHA }}
+    Triggered by: {{ .Actor }}
+
+# Example annotation payload for container restart
+# Can be triggered by a monitoring script or systemd hook
+restart_annotation:
+  dashboardUID: torbox-companion
+  panelId: null
+  time: "{{ .Timestamp }}"
+  tags:
+    - restart
+    - torbox-companion
+    - systemd
+  text: |
+    🔄 Container Restart
+    Previous uptime: {{ .Uptime }}
+    Restart reason: {{ .Reason }}
+    Exit code: {{ .ExitCode }}
+
+# Example annotation payload for systemd service state change
+# Hook into systemd journal with a monitoring script
+systemd_event_annotation:
+  dashboardUID: torbox-companion
+  panelId: null
+  time: "{{ .Timestamp }}"
+  tags:
+    - systemd
+    - torbox-companion
+    - "{{ .EventType }}"
+  text: |
+    ⚙️ systemd Event: {{ .EventType }}
+    Service: torbox-companion.service
+    Status: {{ .Status }}
+    Message: {{ .Message }}
+
+---
+# GitHub Actions Workflow Integration Example
+# Add this to .github/workflows/deploy-torbox-companion.yml
+
+# - name: Annotate Grafana Dashboard
+#   if: success()
+#   env:
+#     GRAFANA_URL: ${{ secrets.GRAFANA_URL }}
+#     GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+#   run: |
+#     curl -X POST "${GRAFANA_URL}/api/annotations" \
+#       -H "Authorization: Bearer ${GRAFANA_API_KEY}" \
+#       -H "Content-Type: application/json" \
+#       -d '{
+#         "dashboardUID": "torbox-companion",
+#         "time": '$(date +%s000)',
+#         "tags": ["deployment", "torbox-companion", "github-actions"],
+#         "text": "🚀 Deployment: '"${GITHUB_REF_NAME}"' ('"${GITHUB_SHA:0:7}"') by @'"${GITHUB_ACTOR}"'"
+#       }'
+
+---
+# Systemd Journal Hook Script
+# Save as /opt/scripts/grafana-annotate-restart.sh and call from systemd
+
+# #!/bin/bash
+# # Annotate Grafana when torbox-companion restarts
+#
+# GRAFANA_URL="http://grafana:3000"
+# GRAFANA_API_KEY="your-api-key-here"
+# TIMESTAMP=$(date +%s000)
+# UPTIME=$(systemctl show torbox-companion --property=ActiveEnterTimestamp --value)
+#
+# curl -X POST "${GRAFANA_URL}/api/annotations" \
+#   -H "Authorization: Bearer ${GRAFANA_API_KEY}" \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "dashboardUID": "torbox-companion",
+#     "time": '"${TIMESTAMP}"',
+#     "tags": ["restart", "torbox-companion", "systemd"],
+#     "text": "🔄 Container restart detected. Previous uptime: '"${UPTIME}"'"
+#   }'
+
+---
+# API Token Setup in Grafana
+# 1. Navigate to Configuration → API Keys
+# 2. Create new key with "Editor" role
+# 3. Store in GitHub Secrets as GRAFANA_API_KEY
+# 4. Store Grafana URL as GRAFANA_URL
+
+---
+# Querying annotations via API
+# GET http://grafana-host:3000/api/annotations?dashboardUID=torbox-companion&limit=100
+# Returns all annotations for TorBox Companion dashboard
+
+---
+# Best practices:
+# - Use consistent tag naming: [event-type, service-name, source]
+# - Include timestamps in milliseconds (Unix epoch * 1000)
+# - Keep annotation text concise but informative
+# - Use emojis for visual scanning: 🚀 deploy, 🔄 restart, ⚠️ warning, ❌ failure
+# - Include links to logs, commits, or runbooks when applicable

@@ -21,7 +21,7 @@ This plan enumerates the deterministic steps required to deploy the Route Pi² n
 
 ## 1. Requirements & Constraints
 
-- **REQ-001**: Provision `pihole-lxc` on the Proxmox cluster using `projects/route-pi-squared/infrastructure/proxmox/pihole-lxc-template.sh`, assigning static IP `10.10.20.10/18`, gateway `10.10.20.1`, and DNS 127.0.0.1/1.1.1.1 on VLAN 20.
+- **REQ-001**: Provision `pihole-lxc` on the Proxmox cluster using Ansible role `proxmox_pihole_lxc_template` (playbook: `bootstrap/proxmox_pihole_lxc_template.yml`), assigning static IP `10.10.20.10/18`, gateway `10.10.20.1`, and DNS 127.0.0.1/1.1.1.1 on VLAN 20.
 - **REQ-002**: Deploy `pihole-docker` on the Radxa Zero 3E using `projects/route-pi-squared/examples/docker/docker-compose.pihole.yaml` with static address `10.10.20.11/18` bound to VLAN 20.
 - **REQ-003**: Configure the Radxa Cubie A5E dual-NIC device as the primary router using `projects/route-pi-squared/infrastructure/radxa/a5e-router-config.yaml`, bridging WAN and LAN interfaces and advertising both Pi-hole IPs via DHCP option 6.
 - **REQ-004**: Update `projects/route-pi-squared/docs/KEEPALIVED-HA.md` to reflect dual Pi-hole topology, failover order, and monitoring endpoints.
@@ -41,7 +41,7 @@ This plan enumerates the deterministic steps required to deploy the Route Pi² n
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
 | TASK-001 | Create `projects/route-pi-squared/docs/hardware-inventory.md` detailing Radxa Cubie A5E and Radxa Zero 3E specs, router NIC mapping, and Proxmox host resources aligned to VLAN 20, LAN `10.10.0.0/18`, and WAN uplink. |  |  |
-| TASK-002 | Author `projects/route-pi-squared/infrastructure/proxmox/pihole-lxc-template.sh` to generate the Debian 12 LXC template with `nesting=1`, `keyup=1`, `features=keyctl`, and `cap_net_admin` enabled. |  |  |
+| TASK-002 | Create Ansible role `proxmox_pihole_lxc_template` to generate the Debian 12 LXC template with `nesting=1`, `keyup=1`, `features=keyctl`, and `cap_net_admin` enabled. | ✅ | 2026-01-16 |
 | TASK-003 | Produce `projects/route-pi-squared/infrastructure/radxa/docker-host-bootstrap.md` outlining OS image flashing, kernel upgrades, Docker Engine installation, and VLAN 20 tagging for both the Radxa Cubie A5E and Radxa Zero 3E platforms. |  |  |
 | TASK-004 | Generate `projects/route-pi-squared/infrastructure/radxa/a5e-router-config.yaml` describing the Radxa Cubie A5E router stack (e.g., OPNsense or Debian routing), bridge assignments (`end0` WAN, `end1` LAN), and management access controls. |  |  |
 
@@ -71,7 +71,7 @@ This plan enumerates the deterministic steps required to deploy the Route Pi² n
 ## 5. Files
 
 - **FILE-001**: `projects/route-pi-squared/docs/hardware-inventory.md` — Hardware mapping and NIC references.
-- **FILE-002**: `projects/route-pi-squared/infrastructure/proxmox/pihole-lxc-template.sh` — LXC template automation.
+- **FILE-002**: `roles/proxmox_pihole_lxc_template/` & `bootstrap/proxmox_pihole_lxc_template.yml` — LXC template automation via Ansible.
 - **FILE-003**: `projects/route-pi-squared/infrastructure/radxa/docker-host-bootstrap.md` — Radxa bootstrap guide.
 - **FILE-004**: `projects/route-pi-squared/infrastructure/radxa/a5e-router-config.yaml` — Router configuration definition for the Cubie A5E.
 - **FILE-005**: `projects/route-pi-squared/scripts/deploy_pihole_lxc.sh` — Pi-hole LXC deployment script.

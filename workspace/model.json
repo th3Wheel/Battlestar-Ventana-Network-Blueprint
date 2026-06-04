@@ -1,0 +1,78 @@
+{
+  "workspace_id": "canonical-workspace",
+  "version": "1.0.0",
+  "files": [
+    {
+      "path": "docs/governance/prime-directives.md",
+      "kind": "document",
+      "language": "markdown",
+      "encoding": "utf-8",
+      "content": "...prime directives text...",
+      "meta": {}
+    },
+    {
+      "path": "spec/projection/paste-clipboard-format.md",
+      "kind": "document",
+      "language": "markdown",
+      "encoding": "utf-8",
+      "content": "...projection spec...",
+      "meta": {}
+    },
+    {
+      "path": "spec/projection/test-corpus.json",
+      "kind": "document",
+      "language": "json",
+      "encoding": "utf-8",
+      "content": "{\n  \"corpus\": [\n    {\n      \"path\": \"src/plain.txt\",\n      \"content\": \"hello world\\n\",\n      \"kind\": \"document\",\n      \"language\": null,\n      \"encoding\": \"utf-8\",\n      \"meta\": null\n    },\n    {\n      \"path\": \"src/app.js\",\n      \"content\": \"console.log('hi');\\n\",\n      \"kind\": \"script\",\n      \"language\": \"javascript\",\n      \"encoding\": \"utf-8\",\n      \"meta\": { \"entrypoint\": true }\n    },\n    {\n      \"path\": \".gitignore\",\n      \"content\": \"node_modules/\\n\",\n      \"kind\": \"config\",\n      \"language\": null,\n      \"encoding\": \"utf-8\",\n      \"meta\": null\n    },\n    {\n      \"path\": \"Dockerfile\",\n      \"content\": \"FROM alpine\\n\",\n      \"kind\": \"config\",\n      \"language\": null,\n      \"encoding\": \"utf-8\",\n      \"meta\": { \"base\": \"alpine\" }\n    },\n    {\n      \"path\": \".makefile\",\n      \"content\": \"all:\\n\\techo hi\\n\",\n      \"kind\": \"config\",\n      \"language\": null,\n      \"encoding\": \"utf-8\",\n      \"meta\": null\n    },\n    {\n      \"path\": \"assets/logo.png\",\n      \"content\": \"<base64 omitted>\",\n      \"kind\": \"image\",\n      \"language\": null,\n      \"encoding\": \"base64\",\n      \"meta\": { \"mime\": \"image/png\", \"width\": 128, \"height\": 128 }\n    },\n    {\n      \"path\": \"assets/logo.png.analysis.json\",\n      \"content\": \"{\\\"objects\\\":[{\\\"label\\\":\\\"circle\\\",\\\"confidence\\\":0.98}]}\",\n      \"kind\": \"image-analysis\",\n      \"language\": \"json\",\n      \"encoding\": \"utf-8\",\n      \"meta\": { \"source\": \"vision-model\" }\n    },\n    {\n      \"path\": \"config/settings.yaml\",\n      \"content\": \"debug: true\\n\",\n      \"kind\": \"config\",\n      \"language\": \"yaml\",\n      \"encoding\": \"utf-8\",\n      \"meta\": { \"environment\": \"dev\" }\n    }\n  ]\n}",
+      "meta": {}
+    },
+    {
+      "path": "spec/projection/workspace-schema.json",
+      "kind": "document",
+      "language": "json",
+      "encoding": "utf-8",
+      "content": "{ ...workspace schema... }",
+      "meta": {}
+    },
+    {
+      "path": "tests/projection/golden/metadata-off.txt",
+      "kind": "document",
+      "language": null,
+      "encoding": "utf-8",
+      "content": "...golden metadata off...",
+      "meta": {}
+    },
+    {
+      "path": "tests/projection/golden/metadata-on.json",
+      "kind": "document",
+      "language": null,
+      "encoding": "utf-8",
+      "content": "...golden metadata on json...",
+      "meta": {}
+    },
+    {
+      "path": "tests/projection/test-suite.js",
+      "kind": "script",
+      "language": "javascript",
+      "encoding": "utf-8",
+      "content": "...updated test suite importing test-corpus.json...",
+      "meta": {}
+    },
+    {
+      "path": "validation/projection/compliance-matrix.md",
+      "kind": "document",
+      "language": "markdown",
+      "encoding": "utf-8",
+      "content": "...compliance matrix referencing test-corpus.json...",
+      "meta": {}
+    },
+    {
+      "path": "validation/projection/roundtrip-harness.js",
+      "kind": "script",
+      "language": "javascript",
+      "encoding": "utf-8",
+      "content": "...roundtrip harness...",
+      "meta": {}
+    }
+  ]
+}
