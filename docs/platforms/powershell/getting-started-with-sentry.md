@@ -12,6 +12,8 @@ Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Scope 
 
 Initialize the SDK as early as possible.
 
+Only call `Start-Sentry` once per PowerShell session (process). If you need debug logging, enable it in the same `Start-Sentry` call rather than starting the SDK twice.
+
 ```powershell
 # You need to import the module once in a script.
 Import-Module Sentry
