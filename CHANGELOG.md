@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`docs/rate-limiting-strategy.md`** — Fixed conflicting `--hashlimit-name` values in iptables examples. The logging example (lines 872-887) now uses `http_limit_logging` instead of `http_limit` to prevent hashlimit table conflicts if both examples are deployed together. This ensures separate packet accounting for HTTP rate limiting and logging rules.
+
 ### Added
 
 - **`.github/instructions/doNotLint/security-and-owasp.instructions.md`** — Expanded with anti-pattern catalogues (AU2-AU8, AZ1-AZ6, S1-S6, H1-H8, FE1-FE8, D1-D5, AP1-AP6, AI1-AI3, L1-L4), framework patterns for React/Next.js, Angular, Express and Go, Security Headers Template, JWT Validation Checklist, Secure Cookie Flags, and a full Security Checklist.
