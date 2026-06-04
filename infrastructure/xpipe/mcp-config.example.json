@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "xpipe": {
+      "type": "streamable-http",
+      "url": "http://localhost:21721/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:XPIPE_API_TOKEN}"
+      }
+    }
+  }
+}
