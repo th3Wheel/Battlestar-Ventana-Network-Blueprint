@@ -22,8 +22,8 @@ Recent review highlighted mixed use of canonical and legacy VLAN names (for exam
 | 10 | Battlestar Ventana | Trusted |
 | 20 | CylonSynthLink | IoT |
 | 30 | CapricaGuestPortal | Guest |
-| 31 | PiconResidentGate | Elevated Guest |
-| 40 | Basestar Control | Infrastructure |
+| 31 | CapricaResidentPortal | Elevated Guest |
+| 40 | BasestarVentana | Infrastructure |
 | 50 | GemenonServiceVault | Services |
 | 60 | VirgonFleetYard | Printers |
 | 70 | PegasusMediaNode | Media |
@@ -33,8 +33,8 @@ Recent review highlighted mixed use of canonical and legacy VLAN names (for exam
 
 ## Current Inconsistencies (snapshot)
 - `ServerVault` instead of `GemenonServiceVault`: baseline blueprints, summaries, `docs/firewall-matrix.md`, `docs/services.md`, `docs/Project_Architecture_Blueprint.md`, `readme.md`.
-- `InfraCore` instead of `Basestar Control`: baseline blueprints, summaries, `docs/firewall-matrix.md`, diagrams in `docs/firewall-matrix.md`.
-- `GuestElevated` / `ResidentGate` instead of `PiconResidentGate`: baseline blueprints, summaries, `docs/firewall-matrix.md` (tables and diagrams), alerts (`alerts/alert_rules.yaml`), HA docs (`ha/*`).
+- `InfraCore` instead of `BasestarVentana`: baseline blueprints, summaries, `docs/firewall-matrix.md`, diagrams in `docs/firewall-matrix.md`.
+- `GuestElevated` / `ResidentGate` instead of `CapricaResidentPortal`: baseline blueprints, summaries, `docs/firewall-matrix.md` (tables and diagrams), alerts (`alerts/alert_rules.yaml`), HA docs (`ha/*`).
 - `ScyllaDataControl` instead of `ScyllaProcessControl`: baseline blueprints and summaries.
 - Functional labels used as primary names (for example, `Media`, `Printers`) instead of canonical `PegasusMediaNode`, `VirgonFleetYard` across tables and diagrams.
 - Formatting drift (missing space in `BasestarControl`, mixed capitalization) in some legacy tables.
