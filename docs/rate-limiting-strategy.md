@@ -969,11 +969,11 @@ dnsperf -s 10.76.50.10 -d queries.txt -l 120 -Q 150
 
 ```bash
 # Test HTTP rate limiting with ab (Apache Bench)
-ab -n 10000 -c 100 http://servervault.ventana.local/
+# Test HTTP rate limiting with ab (Apache Bench)
+ab -n 10000 -c 100 http://gemenonservicevault.ventana.local/
 
 # Test with wrk
-wrk -t 10 -c 200 -d 30s http://servervault.ventana.local/
-
+wrk -t 10 -c 200 -d 30s http://gemenonservicevault.ventana.local/
 # Expected: Connections above limit should receive 429 or be dropped
 ```
 
