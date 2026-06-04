@@ -34,7 +34,7 @@ Recent review highlighted mixed use of canonical and legacy VLAN names (for exam
 ## Current Inconsistencies (snapshot)
 - `ServerVault` instead of `GemenonServiceVault`: baseline blueprints, summaries, `docs/firewall-matrix.md`, `docs/services.md`, `docs/Project_Architecture_Blueprint.md`, `readme.md`.
 - `InfraCore` instead of `Basestar Control`: baseline blueprints, summaries, `docs/firewall-matrix.md`, diagrams in `docs/firewall-matrix.md`.
-- `GuestElevated` / `ResidentGate` instead of `PiconResidentGate`: baseline blueprints, summaries, `docs/firewall-matrix.md` (tables and diagrams), alerts (`alerts/Alertmanager style.yaml`), HA docs (`ha/*`).
+- `GuestElevated` / `ResidentGate` instead of `PiconResidentGate`: baseline blueprints, summaries, `docs/firewall-matrix.md` (tables and diagrams), alerts (`alerts/alert_rules.yaml`), HA docs (`ha/*`).
 - `ScyllaDataControl` instead of `ScyllaProcessControl`: baseline blueprints and summaries.
 - Functional labels used as primary names (for example, `Media`, `Printers`) instead of canonical `PegasusMediaNode`, `VirgonFleetYard` across tables and diagrams.
 - Formatting drift (missing space in `BasestarControl`, mixed capitalization) in some legacy tables.
