@@ -4,8 +4,24 @@ This document defines VLAN-specific rate-limiting policies and DDoS mitigation g
 
 ---
 
-## 🎯 Overview
+## Table of Contents
 
+1. [Overview](#-overview)
+2. [Legend](#-legend)
+3. [VLAN Tier Limits by Zone](#-vlan-tier-limits-by-zone)
+4. [Per-Service Rate-Limiting Matrix](#-per-service-rate-limiting-matrix)
+5. [Implementation Targets](#-implementation-targets)
+6. [Monitoring Integration Guidance](#-monitoring-integration-guidance)
+7. [Implementation Checklist](#-implementation-checklist)
+8. [Testing Guidance](#-testing-guidance)
+9. [Tuning and Adjustment](#-tuning-and-adjustment)
+10. [Security Best Practices](#-security-best-practices)
+11. [References](#-references)
+12. [Future Enhancements](#-future-enhancements)
+
+---
+
+## 🎯 Overview
 Rate limiting is a critical security control that protects the network from:
 
 - **DDoS attacks** — Distributed denial of service attempts
@@ -116,11 +132,11 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **30 Guest** | Internet | 100 req/sec/IP | Guest web browsing (no LAN access) |
-| **20 IoT** | GemenonServiceVault (50) | 10 req/sec/IP | Firmware updates only |
-| **10, 90 Trusted** | GemenonServiceVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
-| **31 PiconResidentGate** | GemenonServiceVault (50) | 100 req/sec/IP | Limited web services, Plex access |
-| **70 Media** | GemenonServiceVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
+| **CapricaGuestPortal (30)** | Internet | 100 req/sec/IP | Guest web browsing (no LAN access) |
+| **CylonSynthLink (20)** | GemenonServiceVault (50) | 10 req/sec/IP | Firmware updates only |
+| **Battlestar Ventana (10), ScyllaProcessControl (90)** | GemenonServiceVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
+| **PiconResidentGate (31)** | GemenonServiceVault (50) | 100 req/sec/IP | Limited web services, Plex access |
+| **PegasusMediaNode (70)** | GemenonServiceVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
 
 **Alert Threshold:** 80% of configured limit  
 **Implementation:** Nginx rate limiting, K8s NetworkPolicy, UFW rate limits
@@ -291,10 +307,10 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
-| **10 Trusted** | Printers (60) | IPP (631) | 10 jobs/min/IP | Standard printing |
-| **31 PiconResidentGate** | Printers (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
-| **10, 31** | Printers (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
-| **60 Printers** | GemenonServiceVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
+| **Battlestar Ventana (10)** | VirgonFleetYard (60) | IPP (631) | 10 jobs/min/IP | Standard printing |
+| **PiconResidentGate (31)** | VirgonFleetYard (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
+| **Battlestar Ventana (10), PiconResidentGate (31)** | VirgonFleetYard (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
+| **VirgonFleetYard (60)** | GemenonServiceVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
 
 **Alert Threshold:** 80% of configured limit  
 **Implementation:** CUPS rate limiting, printer firmware job limits
@@ -312,10 +328,10 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
-| **10 Trusted** | Media (70) | DLNA (1900) | 20 sessions/IP | Media discovery |
-| **31 PiconResidentGate** | Media (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
-| **10, 31** | Media (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
-| **90 Work** | Media (70) | Chromecast (8008-8009) | 3 streams/IP | Work device casting |
+| **Battlestar Ventana (10)** | PegasusMediaNode (70) | DLNA (1900) | 20 sessions/IP | Media discovery |
+| **PiconResidentGate (31)** | PegasusMediaNode (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
+| **Battlestar Ventana (10), PiconResidentGate (31)** | PegasusMediaNode (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
+| **ScyllaProcessControl (90)** | PegasusMediaNode (70) | Chromecast (8008-8009) | 3 streams/IP | Work device casting |
 
 **Alert Threshold:** 80% of session limit  
 **Implementation:** mDNS/Avahi rate limiting, Chromecast device limits
