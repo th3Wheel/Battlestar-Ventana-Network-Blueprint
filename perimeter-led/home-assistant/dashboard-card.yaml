@@ -19,7 +19,7 @@ cards:
           action: call-service
           service: select.select_option
           target:
-            entity_id: select.wled_preset
+            entity_id: select.perimeter_led_preset
           data:
             option: "All White"
 
@@ -30,7 +30,7 @@ cards:
           action: call-service
           service: select.select_option
           target:
-            entity_id: select.wled_preset
+            entity_id: select.perimeter_led_preset
           data:
             option: "Mirror Sides"
 
@@ -41,7 +41,7 @@ cards:
           action: call-service
           service: select.select_option
           target:
-            entity_id: select.wled_preset
+            entity_id: select.perimeter_led_preset
           data:
             option: "Top Focus (23u)"
 
@@ -52,7 +52,7 @@ cards:
           action: call-service
           service: select.select_option
           target:
-            entity_id: select.wled_preset
+            entity_id: select.perimeter_led_preset
           data:
             option: "Mid Only (14u/10u)"
 

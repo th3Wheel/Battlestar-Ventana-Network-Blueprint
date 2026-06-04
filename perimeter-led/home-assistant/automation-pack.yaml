@@ -8,7 +8,7 @@ automation:
     action:
       - service: select.select_option
         target:
-          entity_id: select.wled_preset
+          entity_id: select.perimeter_led_preset
         data:
           option: "Bottom Accent (8u/12u)"
 
