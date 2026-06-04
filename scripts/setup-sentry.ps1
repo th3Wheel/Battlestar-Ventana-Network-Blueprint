@@ -25,6 +25,10 @@ if (-not $resolvedDsn) {
 }
 
 try {
+    if ($RunTraceSample -and -not $PSBoundParameters.ContainsKey('TracesSampleRate')) {
+        $TracesSampleRate = 1.0
+    }
+
     if ($DebugSdk) {
         Start-Sentry -Debug {
             $_.Dsn = $resolvedDsn
