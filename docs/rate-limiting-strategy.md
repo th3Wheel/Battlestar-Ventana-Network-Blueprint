@@ -734,8 +734,8 @@ groups:
           severity: warning
           vlan: "20"
         annotations:
-          summary: "IoT VLAN bandwidth at 80% ({{ $value | humanize }}bps)"
-          description: "VLAN 20 (IoT) is approaching bandwidth limit"
+          summary: "CylonSynthLink (20) bandwidth at 80% ({{ $value | humanize }}bps)"
+          description: "VLAN 20 (CylonSynthLink) is approaching bandwidth limit"
 
       # DNS query rate alerts
       - alert: DNSQueryRateHigh
