@@ -6,9 +6,26 @@ set -euo pipefail
 MAP="templates/camera-map.yaml"
 TEMPLATE="templates/thingino.conf.template"
 OUTDIR="cameras"
+RUNONCE_TEMPLATE="templates/runonce.sh.template"
 
-# Check for yq and prefer mikefarah/yq for explicit raw output
-if ! command -v yq &> /dev/null; then
+# Resolve yq for Windows shells where Git Bash PATH may not include choco/scoop.
+YQ_BIN=""
+if command -v yq &> /dev/null; then
+  YQ_BIN="yq"
+elif command -v yq.exe &> /dev/null; then
+  YQ_BIN="$(command -v yq.exe)"
+elif [ -x "/mnt/c/ProgramData/chocolatey/bin/yq.exe" ]; then
+  YQ_BIN="/mnt/c/ProgramData/chocolatey/bin/yq.exe"
+else
+  for cand in /mnt/c/Users/*/scoop/shims/yq.exe; do
+    if [ -x "$cand" ]; then
+      YQ_BIN="$cand"
+      break
+    fi
+  done
+fi
+
+if [ -z "$YQ_BIN" ]; then
   echo "Error: yq is not installed" >&2
   exit 1
 fi
@@ -17,8 +34,11 @@ mkdir -p "$OUTDIR"
 
 while IFS= read -r cam; do
   [ -z "$cam" ] && continue
-  ip=$(yq -r ".cameras[] | select(.id == \"$cam\") | .ip" "$MAP")
-  host=$(yq -r ".cameras[] | select(.id == \"$cam\") | .hostname" "$MAP")
+  ip=$("$YQ_BIN" -r ".cameras[] | select(.id == \"$cam\") | .ip" "$MAP")
+  host=$("$YQ_BIN" -r ".cameras[] | select(.id == \"$cam\") | .hostname" "$MAP")
+
+  [ "$ip" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no IP address" >&2; exit 1; }
+  [ "$host" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no hostname" >&2; exit 1; }
 
   mkdir -p "$OUTDIR/$host"
 
@@ -27,6 +47,13 @@ while IFS= read -r cam; do
     -e "s/hostname=.*/hostname=$host/" \
     "$TEMPLATE" \
     > "$OUTDIR/$host/thingino.conf"
-done
+
+  sed \
+    -e "s/fw_setenv ipaddr .*/fw_setenv ipaddr $ip/" \
+    -e "s/fw_setenv hostname .*/fw_setenv hostname $host/" \
+    "$RUNONCE_TEMPLATE" \
+    > "$OUTDIR/$host/runonce.sh"
+  chmod +x "$OUTDIR/$host/runonce.sh"
+done < <("$YQ_BIN" -r '.cameras[].id' "$MAP")
 
 echo "Generated configs in $OUTDIR/"

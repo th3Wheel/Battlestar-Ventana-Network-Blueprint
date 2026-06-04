@@ -28,7 +28,19 @@ ha/guidelines/
 
 # Any doNotLint folder under .github
 
-.github/\*\*/doNotLint/
+.github/**/doNotLint/**
+
+# Explicit doNotLint coverage by category
+
+.github/instructions/doNotLint/**
+.github/skills/doNotLint/**
+.github/workflows/doNotLint/\*\*
+
+# Optional repo-level doNotLint coverage for similarly named areas
+
+instructions/doNotLint/**
+skills/doNotLint/**
+workspace/doNotLint/\*\*
 
 # Imported awesome-copilot instruction files
 

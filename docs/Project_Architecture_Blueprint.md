@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit Internet egress policy per VLAN
-- Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/InfraCore
 
 ---
 
@@ -51,7 +51,7 @@ Key boundaries:
 
 - Trusted user subnets (10, 90) → full access to core services, limited view to surveillance
 - Semi-trusted (31, 60, 70) → restricted access to services required for function
-- Untrusted (20, 30) → minimal or Internet-only
+- Untrusted (20, 30) → minimal or internet-only
 - Services (50) and Infra (40) → central management planes
 - Surveillance (81/82) → view-only from trusted/services
 
@@ -84,21 +84,21 @@ flowchart TB
     V50[50 – ServerVault]
   end
   subgraph Infra[Infrastructure]
-    V40[40 – BasestarControl]
+    V40[40 – InfraCore]
   end
   subgraph Surveillance[Surveillance]
     V81[81 – ScorpiaMediaShield]
     V82[82 – ScorpiaMediaRelay]
   end
 
-  Internet[(🌐 Internet)]
+  internet[(🌐 internet)]
 
-  Untrusted -- Internet only --> Internet
+  Untrusted -- internet only --> internet
   SemiTrusted -- Limited --> Services
   Trusted -- Full --> Services
   Trusted -- Full --> Infra
   Services -- View --> Surveillance
-  Surveillance -- Cloud relay --> Internet
+  Surveillance -- Cloud relay --> internet
 ```
 
 Component interactions focus on directional flows enforced by rules in `firewall-matrix.md`.
@@ -109,11 +109,12 @@ Component interactions focus on directional flows enforced by rules in `firewall
 
 For each component, this section summarizes purpose, internal structure, interaction, and evolution.
 
-### 4.1 BasestarControl (VLAN 40)
+### 4.1 InfraCore (VLAN 40 - Basestar Control)
 
 - Purpose: Core switching, controllers, management plane
 - Internal: Core switch/router, control services (DNS/DHCP often delegated), management interfaces
-- Interactions: Full to Services (50) and Trusted (10/90); no direct Internet egress for management plane
+- Interactions: Full to Services (50) and Trusted (10/90); no direct
+  internet egress for management plane
 - Evolution: Introduce automation/IaC for consistent switch/router policy; role-based admin access
 
 ### 4.2 ServerVault (VLAN 50)
@@ -125,28 +126,31 @@ For each component, this section summarizes purpose, internal structure, interac
 
 ### 4.3 Trusted LAN (VLAN 10) and Work (VLAN 90)
 
-- Purpose: End-user compute networks
+- Purpose: end user compute networks
 - Interactions:
   - Trusted(10): Full to Infra/Services, view-only to Surveillance
-  - Work(90): Internet + casting to Media (70); otherwise isolated from LAN
+  - Work(90): internet + casting to Media (70); otherwise isolated from
+    LAN
 - Evolution: Conditional access, posture checks, per-user segmentation (e.g., Wi-Fi profiles)
 
 ### 4.4 Semi-Trusted (31 Resident, 60 Printers, 70 Media)
 
 - Purpose: Function-driven subnets with constrained privileges
-- Interactions: Limited to Services for specific ports (printing, media, files), Internet where appropriate
+- Interactions: Limited to Services for specific ports (printing, media,
+  files), internet where appropriate
 - Evolution: Tighten casts/uploads to least privilege; log interactions for audit
 
 ### 4.5 Untrusted (20 IoT, 30 Guest)
 
 - Purpose: High-risk or unverified devices
-- Interactions: Internet-only (30), limited telemetry to Services (20→50)
+- Interactions: internet-only (30), limited telemetry to Services (20→50)
 - Evolution: Per-device allowlists, device identity, and network access control (NAC)
 
 ### 4.6 Surveillance (81/82)
 
 - Purpose: Camera networks
-- Interactions: Local (81) streams to Services (50); Cloud (82) relays to Internet; view-only from Trusted/Services
+- Interactions: Local (81) streams to Services (50); Cloud (82) relays to
+  internet; view-only from Trusted/Services
 - Evolution: Bandwidth QoS; storage policy; retention and privacy controls
 
 ---
@@ -167,6 +171,55 @@ Dependency rules:
 - Lower layers provide primitives; upper layers must not bypass security layer
 - Cross-layer access only through documented service contracts
 - No circular dependencies; services do not depend on Untrusted/Semi-Trusted zones for core functionality
+
+### 5.1 Enhanced Security Layer Components
+
+#### Rate-Limiting and Traffic Shaping
+
+- Implement connection rate limits at firewall level per VLAN
+- Throttle Guest (30) and GuestElevated (31) internet bandwidth to prevent
+  abuse
+- Apply per-service rate limits on ServerVault (50) endpoints:
+  - MQTT: 100 messages/second per device
+  - HTTPS: 60 requests/minute per IP for public endpoints
+  - DNS: 50 queries/second per client to prevent DNS amplification
+- QoS policies for Surveillance (81/82) to ensure camera streams maintain priority
+
+#### Service Mesh Architecture
+
+- Implement reverse proxy layer at ServerVault (50) for all HTTP/HTTPS services
+- Service discovery through internal DNS with health checks
+- Mutual TLS (mTLS) for service-to-service communication within ServerVault
+- Circuit breaker patterns for external service dependencies
+- Load balancing for redundant services (HA configurations)
+- Sidecar proxy pattern for observability and security policy enforcement
+
+#### Automation Framework
+
+- Infrastructure-as-Code (IaC) for network configuration:
+  - Terraform modules for firewall rules and VLAN definitions
+  - Ansible playbooks for device provisioning and service deployment
+- Configuration drift detection with automated remediation
+- Automated backup and disaster recovery procedures
+- Self-healing mechanisms for critical services
+- Automated patch management with staged rollouts
+- GitOps workflow for all infrastructure changes
+
+#### SIEM and Alerting Integration
+
+- Centralized security event logging at ServerVault (50):
+  - Firewall logs with rule hit tracking
+  - Authentication attempt logs (SSH, HTTPS, MQTT)
+  - Anomaly detection for unusual traffic patterns
+- Alert rules for security events:
+  - Failed authentication threshold exceeded
+  - Unusual data volume from IoT devices
+  - Cross-zone communication attempts outside policy
+  - Surveillance camera offline or tampering detection
+- Integration with external SIEM platforms:
+  - Syslog forwarding for enterprise SIEM ingestion
+  - API endpoints for security orchestration
+- Threat intelligence feed integration for known malicious IPs/domains
 
 ### 5.1 Enhanced Security Layer Components
 
@@ -347,9 +400,11 @@ Test data strategies:
 
 ## 12. Deployment Architecture
 
-- Topology: Core switch (InfraCore) interconnects VLANs; ServerVault provides services; Internet uplink at edge
+- Topology: Core switch (InfraCore) interconnects VLANs; ServerVault
+  provides services; internet uplink at edge
 - Environment-specific: Single-DC homelab; future option to add remote sites or cloud relay (82)
-- Configuration management: Move toward IaC for firewall/DHCP/DNS; version control in this repo
+- Configuration management: Move toward IaC for firewall/DHCP/DNS;
+  version control in this repository
 
 ---
 
@@ -425,10 +480,11 @@ views:
 - Decision: Adopt 10.76.<VLAN>.0/24 with `.1` gateways
 - Consequences: Easy mental model; /24 simplifies DHCP and ACLs
 
-### ADR-003: Work VLAN (90) Internet-first
+### ADR-003: Work VLAN (90) internet-first
 
 - Context: Separate work devices and ensure performance
-- Decision: Allow Internet and media casting only; management via local DNS/DHCP bootstrap
+- Decision: Allow internet and media casting only; management via local
+  DNS/DHCP bootstrap
 - Consequences: Reduced lateral movement; explicit exceptions via Media casting
 
 ### ADR-004: Surveillance Split (81 local, 82 cloud)
@@ -442,7 +498,8 @@ views:
 ## 16. Architecture Governance
 
 - Documentation updates required for any change to VLANs, scopes, or rules
-- Automated checks recommended: markdown lint, Mermaid render check, table schema validation
+- Automated checks recommended: Markdown lint, Mermaid render check,
+  table schema validation
 - Periodic audit using `audit-checklist.md` with sign-off
 - Change control: conventional commits; consider PR approvals for rule changes
 
