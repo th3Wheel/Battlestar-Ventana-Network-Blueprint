@@ -66,7 +66,7 @@
 
     - name: Download pinned lnxrouter script from reviewed upstream revision
       vars:
-        lnxrouter_commit: "445fadb"
+        lnxrouter_commit: "445fadba86a196223fcabd150e0e66eae963c08f"
         lnxrouter_sha256: "e242101d418296c2a88c6da7c22dc306791242a19ab90939329c946bde7bae1e"
       ansible.builtin.get_url:
         url: "https://raw.githubusercontent.com/garywill/linux-router/{{ lnxrouter_commit }}/lnxrouter"
