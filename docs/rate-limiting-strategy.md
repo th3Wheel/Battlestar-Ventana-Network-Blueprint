@@ -867,7 +867,8 @@ Log rate-limiting events to syslog/SIEM for forensic analysis.
 # iptables rate limit drops
 :msg, contains, "RATE-LIMIT-DROP" /var/log/rate-limit.log
 
-# Forward security logs to SIEM (GemenonServiceVault) - use TLS for production
+# Forward security logs to SIEM (GemenonServiceVault) over TCP;
+# configure rsyslog TLS separately for encrypted forwarding in production
 :msg, contains, "RATE-LIMIT-DROP" @@10.76.50.10:514
 :msg, contains, "UFW LIMIT" @@10.76.50.10:514
 ```
@@ -1031,6 +1032,6 @@ Rate limits should be tuned based on observed traffic patterns:
 ---
 
 **Document Status:** ✅ Complete  
-**Last Updated:** 2026-01-21  
+**Last Updated:** 2026-04-16  
 **Review Cycle:** Quarterly  
-**Next Review:** 2026-04-21
+**Next Review:** 2026-07-16
