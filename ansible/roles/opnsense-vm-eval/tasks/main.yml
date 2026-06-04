@@ -50,15 +50,15 @@
       ansible.builtin.uri:
         url: "https://{{ opnsense_mgmt_ip }}/api/core/firmware/info"
         method: GET
-        user: "{{ opnsense_api_key }}"
-        password: "{{ opnsense_api_secret }}"
-        force_basic_auth: true
-        validate_certs: false
-        status_code: 200
+        user: "{{ opnsense_api_key | default(omit, true) }}"
+        password: "{{ opnsense_api_secret | default(omit, true) }}"
+        force_basic_auth: "{{ (opnsense_api_key | default('', true) | length > 0) and (opnsense_api_secret | default('', true) | length > 0) }}"
+        validate_certs: "{{ opnsense_validate_certs }}"
+        status_code: [200, 401, 403]
       register: opnsense_api_ready
       retries: 24
       delay: 15
-      until: opnsense_api_ready.status == 200
+      until: opnsense_api_ready.status in [200, 401, 403]
 
 - name: "Configure — apply VLANs, DHCP scopes, and firewall rules via OPNsense API"
   when: opnsense_eval_task == 'configure'
@@ -70,7 +70,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         body_format: json
         body:
           vlan:
@@ -89,7 +89,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         body_format: json
         body:
           general:
@@ -98,7 +98,7 @@
             enable: "1"
             range_from: "{{ item.dhcp_range_start }}"
             range_to: "{{ item.dhcp_range_end }}"
-            dnsserver: "{{ pihole_primary_ip }}"
+            dnsserver: "{{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %},{{ item.dns_secondary }}{% endif %}"
         status_code: [200, 201]
       loop: "{{ vlans | selectattr('dhcp_enabled') | list }}"
       loop_control:
@@ -111,7 +111,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
 
 - name: "Validate — verify DHCP option 6, DNS relay, and firewall (VLANs 20 and 40)"
@@ -124,7 +124,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: opnsense_vlan_list
 
@@ -140,14 +140,25 @@
 
     - name: Test Pi-hole DNS reachability through OPNsense
       ansible.builtin.uri:
-        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_primary_ip }}"
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_primary_vip }}"
         method: GET
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: dns_reach_check
+
+    - name: Test Pi-hole secondary DNS reachability through OPNsense
+      ansible.builtin.uri:
+        url: "https://{{ opnsense_mgmt_ip }}/api/diagnostics/dns/reverse/{{ pihole_secondary_vip }}"
+        method: GET
+        user: "{{ opnsense_api_key }}"
+        password: "{{ opnsense_api_secret }}"
+        force_basic_auth: true
+        validate_certs: "{{ opnsense_validate_certs }}"
+        status_code: 200
+      register: dns_secondary_reach_check
 
     - name: Create research output directory
       ansible.builtin.file:
@@ -171,7 +182,8 @@
           ## VLAN Validation Results (VLANs 20 and 40)
 
           - VLAN presence check: completed
-          - Pi-hole DNS reachability ({{ pihole_primary_ip }}): {{ 'PASS' if dns_reach_check.status == 200 else 'FAIL' }}
+          - Pi-hole DNS reachability ({{ pihole_primary_vip }}): {{ 'PASS' if dns_reach_check.status == 200 else 'FAIL' }}
+          - Pi-hole secondary DNS reachability ({{ pihole_secondary_vip }}): {{ 'PASS' if dns_secondary_reach_check.status == 200 else 'FAIL' }}
 
           ## Full Matrix Results
 
@@ -188,7 +200,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: opnsense_full_vlan_list
 
@@ -231,7 +243,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         return_content: true
         status_code: 200
       register: opnsense_config_backup
