@@ -474,8 +474,8 @@ For services running in K8s clusters, use NetworkPolicy with rate-limiting annot
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: servervault-rate-limit
-  namespace: servervault
+  name: gemenonservicevault-rate-limit
+  namespace: gemenonservicevault
   annotations:
     # Non-standard: Requires Calico, Cilium, or custom CNI
     rate-limit.kubernetes.io/requests-per-second: "100"
@@ -716,8 +716,7 @@ scrape_configs:
 
   - job_name: 'node_exporter'
     static_configs:
-      - targets: ['servervault:9100', 'gateway:9100']
-```
+      - targets: ['gemenonservicevault:9100', 'gateway:9100']
 
 #### Example: Alert rules
 
