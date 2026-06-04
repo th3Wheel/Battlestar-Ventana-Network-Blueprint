@@ -10,14 +10,14 @@ This document defines VLAN-specific rate-limiting policies and DDoS mitigation g
 2. [Legend](#-legend)
 3. [VLAN Tier Limits by Zone](#-vlan-tier-limits-by-zone)
 4. [Per-Service Rate-Limiting Matrix](#-per-service-rate-limiting-matrix)
-5. [Implementation Targets](#-implementation-targets)
+5. [Implementation Targets](#implementation-targets)
 6. [Monitoring Integration Guidance](#-monitoring-integration-guidance)
 7. [Implementation Checklist](#-implementation-checklist)
 8. [Testing Guidance](#-testing-guidance)
 9. [Tuning and Adjustment](#-tuning-and-adjustment)
 10. [Security Best Practices](#-security-best-practices)
 11. [References](#-references)
-12. [Future Enhancements](#-future-enhancements)
+12. [Future Enhancements](#future-enhancements)
 
 ---
 
@@ -197,8 +197,8 @@ This matrix defines rate limits for specific services between source and destina
 |-------------|-------------|-------|-------|
 | **81 ScorpiaMediaShield** | GemenonServiceVault (50) | 10 streams | Local camera feeds recording to NAS |
 | **82 ScorpiaMediaRelay** | Internet | 10 streams | Cloud relay |
-| **10 Battlestar Ventana** | ScorpiaMediaShield/ScorpiaMediaRelay (81/82) | 20 streams | Camera viewing from trusted devices |
-| **31 PiconResidentGate** | ScorpiaMediaShield/ScorpiaMediaRelay (81/82) | 5 streams | Limited camera viewing for residents |
+| **10 Battlestar Ventana** | ScorpiaMediaShield (81), ScorpiaMediaRelay (82) | 20 streams | Camera viewing from trusted devices |
+| **31 PiconResidentGate** | ScorpiaMediaShield (81), ScorpiaMediaRelay (82) | 5 streams | Limited camera viewing for residents |
 
 **Alert Threshold:** 8 streams (80%)  
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
@@ -222,8 +222,8 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 | **10 Battlestar Ventana** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
 | **70 PegasusMediaNode** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
 
-**Alert Threshold:** 80% of bandwidth limit  
-**Implementation:** 
+**Alert Threshold:** 80% of bandwidth limit
+**Implementation:**
 - Application-level: Plex transcoding quality settings, bandwidth limits per user
 - Network-level: tc QoS shaping, per-VLAN bandwidth allocation
 - Monitor: Plex dashboard metrics, Tautulli for session tracking
@@ -388,7 +388,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 ---
 
-## 🛠️ Implementation Targets
+## Implementation Targets
 
 ### 1. UFW (Uncomplicated Firewall) — Host-Level
 
@@ -398,6 +398,7 @@ UFW provides simple rate limiting for individual hosts. Recommended for GemenonS
 
 ```bash
 # Enable UFW's built-in connection limiting for SSH
+# (fixed default threshold: approx. 6 connections in 30 seconds, not user-configurable)
 ufw limit ssh/tcp comment 'Rate limit SSH'
 
 # Equivalent iptables rule:
@@ -1033,7 +1034,7 @@ Rate limits should be tuned based on observed traffic patterns:
 
 ---
 
-## 🛠️ Future Enhancements
+## Future Enhancements
 
 - Integrate with IDS/IPS (Suricata, Snort) for DPI (Deep Packet Inspection) based rate limiting
 - Machine learning-based anomaly detection for adaptive rate limits
