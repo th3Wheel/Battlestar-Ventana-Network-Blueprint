@@ -17,7 +17,7 @@ if ($InstallModule) {
     Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Force -Scope CurrentUser
 }
 
-Import-Module Sentry -ErrorAction Stop
+Import-Module -Name Sentry -RequiredVersion 0.4.0 -ErrorAction Stop
 
 $resolvedDsn = if ($Dsn) { $Dsn } elseif ($env:SENTRY_DSN) { $env:SENTRY_DSN } else { $null }
 if (-not $resolvedDsn) {
