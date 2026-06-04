@@ -433,9 +433,12 @@ iptables -A INPUT -p tcp --dport 53 -m hashlimit \
 #### Example: SYN flood protection
 
 ```bash
-# Enable SYN cookies (persistent method)
+# Enable SYN cookies persistently
+echo 'net.ipv4.tcp_syncookies = 1' | sudo tee /etc/sysctl.d/99-syncookies.conf
+sudo sysctl --system
+
+# Or temporarily for the running kernel only
 sysctl -w net.ipv4.tcp_syncookies=1
-# Or temporarily: echo 1 > /proc/sys/net/ipv4/tcp_syncookies
 
 # Rate limit SYN packets
 iptables -A INPUT -p tcp --syn -m limit --limit 20/sec --limit-burst 40 -j ACCEPT
