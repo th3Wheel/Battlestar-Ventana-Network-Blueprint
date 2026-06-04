@@ -152,8 +152,8 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **20 IoT** | GemenonServiceVault (50) | 50 msg/sec/device | IoT telemetry |
-| **10 Trusted** | GemenonServiceVault (50) | 100 msg/sec/device | Management/automation |
+| **20 CylonSynthLink** | GemenonServiceVault (50) | 50 msg/sec/device | IoT telemetry |
+| **10 Battlestar Ventana** | GemenonServiceVault (50) | 100 msg/sec/device | Management/automation |
 
 **Alert Threshold:** 40 msg/sec/device  
 **Implementation:** Mosquitto `max_inflight_messages`, `max_queued_messages`
@@ -164,8 +164,8 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | Basestar Control (40) | 5 conn/min/IP | Management access |
-| **10 Trusted** | GemenonServiceVault (50) | 10 conn/min/IP | Administrative access |
+| **10 Battlestar Ventana** | Basestar Control (40) | 5 conn/min/IP | Management access |
+| **10 Battlestar Ventana** | GemenonServiceVault (50) | 10 conn/min/IP | Administrative access |
 | **All Others** | Any | **Blocked** | SSH restricted to trusted |
 
 **Alert Threshold:** 4 conn/min/IP  
@@ -177,9 +177,9 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | GemenonServiceVault (50) | 100 conn/sec | File sharing |
+| **10 Battlestar Ventana** | GemenonServiceVault (50) | 100 conn/sec | File sharing |
 | **31 PiconResidentGate** | GemenonServiceVault (50) | 20 conn/sec | Limited file access |
-| **70 Media** | GemenonServiceVault (50) | 50 conn/sec | Media file access for streaming devices |
+| **70 PegasusMediaNode** | GemenonServiceVault (50) | 50 conn/sec | Media file access for streaming devices |
 
 **Alert Threshold:** 80% of limit  
 **Implementation:** Samba `max connections`, NFSv4 connection limits
@@ -195,10 +195,10 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **81 Cameras Local** | GemenonServiceVault (50) | 10 streams | Local camera feeds recording to NAS |
-| **82 Cameras Cloud** | Internet | 10 streams | Cloud relay |
-| **10 Trusted** | 81/82 Cameras | 20 streams | Camera viewing from trusted devices |
-| **31 PiconResidentGate** | 81/82 Cameras | 5 streams | Limited camera viewing for residents |
+| **81 ScorpiaMediaShield** | GemenonServiceVault (50) | 10 streams | Local camera feeds recording to NAS |
+| **82 ScorpiaMediaRelay** | Internet | 10 streams | Cloud relay |
+| **10 Battlestar Ventana** | ScorpiaMediaShield/ScorpiaMediaRelay (81/82) | 20 streams | Camera viewing from trusted devices |
+| **31 PiconResidentGate** | ScorpiaMediaShield/ScorpiaMediaRelay (81/82) | 5 streams | Limited camera viewing for residents |
 
 **Alert Threshold:** 8 streams (80%)  
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
@@ -216,11 +216,11 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Service | Limit | Notes |
 |-------------|-------------|---------|-------|-------|
-| **10 Trusted** | GemenonServiceVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
-| **70 Media** | GemenonServiceVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
+| **10 Battlestar Ventana** | GemenonServiceVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
+| **70 PegasusMediaNode** | GemenonServiceVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
 | **31 PiconResidentGate** | GemenonServiceVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
-| **10 Trusted** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
-| **70 Media** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
+| **10 Battlestar Ventana** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
+| **70 PegasusMediaNode** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
 
 **Alert Threshold:** 80% of bandwidth limit  
 **Implementation:** 
@@ -288,7 +288,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Trusted** | Basestar Control (40) | 100 queries/sec/IP | Network monitoring |
+| **10 Battlestar Ventana** | Basestar Control (40) | 100 queries/sec/IP | Network monitoring |
 | **40 Basestar Control** | All managed devices | 200 queries/sec | Polling from monitoring systems |
 | **All Others** | Any | **Blocked** | SNMP restricted to management |
 
@@ -397,7 +397,7 @@ UFW provides simple rate limiting for individual hosts. Recommended for GemenonS
 #### Example: Rate limit SSH connections
 
 ```bash
-# Limit SSH to 5 connections per 60 seconds per IP
+# Enable UFW's built-in connection limiting for SSH
 ufw limit ssh/tcp comment 'Rate limit SSH'
 
 # Equivalent iptables rule:
@@ -969,7 +969,6 @@ dnsperf -s 10.76.50.10 -d queries.txt -l 120 -Q 150
 
 ```bash
 # Test HTTP rate limiting with ab (Apache Bench)
-# Test HTTP rate limiting with ab (Apache Bench)
 ab -n 10000 -c 100 http://gemenonservicevault.ventana.local/
 
 # Test with wrk
@@ -1047,6 +1046,6 @@ Rate limits should be tuned based on observed traffic patterns:
 ---
 
 **Document Status:** ✅ Complete  
-**Last Updated:** 2026-04-16  
+**Last Updated:** 2026-06-04  
 **Review Cycle:** Quarterly  
-**Next Review:** 2026-07-16
+**Next Review:** 2026-09-04
