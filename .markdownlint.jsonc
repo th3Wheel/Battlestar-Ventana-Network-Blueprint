@@ -6,6 +6,7 @@
     "line_length": 400,
     "tables": false,
     "code_blocks": false,
+    "code_blocks": false,
     "headers": true,
     "blockquotes": false,
     "html": false,
