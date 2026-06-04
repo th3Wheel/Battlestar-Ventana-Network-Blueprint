@@ -392,7 +392,7 @@ ufw limit ssh/tcp comment 'Rate limit SSH'
 #### Example: Rate limit HTTP/HTTPS
 
 ```bash
-# Limit HTTP to 100 connections per minute per IP
+# Enable UFW's built-in connection limiting for HTTP/HTTPS
 ufw limit 80/tcp comment 'Rate limit HTTP'
 ufw limit 443/tcp comment 'Rate limit HTTPS'
 ```
