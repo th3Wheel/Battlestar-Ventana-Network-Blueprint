@@ -1,0 +1,7 @@
+[Match]
+Name={{ primary_iface }}.{{ radxa_vlan_id }}
+
+[Network]
+Address={{ radxa_host_ip }}/{{ radxa_subnet_prefix }}
+Gateway={{ radxa_vlan_gateway }}
+DNS={{ radxa_dns_servers | join(' ') }}
