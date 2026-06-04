@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mcp-fing-server:
+    build: .
+    container_name: mcp-fing-server
+    environment:
+      # Fing Local API URL - with host networking, use localhost directly
+      - FING_API_URL=http://localhost:49090/1
+    # Use host network so the container can reach the local Fing service
+    network_mode: host
+    stdin_open: true
+    tty: false
+    # Run interactively: docker compose run --rm mcp-fing-server
+    # Optional: Mount .env for API key
+    # volumes:
+    #   - ./.env:/app/.env:ro
+
+# Example: If Fing runs in a separate container
+# services:
+#   fing-local:
+#     image: fing/fing-local:latest
+#     container_name: fing-local
+#     network_mode: host
+#     volumes:
+#       - fing-data:/data
+#
+#   mcp-fing-server:
+#     build: .
+#     container_name: mcp-fing-server
+#     depends_on:
+#       - fing-local
+#     environment:
+#       - FING_API_URL=http://localhost:49090/1
+#     network_mode: host
+#
+# volumes:
+#   fing-data:
