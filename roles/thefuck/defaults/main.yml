@@ -1,0 +1,6 @@
+---
+thefuck_alias: fuck
+thefuck_shells:
+  - bash
+  - zsh
+thefuck_install_for_root: false

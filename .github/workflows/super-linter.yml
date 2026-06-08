@@ -20,11 +20,8 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: Install Ansible
-        run: python3 -m pip install -r ansible/requirements.txt ansible-lint
-
       - name: Install Ansible collections
-        run: ansible-galaxy collection install -r ansible/collections/requirements.yml
+        run: ansible-galaxy collection install -r collections/requirements.yml
 
       - name: Lint Code Base
         uses: github/super-linter@v4

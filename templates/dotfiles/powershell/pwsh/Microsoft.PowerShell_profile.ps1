@@ -24,3 +24,9 @@ if ((Get-Command fzf -ErrorAction SilentlyContinue) -and (Get-Module -ListAvaila
     Import-Module PSFzf
     Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 }
+# ── thefuck ───────────────────────────────────────────────────────────────────
+# https://github.com/nvbn/thefuck  |  install: pip install thefuck
+if (Get-Command thefuck -ErrorAction SilentlyContinue) {
+    Invoke-Expression "$(thefuck --alias fuck)"
+}
+# ─────────────────────────────────────────────────────────────────────────────
