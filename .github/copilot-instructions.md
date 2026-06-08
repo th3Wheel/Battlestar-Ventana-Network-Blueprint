@@ -1,365 +1,109 @@
-# GitHub Copilot Instructions for Battlestar Ventana Network Blueprint
+# Battlestar Ventana Network Blueprint - Repository-Wide Copilot Instructions
 
-This document provides guidance for GitHub Copilot when working with the Battlestar Ventana Network Blueprint repository. These patterns ensure consistency with the established security posture and automation framework.
+## Project Identity
 
----
-
-## 1. Architecture Context
-
-### Network Segmentation Model
-
-- **Zone-based security**: VLANs organized by trust level (Trusted, Semi-Trusted, Untrusted, Services, Infrastructure, Surveillance)
-- **Address scheme**: `10.76.X.0/24` where X = VLAN ID
-- **Naming convention**: Battlestar Galactica themed names for memorability and auditability
-
-### Key Security Zones
-
-- **Trusted (10, 90)**: Full access to services, strict authentication
-- **Semi-Trusted (31, 60, 70)**: Function-specific access only
-- **Untrusted (20, 30)**: Internet-only or minimal telemetry
-- **Services (50)**: ServerVault - central service hub
-- **Infrastructure (40)**: InfraCore (Basestar Control VLAN) - management plane
-- **Surveillance (81, 82)**: Camera networks with view-only access
+This repository (`Battlestar-Ventana-Network-Blueprint`) defines the infrastructure,
+network topology, configuration contracts, and deployment governance for the Battlestar
+Ventana platform. All Copilot responses, suggestions, and agentic work MUST align with
+the conventions below.
 
 ---
 
-## 2. Security Patterns
+## Tech Stack Baseline
 
-### Least Privilege Principle
-
-When suggesting firewall rules or service access:
-
-- Always default to DENY
-- Explicitly allow only required ports/protocols
-- Document the business justification for each rule
-- Prefer unidirectional flows (source → destination only)
-
-Example:
-
-```markdown
-| Source VLAN | Destination VLAN | Ports | Protocol | Justification |
-|-------------|------------------|-------|----------|---------------|
-| 20 IoT | 50 ServerVault | 8883 | TCP | MQTT telemetry only |
-```
-
-### Rate-Limiting Standards
-
-Apply rate limits to prevent abuse:
-
-- **Authentication endpoints**: 5 attempts/minute per IP
-- **API endpoints**: 60 requests/minute per client
-- **MQTT telemetry**: 100 messages/second per device
-- **DNS queries**: 50 queries/second per client
-- **Guest network**: Bandwidth throttled to 10 Mbps
-
-### Service Mesh Patterns
-
-For service-to-service communication:
-
-- Route all HTTP/HTTPS through reverse proxy on ServerVault
-- Implement health checks for all services
-- Use mutual TLS (mTLS) for internal service communication
-- Apply circuit breaker patterns for external dependencies
-- Implement retry logic with exponential backoff
-
-Example service configuration:
-
-```yaml
-service:
-  name: mqtt-broker
-  health_check:
-    endpoint: /health
-    interval: 30s
-    timeout: 5s
-  rate_limit:
-    requests_per_second: 100
-  circuit_breaker:
-    failure_threshold: 5
-    timeout: 60s
-```
-
-### SIEM Integration Requirements
-
-When adding logging or monitoring:
-
-- Centralize all logs to ServerVault syslog
-- Include structured fields: timestamp, source_vlan, destination_vlan, action, rule_id
-- Define alert thresholds for security events
-- Tag events by severity: critical, high, medium, low, info
-
-Example log format:
-
-```json
-{
-  "timestamp": "2026-01-21T21:00:00Z",
-  "event_type": "firewall_deny",
-  "severity": "medium",
-  "source_vlan": 20,
-  "destination_vlan": 10,
-  "source_ip": "10.76.20.45",
-  "destination_ip": "10.76.10.15",
-  "port": 22,
-  "protocol": "TCP",
-  "rule_id": "DENY-UNTRUSTED-TO-TRUSTED"
-}
-```
+- Canonical stack definition lives in `/docs/tech-stack-baseline.md`.
+- Do not duplicate stack details in this file; reference the canonical doc.
 
 ---
 
-## 3. Automation Patterns
+## Determinism Rules
 
-### Infrastructure as Code (IaC)
+- **Always prefer explicit over implicit.** Never invent schema fields, VLAN IDs,
+  subnet boundaries, hostnames, firewall flows, or environment keys.
+- **Use source-of-truth files by data type and priority:**
 
-When suggesting infrastructure changes:
+  | Data Type        | Primary Source                  | Fallback Source                         | Policy Validation Source                        |
+  | ---------------- | ------------------------------- | --------------------------------------- | ----------------------------------------------- |
+  | Network topology | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | VLAN assignments | `/config/vlan-registry.yaml`    | `/ansible/group_vars/all/vlan-vars.yml` | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | IP allocations   | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
 
-- Prefer declarative configuration over imperative scripts
-- Use Terraform for network infrastructure (VLANs, firewall rules, routing)
-- Use Ansible for service deployment and configuration
-- Version control all configuration in this repository
-- Include validation and testing steps
-
-Example Terraform structure:
-
-```hcl
-# firewall_rules.tf
-resource "firewall_rule" "iot_to_servervault" {
-  name        = "iot-mqtt-telemetry"
-  source      = "10.76.20.0/24"
-  destination = "10.76.50.0/24"
-  port        = 8883
-  protocol    = "TCP"
-  action      = "ALLOW"
-  log         = true
-}
-```
-
-### GitOps Workflow
-
-All changes should follow GitOps principles:
-
-1. Make changes in a feature branch
-2. Update documentation in same commit
-3. Run validation/linting
-4. Create pull request with description
-5. Automated tests run in CI/CD
-6. Manual approval for production deployment
-7. Automated rollback on failure
-
-### Configuration Management
-
-For service configuration:
-
-- Store secrets in external secret management (not in repo)
-- Use environment-specific override files
-- Implement configuration drift detection
-- Automated remediation for drift from desired state
-
-Example secrets pattern:
-
-```yaml
-# config.yaml (checked into repo)
-mqtt:
-  host: servervault.internal
-  port: 8883
-  username: ${MQTT_USERNAME}  # from secret manager
-  password: ${MQTT_PASSWORD}  # from secret manager
-```
-
-### Automation Standards
-
-When writing automation scripts:
-
-- Use idempotent operations (safe to run multiple times)
-- Include rollback procedures
-- Add comprehensive logging
-- Implement health checks before/after changes
-- Follow the repository's naming conventions
-
-Example automation script structure:
-
-```bash
-#!/bin/bash
-set -euo pipefail
-
-# Pre-flight checks
-check_dependencies() { ... }
-validate_config() { ... }
-
-# Main operations
-backup_current_state() { ... }
-apply_changes() { ... }
-verify_changes() { ... }
-
-# Rollback on failure
-rollback() { ... }
-trap rollback ERR
-```
+- **If a required source file is missing, flag the gap explicitly.** Do not fabricate values.
+- **If both the primary and fallback source files for a required value are absent, halt generation of the affected configuration block, output a clearly marked warning in the format:** `[MISSING SOURCE] <file-path> required for <value-type> — cannot proceed without human input`, **and continue only with unaffected sections.**
+- **Never mutate protected branches directly.** All changes to `main`, `release/*`,
+  and `/infra/prod` MUST go through a pull request with required approvals.
+- **Idempotency is required.** All generated infrastructure scripts, Terraform modules,
+  and Ansible playbooks must be idempotent. State this explicitly in any code comment
+  block you generate.
+- **If idempotency cannot be guaranteed due to external state dependencies, add a prominent comment block in the generated code flagging the specific condition and the manual verification step required before applying.**
+- **No secrets in code.** Never write secrets, tokens, passwords, or keys inline.
+  Reference `/secrets/` vault paths or environment variable names only.
 
 ---
 
-## 4. Documentation Patterns
+## Coding Conventions
 
-### Markdown Structure
-
-- Use ATX-style headers (`#`, `##`, `###`)
-- Include table of contents for documents > 100 lines
-- Use Mermaid diagrams for network flows
-- Use tables for structured data (firewall rules, DHCP scopes)
-
-### Documentation Requirements
-
-When adding features or changes:
-
-- Update `docs/Project_Architecture_Blueprint.md` for architectural changes
-- Update `docs/firewall-matrix.md` for firewall rule changes
-- Update `docs/dhcp-scopes.md` for network changes
-- Add entry to `CHANGELOG.md` under the `[Unreleased]` section following Keep a Changelog format
-- Ensure documentation-only or hardening-guidance updates are recorded as concise `Added`/`Changed` entries
-- Update relevant diagrams if network topology changes
-
-### Naming Conventions
-
-Follow the Battlestar Galactica theme:
-
-- VLANs named after colonies, ships, or locations
-- Services named functionally (ServerVault, InfraCore)
-- Documentation files should use kebab-case for new files (e.g., `firewall-matrix.md`); legacy docs like `Project_Architecture_Blueprint.md` keep their existing names
-- Scripts use snake_case: `deploy_service.sh`
+- **Formatting**: Black (Python), Prettier (TS/JS), shfmt (Bash).
+- **Canonical stack source**: Use **Tech Stack Baseline** at `/docs/tech-stack-baseline.md` as the only authoritative stack listing.
+- **Docstrings**: NumPy style for Python, JSDoc for TypeScript.
+- **Commit messages**: Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
 
 ---
 
-## 5. Testing and Validation
+## Network and Infrastructure Conventions
 
-### Pre-Deployment Testing
-
-Before suggesting deployment:
-
-- Validate Markdown syntax with linter
-- Render Mermaid diagrams to verify syntax
-- Test firewall rules in isolated environment
-- Verify DHCP scopes don't overlap
-- Check for configuration conflicts
-
-### Security Testing
-
-For security-related changes:
-
-- Run network policy tests (nmap scans from each VLAN)
-- Verify authentication rate limits
-- Test circuit breaker failover scenarios
-- Validate log forwarding to SIEM
-- Scan for exposed sensitive information
-
-### Monitoring and Observability
-
-After deployment:
-
-- Verify dashboards show expected metrics
-- Confirm alerts fire for test scenarios
-- Check log aggregation is working
-- Validate service health checks
-- Monitor for anomalies in first 24 hours
+- All IP ranges and static assignments MUST map to `/docs/ip-allocation.md` unless
+  superseded by `/config/*` source-of-truth files.
+- VLAN assignments MUST follow the source-priority table in **Determinism Rules**.
+- Firewall rule changes MUST be reflected in `/docs/firewall-matrix.md` and summarized
+  in `/CHANGELOG.md`.
+- All DNS records follow the naming scheme: `<service>.<zone>.ventana.internal`.
 
 ---
 
-## 6. Common Scenarios and Solutions
+## Naming Conventions
 
-### Adding a New VLAN
-
-1. Choose next available VLAN ID
-2. Assign subnet `10.76.X.0/24` with gateway `.1`
-3. Select Battlestar-themed name
-4. Update `docs/dhcp-scopes.md`
-5. Define zone placement in architecture
-6. Add firewall rules in `docs/firewall-matrix.md`
-7. Update network diagrams
-8. Add monitoring dashboard coverage
-
-### Adding a New Service
-
-1. Deploy to ServerVault (VLAN 50) by default
-2. Configure reverse proxy endpoint
-3. Implement health checks
-4. Apply rate limiting
-5. Add SIEM logging
-6. Update service mesh configuration
-7. Document in `docs/services.md`
-8. Create monitoring alerts
-
-### Hardening Existing Service
-
-1. Review current firewall rules - tighten if possible
-2. Add rate limiting if missing
-3. Implement mTLS for internal communication
-4. Enable SIEM logging and alerting
-5. Add automated backup/recovery
-6. Document security controls
-7. Add security testing
+- Canonical naming reference lives in `/docs/naming-conventions.md`.
+- Do not invent VLAN names, hostnames, location tokens, or device type tokens.
+- **VLAN / SSID names** must match the canonical list in `/docs/naming-conventions.md` exactly
+  (e.g., `BattlestarVentana`, `CylonSynthLink`, `ScyllaProcessControl`).
+- **Physical hosts / hypervisors**: `<Color/Element><Descriptor>` PascalCase
+  (e.g., `CrimsonRogue`, `MintRedoubt`). Retired names are never reused.
+- **Personal computers & laptops**: Jaeger names from the canonical pool
+  (`GipsyDanger`, `GipsyAvenger`, `StrykerEureka`, `ChernoAlpha`, `CoyoteTango`,
+  `BracerPhoenix`, `GuardianBravo`, `SaberAthena`, `TitanRedeemer`, `ValorOmega`).
+- **If all names in the canonical Jaeger pool are already assigned, flag the gap to the operator and do not invent a new name. Do not reuse a name that is currently active.**
+- **IoT, cameras, printers, sensors, appliances**:
+  `<location>-<type>[-<qualifier>][-<index>]` (lowercase, hyphen-separated).
+  Location and device-type tokens are defined in `/docs/naming-conventions.md`.
+  The VLAN/subnet already encodes the network zone — hostnames encode **physical location**.
 
 ---
 
-## 7. Compliance and Audit
+## Governance Guardrails
 
-### Documentation Requirements
-
-Maintain audit trail for:
-
-- Firewall rule changes (who, what, when, why)
-- VLAN additions/modifications
-- Service deployments
-- Security incidents
-- Configuration changes
-
-### Audit Checklist
-
-Use `docs/audit-checklist.md` for periodic reviews:
-
-- Verify zone isolation is maintained
-- Confirm rate limits are enforced
-- Check SIEM logs for anomalies
-- Validate backup procedures
-- Review access control lists
-- Test disaster recovery
+- Copilot agents **MUST NOT** auto-merge pull requests.
+- Copilot agents **MUST NOT** push directly to any protected branch.
+- Copilot agents **MUST** add the label `copilot-generated` to all PRs they open.
+- Copilot agents **MUST** reference the relevant GitHub Issue number in all PR descriptions.
+- Security-sensitive files (`/.github/CODEOWNERS`, `/infra/prod/**`, `/secrets/**`) must not be
+  modified, created, deleted, or included in any commit or PR by a Copilot agent without explicit
+  human approval. Reading these files for context is permitted.
 
 ---
 
-## 8. Best Practices Summary
+## Context Files
 
-✅ **Do:**
+When working in this repository, always check:
 
-- Follow the least privilege principle
-- Document all changes thoroughly
-- Use Infrastructure as Code
-- Implement defense in depth
-- Centralize logging to SIEM
-- Apply rate limiting everywhere
-- Use service mesh for internal communication
-- Test changes in isolated environment
-- Monitor and alert on anomalies
-
-❌ **Don't:**
-
-- Open bidirectional ports without justification
-- Skip documentation updates
-- Hardcode secrets in configuration
-- Deploy to production without testing
-- Bypass security controls
-- Create single points of failure
-- Forget to add monitoring
-- Leave debug/verbose logging in production
-
----
-
-## 9. References
-
-- **Architecture**: `docs/Project_Architecture_Blueprint.md`
-- **Firewall Rules**: `docs/firewall-matrix.md`
-- **Network Config**: `docs/dhcp-scopes.md`
-- **Service Catalog**: `docs/services.md`
-- **Security Practices**: `ha/guidelines/06-security-practices.md`
-- **Hardening Plan**: `docs/hardening-rollout-plan.md`
-- **Change Log**: `CHANGELOG.md`
-
----
-
-*These instructions ensure that Copilot suggestions align with the Battlestar Ventana Network Blueprint's security-first, documentation-driven, and automation-focused approach.*
+- `/config/network-topology.yaml` (if present) - highest-priority network topology source
+- `/config/vlan-registry.yaml` (if present) - highest-priority VLAN registry source
+- `/docs/Project_Architecture_Blueprint.md` - system overview
+- `/docs/tech-stack-baseline.md` - canonical tech stack reference
+- `/docs/ip-allocation.md` - IP and allocation source (fallback if config files absent)
+- `/ansible/group_vars/all/vlan-vars.yml` - VLAN source (fallback if config files absent)
+- `/docs/firewall-matrix.md` - inter-VLAN and egress policy reference
+- `/docs/services.md` - service and port contract reference
+- `/docs/naming-conventions.md` - canonical naming conventions for VLANs, hosts, and devices
+- `/CHANGELOG.md` - recent changes
+- `/.github/CODEOWNERS` (if present) - ownership and approval routing

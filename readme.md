@@ -36,6 +36,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📚 Supporting documentation
 
+- [`docs/tech-stack-baseline.md`](docs/tech-stack-baseline.md) — Canonical tech stack reference for humans and agents
 - [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist

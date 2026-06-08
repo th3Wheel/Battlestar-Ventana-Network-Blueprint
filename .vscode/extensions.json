@@ -1,11 +1,16 @@
 {
     "recommendations": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
         "upstash.context7-mcp",
         "DavidAnson.vscode-markdownlint",
         "esbenp.prettier-vscode",
         "ms-python.python",
         "redhat.vscode-yaml",
         "charliermarsh.ruff",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "timonwong.shellcheck",
+        "hashicorp.terraform"
     ]
 }

@@ -1,0 +1,44 @@
+{
+  "mcpServers": {
+    "gemini-api-docs-mcp": {
+      "type": "http",
+      "url": "https://gemini-api-docs-mcp.dev"
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "op://homelab/Context7/vscode_api_key"
+      }
+    },
+    "sentry": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "@sentry/mcp-server@latest",
+        "--host=$SENTRY_HOST"
+      ],
+      "env": {
+        "SENTRY_HOST": "https://contoso.sentry.io",
+        "SENTRY_ACCESS_TOKEN": "op://Personal/Sentry/bsn token"
+      }
+    },
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/github",
+      "tools": [
+        "*"
+      ],
+      "headers": {
+        "X-MCP-Toolsets": "repos,issues, labels,users,context, actions, repos ,pull_requests,code_security,secret_protection,actions,web_search"
+      }
+    },
+    "xpipe": {
+      "type": "sse",
+      "url": "http://localhost:21721/mcp",
+      "headers": {
+        "Authorization": "Bearer f815e1e1-3a02-4182-8676-3530b27a60b9"
+      }
+    }
+  }
+}
