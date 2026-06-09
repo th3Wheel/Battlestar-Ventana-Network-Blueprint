@@ -1,6 +1,6 @@
+# 🖧 ZyXEL GS1920-48HP — Switch Config Specification
+
 `````
-################################################################################
-# FILE: gs1920-48hp-switch-config-spec.md
 # SCOPE: ZyXEL GS1920-48HP — Fully Deterministic Configuration Specification
 # VERSION: 1.0.0
 # DATE: 2026-06-01

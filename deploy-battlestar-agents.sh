@@ -158,6 +158,5 @@ fi
 
 [[ ${ERRORS} -eq 0 ]]
 
----
-
-*Battlestar Ventana Network Blueprint — Agent Suite Deployment Guide · v1.0.0 · May 2026*
+# ---
+# Battlestar Ventana Network Blueprint — Agent Suite Deployment Guide · v1.0.0 · May 2026
