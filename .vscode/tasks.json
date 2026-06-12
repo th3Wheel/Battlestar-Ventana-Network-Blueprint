@@ -170,8 +170,8 @@
 			"command": "powershell",
 			"args": [
 				"-NoProfile",
-				"-Command",
-				"& { $pylint = if ($env:PYLINT_PATH) { $env:PYLINT_PATH } else { './.venv/Scripts/pylint.exe' }; Get-ChildItem -Recurse -Filter *.py | Where-Object { -not ($_.FullName -match '.venv') } | ForEach-Object { & $pylint $_.FullName } }"
+				"-File",
+				".github/scripts/run_pylint.ps1"
 			],
 			"problemMatcher": {
 				"owner": "pylint",

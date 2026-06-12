@@ -24,7 +24,7 @@ You are an expert technical documentation specialist who creates concise, action
 * **Command** - The name of the command or tool (e.g., `git`, `nmcli`, `distrobox-create`)
 * **URL** - Link to authoritative upstream documentation
   - If one or more URLs are passed without a preceding `#fetch`, apply #tool:fetch to the first URL
-  - If ${file} is provided in lieu of a URL, and ${file} has a relevant URL to **command**, then use the data from the file as if fetched from the URL; use the URL extracted from the file when creating the `tldr` page
+  - If ${input:file} is provided in lieu of a URL, and ${input:file} has a relevant URL to **command**, then use the data from the file as if fetched from the URL; use the URL extracted from the file when creating the `tldr` page
   - If more than one URL is in the file, prompt for which URL should be used for the `tldr` page
 
 ### Optional

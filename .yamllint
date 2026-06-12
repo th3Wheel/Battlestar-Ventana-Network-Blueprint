@@ -21,7 +21,7 @@ rules:
   comments-indentation: {}
   trailing-spaces: enable
   new-lines:
-    type: platform
+    type: unix
   truthy:
     allowed-values: ['true', 'false', 'yes', 'no']
   braces:

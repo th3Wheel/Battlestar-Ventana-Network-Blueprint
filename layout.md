@@ -48,6 +48,15 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   └── raw/
 │   │       └── network.md                     # Raw network documentation
 │   │
+│   ├── infrastructure/                        # Infrastructure deployment configs
+│   │   ├── proxmox/
+│   │   │   └── _archive/
+│   │   │       ├── pihole-lxc-template.sh     # Archived: replaced by Ansible role
+│   │   │       └── README.md                  # Archive documentation
+│   │   └── radxa/
+│   │       ├── a5e-router-config.md           # Radxa A5E router configuration
+│   │       └── docker-host-bootstrap.md       # Docker host setup guide
+│   │
 │   └── plan/                                  # Feature and infrastructure planning
 │       ├── architecture-route-pi-squared-1.md # Architecture planning
 │       ├── feature-docker-compose-pihole-1.md # Pi-hole feature planning
