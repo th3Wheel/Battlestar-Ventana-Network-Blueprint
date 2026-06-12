@@ -68,11 +68,12 @@
 ## 🧩 Dashboard Spec
 
 * **ResidentGate Panel**: DHCP leases, connected clients, bandwidth usage, anomaly alerts  
-* **IoT Panel**: Device uptime, firmware status, blocked/allowed flows  
+* **IoT Panel**: Device uptime, firmware status, blocked/allowed flows, WLED status, Hyperion camera feeds  
 * **Media Panel**: Cast targets, playback status, volume sliders  
 * **Printer Panel**: Ink/toner levels, job queue, quick cancel  
 * **Camera Panels**: Local NVR feeds vs. cloud API health  
-* **Infra Panel**: Switch/controller uptime, VLAN health, firewall rule counters  
+* **Infra Panel**: Switch/controller uptime, VLAN health, firewall rule counters
+* **Hyperion Panel**: Ambient lighting status, camera FPS/latency, LED zone mappings  
 
 ---
 

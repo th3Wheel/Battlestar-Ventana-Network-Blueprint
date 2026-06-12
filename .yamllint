@@ -1,0 +1,30 @@
+---
+extends: default
+
+ignore: |
+  node_modules/
+  .venv/
+  venv/
+  molecule/
+  ha/templates/*.template.yaml
+
+rules:
+  line-length:
+    max: 180
+    level: warning
+  indentation:
+    spaces: 2
+    indent-sequences: whatever
+  document-start: disable
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: {}
+  trailing-spaces: enable
+  new-lines:
+    type: unix
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
+  braces:
+    max-spaces-inside: 1
+  empty-lines:
+    max: 2

@@ -1,41 +1,58 @@
 ---
-description: 'Markdown documentation standards for the Battlestar Ventana Network Blueprint repository'
+description: 'Documentation and content creation standards'
 applyTo: '**/*.md'
 ---
 
 ## Markdown Content Rules
 
-Follow these rules when writing or editing documentation in this repository:
+The following markdown content rules are enforced in the validators:
 
-1. **Headings**: Use a single `#` H1 for the document title. Use `##` for major sections and `###` for subsections. Do not skip heading levels.
-2. **Lists**: Use `-` for bullet points and `1.` for numbered lists. Indent nested lists with two spaces.
-3. **Code Blocks**: Use fenced code blocks with a language identifier for syntax highlighting (e.g., ` ```yaml `, ` ```bash `).
-4. **Links**: Use `[descriptive text](url)` syntax. Ensure links are valid and accessible.
-5. **Images**: Use `![alt text](path)` syntax. Include a brief, meaningful alt text for accessibility.
-6. **Tables**: Use markdown table syntax with aligned columns and a header row.
-7. **Line Length**: Keep lines under 400 characters. Use blank lines to separate logical sections.
-8. **Whitespace**: Use a single blank line between paragraphs and sections. Avoid excessive blank lines.
-9. **Emoji headers**: Use emoji prefixes on major section headings to match the repo style (e.g., `## 🔐 Security`, `## 📡 Network`).
+1. **Headings**: Use appropriate heading levels (H2, H3, etc.) to structure your content. Do not use an H1 heading, as this will be generated based on the title.
+2. **Lists**: Use bullet points or numbered lists for lists. Ensure proper indentation and spacing.
+3. **Code Blocks**: Use fenced code blocks for code snippets. Specify the language for syntax highlighting.
+4. **Links**: Use proper markdown syntax for links. Ensure that links are valid and accessible.
+5. **Images**: Use proper markdown syntax for images. Include alt text for accessibility.
+6. **Tables**: Use markdown tables for tabular data. Ensure proper formatting and alignment.
+7. **Line Length**: Follow the repository Markdown validator line-length setting. Break long lines consistently based on that configured limit.
+8. **Whitespace**: Use appropriate whitespace to separate sections and improve readability.
+9. **Front Matter**: Front matter is optional for standard documentation and required only for file types or validators that explicitly require metadata.
+ - For standard documentation files, do not require front matter.
+ - For Copilot instruction files and `SKILL.md`, include only the metadata fields required by the relevant tooling.
 
-## Front Matter
+## Formatting and Structure
 
-Front matter is **not required** for standard documentation files in this repository. It is only used on Copilot instruction files (`.instructions.md`) and skill files (`SKILL.md`) where tooling needs the `description` and `applyTo`/`name` fields.
+Follow these guidelines for formatting and structuring your markdown content:
 
-## Diagrams
+- **Headings**: Use `##` for H2 and `###` for H3. Ensure that headings are used in a hierarchical manner. Recommend restructuring if content includes H4, and more strongly recommend for H5.
+- **Lists**: Use `-` for bullet points and `1.` for numbered lists. Indent nested lists with two spaces.
+- **Code Blocks**: Use triple backticks to create fenced code blocks. Specify the language after the opening backticks for syntax highlighting (e.g., `csharp`).
+- **Links**: Use `[link text](URL)` for links. Ensure that the link text is descriptive and the URL is valid.
+- **Images**: Use `![alt text](image URL)` for images. Include a brief description of the image in the alt text.
+- **Tables**: Use `|` to create tables. Ensure that columns are properly aligned and headers are included.
+- **Line Length**: Break lines at 80 characters to improve readability. Use soft line breaks for long paragraphs.
+- **Whitespace**: Use blank lines to separate sections and improve readability. Avoid excessive whitespace.
 
-Use Mermaid for network flow diagrams and topology maps. Embed diagrams directly in markdown using a fenced `mermaid` code block:
+## Validation Requirements
 
-```mermaid
-flowchart TB
-    A["Source"] --> B["Destination"]
-```
+Ensure compliance with the following validation requirements:
 
-## Tables
+- **Content Rules**: Ensure that the content follows the markdown content rules specified above.
+- **Formatting**: Ensure that the content is properly formatted and structured according to the guidelines.
+- **Validation**: Run the validation tools to check for compliance with the rules and guidelines.
 
-Use tables for structured data such as firewall rules, VLAN mappings, and service/port references. Align columns with spaces for readability:
+## Blog Post Front Matter (Optional)
 
-```markdown
-| Source VLAN | Destination VLAN | Ports | Protocol | Notes |
-|-------------|------------------|-------|----------|-------|
-| 10 Trusted  | 50 ServerVault   | 443   | TCP      | HTTPS |
-```
+For blog posts and articles (typically in dedicated blog/post directories), include the following fields in the YAML front matter:
+
+- `post_title`: The title of the post.
+- `author1`: The primary author of the post.
+- `post_slug`: The URL slug for the post.
+- `microsoft_alias`: The Microsoft alias of the author.
+- `featured_image`: The URL of the featured image.
+- `categories`: The categories for the post. These categories must be from the list in /categories.txt.
+- `tags`: The tags for the post.
+- `ai_note`: Indicate if AI was used in the creation of the post.
+- `summary`: A brief summary of the post. Recommend a summary based on the content when possible.
+- `post_date`: The publication date of the post.
+
+**Note**: These blog-specific fields are NOT required for general markdown documentation files such as README.md, CHANGELOG.md, or technical documentation files.

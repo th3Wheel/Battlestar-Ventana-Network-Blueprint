@@ -1,97 +1,29 @@
-# Project Guidelines
+## Context7 MCP Integration (CRITICAL - Read First)
 
-## Scope
+**MANDATORY:** Before starting ANY task, ALWAYS leverage Context7 MCP to gather comprehensive context about the repository, codebase, and related resources.
 
-This is a documentation-first repository for the Battlestar Ventana network blueprint.
+### Context7 Usage Requirements
 
-- Primary artifacts: Markdown, YAML, JSON, Mermaid diagrams
-- Core network scheme: `10.76.X.0/24` where `X = VLAN ID`
-- Security model: zero-trust segmentation with default-deny firewall policy
-- Naming model: Battlestar Galactica theme for VLANs and documented hostname conventions
+1. **Pre-Task Discovery (REQUIRED):**
+   - Use Context7 MCP to search for relevant documentation, code patterns, and architectural decisions BEFORE making changes
+   - Query Context7 for similar implementations, related VLANs, existing firewall rules, and naming patterns
+   - Identify dependencies and cross-references using Context7's semantic search capabilities
 
-Use this file for workspace-wide defaults. Keep detailed policy in linked docs.
+2. **Continuous Context Gathering:**
+   - Invoke Context7 MCP at every decision point to validate assumptions
+   - Use Context7 to find examples of similar changes in repository history
+   - Query Context7 for related documentation that might need updating alongside your changes
 
-## Build And Test
+3. **Context7 Query Patterns:**
+   - **For VLAN changes:** "Find all references to VLAN [ID], DHCP scopes, firewall rules, and service definitions"
+   - **For firewall updates:** "Show firewall rules involving [source] to [destination], related services, and port definitions"
+   - **For naming:** "Find naming patterns for [VLANs/SSIDs/hosts], theme conventions, and similar examples"
+   - **For architecture:** "Retrieve architectural decisions, zone models, and related design documents"
+   - **For cross-references:** "Find all files mentioning [service/VLAN/host] and their relationships"
 
-Use these commands for validation:
+4. **Validation Before Commit:**
+   - Use Context7 to verify all affected files are identified and updated
+   - Query for TODOs, cross-references, and dependencies that might be impacted
+   - Ensure consistency across documentation using Context7's semantic analysis
 
-1. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore`
-2. `markdownlint **/*.md -c .markdownlint.jsonc -p .markdownlintignore --fix`
-
-VS Code task equivalents:
-
-- `markdownlint: check`
-- `markdownlint: fix`
-
-There is no application build pipeline in this repository.
-
-## Core Conventions
-
-Always follow these conventions unless a task explicitly says otherwise:
-
-1. Keep documentation synchronized: update affected docs and `CHANGELOG.md` together.
-2. Preserve least-privilege intent: default deny, explicit allowlists, and unidirectional flows when possible.
-3. Use existing naming standards for VLANs, hosts, and devices.
-4. Prefer links to canonical docs instead of copying large policy blocks.
-5. Keep changes surgical: do not reorganize unrelated files.
-
-## Review Expectations
-
-When asked to perform a review, prioritize high-impact findings first:
-
-1. Security, correctness, or behavior regressions.
-2. Missing or weak validation/tests for changed behavior.
-3. Performance or maintainability risks that can affect operations.
-
-Review output should be concise and actionable:
-
-- List findings first, ordered by severity.
-- Include exact file references and clear remediation suggestions.
-- If no findings exist, state that explicitly and call out residual risk/test gaps.
-
-## Project Gotchas
-
-- `infrastructure/` is a symlink to external content; do not modify it in this repository.
-- Do not remove historical changelog entries; add new items under `[Unreleased]`.
-- Avoid changing VLAN IDs, IP ranges, or established naming without coordinated doc updates.
-- For Markdown, follow repository rules in instruction files rather than ad-hoc formatting.
-
-## Canonical References
-
-Architecture and segmentation:
-
-- `docs/Project_Architecture_Blueprint.md`
-- `docs/firewall-matrix.md`
-- `docs/dhcp-scopes.md`
-- `docs/services.md`
-
-Naming and inventory:
-
-- `docs/naming-conventions.md`
-- `docs/device-inventory.md`
-- `docs/physical-hosts.md`
-- `docs/other-devices.md`
-
-Operations and security:
-
-- `docs/audit-checklist.md`
-- `docs/hardening-rollout-plan.md`
-- `ha/guidelines/06-security-practices.md`
-
-Documentation standards and specialized instructions:
-
-- `.github/instructions/markdown.instructions.md`
-- `.github/instructions/doNotLint/security-and-owasp.instructions.md`
-- `.github/instructions/doNotLint/spec-driven-workflow-v1.instructions.md`
-- `.github/instructions/doNotLint/context7.instructions.md`
-- `.github/instructions/doNotLint/shell.instructions.md`
-
-## Task Routing Hints
-
-When changes target these areas, consult the corresponding docs first:
-
-- Firewall or traffic flow changes: `docs/firewall-matrix.md`, `docs/services.md`
-- VLAN or subnet changes: `docs/dhcp-scopes.md`, `docs/Project_Architecture_Blueprint.md`
-- Naming updates: `docs/naming-conventions.md`
-- Home Assistant updates: `ha/home-assistant-programming-guidelines.instructions.md`
-- Infrastructure plans: `plan/*.md` and `baseline/*.md`
+**FAILURE TO USE CONTEXT7 MAY RESULT IN INCOMPLETE CHANGES, BROKEN CROSS-REFERENCES, OR INCONSISTENT DOCUMENTATION.**

@@ -12,6 +12,12 @@ Central index for all hostname pools, device trackers, and service matrices in t
 - IoT / printing / camera / appliance client tracker  
   → [docs/other-devices.md](other-devices.md)
 
+- WLED configurations, presets, and segment mappings  
+  → [docs/wled-configurations.md](wled-configurations.md)
+
+- Hyperion HD camera sensors for ambient lighting  
+  → [docs/hyperion-camera-sensor.md](hyperion-camera-sensor.md)
+
 - VLAN firewall policy matrix  
   → [docs/firewall-matrix.md](firewall-matrix.md)
 

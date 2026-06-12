@@ -1,8 +1,63 @@
 {
-  "servers": {
-    "gemini-api-docs-mcp": {
-      "type": "http",
-      "url": "https://gemini-api-docs-mcp.dev"
-    }
-  }
+"servers": {
+"io.github.github/github-mcp-server": {
+"type": "stdio",
+"version": "0.28.1",
+"command": "docker",
+"args": [
+"run",
+"-i",
+"--rm",
+"-e",
+"GITHUB_PERSONAL_ACCESS_TOKEN=${env:GITHUB_PERSONAL_ACCESS_TOKEN}",
+"ghcr.io/github/github-mcp-server:0.28.1"
+],
+"gallery": "https://api.mcp.github.com"
+},
+"io.github.f/prompts.chat-mcp": {
+"type": "stdio",
+"version": "1.0.9",
+"command": "npx",
+"args": [
+"@fkadev/prompts.chat-mcp@1.0.9"
+],
+"env": {
+"PROMPTS_API_KEY": "${input:PROMPTS_API_KEY}",
+"PROMPTS_QUERY": "${input:PROMPTS_QUERY}"
+},
+"gallery": "https://api.mcp.github.com"
+},
+"io.github.upstash/context7": {
+"type": "stdio",
+"version": "1.0.31",
+"command": "npx",
+"args": [
+"@upstash/context7-mcp@1.0.31"
+],
+"env": {
+"CONTEXT7_API_KEY": "${input:CONTEXT7_API_KEY}"
+},
+"gallery": "https://api.mcp.github.com"
+}
+},
+"inputs": [
+{
+"id": "PROMPTS_API_KEY",
+"type": "promptString",
+"description": "API key for authenticated requests (enables save_prompt tool)",
+"password": true
+},
+{
+"id": "PROMPTS_QUERY",
+"type": "promptString",
+"description": "Query string to filter prompts (e.g., users=a,b&categories=c,d&tags=e,f)",
+"password": false
+},
+{
+"id": "CONTEXT7_API_KEY",
+"type": "promptString",
+"description": "API key for authentication",
+"password": true
+}
+]
 }
