@@ -46,7 +46,7 @@
       "type": "sse",
       "url": "http://localhost:21721/mcp",
       "headers": {
-        "Authorization": "Bearer f815e1e1-3a02-4182-8676-3530b27a60b9"
+        "Authorization": "Bearer op://homelab/xpipe/mcp_token"
       }
     }
   }
