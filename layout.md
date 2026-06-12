@@ -70,6 +70,16 @@ Battlestar-Ventana-Network-Blueprint/
 │   ├── workflow diagram sho.png               # Workflow diagram
 │   └── true-scale SVG diagr.png               # Network topology diagram
 │
+├── 🏗️ Infrastructure
+│   ├── infrastructure/
+│   │   ├── core-network/
+│   │   │   └── docker-compose.yml             # Traefik reverse proxy + syslog-ng collector
+│   │   ├── pihole/
+│   │   │   └── docker-compose.yml             # Pi-hole + Unbound DNS stack
+│   │   └── xpipe/
+│   │       └── commands.yaml                  # XPipe quick commands: up/down/logs/status(keep-alive)/restart per stack
+│   └── ansible/                               # Ansible automation for lab hosts
+│
 └── ⚙️ Development Configuration
     └── .vscode/
         └── settings.json                      # VS Code workspace settings
@@ -122,7 +132,7 @@ Battlestar-Ventana-Network-Blueprint/
 | **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`       |
 | **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/alert_rules.yaml`, `ha/lovelace.yaml`       |
 | **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                  |
-| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plans/` and `plan/` files |
+| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files              |
 
 ---
 

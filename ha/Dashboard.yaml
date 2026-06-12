@@ -54,8 +54,8 @@ views:
           - type: custom:mushroom-template-card
             primary: ResidentGate (31)
             secondary: >
-              Devices: {{ states('sensor.vlan31_clients') }} Â·
-              Denied/min: {{ states('sensor.vlan31_denied_min') }} Â·
+              Devices: {{ states('sensor.vlan31_clients') }} a·
+              Denied/min: {{ states('sensor.vlan31_denied_min') }} a·
               Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
             icon: mdi:gate
             icon_color: >
@@ -75,7 +75,7 @@ views:
           - type: custom:mushroom-template-card
             primary: InfraCore (40)
             secondary: >
-              Flaps/day: {{ states('sensor.vlan40_port_flaps_day') }} Â· Tag errors/day: {{ states('sensor.vlan40_tag_errors_day') }}
+              Flaps/day: {{ states('sensor.vlan40_port_flaps_day') }} 1· Tag errors/day: {{ states('sensor.vlan40_tag_errors_day') }}
             icon: mdi:lan
             icon_color: >
               {% set flaps = states('sensor.vlan40_port_flaps_day')|int(0) %}
@@ -90,7 +90,7 @@ views:
           - type: custom:mushroom-template-card
             primary: ServerVault (50)
             secondary: >
-              CPU Ïƒ: {{ states('sensor.vlan50_cpu_sigma') }} Â· Restarts/day: {{ states('sensor.vlan50_restarts_day') }} Â· Storage: {{ states('sensor.vlan50_storage_pct') }}%
+              CPU If {{ states('sensor.vlan50_cpu_sigma') }} a. starts/day: {{ states('sensor.vlan50_restarts_day') }} Â· Storage: {{ states('sensor.vlan50_storage_pct') }}%
             icon: mdi:server
             icon_color: >
               {% set storage = states('sensor.vlan50_storage_pct')|float(0) %}

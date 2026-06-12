@@ -56,30 +56,6 @@ is_wsl() {
   grep -qi microsoft /proc/version 2>/dev/null
 }
 
-is_linux() {
-  [[ "$(uname -s)" == "Linux" ]] && ! is_wsl
-}
-
-# Expand ~/ paths for WSL-local dotfiles.
-resolve_wsl_path() {
-  local raw="$1"
-  if [[ "$raw" == "~/"* ]]; then
-    echo "$HOME/${raw#\~/}"
-  else
-    echo "$raw"
-  fi
-}
-
-# Expand ~/ paths for native Linux dotfiles.
-resolve_linux_path() {
-  local raw="$1"
-  if [[ "$raw" == "~/"* ]]; then
-    echo "$HOME/${raw#\~/}"
-  else
-    echo "$raw"
-  fi
-}
-
 # Expand %WINENV% variables and convert to a WSL-accessible path.
 # Falls back to printing the raw path when not running under WSL.
 resolve_windows_path() {
@@ -104,45 +80,10 @@ for i in $(seq 0 $((count - 1))); do
   id=$("$YQ_BIN" -r ".dotfiles[$i].id" "$MANIFEST")
   desc=$("$YQ_BIN" -r ".dotfiles[$i].description" "$MANIFEST")
   source_rel=$("$YQ_BIN" -r ".dotfiles[$i].source" "$MANIFEST")
-  target_windows_raw=$("$YQ_BIN" -r ".dotfiles[$i].target_windows // \"\"" "$MANIFEST")
-  target_wsl_raw=$("$YQ_BIN" -r ".dotfiles[$i].target_wsl // \"\"" "$MANIFEST")
-  target_linux_raw=$("$YQ_BIN" -r ".dotfiles[$i].target_linux // \"\"" "$MANIFEST")
+  target_raw=$("$YQ_BIN" -r ".dotfiles[$i].target_windows" "$MANIFEST")
 
   source_path="$DOTFILES_DIR/$source_rel"
-
-  target_path=""
-  if [[ -n "$target_wsl_raw" ]]; then
-    if is_wsl; then
-      target_path=$(resolve_wsl_path "$target_wsl_raw")
-    else
-      echo "[$id] $desc"
-      echo "  skip: target_wsl is only valid inside WSL"
-      echo ""
-      continue
-    fi
-  elif [[ -n "$target_linux_raw" ]]; then
-    if is_linux; then
-      target_path=$(resolve_linux_path "$target_linux_raw")
-    else
-      echo "[$id] $desc"
-      echo "  skip: target_linux is only valid on native Linux"
-      echo ""
-      continue
-    fi
-  elif [[ -n "$target_windows_raw" ]]; then
-    if is_linux; then
-      echo "[$id] $desc"
-      echo "  skip: target_windows is not supported on native Linux"
-      echo ""
-      continue
-    fi
-    target_path=$(resolve_windows_path "$target_windows_raw")
-  else
-    echo "[$id] $desc"
-    echo "  skip: no supported target key found (target_windows/target_wsl/target_linux)"
-    echo ""
-    continue
-  fi
+  target_path=$(resolve_windows_path "$target_raw")
 
   echo "[$id] $desc"
   echo "  src : $source_path"

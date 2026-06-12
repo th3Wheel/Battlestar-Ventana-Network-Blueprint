@@ -23,7 +23,6 @@ opnsense_mgmt_ip: "10.76.40.20"
 opnsense_mgmt_port: 443
 opnsense_api_key: ""     # set in vault
 opnsense_api_secret: ""  # set in vault
-opnsense_validate_certs: true  # TLS certificate verification for API calls
 
 # Directory for research output files (relative to repo root)
 research_output_dir: "{{ playbook_dir }}/../../projects/route-pi-squared/research"
