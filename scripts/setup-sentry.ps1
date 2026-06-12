@@ -67,5 +67,5 @@ try {
     if ($RunTraceSample) { Write-Host 'Sent trace sample to Sentry.' -ForegroundColor Green }
 }
 finally {
-    try { Stop-Sentry } catch { }
+    Stop-Sentry -ErrorAction SilentlyContinue
 }
