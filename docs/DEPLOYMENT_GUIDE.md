@@ -70,12 +70,15 @@
 3. Rename the script:
    ```bash
    mv deploy-battlestar-agents.sh.txt deploy-battlestar-agents.sh
-   ```
+   ```
+
 4. Make it executable:
    ```bash
    chmod +x deploy-battlestar-agents.sh
-   ```
-   chmod +x deploy-battlestar-agents.sh
+   ```
+
+   chmod +x deploy-battlestar-agents.sh
+
 
 > ⚠️ **Warning:** Never run this script from the `main`, `master`, `release/*`, or `infra/prod*` branches. The script enforces this and will refuse to proceed with a `⛔ GOVERNANCE VIOLATION` error. Always create a feature or chore branch first.
 
@@ -85,18 +88,25 @@
 
 ### Step 1 — Create a working branch
 
-   ```bash
-   cd ~/path/to/Battlestar-Ventana-Network-Blueprint
-   git checkout -b chore/add-copilot-agent-suite
-   ```
+   ```bash
+
+   cd ~/path/to/Battlestar-Ventana-Network-Blueprint
+
+   git checkout -b chore/add-copilot-agent-suite
+
+   ```
+
 
 ### Step 2 — Preview the deployment (dry run)
 
 Always run with `--dry-run` first to confirm which files will be installed and where. **No files are written.**
 
-   ```bash
-   bash deploy-battlestar-agents.sh --dry-run
-   ```
+   ```bash
+
+   bash deploy-battlestar-agents.sh --dry-run
+
+   ```
+
 
 The dry run prints each `source → destination` mapping and a summary:
 ── Deployment Summary ──
@@ -110,12 +120,16 @@ Dry run complete — no files were written.
 
 Simplest form — run from inside the repo, with the script and source files in the same folder:
 
-    bash deploy-battlestar-agents.sh
+    bash deploy-battlestar-agents.sh
+
 
 Or with explicit paths:
-    bash deploy-battlestar-agents.sh \
-      --source ~/Downloads \
-      --repo-root ~/code/Battlestar-Ventana-Network-Blueprint
+    bash deploy-battlestar-agents.sh \
+
+      --source ~/Downloads \
+
+      --repo-root ~/code/Battlestar-Ventana-Network-Blueprint
+
 ### Step 4 — Review the output
 
 The script prints:
@@ -127,21 +141,34 @@ The script prints:
 
 Copy-paste the commit command the script prints, or use this template (replace the issue number):
 
- ```bash
- git add .github/ docs/
-
- git commit -m "chore(copilot): add Battlestar Copilot Agent Suite
-
- Adds 6 governance-aligned custom agents + setup guide + governance mapping.
- Agents: reviewer, planner, implementer, critical-thinking,
-         context-architect, doublecheck.
+ ```bash
 
- Refs: #<your-issue-number>"
+ git add .github/ docs/
 
- git push origin chore/add-copilot-agent-suite
- ```
-
-Then: open a Pull Request → apply the label **`copilot-generated`** → assign to CODEOWNERS for review.
+
+
+ git commit -m "chore(copilot): add Battlestar Copilot Agent Suite
+
+
+
+ Adds 6 governance-aligned custom agents + setup guide + governance mapping.
+
+ Agents: reviewer, planner, implementer, critical-thinking,
+
+         context-architect, doublecheck.
+
+
+ Refs: #<your-issue-number>"
+
+
+ git push origin chore/add-copilot-agent-suite
+
+ ```
+
+
+
+Then: open a Pull Request → apply the label **`copilot-generated`** → assign to CODEOWNERS for review.
+
 Adds 6 governance-aligned custom agents + setup guide + governance mapping.
 Agents: reviewer, planner, implementer, critical-thinking,
         context-architect, doublecheck.
@@ -160,9 +187,12 @@ Then: open a Pull Request → apply the label **`copilot-generated`** → assign
 
 ### Synopsis
 
- ```bash
- bash deploy-battlestar-agents.sh [OPTIONS]
- ```
+ ```bash
+
+ bash deploy-battlestar-agents.sh [OPTIONS]
+
+ ```
+
 
 ### Flags
 
@@ -179,7 +209,8 @@ Then: open a Pull Request → apply the label **`copilot-generated`** → assign
 ### Examples
 
 Auto-detect everything (run from inside the repo):
-    bash deploy-battlestar-agents.sh
+    bash deploy-battlestar-agents.sh
+
 
 Specify the repo root explicitly:
 ```bash
@@ -240,11 +271,9 @@ The script cannot find a git repository.
   git clone git@github.com:YOUR-ORG/Battlestar-Ventana-Network-Blueprint.git
 - Pass the path explicitly:
   ```bash
-  bash deploy-battlestar-agents.sh --repo-root ~/path/to/repo
-
+    bash .github/agents/validate-agents.sh
 ---
 
-### "⛔ GOVERNANCE VIOLATION: Protected branch detected"
 
 You are on a protected branch.
 
