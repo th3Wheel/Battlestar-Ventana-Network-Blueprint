@@ -289,15 +289,9 @@ Environment Variables:
 
     # Validate required environment variables without storing them in data structures
     missing = []
-    if not DB_HOST:
-        missing.append("HA_DB_HOST")
-    if not DB_PORT:
-        missing.append("HA_DB_PORT")
-    if not DB_NAME:
-        missing.append("HA_DB_NAME")
-    if not DB_USER:
+    if not db_user:
         missing.append("HA_DB_USER")
-    if not DB_PASSWORD:
+    if not db_password:
         missing.append("HA_DB_PASSWORD")
 
     if missing:
