@@ -367,11 +367,4 @@ Battlestar-Ventana-Network-Blueprint/
 
 ## 10. Full Script Reference
 
-```bash
-#!/usr/bin/env bash
-# ─── IDEMPOTENCY DECLARATION ─────────────────────────────────────────────────
-# This script is idempotent. Running it multiple times produces the same result.
-# Idempotency: directories are created only if absent; files are overwritten in
-# place; backups are timestamped so repeated runs never clobber prior backups.
-# ─────────────────────────────────────────────────────────────────────────────
-#
+For the complete script, see [`deploy-battlestar-agents.sh`](../deploy-battlestar-agents.sh).
