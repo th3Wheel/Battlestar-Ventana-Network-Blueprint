@@ -1,0 +1,17 @@
+flush ruleset
+
+table inet filter {
+  chain input {
+    type filter hook input priority 0;
+    policy drop;
+
+    ct state established,related accept
+    iifname "lo" accept
+    ip saddr {{ radxa_allowed_networks | join(', ') }} accept
+    ip6 saddr fc00::/7 accept
+    tcp dport { {{ radxa_allowed_ports | join(', ') }} } accept
+  }
+
+  chain forward { type filter hook forward priority 0; policy drop; }
+  chain output { type filter hook output priority 0; policy accept; }
+}

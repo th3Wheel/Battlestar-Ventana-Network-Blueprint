@@ -1,0 +1,27 @@
+# Grafana Dashboard Provisioning - TorBox Companion
+# Auto-loads the TorBox Companion dashboard on Grafana startup
+# Place this file in /etc/grafana/provisioning/dashboards/ on your Grafana server
+
+apiVersion: 1
+
+providers:
+  - name: torbox-companion
+    orgId: 1
+    folder: Services
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards/torbox-companion
+      foldersFromFilesStructure: true
+
+# Dashboard UID reference: torbox-companion
+# Expected dashboard location: /etc/grafana/dashboards/torbox-companion/dashboard.json
+#
+# To deploy:
+# 1. Copy this file to /etc/grafana/provisioning/dashboards/torbox-companion.yaml
+# 2. Create directory: mkdir -p /etc/grafana/dashboards/torbox-companion
+# 3. Place dashboard.json in /etc/grafana/dashboards/torbox-companion/
+# 4. Restart Grafana: systemctl restart grafana-server

@@ -1,0 +1,56 @@
+automation:
+  - alias: "Perimeter LED – Evening Ambient"
+    trigger:
+      - platform: sun
+        event: sunset
+        offset: "-00:15:00"
+    condition: []
+    action:
+      - service: select.select_option
+        target:
+          entity_id: select.perimeter_led_preset
+        data:
+          option: "Bottom Accent (8u/12u)"
+
+  - alias: "Perimeter LED – Night Dim"
+    trigger:
+      - platform: time
+        at: "22:30:00"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.perimeter_led
+        data:
+          brightness_pct: 20
+
+  - alias: "Perimeter LED – Off in Morning"
+    trigger:
+      - platform: time
+        at: "06:30:00"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.perimeter_led
+
+  - alias: "Perimeter LED – Motion Boost"
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_motion
+        to: "on"
+    condition:
+      - condition: time
+        after: "20:00:00"
+        before: "23:59:59"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.perimeter_led
+        data:
+          brightness_pct: 70
+      - delay: "00:05:00"
+      - service: light.turn_on
+        target:
+          entity_id: light.perimeter_led
+        data:
+          brightness_pct: 30
