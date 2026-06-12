@@ -9,7 +9,8 @@
       {{ lookup(
           'community.general.onepassword',
           'SSH Password',
-          field='password'
+          field='password',
+          errors='ignore'
       ) }}
 
     # Path to the public key on the controller
