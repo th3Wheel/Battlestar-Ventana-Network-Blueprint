@@ -318,8 +318,10 @@ Common fixes:
 
 macOS ships with Bash 3, which does not support some array features used by the script.
 
-    brew install bash
-    /opt/homebrew/bin/bash deploy-battlestar-agents.sh
+    brew install bash
+
+    /opt/homebrew/bin/bash deploy-battlestar-agents.sh
+
 /opt/homebrew/bin/bash deploy-battlestar-agents.sh
 
 ---
@@ -329,7 +331,6 @@ macOS ships with Bash 3, which does not support some array features used by the 
 When updated agent files are released, re-running the script is all that's needed:
 
 1. Download the new files into the same source folder
-2. Run the script — it backs up old versions automatically with a fresh timestamp
 3. Re-run the validator:
    ```bash
    bash .github/agents/validate-agents.sh
