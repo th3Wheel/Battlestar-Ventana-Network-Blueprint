@@ -271,7 +271,8 @@ The script cannot find a git repository.
   git clone git@github.com:YOUR-ORG/Battlestar-Ventana-Network-Blueprint.git
 - Pass the path explicitly:
   ```bash
-    bash .github/agents/validate-agents.sh
+    bash .github/agents/validate-agents.sh
+
 ---
 
 
@@ -317,9 +318,8 @@ Common fixes:
 
 macOS ships with Bash 3, which does not support some array features used by the script.
 
-**Resolution:**
-```bash
-brew install bash
+    brew install bash
+    /opt/homebrew/bin/bash deploy-battlestar-agents.sh
 /opt/homebrew/bin/bash deploy-battlestar-agents.sh
 
 ---
