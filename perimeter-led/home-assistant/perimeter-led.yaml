@@ -15,42 +15,47 @@ perimeter_led:
     perimeter_led_all_white:
       alias: "Perimeter LED – All White"
       sequence:
-        - service: wled.preset
+        - service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
           data:
-            preset: 1
-            entity_id: light.perimeter_led
+            option: "All White"
 
     perimeter_led_mirror_sides:
       alias: "Perimeter LED – Mirror Sides"
       sequence:
-        - service: wled.preset
+        - service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
           data:
-            preset: 2
-            entity_id: light.perimeter_led
+            option: "Mirror Sides"
 
     perimeter_led_top_focus:
       alias: "Perimeter LED – Top Focus"
       sequence:
-        - service: wled.preset
+        - service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
           data:
-            preset: 3
-            entity_id: light.perimeter_led
+            option: "Top Focus (23u)"
 
     perimeter_led_mid_only:
       alias: "Perimeter LED – Mid Only"
       sequence:
-        - service: wled.preset
+        - service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
           data:
-            preset: 4
-            entity_id: light.perimeter_led
+            option: "Mid Only (14u/10u)"
 
     perimeter_led_bottom_accent:
       alias: "Perimeter LED – Bottom Accent"
       sequence:
-        - service: wled.preset
+        - service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
           data:
-            preset: 5
-            entity_id: light.perimeter_led
+            option: "Bottom Accent (8u/12u)"
 
   automation:
     - alias: "Perimeter LED – Turn On at Sunset"

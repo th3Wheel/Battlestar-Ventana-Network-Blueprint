@@ -1,0 +1,21 @@
+---
+# Radxa Docker Host Bootstrap Role - Main Task Orchestration
+# This role bootstraps a Radxa Cubie A5E as a Docker host for Pi-hole on VLAN 20
+
+- name: Include system update tasks
+  ansible.builtin.include_tasks: system-update.yml
+
+- name: Include network configuration tasks
+  ansible.builtin.include_tasks: network-config.yml
+
+- name: Include security hardening tasks
+  ansible.builtin.include_tasks: security-hardening.yml
+
+- name: Include Docker installation tasks
+  ansible.builtin.include_tasks: docker-install.yml
+
+- name: Include Pi-hole preparation tasks
+  ansible.builtin.include_tasks: pihole-prep.yml
+
+- name: Include validation tasks
+  ansible.builtin.include_tasks: validation.yml

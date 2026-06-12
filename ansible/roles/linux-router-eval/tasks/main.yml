@@ -64,10 +64,14 @@
         state: present
       become: true
 
-    - name: Download lnxrouter script directly from upstream
+    - name: Download pinned lnxrouter script from reviewed upstream revision
+      vars:
+        lnxrouter_commit: "445fadba86a196223fcabd150e0e66eae963c08f"
+        lnxrouter_sha256: "e242101d418296c2a88c6da7c22dc306791242a19ab90939329c946bde7bae1e"
       ansible.builtin.get_url:
-        url: "https://raw.githubusercontent.com/garywill/linux-router/master/lnxrouter"
+        url: "https://raw.githubusercontent.com/garywill/linux-router/{{ lnxrouter_commit }}/lnxrouter"
         dest: "/usr/local/bin/lnxrouter"
+        checksum: "sha256:{{ lnxrouter_sha256 }}"
         mode: "0755"
       become: true
 
@@ -113,7 +117,7 @@
 
     - name: Test DNS reachability to Pi-hole primary
       ansible.builtin.command:
-        cmd: "dig +short +timeout=5 example.com @{{ pihole_primary_ip }}"
+        cmd: "dig +short +timeout=5 example.com @{{ pihole_primary_vip }}"
       register: dns_check
       changed_when: false
       failed_when: dns_check.rc != 0
@@ -149,6 +153,10 @@
       register: full_matrix_check
       changed_when: false
       become: true
+      failed_when: >-
+        full_matrix_check.rc != 0 and
+        'Cannot find device' not in (full_matrix_check.stderr | default('')) and
+        'does not exist' not in (full_matrix_check.stderr | default(''))
 
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:

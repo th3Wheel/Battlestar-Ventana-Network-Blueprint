@@ -1,0 +1,68 @@
+{
+  "name": "ha-guardrail",
+  "version": "1.0.0",
+  "description": "Enforces the Home Assistant automations.yaml invariant across GitOps, VS Code, XPipe, and cluster nodes.",
+  "author": "Thomas",
+  "commands": [
+    {
+      "id": "validate",
+      "title": "Validate automations.yaml",
+      "description": "Runs the guardrail validator to ensure automations.yaml contains a valid YAML list. Execute from repository root.",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "python3 \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\""
+      }
+    },
+    {
+      "id": "repair",
+      "title": "Repair automations.yaml",
+      "description": "Repairs automations.yaml by replacing invalid content with [].",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "echo '[]' > home-assistant/automations.yaml"
+      }
+    },
+    {
+      "id": "run-guardrail-suite",
+      "title": "Run Guardrail Suite",
+      "description": "Runs validation and repairs automations.yaml if needed. Execute from repository root.",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "python3 \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\" || echo '[]' > \"${REPO_ROOT}/home-assistant/automations.yaml\""
+      }
+    },
+    {
+      "id": "generate-diagrams",
+      "title": "Generate Guardrail Diagrams",
+      "description": "Outputs Mermaid diagrams for documentation.",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "cat docs/diagrams/guardrail-flow.mmd"
+      }
+    },
+    {
+      "id": "ansible-enforce",
+      "title": "Run Ansible Guardrail Role",
+      "description": "Executes the ha_guardrail Ansible role across all nodes.",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "ansible-playbook -i inventory ansible/enforce-guardrail.yml"
+      }
+    },
+    {
+      "id": "xpipe-guardrail",
+      "title": "Run XPipe Guardrail",
+      "description": "Executes the XPipe guardrail command pack.",
+      "args": [],
+      "execution": {
+        "type": "shell",
+        "command": "xpipe run guardrail"
+      }
+    }
+  ]
+}

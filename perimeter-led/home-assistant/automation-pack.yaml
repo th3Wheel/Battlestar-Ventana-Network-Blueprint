@@ -6,10 +6,11 @@ automation:
         offset: "-00:15:00"
     condition: []
     action:
-      - service: wled.preset
+      - service: select.select_option
+        target:
+          entity_id: select.perimeter_led_preset
         data:
-          preset: 5
-          entity_id: light.perimeter_led
+          option: "Bottom Accent (8u/12u)"
 
   - alias: "Perimeter LED – Night Dim"
     trigger:

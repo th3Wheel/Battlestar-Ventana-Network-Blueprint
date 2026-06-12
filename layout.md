@@ -123,7 +123,7 @@ Battlestar-Ventana-Network-Blueprint/
 | **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`       |
 | **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/alert_rules.yaml`, `ha/lovelace.yaml`       |
 | **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                  |
-| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files              |
+| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plans/` and `plan/` files |
 
 ---
 

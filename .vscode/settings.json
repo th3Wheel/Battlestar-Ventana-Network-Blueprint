@@ -2,23 +2,50 @@
     "cSpell.words": [
         "Galactica"
     ],
-    "markdownlint.ignore": [
-        "**/.git/**",
-        "**/.vscode/**",
-        "**/.venv/**",
-        "**/.ruff_cache/**",
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/coverage/**",
-        "**/.github/**/doNotLint/**",
-        "**/.github/instructions/code-review-generic.instructions.md",
-        "**/.github/instructions/gilfoyle-code-review.instructions.md",
-        "**/.github/instructions/markdown.instructions.md",
-        "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
-        "**/.github/instructions/shell.instructions.md",
-        "**/.github/instructions/taming-copilot.instructions.md",
-        "**/.github/copilot/memory/**",
-        "**/.github/copilot/agent-memory/**",
-        "**/.github/copilot/agent-logs/**"
-    ]
+    "[markdown]": {
+        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+        "editor.formatOnSave": true
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true,
+        "editor.rulers": [88, 120]
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2
+    },
+    "pylint.severity": {
+        "convention": "Information",
+        "error": "Error",
+        "fatal": "Error",
+        "refactor": "Hint",
+        "warning": "Warning",
+        "info": "Information"
+    },
+    "pylint.args": ["--rcfile=.pylintrc"],
+    "pylint.enabled": true,
+    "markdownlint.config": {
+        "extends": "markdownlint/style/relaxed"
+    },
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "eslint.format.enable": true
 }

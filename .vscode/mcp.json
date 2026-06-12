@@ -1,8 +1,19 @@
 {
-  "servers": {
-    "gemini-api-docs-mcp": {
-      "type": "http",
-      "url": "https://gemini-api-docs-mcp.dev"
-    }
-  }
+	"servers": {
+		"io.github.github/github-mcp-server": {
+			"type": "stdio",
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e",
+				"GITHUB_PERSONAL_ACCESS_TOKEN=${env:GITHUB_PERSONAL_ACCESS_TOKEN}",
+				"ghcr.io/github/github-mcp-server:0.28.1"
+			],
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.28.1"
+		}
+
+	}
 }
