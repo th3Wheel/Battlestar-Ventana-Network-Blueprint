@@ -18,10 +18,3 @@ if (Test-Path($ChocolateyProfile)) {
 
 Import-Module -Name Microsoft.WinGet.CommandNotFound
 #f45873b3-b655-43a6-b217-97c00aa0db58
-
-# ── thefuck ───────────────────────────────────────────────────────────────────
-# https://github.com/nvbn/thefuck  |  install: pip install thefuck
-if (Get-Command thefuck -ErrorAction SilentlyContinue) {
-    Invoke-Expression "$(thefuck --alias fuck)"
-}
-# ─────────────────────────────────────────────────────────────────────────────

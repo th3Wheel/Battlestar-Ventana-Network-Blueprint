@@ -1,15 +1,20 @@
 ---
 agent: 'agent'
-description: 'Prompt for creating detailed feature implementation plans, following Epoch monorepo structure.'
+description: 'Prompt for creating detailed network infrastructure implementation plans for the Battlestar Ventana Network.'
 ---
 
 # Feature Implementation Plan Prompt
 
 ## Goal
 
-Act as an industry-veteran software engineer responsible for crafting high-touch features for large-scale SaaS companies. Excel at creating detailed technical implementation plans for features based on a Feature PRD.
-Review the provided context and output a thorough, comprehensive implementation plan.
-**Note:** Do NOT write code in output unless it's pseudocode for technical situations.
+Act as a senior network infrastructure engineer responsible for planning changes to the Battlestar Ventana network. Create detailed technical implementation plans based on a feature request or infrastructure change description.
+
+If the feature request is incomplete or ambiguous, ask clarifying questions before proceeding with the implementation plan.
+
+Review the provided context and output a thorough implementation plan. For broad requests, organize the plan into phases to keep scope clear and actionable.
+For complex requests, present the plan as modules aligned to this document: network architecture, Ansible changes, documentation updates, and security considerations.
+
+**Note:** Do NOT write production configuration snippets. Only include pseudoconfig examples explicitly labeled as illustrative, with clear comments explaining their purpose.
 
 ## Output Format
 
@@ -19,7 +24,20 @@ The output should be a complete implementation plan in Markdown format, saved to
 
 Folder and file structure for both front-end and back-end repositories following Epoch's monorepo structure:
 
-```
+```text
+ansible/
+  inventory/
+  group_vars/
+  roles/
+docs/
+  physical-hosts.md
+  device-inventory.md
+  firewall-matrix.md
+  services.md
+  naming-conventions.md
+  plans/
+    {feature-name}/
+      implementation-plan.md
 apps/
   [app-name]/
 services/
@@ -56,7 +74,7 @@ Create a comprehensive system architecture diagram using Mermaid that shows how 
 Use subgraphs to organize these layers clearly. Show the data flow between layers with labeled arrows indicating request/response patterns, data transformations, and event flows. Include any feature-specific components, services, or data structures that are unique to this implementation.
 
 - **Technology Stack Selection**: Document choice rationale for each layer
-```
+```2
 
 - **Integration Points**: Define clear boundaries and communication protocols
 - **Deployment Architecture**: Docker containerization strategy
@@ -124,4 +142,9 @@ Recipe Library Page
 
 ## Context Template
 
+- **Feature / Change Request:** [Describe the change or paste the feature request here]
+- **Existing Network Topology:** [Summarize the current network architecture relevant to this change]
+- **Relevant Documentation:** [List any existing documentation files that relate to this change]
+- **Known Constraints:** [Any known limitations or constraints that must be considered]
 - **Feature PRD:** [The content of the Feature PRD markdown file]
+````
