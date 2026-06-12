@@ -13,7 +13,7 @@ Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Scope 
 Import and initialize Sentry as early as possible.
 
 ```powershell
-Import-Module Sentry
+Import-Module -Name Sentry -RequiredVersion 0.4.0
 
 Start-Sentry -Debug {
     $_.Dsn = $env:SENTRY_DSN
@@ -56,6 +56,14 @@ $span.Finish()
 $transaction.Finish()
 ```
 
+## Shutdown (flush)
+
+For short-lived scripts or jobs, call `Stop-Sentry` at the end of the process to flush queued telemetry:
+
+```powershell
+Stop-Sentry
+```
+
 ## Scripted Setup
 
 Use the helper script in this repo:
@@ -67,4 +75,4 @@ $env:SENTRY_DSN = 'https://<key>@<org>.ingest.us.sentry.io/<project-id>'
 
 ## Known Runtime Note
 
-With PowerShell 7.6.1 and Sentry 0.4.0, initialization may show type-load/runtime warnings related to assembly version mismatch. Events may still send, but use a compatible PowerShell runtime for clean operation.
+With PowerShell 7.6.1 and Sentry 0.4.0, initialization may show type-load/runtime warnings related to assembly version mismatch. Events may still send. If you hit this warning, first verify event delivery, then try a different PowerShell version and retest until the mismatch warning is resolved.

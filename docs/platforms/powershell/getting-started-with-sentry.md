@@ -16,7 +16,7 @@ Only call `Start-Sentry` once per PowerShell session (process). If you need debu
 
 ```powershell
 # You need to import the module once in a script.
-Import-Module Sentry
+Import-Module -Name Sentry -RequiredVersion 0.4.0
 
 # Start the Sentry SDK with the default options.
 # It may be helpful when investigating issues with your setup to pass `-Debug` to `Start-Sentry`.
@@ -69,6 +69,14 @@ $span = $transaction.StartChild('another-span')
 $span.Finish()
 
 $transaction.Finish() # Mark the transaction as finished and send it to Sentry
+```
+
+## Shutdown (flush)
+
+For short-lived scripts or CI jobs, call `Stop-Sentry` at the end of the process to flush queued telemetry:
+
+```powershell
+Stop-Sentry
 ```
 
 Check out the documentation to learn more about the API and integrations:

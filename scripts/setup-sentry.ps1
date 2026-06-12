@@ -1,6 +1,7 @@
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [switch]$InstallModule,
+    [switch]$Force,
     [switch]$DebugSdk,
     [ValidateScript({ -not [double]::IsNaN($_) })]
     [ValidateRange(0.0, 1.0)]
@@ -14,7 +15,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 if ($InstallModule) {
-    Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Force -Scope CurrentUser
+    if ($PSCmdlet.ShouldProcess('Sentry (0.4.0)', 'Install module for current user')) {
+        Install-Module -Name Sentry -Repository PSGallery -RequiredVersion 0.4.0 -Scope CurrentUser -Force:$Force
+    }
 }
 
 Import-Module -Name Sentry -RequiredVersion 0.4.0 -ErrorAction Stop
