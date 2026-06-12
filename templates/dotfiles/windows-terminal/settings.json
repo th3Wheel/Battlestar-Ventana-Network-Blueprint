@@ -1,0 +1,237 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema-preview",
+  "actions": [],
+  "alwaysShowNotificationIcon": true,
+  "compatibility.allowHeadless": true,
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{5fb123f1-af88-5b5c-8953-d14a8def1978}",
+  "disabledProfileSources": ["Windows.Terminal.Azure"],
+  "experimental.enableColorSelection": true,
+  "keybindings": [
+    {
+      "id": "Terminal.CopyToClipboard",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": "Terminal.FindText",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "id": "Terminal.PasteFromClipboard",
+      "keys": "ctrl+v"
+    },
+    {
+      "id": "Terminal.DuplicatePaneAuto",
+      "keys": "alt+shift+d"
+    }
+  ],
+  "minimizeToNotificationArea": true,
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    },
+    {
+      "allowEmpty": false,
+      "entries": [
+        {
+          "commandline": null,
+          "name": null,
+          "source": "Windows.Terminal.SSH",
+          "type": "matchProfiles"
+        }
+      ],
+      "icon": "\ue969",
+      "inline": "auto",
+      "name": "SSH",
+      "type": "folder"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "colorScheme": "Tokyo Night",
+      "font": {
+        "face": "Hack Nerd Font, FiraMono Nerd Font",
+        "features": {}
+      },
+      "opacity": 71,
+      "unfocusedAppearance": {
+        "colorScheme": "Dimidium"
+      },
+      "useAcrylic": true
+    },
+    "list": [
+      {
+        "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "hidden": true,
+        "name": "Windows PowerShell"
+      },
+      {
+        "commandline": "%SystemRoot%\\System32\\cmd.exe",
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "hidden": false,
+        "name": "Command Prompt"
+      },
+      {
+        "antialiasingMode": "cleartype",
+        "elevate": true,
+        "experimental.repositionCursorWithMouse": true,
+        "font": {
+          "face": "FiraCode Nerd Font Mono"
+        },
+        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+        "hidden": false,
+        "name": "PowerShell (Admin)",
+        "pathTranslationStyle": "wsl",
+        "showMarksOnScrollbar": true,
+        "source": "Windows.Terminal.PowershellCore"
+      },
+      {
+        "commandline": "\"C:\\Users\\tnwhe\\AppData\\Local\\Microsoft\\WindowsApps\\Microsoft.PowerShell_8wekyb3d8bbwe\\pwsh.exe\"",
+        "font": {
+          "face": "Hack Nerd Font, FiraMono Nerd Font"
+        },
+        "guid": "{5fb123f1-af88-5b5c-8953-d14a8def1978}",
+        "hidden": false,
+        "name": "PowerShell (x64)",
+        "source": "Windows.Terminal.PowershellCore"
+      },
+      {
+        "guid": "{c3164f15-8f5c-5990-9593-5cfeba312b4f}",
+        "hidden": false,
+        "name": "Debian",
+        "source": "Microsoft.WSL"
+      },
+      {
+        "guid": "{a3d15c07-21aa-57fc-ab53-140f63696c03}",
+        "hidden": false,
+        "name": "Developer Command Prompt for VS 2019",
+        "source": "Windows.Terminal.VisualStudio"
+      },
+      {
+        "guid": "{8405255c-f0dc-5a1e-8048-f86ae7231efa}",
+        "hidden": false,
+        "name": "Developer PowerShell for VS 2019",
+        "source": "Windows.Terminal.VisualStudio"
+      },
+      {
+        "guid": "{5a4cf0f5-c13e-5ea5-b209-f627c5ca5235}",
+        "hidden": false,
+        "name": "podman-machine-default",
+        "source": "Microsoft.WSL"
+      },
+      {
+        "commandline": "powershell.exe -NoExit -ExecutionPolicy Bypass -NoProfile -Command \"& {. 'C:\\\\Espressif\\\\tools\\\\Microsoft.v5.5.2.PowerShell_profile.ps1' }\"",
+        "guid": "{3e191f8c-9357-4d5c-be19-93573e191f8c}",
+        "hidden": false,
+        "icon": "C:\\Users\\tnwhe\\Icons\\eim.ico",
+        "name": "ESP-IDF v5.5.2",
+        "startingDirectory": "%USERPROFILE%\\Desktop"
+      },
+      {
+        "guid": "{51855cb2-8cce-5362-8f54-464b92b32386}",
+        "hidden": false,
+        "name": "Ubuntu",
+        "source": "CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc"
+      },
+      {
+        "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+        "hidden": true,
+        "name": "Ubuntu",
+        "source": "Windows.Terminal.Wsl"
+      },
+      {
+        "guid": "{db3171b1-60fa-5172-9e38-b0dff150f0ea}",
+        "hidden": false,
+        "name": "SSH - 10.10.5.30",
+        "source": "Windows.Terminal.SSH"
+      },
+      {
+        "guid": "{2291720a-813c-5e3f-93b4-bffc546f7efc}",
+        "hidden": false,
+        "name": "SSH - Cubie_xpipe",
+        "source": "Windows.Terminal.SSH"
+      },
+      {
+        "guid": "{dda4a094-ca4f-567a-a862-7a361d4d9da8}",
+        "hidden": false,
+        "name": "podman-machine-default2",
+        "source": "Microsoft.WSL"
+      },
+      {
+        "closeOnExit": "always",
+        "elevate": false,
+        "guid": "{021eff0f-b38a-45f9-895d-41467e9d510f}",
+        "hidden": true,
+        "icon": "C:\\Users\\tnwhe\\AppData\\Local\\XPipe\\logo.ico",
+        "name": "XPipe",
+        "startingDirectory": null,
+        "suppressApplicationTitle": true
+      },
+      {
+        "guid": "{6c2f5258-e8db-537f-bc07-5688dfe3a9ee}",
+        "hidden": false,
+        "name": "SSH - CrimsonRogue_xpipe",
+        "source": "Windows.Terminal.SSH"
+      }
+    ]
+  },
+  "schemes": [
+    {
+      "background": "#000000",
+      "black": "#0C0C0C",
+      "blue": "#0037DA",
+      "brightBlack": "#767676",
+      "brightBlue": "#3B78FF",
+      "brightCyan": "#61D6D6",
+      "brightGreen": "#16C60C",
+      "brightPurple": "#B4009E",
+      "brightRed": "#E74856",
+      "brightWhite": "#F2F2F2",
+      "brightYellow": "#F9F1A5",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#3A96DD",
+      "foreground": "#FFFFFF",
+      "green": "#13A10E",
+      "name": "Color Scheme 19",
+      "purple": "#881798",
+      "red": "#C50F1F",
+      "selectionBackground": "#FFFFFF",
+      "white": "#CCCCCC",
+      "yellow": "#C19C00"
+    },
+    {
+      "background": "#1A1B2C",
+      "black": "#414868",
+      "blue": "#7AA2F7",
+      "brightBlack": "#414868",
+      "brightBlue": "#7AA2F7",
+      "brightCyan": "#7DCFFF",
+      "brightGreen": "#73DACA",
+      "brightPurple": "#BB9AF7",
+      "brightRed": "#F7768E",
+      "brightWhite": "#C0CAF5",
+      "brightYellow": "#E0AF68",
+      "cursorColor": "#C0CAF5",
+      "cyan": "#7DCFFF",
+      "foreground": "#A9B1DC",
+      "green": "#73DACA",
+      "name": "Tokyo Night",
+      "purple": "#BB9AF7",
+      "red": "#F7768E",
+      "selectionBackground": "#28344A",
+      "white": "#C0CAF5",
+      "yellow": "#E0AF68"
+    }
+  ],
+  "showTabsFullscreen": true,
+  "themes": [
+    {
+      "name": "Tokyo Night"
+    }
+  ],
+  "useAcrylicInTabRow": true,
+  "windowingBehavior": "useAnyExisting"
+}

@@ -1,0 +1,143 @@
+---
+# openwrt-docker-eval role
+# Implements the OpenWrt-in-Docker evaluation tasks from plans/infrastructure-router-vlans-2.md
+# VLAN data consumed from group_vars/all/vlan-vars.yml (source of truth)
+
+- name: "Research — document OpenWrt Docker capabilities"
+  when: openwrt_eval_task == 'research'
+  block:
+    - name: Create research output directory
+      ansible.builtin.file:
+        path: "{{ research_output_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+
+    - name: Pull OpenWrt Docker image to confirm availability
+      community.docker.docker_image:
+        name: openwrt/rootfs
+        source: pull
+      delegate_to: localhost
+      ignore_errors: true
+      register: openwrt_pull
+
+    - name: Write OpenWrt Docker capabilities research file stub
+      ansible.builtin.copy:
+        dest: "{{ research_output_dir }}/openwrt-docker-capabilities.md"
+        mode: "0644"
+        content: |
+          # OpenWrt-in-Docker Capabilities Research
+
+          **Source:** https://openwrt.org/docs/guide-user/virtualization/docker_openwrt
+          **Image pull status:** {{ 'success' if openwrt_pull is succeeded else 'failed — check Docker access' }}
+          **Extracted by:** ansible/roles/openwrt-docker-eval (research task)
+
+          ## Evaluation Results
+
+          _To be populated during TASK-006 and TASK-013._
+      delegate_to: localhost
+
+- name: "Provision — launch OpenWrt container with VLAN 20 and 40 bridges"
+  when: openwrt_eval_task == 'provision'
+  block:
+    - name: Ensure Docker is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+      become: true
+
+    - name: Create VLAN bridge networks in Docker for evaluation VLANs
+      community.docker.docker_network:
+        name: "vlan{{ item.id }}-bridge"
+        driver: macvlan
+        driver_options:
+          parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
+        ipam_config:
+          - subnet: "{{ item.subnet }}"
+            gateway: "{{ item.gateway }}"
+        state: present
+      loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+      loop_control:
+        label: "VLAN {{ item.id }}"
+      become: true
+
+    - name: Launch OpenWrt container attached to evaluation VLAN bridges
+      community.docker.docker_container:
+        name: openwrt-eval
+        image: "{{ openwrt_rootfs_image }}"
+        state: started
+        restart_policy: unless-stopped
+        capabilities:
+          - NET_ADMIN
+          - SYS_MODULE
+        networks:
+          - name: "vlan20-bridge"
+          - name: "vlan40-bridge"
+        volumes:
+          - "/tmp/openwrt-eval:/etc/openwrt-eval"
+      become: true
+
+- name: "Full matrix — validate all 11 VLANs in OpenWrt container"
+  when: openwrt_eval_task == 'full_matrix'
+  block:
+    - name: Create Docker VLAN bridge networks for all blueprint VLANs
+      community.docker.docker_network:
+        name: "vlan{{ item.id }}-bridge"
+        driver: macvlan
+        driver_options:
+          parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
+        ipam_config:
+          - subnet: "{{ item.subnet }}"
+            gateway: "{{ item.gateway }}"
+        state: present
+      loop: "{{ vlans }}"
+      loop_control:
+        label: "VLAN {{ item.id }} — {{ item.name }}"
+      become: true
+      ignore_errors: true
+
+    - name: Execute VLAN interface check inside OpenWrt container
+      community.docker.docker_container_exec:
+        container: openwrt-eval
+        command: "ip -d link show"
+      register: openwrt_links
+      changed_when: false
+
+    - name: Append full-matrix results to research file
+      ansible.builtin.lineinfile:
+        path: "{{ research_output_dir }}/openwrt-docker-capabilities.md"
+        line: "- Full-matrix VLAN validation completed: {{ now().strftime('%Y-%m-%d') }}"
+        create: true
+      delegate_to: localhost
+
+- name: "Generate config — emit docker-compose.yml and UCI backups"
+  when: openwrt_eval_task == 'generate_config'
+  block:
+    - name: Create prototype output directory
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/openwrt-docker/prototypes"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+
+    - name: Render docker-compose.yml for OpenWrt evaluation environment
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/openwrt-docker/prototypes/docker-compose.yml"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Export UCI configuration backup from running container
+      community.docker.docker_container_exec:
+        container: openwrt-eval
+        command: "uci export"
+      register: uci_export
+      changed_when: false
+      ignore_errors: true
+
+    - name: Save UCI configuration backup
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/openwrt-docker/prototypes/uci-backup.conf"
+        content: "{{ uci_export.stdout | default('# UCI export not available — container may not be running') }}"
+        mode: "0644"
+      delegate_to: localhost

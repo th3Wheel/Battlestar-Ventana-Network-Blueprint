@@ -14,10 +14,10 @@
 | CylonSynthLink       | 20   | 10.76.20.0/24    | IoT devices  |
 | CapricaGuestPortal   | 30   | 10.76.30.0/24    | Guest – Internet only  |
 | PiconResidentGate    | 31   | 10.76.31.0/24    | Semi‑trusted residents (casting, printing, limited LAN)  |
-| ScyllaDataControl    | 90   | 10.76.90.0/24    | Work VLAN (compliance bubble)  |
+| ScyllaProcessControl | 90   | 10.76.90.0/24    | Work VLAN (compliance bubble)  |
 | PegasusMediaNode     | 70   | 10.76.70.0/24    | Media / Casting  |
-| ScorpiaShieldNet     | 81   | 10.76.81.0/24    | Cameras – Local  |
-| CanceronSignalRelay  | 82   | 10.76.82.0/24    | Cameras – Cloud  |
+| ScorpiaMediaShield   | 81   | 10.76.81.0/24    | Cameras – Local  |
+| ScorpiaMediaRelay    | 82   | 10.76.82.0/24    | Cameras – Cloud  |
 | VirgonFleetYard      | 60   | 10.76.60.0/24    | Printers  |
 | InfraCore            | 40   | 10.76.40.0/24    | Switches, controllers  |
 | ServerVault          | 50   | 10.76.50.0/24    | NAS, MQTT, Home Assistant  |

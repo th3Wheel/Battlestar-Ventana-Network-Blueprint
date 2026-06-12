@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  inventory-check:
+    desc: Run Fing inventory check against known device list
+    cmds:
+      - bash scripts/fing-inventory-check.sh

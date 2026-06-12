@@ -51,7 +51,9 @@ def get_profile(user_id):
 def get_profile(user_id):
     if not current_user.can_access_user(user_id):
         abort(403)
-    return User.get(user_id).to_json()
+    # Validate and sanitize user_id to prevent injection
+    sanitized_id = validate_user_id(user_id)
+    return User.get(sanitized_id).to_json()
 ```
 
 **A02 - Cryptographic Failures:**

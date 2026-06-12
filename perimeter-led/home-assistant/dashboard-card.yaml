@@ -1,0 +1,68 @@
+type: vertical-stack
+cards:
+  - type: heading
+    heading: Perimeter LED
+    heading_style: title
+
+  - type: light
+    entity: light.perimeter_led
+    name: Main Bedroom Perimeter
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: button
+        name: All White
+        icon: mdi:white-balance-sunny
+        tap_action:
+          action: call-service
+          service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
+          data:
+            option: "All White"
+
+      - type: button
+        name: Mirror Sides
+        icon: mdi:mirror-rectangle
+        tap_action:
+          action: call-service
+          service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
+          data:
+            option: "Mirror Sides"
+
+      - type: button
+        name: Top Focus
+        icon: mdi:arrow-up-bold
+        tap_action:
+          action: call-service
+          service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
+          data:
+            option: "Top Focus (23u)"
+
+      - type: button
+        name: Mid Only
+        icon: mdi:arrow-expand-vertical
+        tap_action:
+          action: call-service
+          service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
+          data:
+            option: "Mid Only (14u/10u)"
+
+      - type: button
+        name: Bottom Accent
+        icon: mdi:arrow-down-bold
+        tap_action:
+          action: call-service
+          service: select.select_option
+          target:
+            entity_id: select.perimeter_led_preset
+          data:
+            option: "Bottom Accent (8u/12u)"

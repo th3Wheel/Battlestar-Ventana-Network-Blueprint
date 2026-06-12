@@ -38,7 +38,7 @@
         "warning": "Warning",
         "info": "Information"
     },
-    "pylint.args": [  "--rcfile=.pylintrc"],
+    "pylint.args": ["--rcfile=.pylintrc"],
     "pylint.enabled": true,
     "markdownlint.config": {
         "extends": "markdownlint/style/relaxed"

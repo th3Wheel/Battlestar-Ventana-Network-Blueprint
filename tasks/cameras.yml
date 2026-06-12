@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  install-deps:
+    desc: Install camera task dependencies (yq)
+    cmds:
+      - choco install yq -y || scoop install yq
+    status:
+      - yq --version
+
+  generate-configs:
+    desc: Generate per-camera thingino.conf and runonce.sh from templates
+    deps: [install-deps]
+    cmds:
+      - pwsh -NoProfile -Command "$gitBash = 'C:\\Program Files\\Git\\bin\\bash.exe'; if (Test-Path $gitBash) { & $gitBash 'scripts/generate-configs.sh' } else { bash scripts/generate-configs.sh }"

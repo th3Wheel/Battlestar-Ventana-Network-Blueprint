@@ -1,0 +1,83 @@
+---
+# Linux-router evaluation playbook
+# Implements tasks from plans/infrastructure-router-vlans-2.md (Phase 1 and Phase 3)
+# VLAN data is sourced from ansible/group_vars/all/vlan-vars.yml (source of truth)
+#
+# Tags:
+#   research       — TASK-001: clone repo, extract feature documentation
+#   matrix         — TASK-004: render linux-router-vlan-matrix.json
+#   provision      — TASK-002: deploy linux-router on lab_router
+#   validate       — TASK-003: NAT, DHCP, DNS relay checks
+#   full-matrix    — TASK-010: iterate all 11 VLANs
+#   generate-config — TASK-011: emit prototype configuration scripts
+
+- name: "Phase 1 — Research: extract linux-router capabilities"
+  hosts: localhost
+  gather_facts: false
+  tags: [research]
+  roles:
+    - role: linux-router-eval
+      vars:
+        linux_router_eval_task: research
+
+- name: "Phase 1 — Matrix: render structured VLAN matrix JSON (TASK-004)"
+  hosts: localhost
+  gather_facts: false
+  tags: [matrix]
+  tasks:
+    - name: Create research output directory
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../../projects/route-pi-squared/research"
+        state: directory
+        mode: "0755"
+
+    - name: Render linux-router-vlan-matrix.json from blueprint source of truth
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/../../projects/route-pi-squared/research/linux-router-vlan-matrix.json"
+        mode: "0644"
+        content: "{{ vlan_matrix_json | to_nice_json }}"
+      vars:
+        vlan_matrix_json:
+          schema_version: "1.0"
+          generated_by: "ansible/playbooks/evaluate-linux-router.yml"
+          source_of_truth:
+            - "docs/dhcp-scopes.md"
+            - "docs/naming-conventions.md"
+            - "docs/firewall-matrix.md"
+          vlans: "{{ vlans }}"
+
+- name: "Phase 1 — Provision: deploy linux-router on lab node (TASK-002)"
+  hosts: lab_router
+  gather_facts: true
+  tags: [provision]
+  roles:
+    - role: linux-router-eval
+      vars:
+        linux_router_eval_task: provision
+
+- name: "Phase 1 — Validate: NAT, DHCP option 6, Pi-hole reachability (TASK-003)"
+  hosts: lab_router
+  gather_facts: false
+  tags: [validate]
+  roles:
+    - role: linux-router-eval
+      vars:
+        linux_router_eval_task: validate
+
+- name: "Phase 3 — Full matrix: validate all 11 VLANs (TASK-010)"
+  hosts: lab_router
+  gather_facts: false
+  tags: [full-matrix]
+  roles:
+    - role: linux-router-eval
+      vars:
+        linux_router_eval_task: full_matrix
+
+- name: "Phase 3 — Generate config: emit prototype scripts (TASK-011)"
+  hosts: lab_router
+  gather_facts: false
+  tags: [generate-config]
+  roles:
+    - role: linux-router-eval
+      vars:
+        linux_router_eval_task: generate_config

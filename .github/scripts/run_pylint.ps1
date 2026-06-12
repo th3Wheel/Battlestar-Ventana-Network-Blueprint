@@ -9,13 +9,15 @@ if (-not (Test-Path $pythonExe)) {
     exit 1
 }
 
+Set-Location $repoRoot
+
 Write-Host "Running pylint using: $pythonExe"
 
-$pyFiles = Get-ChildItem -Path $repoRoot -Recurse -Filter *.py |
-    Where-Object { -not ($_.FullName -match '\\.venv') } |
-    Select-Object -ExpandProperty FullName
+$pythonFiles = Get-ChildItem -Path $repoRoot -Recurse -Filter *.py |
+    Where-Object { -not ($_.FullName -match '\\.venv|\\node_modules') } |
+    ForEach-Object { $_.FullName }
 
-if ($pyFiles.Count -eq 0) {
+if (-not $pythonFiles -or $pythonFiles.Count -eq 0) {
     Write-Host "No Python files found to lint."
     exit 0
 }
