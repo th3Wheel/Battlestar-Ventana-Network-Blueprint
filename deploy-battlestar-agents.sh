@@ -96,8 +96,10 @@ declare -a FILE_MAP=(
 install_file() {
   local entry="$1"
   IFS='|' read -ra PARTS <<< "${entry}"
-  local last_index=$(( ${#PARTS[@]} - 1 ))
-  local dest_rel="${PARTS[$last_index]}"
+  local last_index=$(( ${#PARTS[@]} - 1 ))
+
+  local dest_rel="${PARTS[$last_index]}"
+
   local dest_abs="${REPO_ROOT}/${dest_rel}"
   local src_abs=""
   for (( i=0; i<${#PARTS[@]}-1; i++ )); do
@@ -158,6 +160,3 @@ fi
 
 [[ ${ERRORS} -eq 0 ]]
 
-# ---
-
-# Battlestar Ventana Network Blueprint — Agent Suite Deployment Guide · v1.0.0 · May 2026
