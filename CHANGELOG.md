@@ -139,7 +139,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- Placeholder for bug fixes.
+- **`docs/rate-limiting-strategy.md`** — Added the SYN flood `iptables` example
+  using per-IP `--hashlimit` (`20 SYN/sec/IP`) to align command behavior with
+  documented policy and avoid global shared-limit semantics.
 
 ### Security
 
