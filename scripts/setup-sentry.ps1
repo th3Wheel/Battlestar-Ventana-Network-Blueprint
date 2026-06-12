@@ -64,12 +64,6 @@ try {
     }
 
     Write-Host 'Sentry SDK initialized.' -ForegroundColor Green
-    try {
-        Stop-Sentry -ErrorAction SilentlyContinue
-    }
-    catch {
-        # Intentionally ignore shutdown errors so they don't mask the original failure.
-    }
     if ($RunTraceSample) { Write-Host 'Sent trace sample to Sentry.' -ForegroundColor Green }
 }
 finally {
