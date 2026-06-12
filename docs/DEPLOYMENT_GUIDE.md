@@ -337,8 +337,7 @@ When updated agent files are released, re-running the script is all that's neede
 4. Open a PR with the updates — same `copilot-generated` label and issue reference requirements apply
 
 To deploy without creating new backup files (when you've already reviewed existing content):
-```bash
-bash deploy-battlestar-agents.sh --no-backup
+    bash deploy-battlestar-agents.sh --no-backup
 
 ---
 
