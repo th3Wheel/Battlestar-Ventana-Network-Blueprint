@@ -61,6 +61,16 @@ Battlestar-Ventana-Network-Blueprint/
 │   ├── workflow diagram sho.png               # Workflow diagram
 │   └── true-scale SVG diagr.png               # Network topology diagram
 │
+├── 🏗️ Infrastructure
+│   ├── infrastructure/
+│   │   ├── core-network/
+│   │   │   └── docker-compose.yml             # Traefik reverse proxy + syslog-ng collector
+│   │   ├── pihole/
+│   │   │   └── docker-compose.yml             # Pi-hole + Unbound DNS stack
+│   │   └── xpipe/
+│   │       └── commands.yaml                  # XPipe quick commands: up/down/logs/status(keep-alive)/restart per stack
+│   └── ansible/                               # Ansible automation for lab hosts
+│
 └── ⚙️ Development Configuration
     └── .vscode/
         └── settings.json                      # VS Code workspace settings

@@ -1,0 +1,95 @@
+# Core network infrastructure services — GemenonServiceVault (VLAN 50: 10.76.50.0/24)
+# VLAN name and ID sourced from: ansible/group_vars/all/vlan-vars.yml (name: GemenonServiceVault, id: 50)
+#
+# Provides the reverse proxy (Traefik) and syslog collector that underpin all
+# other services running on GemenonServiceVault.
+#
+# Network topology for this stack:
+#   vlan50 (GemenonServiceVault) — external macvlan; gives traefik/syslog a direct
+#                     GemenonServiceVault IP for ingress from physical network clients.
+#                     VLAN name and ID sourced from: ansible/group_vars/all/vlan-vars.yml
+#   servervault-net — internal bridge (declared external: true); shared with other
+#                     stacks so those containers can reach traefik/syslog by service
+#                     name.  All proxied or logging client containers MUST also join
+#                     servervault-net.  Create it once on the host:
+#                       docker network create servervault-net
+#
+# Source-of-truth references for all IPs and ports used in this file:
+#   ansible/group_vars/all/vlan-vars.yml  — GemenonServiceVault (VLAN 50) subnet/gateway
+#   docs/dhcp-scopes.md                   — GemenonServiceVault (VLAN 50) subnet/gateway
+#   docs/services.md (GemenonServiceVault row) — HTTP/HTTPS 80/443, Syslog 514
+#   docs/firewall-matrix.md               — Service/Ports Reference Table
+#
+# Prerequisites:
+#   - Docker Engine 24.0+ and Docker Compose v2.0+
+#   - External macvlan network "vlan50" created on the host:
+#       docker network create -d macvlan \
+#         --subnet=10.76.50.0/24 \
+#         --gateway=10.76.50.1 \
+#         -o parent=eth0.50 vlan50
+#     Subnet and gateway sourced from: ansible/group_vars/all/vlan-vars.yml
+#       (name: GemenonServiceVault, id: 50)
+#   - External bridge network "servervault-net" created on the host:
+#       docker network create servervault-net
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Port 80 sourced from: docs/services.md (GemenonServiceVault: HTTP/HTTPS 80/443)
+      - "--entrypoints.web.address=:80"
+      # Port 443 sourced from: docs/services.md (GemenonServiceVault: HTTP/HTTPS 80/443)
+      - "--entrypoints.websecure.address=:443"
+      - "--api.dashboard=false"
+      - "--log.level=INFO"
+      - "--accesslog=true"
+    ports:
+      # HTTP: docs/services.md (GemenonServiceVault row) and docs/firewall-matrix.md Service/Ports Reference
+      - "80:80"
+      # HTTPS: docs/services.md (GemenonServiceVault row) and docs/firewall-matrix.md Service/Ports Reference
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certs:/certs
+    networks:
+      - vlan50
+      - servervault-net
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  syslog:
+    image: balabit/syslog-ng:4.11.0
+    container_name: syslog-ng
+    restart: unless-stopped
+    ports:
+      # Syslog UDP/TCP 514: docs/services.md (GemenonServiceVault: Syslog 514) and
+      # docs/firewall-matrix.md (ScorpiaMediaShield/ScorpiaMediaRelay → GemenonServiceVault: Syslog 514)
+      - "514:514/udp"
+      - "514:514/tcp"
+    volumes:
+      - syslog-data:/var/log/syslog-ng
+    networks:
+      - vlan50
+      - servervault-net
+    healthcheck:
+      test: ["CMD", "syslog-ng-ctl", "stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  traefik-certs:
+  syslog-data:
+
+networks:
+  vlan50:
+    external: true
+  servervault-net:
+    external: true
