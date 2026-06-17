@@ -93,14 +93,11 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
-  "[shellscript]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
-  "security.workspace.trust.untrustedFiles": "open",
+  "security.workspace.trust.untrustedFiles": "prompt",
   "yaml.schemas": {
     "./docs/schemas/network-topology.schema.json": "config/network-topology.yaml",
     "./docs/schemas/vlan-registry.schema.json": "config/vlan-registry.yaml"
-  },
+  }
   "vsmqtt.brokerProfiles": [
     {
       "name": "HassIO",

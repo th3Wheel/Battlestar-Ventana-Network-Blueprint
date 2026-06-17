@@ -50,15 +50,15 @@
       ansible.builtin.uri:
         url: "https://{{ opnsense_mgmt_ip }}/api/core/firmware/info"
         method: GET
-        user: "{{ opnsense_api_key }}"
-        password: "{{ opnsense_api_secret }}"
-        force_basic_auth: true
-        validate_certs: false
-        status_code: 200
+        user: "{{ opnsense_api_key | default(omit, true) }}"
+        password: "{{ opnsense_api_secret | default(omit, true) }}"
+        force_basic_auth: "{{ (opnsense_api_key | default('', true) | length > 0) and (opnsense_api_secret | default('', true) | length > 0) }}"
+        validate_certs: "{{ opnsense_validate_certs }}"
+        status_code: [200, 401, 403]
       register: opnsense_api_ready
       retries: 24
       delay: 15
-      until: opnsense_api_ready.status == 200
+      until: opnsense_api_ready.status in [200, 401, 403]
 
 - name: "Configure — apply VLANs, DHCP scopes, and firewall rules via OPNsense API"
   when: opnsense_eval_task == 'configure'
@@ -70,7 +70,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         body_format: json
         body:
           vlan:
@@ -89,7 +89,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         body_format: json
         body:
           general:
@@ -111,7 +111,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
 
 - name: "Validate — verify DHCP option 6, DNS relay, and firewall (VLANs 20 and 40)"
@@ -124,7 +124,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: opnsense_vlan_list
 
@@ -145,7 +145,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: dns_reach_check
 
@@ -156,7 +156,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: dns_secondary_reach_check
 
@@ -200,7 +200,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         status_code: 200
       register: opnsense_full_vlan_list
 
@@ -243,7 +243,7 @@
         user: "{{ opnsense_api_key }}"
         password: "{{ opnsense_api_secret }}"
         force_basic_auth: true
-        validate_certs: false
+        validate_certs: "{{ opnsense_validate_certs }}"
         return_content: true
         status_code: 200
       register: opnsense_config_backup

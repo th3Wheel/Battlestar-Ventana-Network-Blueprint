@@ -70,9 +70,15 @@
 3. Rename the script:
    ```bash
    mv deploy-battlestar-agents.sh.txt deploy-battlestar-agents.sh
+   ```
+
 4. Make it executable:
    ```bash
    chmod +x deploy-battlestar-agents.sh
+   ```
+
+   chmod +x deploy-battlestar-agents.sh
+
 
 > ⚠️ **Warning:** Never run this script from the `main`, `master`, `release/*`, or `infra/prod*` branches. The script enforces this and will refuse to proceed with a `⛔ GOVERNANCE VIOLATION` error. Always create a feature or chore branch first.
 
@@ -82,19 +88,27 @@
 
 ### Step 1 — Create a working branch
 
-```bash
-cd ~/path/to/Battlestar-Ventana-Network-Blueprint
-git checkout -b chore/add-copilot-agent-suite
+   ```bash
+
+   cd ~/path/to/Battlestar-Ventana-Network-Blueprint
+
+   git checkout -b chore/add-copilot-agent-suite
+
+   ```
+
 
 ### Step 2 — Preview the deployment (dry run)
 
 Always run with `--dry-run` first to confirm which files will be installed and where. **No files are written.**
 
-```bash
-bash deploy-battlestar-agents.sh --dry-run
+   ```bash
+
+   bash deploy-battlestar-agents.sh --dry-run
+
+   ```
+
 
 The dry run prints each `source → destination` mapping and a summary:
-
 ── Deployment Summary ──
   Files installed: 12
   Files skipped:   0
@@ -106,15 +120,15 @@ Dry run complete — no files were written.
 
 Simplest form — run from inside the repo, with the script and source files in the same folder:
 
-```bash
-bash deploy-battlestar-agents.sh
+    bash deploy-battlestar-agents.sh
+
 
 Or with explicit paths:
+    bash deploy-battlestar-agents.sh \
 
-```bash
-bash deploy-battlestar-agents.sh \
-  --source ~/Downloads \
-  --repo-root ~/code/Battlestar-Ventana-Network-Blueprint
+      --source ~/Downloads \
+
+      --repo-root ~/code/Battlestar-Ventana-Network-Blueprint
 
 ### Step 4 — Review the output
 
@@ -127,10 +141,33 @@ The script prints:
 
 Copy-paste the commit command the script prints, or use this template (replace the issue number):
 
-```bash
-git add .github/ docs/
+ ```bash
 
-git commit -m "chore(copilot): add Battlestar Copilot Agent Suite
+ git add .github/ docs/
+
+
+
+ git commit -m "chore(copilot): add Battlestar Copilot Agent Suite
+
+
+
+ Adds 6 governance-aligned custom agents + setup guide + governance mapping.
+
+ Agents: reviewer, planner, implementer, critical-thinking,
+
+         context-architect, doublecheck.
+
+
+ Refs: #<your-issue-number>"
+
+
+ git push origin chore/add-copilot-agent-suite
+
+ ```
+
+
+
+Then: open a Pull Request → apply the label **`copilot-generated`** → assign to CODEOWNERS for review.
 
 Adds 6 governance-aligned custom agents + setup guide + governance mapping.
 Agents: reviewer, planner, implementer, critical-thinking,
@@ -150,8 +187,12 @@ Then: open a Pull Request → apply the label **`copilot-generated`** → assign
 
 ### Synopsis
 
-```bash
-bash deploy-battlestar-agents.sh [OPTIONS]
+ ```bash
+
+ bash deploy-battlestar-agents.sh [OPTIONS]
+
+ ```
+
 
 ### Flags
 
@@ -168,8 +209,8 @@ bash deploy-battlestar-agents.sh [OPTIONS]
 ### Examples
 
 Auto-detect everything (run from inside the repo):
-```bash
-bash deploy-battlestar-agents.sh
+    bash deploy-battlestar-agents.sh
+
 
 Specify the repo root explicitly:
 ```bash
@@ -230,11 +271,10 @@ The script cannot find a git repository.
   git clone git@github.com:YOUR-ORG/Battlestar-Ventana-Network-Blueprint.git
 - Pass the path explicitly:
   ```bash
-  bash deploy-battlestar-agents.sh --repo-root ~/path/to/repo
+    bash .github/agents/validate-agents.sh
 
 ---
 
-### "⛔ GOVERNANCE VIOLATION: Protected branch detected"
 
 You are on a protected branch.
 
@@ -278,9 +318,10 @@ Common fixes:
 
 macOS ships with Bash 3, which does not support some array features used by the script.
 
-**Resolution:**
-```bash
-brew install bash
+    brew install bash
+
+    /opt/homebrew/bin/bash deploy-battlestar-agents.sh
+
 /opt/homebrew/bin/bash deploy-battlestar-agents.sh
 
 ---
@@ -290,15 +331,13 @@ brew install bash
 When updated agent files are released, re-running the script is all that's needed:
 
 1. Download the new files into the same source folder
-2. Run the script — it backs up old versions automatically with a fresh timestamp
 3. Re-run the validator:
    ```bash
    bash .github/agents/validate-agents.sh
 4. Open a PR with the updates — same `copilot-generated` label and issue reference requirements apply
 
 To deploy without creating new backup files (when you've already reviewed existing content):
-```bash
-bash deploy-battlestar-agents.sh --no-backup
+    bash deploy-battlestar-agents.sh --no-backup
 
 ---
 
@@ -328,11 +367,4 @@ Battlestar-Ventana-Network-Blueprint/
 
 ## 10. Full Script Reference
 
-```bash
-#!/usr/bin/env bash
-# ─── IDEMPOTENCY DECLARATION ─────────────────────────────────────────────────
-# This script is idempotent. Running it multiple times produces the same result.
-# Idempotency: directories are created only if absent; files are overwritten in
-# place; backups are timestamped so repeated runs never clobber prior backups.
-# ─────────────────────────────────────────────────────────────────────────────
-#
+For the complete script, see [`deploy-battlestar-agents.sh`](../deploy-battlestar-agents.sh).

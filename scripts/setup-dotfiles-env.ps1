@@ -75,7 +75,7 @@ Install manually, then rerun:
 
 function Install-PSFzf {
     Invoke-Step -Description "Install PSFzf PowerShell module" -Action {
-        Install-Module -Name PSFzf -Scope CurrentUser -Force
+        Install-Module -Name PSFzf -Repository PSGallery -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
     }
 }
 

@@ -5,9 +5,7 @@ If stack details change, update this file first.
 
 ## 📦 Core Stack
 
-- **Primary IaC/Automation**: Ansible (primary), Terraform (resource provisioning only where Ansible is not appropriate)
-- **Primary Languages**: Python 3.11+, TypeScript 5+, Bash (POSIX-compliant)
-- **Auxiliary Tooling Language**: Go
+- **Primary Languages**: Python 3.11+, TypeScript 5+, Bash (prefer POSIX-compliant shell scripts where feasible)
 
 ## ✅ Quality Tooling
 
