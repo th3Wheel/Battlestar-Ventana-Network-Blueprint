@@ -22,11 +22,12 @@ the conventions below.
   subnet boundaries, hostnames, firewall flows, or environment keys.
 - **Use source-of-truth files by data type and priority:**
 
-  | Data Type        | Primary Source                  | Fallback Source                         | Policy Validation Source                        |
-  | ---------------- | ------------------------------- | --------------------------------------- | ----------------------------------------------- |
-  | Network topology | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
-  | VLAN assignments | `/config/vlan-registry.yaml`    | `/ansible/group_vars/all/vlan-vars.yml` | `/docs/firewall-matrix.md`, `/docs/services.md` |
-  | IP allocations   | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | Data Type         | Primary Source                  | Fallback Source                         | Policy Validation Source                        |
+  | ----------------- | ------------------------------- | --------------------------------------- | ----------------------------------------------- |
+  | Network topology  | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | VLAN assignments  | `/config/vlan-registry.yaml`    | `/ansible/group_vars/all/vlan-vars.yml` | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | IP allocations    | `/config/network-topology.yaml` | `/docs/ip-allocation.md`                | `/docs/firewall-matrix.md`, `/docs/services.md` |
+  | DNS record naming | `/docs/naming-conventions.md`   | `/config/dns-conventions.yaml`          | `/docs/services.md`                             |
 
 - **If a required source file is missing, flag the gap explicitly.** Do not fabricate values.
 - **If both the primary and fallback source files for a required value are absent, halt generation of the affected configuration block, output a clearly marked warning in the format:** `[MISSING SOURCE] <file-path> required for <value-type> — cannot proceed without human input`, **and continue only with unaffected sections.**
@@ -55,9 +56,8 @@ the conventions below.
 - All IP ranges and static assignments MUST map to `/docs/ip-allocation.md` unless
   superseded by `/config/*` source-of-truth files.
 - VLAN assignments MUST follow the source-priority table in **Determinism Rules**.
-- Firewall rule changes MUST be reflected in `/docs/firewall-matrix.md` and summarized
-  in `/CHANGELOG.md`.
-- All DNS records follow the naming scheme: `<service>.<zone>.ventana.internal`.
+- Firewall rule changes MUST be reflected in `/docs/firewall-matrix.md`.
+  - **DNS records** MUST follow the naming scheme `<service>.<zone>.ventana.internal`. Canonical definition: `/docs/naming-conventions.md` § DNS Record Naming. Machine-readable source: `/config/dns-conventions.yaml`. Do not invent zone tokens or suffixes.
 
 ---
 
@@ -105,5 +105,4 @@ When working in this repository, always check:
 - `/docs/firewall-matrix.md` - inter-VLAN and egress policy reference
 - `/docs/services.md` - service and port contract reference
 - `/docs/naming-conventions.md` - canonical naming conventions for VLANs, hosts, and devices
-- `/CHANGELOG.md` - recent changes
 - `/.github/CODEOWNERS` (if present) - ownership and approval routing

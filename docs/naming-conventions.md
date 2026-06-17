@@ -23,24 +23,9 @@
 
 ### Physical Hosts (Hypervisors / Bare-metal)
 
-- Pattern: `<Color/Element><Descriptor>` (PascalCase)
-- Examples: `CrimsonRogue`, `MintRedoubt`, `AzureDefiant`
-- Reuse Policy: Unique per chassis; retired names are never reused
-- External Mapping: None
-
 ### Personal Computers & Laptops
 
-- Pattern: Predefined Jaeger names from _Pacific Rim_ (PascalCase)
-- Canonical Pool: `GipsyDanger`, `GipsyAvenger`, `StrykerEureka`, `ChernoAlpha`, `CoyoteTango`, `BracerPhoenix`, `GuardianBravo`, `SaberAthena`, `TitanRedeemer`, `ValorOmega`
-- Reuse Policy: Unique per active device; may be recycled only if the new system is a direct replacement
-- External Mapping: None
-
 ### Other Devices (IoT, Printers, Cameras, Appliances, Sensors)
-
-- Pattern: `<location>-<type>[-<qualifier>][-<index>]` (lowercase, hyphen-separated)
-- The network zone (VLAN) is already captured by the subnet the device lives on, so the hostname encodes **physical location** instead.
-- `<qualifier>` and `<index>` are optional; use `<qualifier>` first to disambiguate, then `<index>` only if the qualifier alone is still ambiguous.
-- Reuse Policy: Indexes increment sequentially; retired indexes may be reused.
 
 #### Location tokens
 
@@ -157,5 +142,55 @@
 | `mbr-tv-3`           | Master bedroom TV #3                   |
 | `living-appletv-1`   | Living room Apple TV #1                |
 | `living-appletv-2`   | Living room Apple TV #2                |
+
+## 🌐 DNS Record Naming
+
+**Canonical source**: This section is the human-readable definition.
+**Machine-readable mirror**: `/config/dns-conventions.yaml`
+
+### Pattern
+
+```
+<service>.<zone>.ventana.internal
+```
+
+### Components
+
+| Component          | Description                          | Examples                                        |
+| ------------------ | ------------------------------------ | ----------------------------------------------- |
+| `<service>`        | Lowercase service or host identifier | `pihole`, `proxmox`, `homeassistant`, `grafana` |
+| `<zone>`           | Lowercase VLAN zone name             | `trusted`, `infra`, `services`, `iot`, `media`  |
+| `ventana.internal` | Fixed domain suffix (never changes)  | —                                               |
+
+### Zone tokens
+
+| Zone token | VLAN                                   | VLAN ID |
+| ---------- | -------------------------------------- | ------- |
+| `trusted`  | BattlestarVentana                      | 10      |
+| `iot`      | CylonSynthLink                         | 20      |
+| `guest`    | CapricaGuestPortal                     | 30      |
+| `elevated` | CapricaResidentPortal                  | 31      |
+| `infra`    | BasestarVentana                        | 40      |
+| `services` | GemenonServiceVault                    | 50      |
+| `print`    | VirgonFleetYard                        | 60      |
+| `media`    | PegasusMediaNode                       | 70      |
+| `cam`      | ScorpiaMediaShield / ScorpiaMediaRelay | 81 / 82 |
+| `work`     | ScyllaProcessControl                   | 90      |
+
+### Examples
+
+| DNS Record                                | Service                               |
+| ----------------------------------------- | ------------------------------------- |
+| `pihole.infra.ventana.internal`           | Pi-hole DNS/DHCP server on infra VLAN |
+| `proxmox.infra.ventana.internal`          | Proxmox hypervisor on infra VLAN      |
+| `homeassistant.services.ventana.internal` | Home Assistant on services VLAN       |
+| `grafana.services.ventana.internal`       | Grafana dashboard on services VLAN    |
+
+### Rules
+
+- All components are **lowercase**.
+- The `ventana.internal` suffix is **fixed** and must never be omitted or changed.
+- Zone tokens must match the canonical list above; do not invent new zone tokens.
+- Service names should match the primary service identifier used in `/docs/services.md`.
 
 ---
