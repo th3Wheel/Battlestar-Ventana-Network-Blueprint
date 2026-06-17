@@ -14,7 +14,7 @@
 | 10 | Battlestar Ventana | 10.76.10.0/24 | Trusted | Primary LAN |
 | 20 | CylonSynthLink | 10.76.20.0/24 | Untrusted | IoT |
 | 30 | CapricaGuestPortal | 10.76.30.0/24 | Untrusted | Guest Internet |
-| 31 | PiconResidentGate | 10.76.31.0/24 | Semi‑Trusted | Residents |
+| 31 | CapricaResidentPortal | 10.76.31.0/24 | Semi‑Trusted | Residents |
 | 40 | InfraCore | 10.76.40.0/24 | Infra | Switches/controllers |
 | 50 | ServerVault | 10.76.50.0/24 | Services | NAS, MQTT, DNS/DHCP |
 | 60 | VirgonFleetYard | 10.76.60.0/24 | Semi‑Trusted | Printers |
@@ -40,7 +40,7 @@ flowchart TB
 
     V10["10 Trusted"]
     V90["90 Work"]
-    V31["31 ResidentGate"]
+    V31["31 CapricaResidentPortal"]
     V60["60 Printers"]
     V70["70 Media"]
     V20["20 IoT"]

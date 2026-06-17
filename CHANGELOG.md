@@ -160,7 +160,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- **VLAN 31 renamed** from *ResidentGate* to **GuestElevated**.
+- **VLAN 31 renamed** from *CapricaResidentPortal* to **GuestElevated**.
 
 - **README.md** updated to link `services.md` and include a legend for repo map.
 

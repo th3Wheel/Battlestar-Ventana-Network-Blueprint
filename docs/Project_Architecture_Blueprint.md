@@ -109,7 +109,7 @@ Component interactions focus on directional flows enforced by rules in `firewall
 
 For each component, this section summarizes purpose, internal structure, interaction, and evolution.
 
-### 4.1 InfraCore (VLAN 40 - Basestar Control)
+### 4.1 InfraCore (VLAN 40 - BasestarVentana)
 
 - Purpose: Core switching, controllers, management plane
 - Internal: Core switch/router, control services (DNS/DHCP often delegated), management interfaces

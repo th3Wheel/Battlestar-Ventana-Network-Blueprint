@@ -11,8 +11,8 @@
 - **Battlestar Ventana (10):** Trusted LAN
 - **CylonSynthLink (20):** IoT devices
 - **CapricaGuestPortal (30):** Guest – Internet only
-- **PiconResidentGate (31):** Elevated guest (casting, printing)
-- **Basestar Control (40):** Infrastructure switches/controllers
+- **CapricaResidentPortal (31):** Elevated guest (casting, printing)
+- **BasestarVentana (40):** Infrastructure switches/controllers
 - **GemenonServiceVault (50):** NAS, MQTT, Home Assistant
 - **VirgonFleetYard (60):** Printers
 - **PegasusMediaNode (70):** Media / Casting
