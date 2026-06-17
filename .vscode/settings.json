@@ -35,6 +35,7 @@
     "skopeo",
     "Thingino",
     "unthrottled",
+    "Mbps",
     "Ventana",
     "venv",
     "Virgon",
@@ -97,7 +98,7 @@
   "yaml.schemas": {
     "./docs/schemas/network-topology.schema.json": "config/network-topology.yaml",
     "./docs/schemas/vlan-registry.schema.json": "config/vlan-registry.yaml"
-  }
+  },
   "vsmqtt.brokerProfiles": [
     {
       "name": "HassIO",
