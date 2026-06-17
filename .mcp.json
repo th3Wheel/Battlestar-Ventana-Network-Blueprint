@@ -8,16 +8,13 @@
       "type": "http",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
-        "CONTEXT7_API_KEY": "op://homelab/Context7/vscode_api_key"
+        "CONTEXT7_API_KEY": "$CONTEXT7_API_KEY"
       }
     },
     "sentry": {
       "type": "local",
       "command": "npx",
-      "args": [
-        "@sentry/mcp-server@latest",
-        "--host=$SENTRY_HOST"
-      ],
+      "args": ["@sentry/mcp-server@latest", "--host=$SENTRY_HOST"],
       "env": {
         "SENTRY_HOST": "https://contoso.sentry.io",
         "SENTRY_ACCESS_TOKEN": "op://Personal/Sentry/bsn token"

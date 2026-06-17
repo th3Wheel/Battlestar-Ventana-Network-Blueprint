@@ -45,6 +45,42 @@ The `mcp-config.json` file contains the MCP servers configuration in the standar
 - Used by tools like Claude Desktop, Cline, and other MCP-enabled applications
 - Can be consumed by any tool implementing the MCP standard configuration format
 
+### Source of Truth and Sync Model
+
+This repository uses `mcp-config.json` as the source of truth for shared MCP server entries.
+
+Run sync to propagate shared entries into agent-specific files:
+
+```bash
+npm run mcp:sync
+```
+
+Validate sync state without writing changes:
+
+```bash
+npm run mcp:sync:check
+```
+
+Validate sync state and reject unexpected MCP config files anywhere in the repo:
+
+```bash
+npm run mcp:guard
+```
+
+Current sync targets:
+
+- `.mcp.json` (`mcpServers`)
+- `.cursor/mcp.json` (`mcpServers`)
+- `.vscode/mcp.json` (`servers`)
+- `.gemini/settings.json` (`mcpServers`)
+
+Synchronization behavior:
+
+- Any server key that exists in `mcp-config.json` is managed and will be overwritten in all targets.
+- Server keys not present in `mcp-config.json` are treated as agent-specific and preserved.
+- This allows each agent/client to keep custom entries while ensuring shared servers stay consistent.
+- The guard check fails if any MCP config file appears outside the approved inventory or if an approved config is missing.
+
 ### Local Development Setup
 
 1. Install Node.js (v18 or higher recommended)

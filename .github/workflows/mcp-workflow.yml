@@ -34,3 +34,20 @@ jobs:
           npx -y @context7/mcp-server --help
 
       # Add any real MCP tasks below, ensuring CONTEXT7_API_KEY is provided from the copilot environment secret
+
+  mcp-config-guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate MCP config inventory and drift
+        run: npm run mcp:guard
