@@ -132,6 +132,7 @@ Assignee:  The engineer who invoked the agent
 Reviewer:  CODEOWNER for the affected path(s)
 
 Agents enforce this at the point of:
+
 - **Implementer:** commit message template includes `Refs: #N`
 - **Planner:** includes label and issue reference in every issue's acceptance criteria
 - **Reviewer:** checks for label and reference; flags as MAJOR if missing
@@ -193,4 +194,4 @@ All agent-generated work is traceable via:
 | Reviewer reports | PR review comments | Permanent |
 | Doublecheck Verification Reports | PR descriptions or chat transcripts | Permanent if in PR description |
 | Governance violations | Agent output in PR descriptions / chat | Permanent (if in PR description) |
-| Doublecheck DOMAIN-CONFIRMED flags | PR description (engineer documents) | Permanent |
+| Doublecheck DOMAIN-CONFIRMED flags | PR description (engineer documents) | Permanent |
