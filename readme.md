@@ -1,8 +1,8 @@
 # 💠 Battlestar Ventana Network Blueprint
 
-**IP Scheme:** `10.76.X.0/24` (X = VLAN ID)
-**Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.
-**Status:** Active
+**IP Scheme:** `10.76.X.0/24` (X = VLAN ID)  
+**Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.  
+**Status:** unknown
 
 ---
 
@@ -12,13 +12,13 @@
 - **CylonSynthLink (20):** IoT devices
 - **CapricaGuestPortal (30):** Guest – Internet only
 - **CapricaResidentPortal (31):** Elevated guest (casting, printing)
+
 - **BasestarVentana (40):** Infrastructure switches/controllers
 - **GemenonServiceVault (50):** NAS, MQTT, Home Assistant
 - **VirgonFleetYard (60):** Printers
 - **PegasusMediaNode (70):** Media / Casting
 - **ScorpiaMediaShield (81):** Cameras – Local
 - **ScorpiaMediaRelay (82):** Cameras – Cloud
-
 - **ScyllaProcessControl (90):** Work VLAN
 
 ---
@@ -41,8 +41,10 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
-- [`docs/spec-review-todos.md`](docs/spec-review-todos.md) — Outstanding specification review items and TODOs
-- [`ansible/README.md`](ansible/README.md) — Ansible control-node environment bootstrap and validation
+- [`docs/host-tracker.md`](docs/host-tracker.md) — Canonical host tracker index
+- [`docs/other-devices.md`](docs/other-devices.md) — IoT, printers, cameras, and appliances tracker
+- [`docs/wled-configurations.md`](docs/wled-configurations.md) — WLED LED strip configurations and presets
+- [`docs/hyperion-camera-sensor.md`](docs/hyperion-camera-sensor.md) — ESP32 Hyperion HD camera sensors for ambient lighting
 - [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
 
 ---
@@ -59,67 +61,30 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📂 Repo structure
 
-```text
+```tree
 Battlestar-Ventana-Network-Blueprint/
-├── readme.md                          # Master blueprint doc
-├── CHANGELOG.md                       # Versioned history of changes
-├── layout.md                          # Network layout
-├── network-map.md                     # Network topology map
+├── README.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
 │
-├── alerts/                            # Prometheus alert rules
-│   └── alert_rules.yaml
-│
-├── dashboards/                        # Grafana dashboards
+├── dashboards/               # Grafana dashboards
 │   ├── dashboard.json
-│   └── Homepage Mockup.md
+│   └── README.md
 │
-├── docs/                              # Supporting documentation
-│   ├── audit-checklist.md
-│   ├── dhcp-scopes.md
-│   ├── firewall-matrix.md
-│   ├── host-tracker.md
-│   ├── jaeger-pool.md
-│   ├── naming-conventions.md
-│   ├── other-devices.md
-│   ├── physical-hosts.md
-│   ├── Project_Architecture_Blueprint.md
-│   ├── services.md
-│   ├── spec-review-todos.md
-│   └── raw/
-│       └── network.md
+├── alerts/                   # Prometheus alert rules
+│   ├── alert_rules.yaml
+│   └── README.md
 │
-├── ha/                                # Home Assistant
-│   ├── Dashboard.yaml
+├── ha/                       # Home Assistant Lovelace dashboard
 │   ├── lovelace.yaml
-│   └── guidelines/
-│       ├── 01-architecture-principles.md
-│       └── … (02–10)
+│   └── README.md
 │
-└── plan/                              # Architecture & feature plans
-    ├── architecture-route-pi-squared-1.md
-    ├── feature-docker-compose-pihole-1.md
-    ├── infrastructure-router-vlans-1.md
-    └── infrastructure-router-vlans-2.md
+└── docs/                     # Supporting documentation
+    ├── firewall-matrix.md    # VLAN + Zone firewall rules, Internet Access Policy, audit tie-in
+    ├── dhcp-scopes.md        # Subnet ranges, gateways, lease times
+    ├── naming-conventions.md # Canonical SSID/VLAN naming rules
+    ├── audit-checklist.md    # Operational health checklist
+    └── services.md           # Service/ports traffic matrix (scaffolded, TODOs for detail)
+CHANGELOG.md                  # Versioned history of changes
 ```
-
-### 🔗 Quick navigation
-
-- [readme.md](readme.md) — Master blueprint doc
-- [CHANGELOG.md](CHANGELOG.md) — Versioned history of changes
-- [layout.md](layout.md) — Network layout
-- [network-map.md](network-map.md) — Network topology map
-- [alerts/alert_rules.yaml](alerts/alert_rules.yaml) — Prometheus alert rules
-- [dashboards/dashboard.json](dashboards/dashboard.json) — Grafana dashboard
-- [dashboards/Homepage Mockup.md](dashboards/Homepage%20Mockup.md) — Homepage mockup
-- [docs/audit-checklist.md](docs/audit-checklist.md) — Operational health checklist
-- [docs/dhcp-scopes.md](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
-- [docs/firewall-matrix.md](docs/firewall-matrix.md) — Firewall access matrix
-- [docs/naming-conventions.md](docs/naming-conventions.md) — SSID/VLAN naming rules
-- [docs/services.md](docs/services.md) — Service/ports traffic matrix
-- [docs/Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md) — Full architecture blueprint
-- [ansible/README.md](ansible/README.md) — Ansible environment setup and `--check` validation flow
-- [ha/lovelace.yaml](ha/lovelace.yaml) — Home Assistant dashboard config
-- [ha/guidelines/06-security-practices.md](ha/guidelines/06-security-practices.md) — HA security practices
 
 ### 📑 Legend
 

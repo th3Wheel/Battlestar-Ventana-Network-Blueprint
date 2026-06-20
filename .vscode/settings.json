@@ -41,25 +41,6 @@
     "Virgon",
     "vmbr"
   ],
-  "markdownlint.ignore": [
-    "**/.git/**",
-    "**/.vscode/**",
-    "**/.venv/**",
-    "**/.ruff_cache/**",
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/coverage/**",
-    "**/.github/**/doNotLint/**",
-    "**/.github/instructions/code-review-generic.instructions.md",
-    "**/.github/instructions/gilfoyle-code-review.instructions.md",
-    "**/.github/instructions/markdown.instructions.md",
-    "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
-    "**/.github/instructions/shell.instructions.md",
-    "**/.github/instructions/taming-copilot.instructions.md",
-    "**/.github/copilot/memory/**",
-    "**/.github/copilot/agent-memory/**",
-    "**/.github/copilot/agent-logs/**"
-  ],
   "ansible.mcpServer.enabled": true,
   "ansible.ansible.reuseTerminal": true,
   "ansible.validation.lint.autoFixOnSave": true,
@@ -81,28 +62,11 @@
   },
   "ansible.lightspeed.suggestions.enabled": false,
   "ansible.lightspeed.enabled": false,
-  "github.copilot.enable": {
-    "*": true
-  },
-  "github.copilot.chat.agent.enabled": true,
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
-  },
-  "[terraform]": {
-    "editor.defaultFormatter": "hashicorp.terraform"
-  },
-  "security.workspace.trust.untrustedFiles": "prompt",
-  "yaml.schemas": {
-    "./docs/schemas/network-topology.schema.json": "config/network-topology.yaml",
-    "./docs/schemas/vlan-registry.schema.json": "config/vlan-registry.yaml"
-  },
   "vsmqtt.brokerProfiles": [
     {
       "name": "HassIO",
-      "host": "localhost",
+      "host": "h",
       "port": 1883,
       "clientId": "vsmqtt_client_b71e"
     }
