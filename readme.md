@@ -63,7 +63,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ```tree
 Battlestar-Ventana-Network-Blueprint/
-├── README.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
+├── readme.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
 │
 ├── dashboards/               # Grafana dashboards
 │   ├── dashboard.json
