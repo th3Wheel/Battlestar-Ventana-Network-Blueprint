@@ -38,7 +38,7 @@ The following schemas are currently available in bootstrap form:
 
 The target state for each schema file in this directory is:
 
-1. Be in YAML format (JSON Schema draft-07 or later)
+1. Use JSON Schema draft-07 or later (bootstrap files are currently `.schema.json`)
 2. Define `$schema`, `title`, `description`, and `type` at the root
 3. Enumerate all required fields explicitly
 4. Use `additionalProperties: false` to prevent undocumented fields
