@@ -1,10 +1,10 @@
 ---
 collections:
   - name: community.general
-    version: ">=8.0.0,<11.0.0"
+    version: '>=8.0.0,<11.0.0'
   - name: community.docker
-    version: ">=3.0.0,<5.0.0"
+    version: '>=3.0.0,<5.0.0'
   - name: community.network
-    version: ">=3.0.0,<5.0.0"
+    version: '>=3.0.0,<5.0.0'
   - name: ansible.posix
-    version: ">=1.0.0,<3.0.0"
+    version: '>=1.0.0,<3.0.0'

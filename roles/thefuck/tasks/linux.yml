@@ -18,9 +18,9 @@
 
 - name: Ensure ~/.local/bin is in Bash PATH
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: '{{ ansible_env.HOME }}/.bashrc'
     create: true
-    marker: "# {mark} THEFUCK_PATH"
+    marker: '# {mark} THEFUCK_PATH'
     block: |
       if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
           export PATH="$HOME/.local/bin:$PATH"
@@ -29,9 +29,9 @@
 
 - name: Configure thefuck in Bash profile
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
+    path: '{{ ansible_env.HOME }}/.bashrc'
     create: true
-    marker: "# {mark} THEFUCK"
+    marker: '# {mark} THEFUCK'
     block: "{{ lookup('template', 'bashrc_thefuck.j2') }}"
   become: false
 
@@ -44,9 +44,9 @@
 
 - name: Configure thefuck in Zsh profile
   ansible.builtin.blockinfile:
-    path: "{{ ansible_env.HOME }}/.zshrc"
+    path: '{{ ansible_env.HOME }}/.zshrc'
     create: true
-    marker: "# {mark} THEFUCK"
+    marker: '# {mark} THEFUCK'
     block: "{{ lookup('template', 'zshrc_thefuck.j2') }}"
   when: thefuck_zsh_check.rc == 0
   become: false

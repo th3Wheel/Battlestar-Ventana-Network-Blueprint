@@ -2,8 +2,8 @@ perimeter_led:
   homeassistant:
     customize:
       light.perimeter_led:
-        friendly_name: "Perimeter LED"
-        room: "Main Bedroom"
+        friendly_name: 'Perimeter LED'
+        room: 'Main Bedroom'
         icon: mdi:led-strip-variant
 
   light:
@@ -13,62 +13,62 @@ perimeter_led:
 
   script:
     perimeter_led_all_white:
-      alias: "Perimeter LED – All White"
+      alias: 'Perimeter LED – All White'
       sequence:
         - service: select.select_option
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "All White"
+            option: 'All White'
 
     perimeter_led_mirror_sides:
-      alias: "Perimeter LED – Mirror Sides"
+      alias: 'Perimeter LED – Mirror Sides'
       sequence:
         - service: select.select_option
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Mirror Sides"
+            option: 'Mirror Sides'
 
     perimeter_led_top_focus:
-      alias: "Perimeter LED – Top Focus"
+      alias: 'Perimeter LED – Top Focus'
       sequence:
         - service: select.select_option
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Top Focus (23u)"
+            option: 'Top Focus (23u)'
 
     perimeter_led_mid_only:
-      alias: "Perimeter LED – Mid Only"
+      alias: 'Perimeter LED – Mid Only'
       sequence:
         - service: select.select_option
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Mid Only (14u/10u)"
+            option: 'Mid Only (14u/10u)'
 
     perimeter_led_bottom_accent:
-      alias: "Perimeter LED – Bottom Accent"
+      alias: 'Perimeter LED – Bottom Accent'
       sequence:
         - service: select.select_option
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Bottom Accent (8u/12u)"
+            option: 'Bottom Accent (8u/12u)'
 
   automation:
-    - alias: "Perimeter LED – Turn On at Sunset"
+    - alias: 'Perimeter LED – Turn On at Sunset'
       trigger:
         - platform: sun
           event: sunset
       action:
         - service: script.perimeter_led_bottom_accent
 
-    - alias: "Perimeter LED – Turn Off at Midnight"
+    - alias: 'Perimeter LED – Turn Off at Midnight'
       trigger:
         - platform: time
-          at: "00:00:00"
+          at: '00:00:00'
       action:
         - service: light.turn_off
           entity_id: light.perimeter_led

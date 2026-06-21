@@ -15,36 +15,36 @@
 
 dotfiles:
   - id: windows-terminal
-    description: "Windows Terminal Preview settings"
+    description: 'Windows Terminal Preview settings'
     source: windows-terminal/settings.json
     target_windows: "%LOCALAPPDATA%\\Packages\\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\\LocalState\\settings.json"
 
   - id: powershell-core-profile
-    description: "PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, VS Code shell integration, PowerToys CommandNotFound, thefuck"
+    description: 'PowerShell Core (pwsh) CurrentUserCurrentHost profile — Starship, VS Code shell integration, PowerToys CommandNotFound, thefuck'
     source: powershell/pwsh/Microsoft.PowerShell_profile.ps1
     target_windows: "%USERPROFILE%\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
 
   - id: powershell-5-profile
-    description: "Windows PowerShell 5.1 CurrentUserCurrentHost profile — Chocolatey tab-completion, thefuck"
+    description: 'Windows PowerShell 5.1 CurrentUserCurrentHost profile — Chocolatey tab-completion, thefuck'
     source: powershell/windows/Microsoft.PowerShell_profile.ps1
     target_windows: "%USERPROFILE%\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"
 
   - id: wsl-bashrc
-    description: "WSL Bash profile — PATH fix for ~/.local/bin, thefuck alias init"
+    description: 'WSL Bash profile — PATH fix for ~/.local/bin, thefuck alias init'
     source: bash/.bashrc
-    target_wsl: "~/.bashrc"
+    target_wsl: '~/.bashrc'
 
   - id: wsl-zshrc
-    description: "WSL Zsh profile — PATH fix for ~/.local/bin, thefuck alias init"
+    description: 'WSL Zsh profile — PATH fix for ~/.local/bin, thefuck alias init'
     source: bash/.zshrc
-    target_wsl: "~/.zshrc"
+    target_wsl: '~/.zshrc'
 
   - id: linux-bashrc
-    description: "Linux (bare metal / LXC / VM) Bash profile — PATH fix for ~/.local/bin, thefuck alias init"
+    description: 'Linux (bare metal / LXC / VM) Bash profile — PATH fix for ~/.local/bin, thefuck alias init'
     source: bash/.bashrc
-    target_linux: "~/.bashrc"
+    target_linux: '~/.bashrc'
 
   - id: linux-zshrc
-    description: "Linux (bare metal / LXC / VM) Zsh profile — PATH fix for ~/.local/bin, thefuck alias init"
+    description: 'Linux (bare metal / LXC / VM) Zsh profile — PATH fix for ~/.local/bin, thefuck alias init'
     source: bash/.zshrc
-    target_linux: "~/.zshrc"
+    target_linux: '~/.zshrc'

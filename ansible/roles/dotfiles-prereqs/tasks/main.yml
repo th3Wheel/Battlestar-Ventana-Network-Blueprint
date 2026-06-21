@@ -26,7 +26,7 @@
 - name: Install zoxide via upstream shell installer
   ansible.builtin.shell:
     cmd: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-    creates: "{{ ansible_env.HOME }}/.local/bin/zoxide"
+    creates: '{{ ansible_env.HOME }}/.local/bin/zoxide'
 
 - name: Install starship via upstream shell installer
   ansible.builtin.shell:

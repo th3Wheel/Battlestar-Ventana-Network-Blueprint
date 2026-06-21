@@ -6,7 +6,7 @@
 
 - name: Ensure PowerShell profile directories exist
   ansible.windows.win_file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: directory
   loop:
     - "{{ ansible_env.USERPROFILE }}\\Documents\\PowerShell"
@@ -16,12 +16,12 @@
   ansible.windows.win_lineinfile:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1"
     create: true
-    line: "if (Get-Command thefuck -ErrorAction SilentlyContinue) { Invoke-Expression \"$(thefuck --alias {{ thefuck_alias }})\" }"
+    line: 'if (Get-Command thefuck -ErrorAction SilentlyContinue) { Invoke-Expression "$(thefuck --alias {{ thefuck_alias }})" }'
     state: present
 
 - name: Configure thefuck in Windows PowerShell 5.1 profile
   ansible.windows.win_lineinfile:
     path: "{{ ansible_env.USERPROFILE }}\\Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1"
     create: true
-    line: "if (Get-Command thefuck -ErrorAction SilentlyContinue) { Invoke-Expression \"$(thefuck --alias {{ thefuck_alias }})\" }"
+    line: 'if (Get-Command thefuck -ErrorAction SilentlyContinue) { Invoke-Expression "$(thefuck --alias {{ thefuck_alias }})" }'
     state: present
