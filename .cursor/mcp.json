@@ -7,6 +7,13 @@
         "@context7/mcp-server"
       ]
     },
+    "home-assistant": {
+      "type": "streamable-http",
+      "url": "${env:HAMCP_SERVER_URL}",
+      "headers": {
+        "Authorization": "Bearer ${env:HAMCP_API_TOKEN}"
+      }
+    },
     "xpipe": {
       "type": "streamable-http",
       "url": "http://localhost:21721/mcp",
