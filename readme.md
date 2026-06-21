@@ -29,8 +29,8 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📊 Monitoring & dashboards
 
-- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
-- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)
+- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)  
+- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)  
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
@@ -51,10 +51,10 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 🧪 Audit checklist (quick view)
 
-- **Guest VLAN:** Isolated from LANs
-- **IoT VLAN:** Restricted to telemetry only
-- **Cameras:** View‑only from Trusted
-- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP
+- **Guest VLAN:** Isolated from LANs  
+- **IoT VLAN:** Restricted to telemetry only  
+- **Cameras:** View‑only from Trusted  
+- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP  
 - **ServerVault:** Outbound limited to updates and sync
 
 ---
@@ -88,10 +88,10 @@ CHANGELOG.md                  # Versioned history of changes
 
 ### 📑 Legend
 
-- 📄 Documentation
-- 📊 Dashboards
-- ⚙️ Configs / Alerts
+- 📄 Documentation  
+- 📊 Dashboards  
+- ⚙️ Configs / Alerts  
 
 ---
 
-🚀 _The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo._
+🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*

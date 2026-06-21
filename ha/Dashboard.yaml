@@ -1,4 +1,4 @@
-title: BSG Network Dashboard
+title: 💠 BSG Network Dashboard
 views:
   - title: Overview
     theme: midnight
@@ -9,7 +9,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Trusted (10)
             secondary: >
-              Bandwidth: {{ states('sensor.vlan10_bandwidth_mbps') }} Mbps - Failed logins/min: {{ states('sensor.vlan10_failed_logins_min') }}
+              Bandwidth: {{ states('sensor.vlan10_bandwidth_mbps') }} Mbps Â· Failed logins/min: {{ states('sensor.vlan10_failed_logins_min') }}
             icon: mdi:shield-check
             icon_color: >
               {% set bw_dev = states('sensor.vlan10_bw_deviation_pct')|float(0) %}
@@ -26,7 +26,7 @@ views:
           - type: custom:mushroom-template-card
             primary: IoT (20)
             secondary: >
-              Up: {{ states('sensor.vlan20_devices_up') }} - >3 sigma: {{ states('sensor.vlan20_sigma_anomalies') }}
+              Up: {{ states('sensor.vlan20_devices_up') }} Â· >3Ïƒ: {{ states('sensor.vlan20_sigma_anomalies') }}
             icon: mdi:cog
             icon_color: >
               {% set sigma = states('sensor.vlan20_sigma_anomalies')|int(0) %}
@@ -40,7 +40,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Guest (30)
             secondary: >
-              Clients: {{ states('sensor.vlan30_clients') }} - Egress x baseline: {{ states('sensor.vlan30_egress_ratio') }}
+              Clients: {{ states('sensor.vlan30_clients') }} Â· Egress x baseline: {{ states('sensor.vlan30_egress_ratio') }}
             icon: mdi:wifi
             icon_color: >
               {% set ratio = states('sensor.vlan30_egress_ratio')|float(1) %}
@@ -54,7 +54,9 @@ views:
           - type: custom:mushroom-template-card
             primary: CapricaResidentPortal (31)
             secondary: >
-              Devices: {{ states('sensor.vlan31_clients') }} - Denied/min: {{ states('sensor.vlan31_denied_min') }} - Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
+              Devices: {{ states('sensor.vlan31_clients') }} a·
+              Denied/min: {{ states('sensor.vlan31_denied_min') }} a·
+              Print OK/min: {{ states('sensor.vlan31_print_success_min') }}
             icon: mdi:gate
             icon_color: >
               {% set denied = states('sensor.vlan31_denied_min')|float(0) %}
@@ -73,7 +75,7 @@ views:
           - type: custom:mushroom-template-card
             primary: InfraCore (40)
             secondary: >
-              Flaps/day: {{ states('sensor.vlan40_port_flaps_day') }} - Tag errors/day: {{ states('sensor.vlan40_tag_errors_day') }}
+              Flaps/day: {{ states('sensor.vlan40_port_flaps_day') }} 1· Tag errors/day: {{ states('sensor.vlan40_tag_errors_day') }}
             icon: mdi:lan
             icon_color: >
               {% set flaps = states('sensor.vlan40_port_flaps_day')|int(0) %}
@@ -88,7 +90,7 @@ views:
           - type: custom:mushroom-template-card
             primary: ServerVault (50)
             secondary: >
-              CPU sigma: {{ states('sensor.vlan50_cpu_sigma') }} - Restarts/day: {{ states('sensor.vlan50_restarts_day') }} - Storage: {{ states('sensor.vlan50_storage_pct') }}%
+              CPU If {{ states('sensor.vlan50_cpu_sigma') }} a. starts/day: {{ states('sensor.vlan50_restarts_day') }} Â· Storage: {{ states('sensor.vlan50_storage_pct') }}%
             icon: mdi:server
             icon_color: >
               {% set storage = states('sensor.vlan50_storage_pct')|float(0) %}
@@ -103,7 +105,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Printers (60)
             secondary: >
-              Failed/hr: {{ states('sensor.vlan60_failed_jobs_hr') }} - Toner min: {{ states('sensor.vlan60_toner_min_pct') }}%
+              Failed/hr: {{ states('sensor.vlan60_failed_jobs_hr') }} Â· Toner min: {{ states('sensor.vlan60_toner_min_pct') }}%
             icon: mdi:printer
             icon_color: >
               {% set failed = states('sensor.vlan60_failed_jobs_hr')|int(0) %}
@@ -118,7 +120,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Media (70)
             secondary: >
-              Streams: {{ states('sensor.vlan70_streams_active') }} - Fail/min: {{ states('sensor.vlan70_playback_fail_min') }}
+              Streams: {{ states('sensor.vlan70_streams_active') }} Â· Fail/min: {{ states('sensor.vlan70_playback_fail_min') }}
             icon: mdi:television
             icon_color: >
               {% set fail = states('sensor.vlan70_playback_fail_min')|int(0) %}
@@ -132,7 +134,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Cameras Local (81)
             secondary: >
-              Motion/day: {{ states('sensor.vlan81_motion_day') }} - Offline: {{ states('sensor.vlan81_offline') }}
+              Motion/day: {{ states('sensor.vlan81_motion_day') }} Â· Offline: {{ states('sensor.vlan81_offline') }}
             icon: mdi:cctv
             icon_color: >
               {% set offline = states('sensor.vlan81_offline')|int(0) %}
@@ -145,7 +147,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Cameras Cloud (82)
             secondary: >
-              API fail/min: {{ states('sensor.vlan82_api_fail_min') }} - Unreachable: {{ states('sensor.vlan82_api_unreachable') }}
+              API fail/min: {{ states('sensor.vlan82_api_fail_min') }} Â· Unreachable: {{ states('sensor.vlan82_api_unreachable') }}
             icon: mdi:cloud-alert
             icon_color: >
               {% set fail = states('sensor.vlan82_api_fail_min')|float(0) %}
@@ -160,7 +162,7 @@ views:
           - type: custom:mushroom-template-card
             primary: Work (90)
             secondary: >
-              Failed VPN/min: {{ states('sensor.vlan90_failed_vpn_min') }} - Unauthorized/min: {{ states('sensor.vlan90_unauth_min') }}
+              Failed VPN/min: {{ states('sensor.vlan90_failed_vpn_min') }} Â· Unauthorized/min: {{ states('sensor.vlan90_unauth_min') }}
             icon: mdi:briefcase
             icon_color: >
               {% set vpn = states('sensor.vlan90_failed_vpn_min')|int(0) %}
