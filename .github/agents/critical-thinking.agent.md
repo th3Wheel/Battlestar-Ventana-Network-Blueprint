@@ -107,7 +107,7 @@ When a session involves the following domains, apply these targeted lines of inq
 ### Firewall Rule Changes
 - What is the minimum required permission this rule grants?
 - Is there a less permissive alternative that achieves the same outcome?
-- Has the change been logged in `/docs/change-log/firewall-changes.md`?
+- Has the change been logged in `docs/firewall-matrix.md`?
 - What is the rollback procedure if this rule causes a production incident?
 
 ### Infrastructure / Terraform Changes
@@ -174,4 +174,4 @@ Required action: [what the human must do to proceed]
 | `config/vlan-registry.yaml` | VLAN assignments |
 | `docs/naming-conventions.md` | Canonical naming conventions for VLANs, hosts, and devices |
 | `.github/CODEOWNERS` | Ownership and approval routing |
-| `docs/change-log/firewall-changes.md` | Firewall change history |
+| `docs/firewall-matrix.md` | Firewall rule policy and change history |

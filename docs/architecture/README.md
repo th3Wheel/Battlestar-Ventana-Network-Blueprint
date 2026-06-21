@@ -33,10 +33,10 @@ Full VLAN details live in [`config/vlan-registry.yaml`](../../config/vlan-regist
 | Guest          | 30   | 10.76.30.0/24 | CapricaGuestPortal    | Internet-only guest access             |
 | Elevated Guest | 31   | 10.76.31.0/24 | CapricaResidentPortal | Casting/printing, MAC allowlisted      |
 | Infrastructure | 40   | 10.76.40.0/24 | BasestarVentana       | Hypervisors, switches, controllers     |
-| Services       | 50   | 10.76.50.0/24 | GemenonVault          | NAS, MQTT, Home Assistant, Pi-hole     |
+| Services       | 50   | 10.76.50.0/24 | GemenonServiceVault   | NAS, MQTT, Home Assistant, Pi-hole     |
 | Printers       | 60   | 10.76.60.0/24 | VirgonFleetYard       | Printers only                          |
-| Media          | 70   | 10.76.70.0/24 | PegasusMedia          | Smart TVs, streaming, casting targets  |
-| Cameras Local  | 81   | 10.76.81.0/24 | ScorpiaMedia          | Cameras — local recording, no internet |
+| Media          | 70   | 10.76.70.0/24 | PegasusMediaNode      | Smart TVs, streaming, casting targets  |
+| Cameras Local  | 81   | 10.76.81.0/24 | ScorpiaMediaShield    | Cameras — local recording, no internet |
 | Cameras Cloud  | 82   | 10.76.82.0/24 | ScorpiaMediaRelay     | Cameras — cloud relay only             |
 | Work           | 90   | 10.76.90.0/24 | ScyllaProcessControl  | Corporate compliance bubble            |
 

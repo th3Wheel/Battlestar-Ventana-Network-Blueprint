@@ -63,9 +63,9 @@ dns_naming_scheme:
       vlan_id: 90
 
   examples:
-    - record: pihole.infra.ventana.internal
+    - record: pihole.services.ventana.internal
       service: Pi-hole DNS/DHCP server
-      vlan: infra (40)
+      vlan: services (50)
     - record: proxmox.infra.ventana.internal
       service: Proxmox hypervisor
       vlan: infra (40)

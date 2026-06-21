@@ -128,7 +128,7 @@ else
   # Registry-scoped mode — validate ONLY agents registered in AGENT_REGISTRY.md.
   # This intentionally excludes any .agent.md files in the directory that are
   # not part of the Battlestar suite governance model.
-  registered=$(grep -oE '[a-zA-Z_-]+\.agent\.md' "$REGISTRY" | sort -u)
+  registered=$(grep -oE '[[:alnum:]_-]+\.agent\.md' "$REGISTRY" | sort -u)
 
   if [[ -z "$registered" ]]; then
     echo -e "${RED}FATAL: No agent filenames found in AGENT_REGISTRY.md${RST}"

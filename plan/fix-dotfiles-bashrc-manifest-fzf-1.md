@@ -14,10 +14,7 @@ tags: [bug, dotfiles, fzf, ansible, shell]
 
 Two defects were discovered during branch review of the dotfiles feature branch:
 
-1. **Dead code** — `templates/dotfiles/shell/bash/.bashrc` is never deployed because it has no entry in `templates/dotfiles/manifest.yml`. The deploy script (`scripts/deploy-dotfiles.sh`) iterates exclusively over `manifest.yml`; any unlisted file is silently ignored.
-
-2. **fzf version incompatibility** — `.bashrc` calls `eval "$(fzf --bash)"`, a flag introduced in fzf **≥ 0.48.0**. The Ansible role `dotfiles-prereqs` installs fzf from OS package managers (apt/pacman/dnf). Ubuntu 22.04 ships **fzf 0.29.0**, which does not support `--bash`, causing Bash to fail on startup for all WSL/Linux targets.
-
+2. **fzf version incompatibility** — `.bashrc` may use `fzf --bash` (introduced in fzf **≥ 0.48.0**), so startup must guard that path and fall back cleanly on older distro versions (e.g., Ubuntu 22.04 ships **fzf 0.29.0**).
 This plan addresses both defects with the minimum changes required.
 
 ---

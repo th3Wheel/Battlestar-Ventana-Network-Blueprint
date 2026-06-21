@@ -73,7 +73,7 @@
   "vsmqtt.brokerProfiles": [
     {
       "name": "HassIO",
-      "host": "h",
+      "host": "localhost",
       "port": 1883,
       "clientId": "vsmqtt_client_b71e"
     }

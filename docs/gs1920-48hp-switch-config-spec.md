@@ -1,10 +1,13 @@
 # 🖧 ZyXEL GS1920-48HP — Switch Config Specification
 
+> Note: This spec currently uses the 10.10.0.0/16 address plan. The canonical repo blueprint uses 10.76.X.0/24 (VLAN ID = X); reconcile this spec with the canonical plan before deployment.
+
 `````
 # SCOPE: ZyXEL GS1920-48HP — Fully Deterministic Configuration Specification
 # VERSION: 1.0.0
 # DATE: 2026-06-01
 # FORMAT: Five-backtick fenced, no ambiguous renderer collisions
+# NOTE: The VLAN IDs and 10.10.* subnets below are an example. For the Battlestar Ventana environment, align VLAN IDs/names with /docs/naming-conventions.md and subnets with /docs/dhcp-scopes.md (10.76.X.0/24).
 ################################################################################
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

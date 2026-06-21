@@ -136,8 +136,8 @@ terratest (if applicable)
 - All modules pinned to a specific version/tag
 
 ### Infrastructure / YAML
-- IP ranges from `/config/network-topology.yaml` — never inline
-- VLAN IDs from `/config/vlan-registry.yaml` — never hardcoded
+- IP ranges from `/config/network-topology.yaml` (if present), otherwise `/docs/ip-allocation.md`
+- VLAN IDs from `/config/vlan-registry.yaml` (if present), otherwise `/ansible/group_vars/all/vlan-vars.yml` and `/docs/dhcp-scopes.md`
 - DNS names: `<service>.<zone>.ventana.internal` scheme only
 - All idempotency assertions documented in a comment block at the top of the file
 
@@ -255,4 +255,4 @@ Required action: [what the human must do to proceed]
 | `docs/naming-conventions.md` | Canonical naming conventions for VLANs, hosts, and devices |
 | `.github/CODEOWNERS` | Ownership and approval routing |
 | `docs/change-log/firewall-changes.md` | Firewall change history |
-| `CHANGELOG.md` | Must be updated with every implementation |
+| `CHANGELOG.md` | Must be updated with every implementation |
