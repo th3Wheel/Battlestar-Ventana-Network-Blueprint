@@ -1,14 +1,10 @@
-name: MCP Context7
+name: MCP Context7 Validation
 
 on:
   push:
-    branches:
-      - master
-      - main
+    branches: [master, main]
   pull_request:
-    branches:
-      - master
-      - main
+    branches: [master, main]
   workflow_dispatch:
 
 jobs:
@@ -31,7 +27,7 @@ jobs:
         env:
           CONTEXT7_API_KEY: ${{ secrets.COPILOT_MCP_CONTEXT7_KEY }}
         run: |
-          npx -y @context7/mcp-server --help
+          npx -y @upstash/context7-mcp@2.2.1 --help
 
       # Add any real MCP tasks below, ensuring CONTEXT7_API_KEY is provided from the copilot environment secret
 

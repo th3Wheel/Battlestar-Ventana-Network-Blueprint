@@ -14,15 +14,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-
       - name: Install mikefarah/yq
         run: |
-          set -euo pipefail
           YQ_VERSION="v4.44.1"
-          go install github.com/mikefarah/yq/v4@${YQ_VERSION}
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          curl -sL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" \
+            -o /tmp/yq
+          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
 
       - name: Validate camera-map.yaml structure
         run: |

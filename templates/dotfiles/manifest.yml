@@ -1,17 +1,9 @@
 # Dotfile manifest — maps source templates to their target paths on the workstation.
 # target_windows: path using %WINENV% variables (expanded at deploy time via cmd.exe in WSL)
-# target_wsl: path inside the WSL distro filesystem
-# target_linux: path on native Linux hosts
 #
 # Deploy with:
 #   bash scripts/deploy-dotfiles.sh --dry-run   # preview
 #   bash scripts/deploy-dotfiles.sh             # apply
-#
-# Prerequisites:
-#   - Starship prompt
-#   - Chocolatey tab-completion
-#   - PowerToys CommandNotFound
-#   - thefuck (install separately: pip install thefuck / pip3 install thefuck --user)
 
 dotfiles:
   - id: windows-terminal

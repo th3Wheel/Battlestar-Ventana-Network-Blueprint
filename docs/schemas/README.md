@@ -1,12 +1,12 @@
 # 📐 Canonical Data Schemas — Battlestar Ventana Network Blueprint
 
-> **⚠️ STATUS: NOT YET IMPLEMENTED**
+> **⚠️ STATUS: BOOTSTRAP SCHEMAS IMPLEMENTED (STRICT VALIDATION PENDING)**
 >
-> This directory is the designated location for machine-readable schema definitions
+> This directory now contains bootstrap machine-readable schema definitions
 > referenced by agents and automation throughout this repository.
 >
 > See GitHub Issue: [#111](https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/issues/111)
-> Priority: **HIGH** — agents currently lack schema validation for canonical data files.
+> Priority: **HIGH** — strict schema enforcement is still pending.
 
 ---
 
@@ -21,28 +21,32 @@ structured data files used across the repository. Consumers include:
 
 ---
 
-## Planned Schemas
+## Schema Coverage
 
-The following schemas are required and unimplemented:
+The following schemas are currently available in bootstrap form:
 
-| Schema File                    | Validates                     | Source Data File                                                 |
-| ------------------------------ | ----------------------------- | ---------------------------------------------------------------- |
-| `vlan-registry.schema.yaml`    | VLAN registry entries         | `config/vlan-registry.yaml`                                      |
-| `network-topology.schema.yaml` | Topology and hypervisor nodes | `config/network-topology.yaml`                                   |
-| `dns-conventions.schema.yaml`  | DNS naming conventions        | `config/dns-conventions.yaml`                                    |
-| `device-inventory.schema.yaml` | IoT / sensor device records   | `docs/device-inventory.md` (pending machine-readable conversion) |
+| Schema File                      | Current State       | Source Data File               |
+| -------------------------------- | ------------------- | ------------------------------ |
+| `vlan-registry.schema.json`      | Bootstrap available | `config/vlan-registry.yaml`    |
+| `network-topology.schema.json`   | Bootstrap available | `config/network-topology.yaml` |
+| `dns-conventions.schema.yaml`    | Pending             | `config/dns-conventions.yaml`  |
+| `device-inventory.schema.yaml`   | Pending             | `docs/device-inventory.md`     |
 
 ---
 
 ## Implementation Requirements
 
-Each schema file in this directory MUST:
+The target state for each schema file in this directory is:
 
-1. Be in YAML format (JSON Schema draft-07 or later)
+1. Use JSON Schema draft-07 or later (bootstrap files currently use draft-2020-12 in `.schema.json` format)
 2. Define `$schema`, `title`, `description`, and `type` at the root
 3. Enumerate all required fields explicitly
 4. Use `additionalProperties: false` to prevent undocumented fields
 5. Include an example instance in a sibling `examples/` directory
+
+Current bootstrap schemas intentionally prioritize loader compatibility and
+currently allow broader object shapes (for example, `additionalProperties: true`)
+until the hardening work in Issue [#111](https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/issues/111) is completed.
 
 ---
 
