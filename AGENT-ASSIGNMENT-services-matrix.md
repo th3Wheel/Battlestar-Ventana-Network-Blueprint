@@ -248,10 +248,6 @@ flowchart TD
          interval: 30s
    ```
 
----
-
-```
-
 ### Key Deliverables for This Section
 
 1. **Linkerd deployment manifest** (control plane + proxy injection)
@@ -267,6 +263,7 @@ flowchart TD
 ### Context: Why Automated Generation
 
 Manual firewall rules are:
+
 - **Error-prone:** Typos in ports/protocols
 - **Unmaintainable:** Adding a VLAN requires manual rule updates
 - **Unauditable:** No version control of rule changes
