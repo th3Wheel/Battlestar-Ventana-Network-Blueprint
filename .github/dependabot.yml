@@ -6,9 +6,24 @@
 version: 2
 updates:
   # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: 'github-actions'
+    # Location of workflow files to scan for GitHub Actions dependencies
     # Workflow files stored in the default location of `.github/workflows`
-    directory: "/"
+    directory: '/'
     # Check for updates once a week
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
+
+  # Enable version updates for GitHub Actions used in Ansible playbooks
+ # - package-ecosystem: 'github-actions'
+    # Location of Ansible playbooks to scan for GitHub Actions dependencies
+ #   directory: '/ansible/'
+    # Check for updates once a week
+ #   schedule:
+ #     interval: 'weekly'    
+  - package-ecosystem: 'npm'
+    # Location of package.json files to scan for npm dependencies
+    directory: '/'
+    # Check for updates once a week
+    schedule:
+      interval: 'weekly'
