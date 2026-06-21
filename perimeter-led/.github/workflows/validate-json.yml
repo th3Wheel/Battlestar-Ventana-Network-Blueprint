@@ -3,10 +3,10 @@ name: Validate JSON
 on:
   push:
     paths:
-      - "**/*.json"
+      - '**/*.json'
   pull_request:
     paths:
-      - "**/*.json"
+      - '**/*.json'
 
 jobs:
   validate:
@@ -24,4 +24,4 @@ jobs:
           find . -name "*.json" -print0 | while IFS= read -r -d '' file; do
             echo "Checking $file"
             jq empty "$file" || exit 1
-          done
+          done
