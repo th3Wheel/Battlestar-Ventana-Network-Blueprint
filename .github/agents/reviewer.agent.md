@@ -52,9 +52,9 @@ PR comments.
 - Check for violations of Battlestar Ventana coding conventions (see `copilot-instructions.md`)
 - Identify security issues: hardcoded secrets, overly permissive firewall rules,
   unvalidated inputs, insecure defaults
-- Validate network topology changes against `/config/network-topology.yaml` (if present), otherwise `/docs/ip-allocation.md`
-- Validate VLAN changes against `/config/vlan-registry.yaml` (if present), otherwise `/ansible/group_vars/all/vlan-vars.yml` and `/docs/dhcp-scopes.md`
-- Confirm firewall rule changes are reflected in `/docs/firewall-matrix.md` and summarized in `/CHANGELOG.md`
+- Validate network topology changes against `/config/network-topology.yaml` (if present), otherwise `/docs/ip-allocation.md`
+- Validate VLAN changes against `/config/vlan-registry.yaml` (if present), otherwise `/ansible/group_vars/all/vlan-vars.yml` and `/docs/dhcp-scopes.md`
+- Confirm firewall rule changes are reflected in `/docs/firewall-matrix.md` and summarized in `/CHANGELOG.md`
 - Verify idempotency of infrastructure scripts
 - Check commit messages conform to Conventional Commits
 - Flag any change that touches protected paths without proper sign-off

@@ -136,8 +136,8 @@ terratest (if applicable)
 - All modules pinned to a specific version/tag
 
 ### Infrastructure / YAML
-- IP ranges from `/config/network-topology.yaml` (if present), otherwise `/docs/ip-allocation.md`
-- VLAN IDs from `/config/vlan-registry.yaml` (if present), otherwise `/ansible/group_vars/all/vlan-vars.yml` and `/docs/dhcp-scopes.md`
+- IP ranges from `/config/network-topology.yaml` (if present), otherwise `/docs/ip-allocation.md`
+- VLAN IDs from `/config/vlan-registry.yaml` (if present), otherwise `/ansible/group_vars/all/vlan-vars.yml` and `/docs/dhcp-scopes.md`
 - DNS names: `<service>.<zone>.ventana.internal` scheme only
 - All idempotency assertions documented in a comment block at the top of the file
 

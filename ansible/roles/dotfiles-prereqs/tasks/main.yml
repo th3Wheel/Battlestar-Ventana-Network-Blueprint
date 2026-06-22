@@ -23,13 +23,37 @@
   become: true
   when: ansible_pkg_mgr == 'dnf'
 
-- name: Install zoxide via upstream shell installer
-  ansible.builtin.shell:
-    cmd: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-    creates: '{{ ansible_env.HOME }}/.local/bin/zoxide'
-
-- name: Install starship via upstream shell installer
-  ansible.builtin.shell:
-    cmd: curl -sS https://starship.rs/install.sh | sh -s -- --yes
-    creates: /usr/local/bin/starship
+- name: Install zoxide via apt
+  ansible.builtin.package:
+    name: zoxide
+    state: present
   become: true
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install zoxide via pacman
+  ansible.builtin.package:
+    name: zoxide
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Install zoxide via dnf
+  ansible.builtin.package:
+    name: zoxide
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install starship via pacman
+  ansible.builtin.package:
+    name: starship
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Install starship via dnf
+  ansible.builtin.package:
+    name: starship
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'dnf'

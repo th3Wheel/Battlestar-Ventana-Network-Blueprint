@@ -107,7 +107,7 @@ When a session involves the following domains, apply these targeted lines of inq
 ### Firewall Rule Changes
 - What is the minimum required permission this rule grants?
 - Is there a less permissive alternative that achieves the same outcome?
-- Has the change been logged in `docs/firewall-matrix.md`?
+- Has the change been logged in `docs/firewall-matrix.md`?
 - What is the rollback procedure if this rule causes a production incident?
 
 ### Infrastructure / Terraform Changes
