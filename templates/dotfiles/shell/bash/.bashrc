@@ -27,10 +27,10 @@ fi
 if command -v fzf >/dev/null 2>&1; then
   if fzf --help 2>&1 | grep -q -- '--bash'; then
     eval "$(fzf --bash)"
+  fi
   else
     [ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && . /usr/share/doc/fzf/examples/key-bindings.bash
     [ -f /usr/share/doc/fzf/examples/completion.bash ] && . /usr/share/doc/fzf/examples/completion.bash
-  fi
 fi
 
 if [ -f /usr/share/bash-completion/bash_completion ]; then

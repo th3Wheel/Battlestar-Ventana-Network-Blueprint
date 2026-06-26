@@ -1,4 +1,4 @@
-# 📐 Canonical Data Schemas — Battlestar Ventana Network Blueprint
+## 📐 Canonical Data Schemas — Battlestar Ventana Network Blueprint
 
 > **⚠️ STATUS: BOOTSTRAP SCHEMAS IMPLEMENTED (STRICT VALIDATION PENDING)**
 >

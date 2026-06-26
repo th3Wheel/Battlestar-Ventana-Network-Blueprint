@@ -1,10 +1,9 @@
 # dns-conventions.yaml
-# Machine-readable mirror of the DNS naming scheme.
-# Canonical human-readable definition: /docs/naming-conventions.md § DNS Record Naming
-# Referenced by: /.github/copilot-instructions.md (Determinism Rules table)
+# Machine-readable definition of the DNS naming scheme.
+# Related documentation: /docs/naming-conventions.md § DNS Record Naming
 #
-# Update policy: any change here MUST be reflected in /docs/naming-conventions.md
-# and the Determinism Rules table in /.github/copilot-instructions.md.
+# WARNING: This file is currently out of sync with /docs/naming-conventions.md.
+# Changes to VLAN names and zone tokens must be synchronized in both locations.
 
 dns_naming_scheme:
   pattern: '<service>.<zone>.ventana.internal'

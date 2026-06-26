@@ -24,12 +24,17 @@ tasks:
     cmds:
       - ansible-playbook ansible/playbooks/install-thefuck.yml --tags thefuck
 
-  dotfiles:deploy:
+  dotfiles:deploy-root:
     desc: 'Deploy all dotfiles from templates/dotfiles/ to target locations'
     cmds:
       - bash scripts/deploy-dotfiles.sh
 
-  dotfiles:dry-run:
+  dotfiles:dry-run-root:
     desc: 'Preview dotfile deployment without writing any files'
     cmds:
       - bash scripts/deploy-dotfiles.sh --dry-run
+
+  agents:validate-line-endings:
+    desc: 'Run validate-agents.sh regression check for LF and CRLF fixtures'
+    cmds:
+      - bash scripts/check-validator-line-endings.sh

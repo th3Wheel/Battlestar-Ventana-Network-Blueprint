@@ -78,5 +78,8 @@
       "clientId": "vsmqtt_client_b71e"
     }
   ],
-  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf"
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf",
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  }
 }

@@ -45,9 +45,28 @@ validate_agent() {
   echo ""
   echo "━━━ Validating: ${name} ━━━"
 
+  # Extract front-matter block (between first and second ---).
+  # Normalize CRLF to LF on read so Windows line endings do not break matching.
+  local frontmatter
+  frontmatter="$(awk '
+    { sub(/\r$/, "") }
+    /^---$/ {
+      if (in_fm == 0) {
+        in_fm = 1
+        next
+      }
+      exit
+    }
+    in_fm == 1 { print }
+  ' "$file" 2>/dev/null)" || frontmatter=""
+
+  if [[ -z "$frontmatter" ]]; then
+    log_fail "Front-matter: could not parse YAML block (check opening/closing --- delimiters)"
+  fi
+
   # ── 1. Required front-matter fields ──────────────────────────────────────
   for field in name description tools model temperature; do
-    if grep -qE "^${field}:" "$file"; then
+    if echo "$frontmatter" | grep -qE "^${field}:"; then
       log_pass "Front-matter: '${field}' present"
     else
       log_fail "Front-matter: '${field}' MISSING — required in all agents"
@@ -56,7 +75,16 @@ validate_agent() {
 
   # ── 2. temperature must be 0 ─────────────────────────────────────────────
   local temp
-  temp="$(grep -E '^temperature:' "$file" | awk '{print $2}' || echo "MISSING")"
+  temp="$(echo "$frontmatter" | awk -F':' '
+    /^temperature:[[:space:]]*/ {
+      value = $2
+      sub(/#.*/, "", value)
+      gsub(/[[:space:]]/, "", value)
+      print value
+      exit
+    }
+  ')"
+  temp="${temp:-MISSING}"
   if [[ "$temp" == "0" ]]; then
     log_pass "Determinism: temperature=0"
   else
@@ -108,7 +136,9 @@ validate_agent() {
   # ── 9. Registered in AGENT_REGISTRY.md ───────────────────────────────────
   local agent_file_name
   agent_file_name="$(basename "$file")"
-  if grep -q "${agent_file_name}" "$REGISTRY"; then
+  if [[ "${VALIDATE_AGENTS_SKIP_REGISTRY:-0}" == "1" ]]; then
+    log_info "Registry: skipped (VALIDATE_AGENTS_SKIP_REGISTRY=1)"
+  elif grep -q "${agent_file_name}" "$REGISTRY"; then
     log_pass "Registry: '${agent_file_name}' found in AGENT_REGISTRY.md"
   else
     log_fail "Registry: '${agent_file_name}' NOT in AGENT_REGISTRY.md — add it before merging"

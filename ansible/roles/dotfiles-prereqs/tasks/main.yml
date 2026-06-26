@@ -44,6 +44,13 @@
   become: true
   when: ansible_pkg_mgr == 'dnf'
 
+- name: Install starship via apt
+  ansible.builtin.package:
+    name: starship
+    state: present
+  become: true
+  when: ansible_pkg_mgr == 'apt'
+
 - name: Install starship via pacman
   ansible.builtin.package:
     name: starship

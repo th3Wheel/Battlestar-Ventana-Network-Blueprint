@@ -38,6 +38,8 @@ gh extension list     # Should include gh-copilot
 node --version        # Node.js >= 20 (for Copilot CLI extension)
 python3 --version     # Python >= 3.11 (for repo linting)
 terraform --version   # Terraform >= 1.7 (if working on infra)
+ansible --version     # Ansible >= 2.15 (if working on infra)
+task --version        # Go Task >= 3.0 (if working on infra)
 ```
 
 ### Required VS Code Extensions
@@ -54,6 +56,8 @@ Install via the Extensions panel or `code --install-extension <id>`.
 | Prettier             | `esbenp.prettier-vscode`            | TS/JS formatting    |
 | ShellCheck           | `timonwong.shellcheck`              | Bash linting        |
 | HashiCorp Terraform  | `hashicorp.terraform`               | Terraform support   |
+| Ansible              | `vscoss.vscode-ansible`             | Ansible support     |
+| Task                 | `go-task.task`                      | Taskfile support    |
 
 ---
 
@@ -150,7 +154,9 @@ Optionally, create `.vscode/extensions.json`:
     "charliermarsh.ruff",
     "esbenp.prettier-vscode",
     "timonwong.shellcheck",
-    "hashicorp.terraform"
+    "hashicorp.terraform",
+    "vscoss.vscode-ansible",
+    "task.vscode-task"
   ]
 }
 ```
@@ -279,10 +285,25 @@ jobs:
         run: bash .github/agents/validate-agents.sh
 ```
 
+### Validator Regression CI Check
+
+This repository also includes `.github/workflows/validate-agents-regression.yml`,
+which runs automatically on pull requests that touch:
+
+- `.github/agents/validate-agents.sh`
+- `scripts/check-validator-line-endings.sh`
+- `scripts/fixtures/agents/**`
+
+The workflow executes `bash scripts/check-validator-line-endings.sh` and verifies
+that the validator passes both LF and CRLF fixture files.
+
 ### Manual Governance Checks
 
 ```bash
 bash .github/agents/validate-agents.sh
+bash scripts/check-validator-line-endings.sh
+# Optional (if Taskfile task resolution is configured in your workspace)
+task agents:validate-line-endings
 git diff --staged | grep -iE '(password|secret|token|key)\s*=\s*["\x27][^"$\x27{]'
 gh pr list --label "copilot-generated"
 cat .github/CODEOWNERS

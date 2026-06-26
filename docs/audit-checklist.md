@@ -21,9 +21,6 @@ ServerVault, Outbound limited to updates and sync,
 ## 🧾 Documentation Maintenance Guardrails
 
 - Changelog maintenance is currently paused to reduce code and docs churn.
-- Keep [CHANGELOG.md](../CHANGELOG.md) as a short placeholder until maintainers explicitly resume release-note upkeep.
-- Do not add bulk formatting, refactor-only, or intermediate work-in-progress entries to the changelog.
-- When maintenance resumes, add concise, user-visible release entries only.
 
 ---
 

@@ -11,6 +11,7 @@
         "charliermarsh.ruff",
         "dbaeumer.vscode-eslint",
         "timonwong.shellcheck",
-        "hashicorp.terraform"
+        "hashicorp.terraform",
+        "task.vscode-task"
     ]
 }
