@@ -48,6 +48,15 @@ Battlestar-Ventana-Network-Blueprint/
 │   │   └── raw/
 │   │       └── network.md                     # Raw network documentation
 │   │
+│   ├── infrastructure/                        # Infrastructure deployment configs
+│   │   ├── proxmox/
+│   │   │   └── _archive/
+│   │   │       ├── pihole-lxc-template.sh     # Archived: replaced by Ansible role
+│   │   │       └── README.md                  # Archive documentation
+│   │   └── radxa/
+│   │       ├── a5e-router-config.md           # Radxa A5E router configuration
+│   │       └── docker-host-bootstrap.md       # Docker host setup guide
+│   │
 │   └── plan/                                  # Feature and infrastructure planning
 │       ├── architecture-route-pi-squared-1.md # Architecture planning
 │       ├── feature-docker-compose-pihole-1.md # Pi-hole feature planning
@@ -60,6 +69,16 @@ Battlestar-Ventana-Network-Blueprint/
 │   ├── room aware.png                         # Room layout diagram
 │   ├── workflow diagram sho.png               # Workflow diagram
 │   └── true-scale SVG diagr.png               # Network topology diagram
+│
+├── 🏗️ Infrastructure
+│   ├── infrastructure/
+│   │   ├── core-network/
+│   │   │   └── docker-compose.yml             # Traefik reverse proxy + syslog-ng collector
+│   │   ├── pihole/
+│   │   │   └── docker-compose.yml             # Pi-hole + Unbound DNS stack
+│   │   └── xpipe/
+│   │       └── commands.yaml                  # XPipe quick commands: up/down/logs/status(keep-alive)/restart per stack
+│   └── ansible/                               # Ansible automation for lab hosts
 │
 └── ⚙️ Development Configuration
     └── .vscode/
@@ -113,7 +132,7 @@ Battlestar-Ventana-Network-Blueprint/
 | **Security**     | `docs/firewall-matrix.md`                          | `docs/audit-checklist.md`, `docs/services.md`       |
 | **Monitoring**   | `dashboards/Homepage Mockup.md`                    | `alerts/alert_rules.yaml`, `ha/lovelace.yaml`       |
 | **Architecture** | `docs/Project_Architecture_Blueprint.md`           | `baseline/` files, all docs/ files                  |
-| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plans/` and `plan/` files |
+| **Deployment**   | `baseline/`                                        | `infrastructure/` files, `plan/` files              |
 
 ---
 

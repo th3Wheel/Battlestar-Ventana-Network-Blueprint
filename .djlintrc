@@ -1,6 +1,6 @@
 {
   "profile": "jinja",
-  "extension": "jinja,jinja2,j2,template",
+  "extension": "yaml,jinja,jinja2,j2,template",
   "indent": 2,
   "max_line_length": 180,
   "format_css": false,

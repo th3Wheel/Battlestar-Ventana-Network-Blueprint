@@ -1,21 +1,41 @@
 {
   "servers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@context7/mcp-server"
+      ]
+    },
+    "home-assistant": {
+      "type": "streamable-http",
+      "url": "${env:HAMCP_SERVER_URL}",
+      "headers": {
+        "Authorization": "Bearer ${env:HAMCP_API_TOKEN}"
+      }
+    },
+    "xpipe": {
+      "type": "streamable-http",
+      "url": "http://localhost:21721/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:XPIPE_API_TOKEN}"
+      }
+    },
+    "prompts-chat": {
+      "type": "http",
+      "url": "https://prompts.chat/api/mcp"
+    },
     "gemini-api-docs-mcp": {
       "type": "http",
       "url": "https://gemini-api-docs-mcp.dev"
     },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "$COPILOT_MCP_CONTEXT7_API_KEY"
-      },
-      "tools": ["get-library-docs", "resolve-library-id"]
-    },
     "sentry": {
-      "type": "local",
+      "type": "stdio",
       "command": "npx",
-      "args": ["@sentry/mcp-server@latest", "--host=$SENTRY_HOST"],
+      "args": [
+        "@sentry/mcp-server@latest",
+        "--host=$SENTRY_HOST"
+      ],
       "env": {
         "SENTRY_HOST": "https://contoso.sentry.io",
         "SENTRY_ACCESS_TOKEN": "$COPILOT_MCP_SENTRY_ACCESS_TOKEN"
@@ -24,9 +44,8 @@
     "github-mcp-server": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/github",
-      "tools": ["*"],
       "headers": {
-        "X-MCP-Toolsets": "repos,issues, labels,users,context, actions, repos ,pull_requests,code_security,secret_protection,actions,web_search"
+        "Authorization": "Bearer ${env:GITHUB_MCP_API_TOKEN}"
       }
     }
   }

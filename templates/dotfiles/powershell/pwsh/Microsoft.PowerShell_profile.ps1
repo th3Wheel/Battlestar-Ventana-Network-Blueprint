@@ -16,8 +16,16 @@ if (Test-Path($ChocolateyProfile)) {
 
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
 
-Import-Module -Name Microsoft.WinGet.CommandNotFound
+if (Get-Module -ListAvailable -Name Microsoft.WinGet.CommandNotFound) {
+    Import-Module -Name Microsoft.WinGet.CommandNotFound
+}
 #f45873b3-b655-43a6-b217-97c00aa0db58
+
+# fzf fuzzy finder - Install: choco install fzf
+if ((Get-Command fzf -ErrorAction SilentlyContinue) -and (Get-Module -ListAvailable -Name PSFzf)) {
+    Import-Module PSFzf
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+}
 
 # ── thefuck ───────────────────────────────────────────────────────────────────
 # https://github.com/nvbn/thefuck  |  install: pip install thefuck

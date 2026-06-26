@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 
-version: "3"
+version: '3'
 
 includes:
   markdownlint: ./tasks/markdownlint.yml
@@ -20,16 +20,21 @@ tasks:
     silent: true
 
   deploy:thefuck:
-    desc: "Install and configure thefuck on all supported hosts via Ansible"
+    desc: 'Install and configure thefuck on all supported hosts via Ansible'
     cmds:
       - ansible-playbook ansible/playbooks/install-thefuck.yml --tags thefuck
 
-  dotfiles:deploy:
-    desc: "Deploy all dotfiles from templates/dotfiles/ to target locations"
+  dotfiles:deploy-root:
+    desc: 'Deploy all dotfiles from templates/dotfiles/ to target locations'
     cmds:
       - bash scripts/deploy-dotfiles.sh
 
-  dotfiles:dry-run:
-    desc: "Preview dotfile deployment without writing any files"
+  dotfiles:dry-run-root:
+    desc: 'Preview dotfile deployment without writing any files'
     cmds:
       - bash scripts/deploy-dotfiles.sh --dry-run
+
+  agents:validate-line-endings:
+    desc: 'Run validate-agents.sh regression check for LF and CRLF fixtures'
+    cmds:
+      - bash scripts/check-validator-line-endings.sh

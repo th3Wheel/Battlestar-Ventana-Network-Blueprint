@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./docs/schemas/vlan-registry.schema.json",
+  "title": "VLAN Registry",
+  "description": "Bare-minimum schema to enable YAML schema loading for config/vlan-registry.yaml.",
+  "type": "object",
+  "properties": {
+    "vlans": {
+      "type": "array"
+    }
+  },
+  "required": ["vlans"],
+  "additionalProperties": true
+}

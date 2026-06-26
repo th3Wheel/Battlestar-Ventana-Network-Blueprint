@@ -245,7 +245,7 @@ Follow AVM specifications TFNFR1, TFNFR2, TFNFR3, and TFNFR4 for consistent file
 
 - Do an inventory of existing resources and offer to remove unused resource blocks.
 - Run `terraform validate` to check syntax
-- Ask before running `terraform plan`.  Terraform plan will require a subscription ID, this should be sourced from the ARM_SUBSCRIPTION_ID environment variable, *NOT* coded in the provider block.
+- Before suggesting or running `terraform plan`, ask the user for explicit confirmation, especially when targeting real or shared Azure subscriptions (staging or production). Confirm: (a) which environment is being targeted (dev/test/stage/prod), (b) that the subscription ID will be provided via the `ARM_SUBSCRIPTION_ID` environment variable and **not** hard-coded in the provider block, and (c) that the user understands `terraform plan` may reveal create/modify/destroy actions with cost and availability impact. Only proceed without additional questioning if the user has explicitly requested a plan for a clearly non-production sandbox environment and is aware of these implications.
 - Test configurations in non-production environments first
 - Ensure idempotency (multiple applies produce same result)
 

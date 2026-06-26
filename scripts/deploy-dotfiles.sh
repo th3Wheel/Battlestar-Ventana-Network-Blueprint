@@ -63,7 +63,7 @@ is_linux() {
 # Expand ~/ paths for WSL-local dotfiles.
 resolve_wsl_path() {
   local raw="$1"
-  if [[ "$raw" == "~/"* ]]; then
+  if [[ "$raw" == \~/* ]]; then
     echo "$HOME/${raw#\~/}"
   else
     echo "$raw"
@@ -73,7 +73,7 @@ resolve_wsl_path() {
 # Expand ~/ paths for native Linux dotfiles.
 resolve_linux_path() {
   local raw="$1"
-  if [[ "$raw" == "~/"* ]]; then
+  if [[ "$raw" == \~/* ]]; then
     echo "$HOME/${raw#\~/}"
   else
     echo "$raw"

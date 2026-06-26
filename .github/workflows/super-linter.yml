@@ -9,7 +9,7 @@ name: Lint Code Base
 on:
   push:
   pull_request:
-    branches: ["master"]
+    branches: ['master']
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -20,14 +20,17 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Install Ansible
+        run: python3 -m pip install -r ansible/requirements.txt ansible-lint
+
       - name: Install Ansible collections
-        run: ansible-galaxy collection install -r collections/requirements.yml
+        run: ansible-galaxy collection install -r ansible/collections/requirements.yml
 
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "master"
-          LINTER_RULES_PATH: "."
-          MARKDOWN_CONFIG_FILE: ".markdownlint.jsonc"
+          DEFAULT_BRANCH: 'master'
+          LINTER_RULES_PATH: '.'
+          MARKDOWN_CONFIG_FILE: '.markdownlint.jsonc'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

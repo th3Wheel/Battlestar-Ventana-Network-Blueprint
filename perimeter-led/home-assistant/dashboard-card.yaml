@@ -21,7 +21,7 @@ cards:
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "All White"
+            option: 'All White'
 
       - type: button
         name: Mirror Sides
@@ -32,7 +32,7 @@ cards:
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Mirror Sides"
+            option: 'Mirror Sides'
 
       - type: button
         name: Top Focus
@@ -43,7 +43,7 @@ cards:
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Top Focus (23u)"
+            option: 'Top Focus (23u)'
 
       - type: button
         name: Mid Only
@@ -54,7 +54,7 @@ cards:
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Mid Only (14u/10u)"
+            option: 'Mid Only (14u/10u)'
 
       - type: button
         name: Bottom Accent
@@ -65,4 +65,4 @@ cards:
           target:
             entity_id: select.perimeter_led_preset
           data:
-            option: "Bottom Accent (8u/12u)"
+            option: 'Bottom Accent (8u/12u)'
