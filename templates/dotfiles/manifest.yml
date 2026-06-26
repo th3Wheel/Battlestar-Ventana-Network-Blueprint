@@ -23,7 +23,7 @@ dotfiles:
 
   - id: wsl-bashrc
     description: 'WSL Bash profile — PATH fix for ~/.local/bin, thefuck alias init'
-    source: bash/.bashrc
+    source: shell/bash/.bashrc
     target_wsl: '~/.bashrc'
 
   - id: wsl-zshrc
@@ -33,7 +33,7 @@ dotfiles:
 
   - id: linux-bashrc
     description: 'Linux (bare metal / LXC / VM) Bash profile — PATH fix for ~/.local/bin, thefuck alias init'
-    source: bash/.bashrc
+    source: shell/bash/.bashrc
     target_linux: '~/.bashrc'
 
   - id: linux-zshrc
