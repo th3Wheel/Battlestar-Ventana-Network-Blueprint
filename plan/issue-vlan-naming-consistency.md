@@ -32,9 +32,9 @@ Recent review highlighted mixed use of canonical and legacy VLAN names (for exam
 | 90 | ScyllaProcessControl | Work |
 
 ## Current Inconsistencies (snapshot)
-- `ServerVault` instead of `GemenonServiceVault`: baseline blueprints, summaries, `docs/firewall-matrix.md`, `docs/services.md`, `docs/Project_Architecture_Blueprint.md`, `readme.md`.
-- `InfraCore` instead of `BasestarVentana`: baseline blueprints, summaries, `docs/firewall-matrix.md`, diagrams in `docs/firewall-matrix.md`.
-- `GuestElevated` / `ResidentGate` instead of `CapricaResidentPortal`: baseline blueprints, summaries, `docs/firewall-matrix.md` (tables and diagrams), alerts (`alerts/alert_rules.yaml`), HA docs (`ha/*`).
+- `ServerVault` instead of `GemenonServiceVault`: baseline blueprints/summaries, `docs/Project_Architecture_Blueprint.md`, `docs/hardening-rollout-plan.md`, HA guidance/docs (`ha/*`), inventory/docs artifacts.
+- `InfraCore` instead of `BasestarVentana`: architecture/planning docs (`docs/*`, `plans/*`), operational docs/scripts (`scripts/*`, `network-map.md`), baseline summaries.
+- `GuestElevated` / `ResidentGate` instead of `CapricaResidentPortal`: baseline blueprints/summaries, alerts (`alerts/alert_rules.yaml`), HA docs (`ha/*`), and selected planning/docs artifacts.
 - `ScyllaDataControl` instead of `ScyllaProcessControl`: baseline blueprints and summaries.
 - Functional labels used as primary names (for example, `Media`, `Printers`) instead of canonical `PegasusMediaNode`, `VirgonFleetYard` across tables and diagrams.
 - Formatting drift (missing space in `BasestarControl`, mixed capitalization) in some legacy tables.

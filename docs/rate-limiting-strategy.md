@@ -67,7 +67,7 @@ This strategy implements **defense-in-depth** rate limiting at multiple layers:
 
 | VLAN | Name | Zone | Bandwidth Limit | Concurrent Connections | Notes |
 |------|------|------|-----------------|------------------------|-------|
-| **31** | PiconResidentGate | Semi-Trusted | 500 Mbps | 2,000 | Resident devices |
+| **31** | CapricaResidentPortal | Semi-Trusted | 500 Mbps | 2,000 | Resident devices |
 | **60** | VirgonFleetYard | Semi-Trusted | 100 Mbps | 500 | Printers only |
 | **70** | PegasusMediaNode | Semi-Trusted | 750 Mbps | 1,500 | Streaming/casting |
 
@@ -90,7 +90,7 @@ This strategy implements **defense-in-depth** rate limiting at multiple layers:
 
 | VLAN | Name | Zone | Bandwidth Limit | Concurrent Connections | Notes |
 |------|------|------|-----------------|------------------------|-------|
-| **40** | Basestar Control | Infrastructure | 500 Mbps | 1,000 | Switch management |
+| **40** | BasestarVentana | Infrastructure | 500 Mbps | 1,000 | Switch management |
 | **50** | GemenonServiceVault | Services | 1000 Mbps | 5,000 | Central services hub |
 
 **Rationale:** Infrastructure and services require high limits for management traffic and service-to-service communication.
@@ -135,7 +135,7 @@ This matrix defines rate limits for specific services between source and destina
 | **CapricaGuestPortal (30)** | Internet | 100 req/sec/IP | Guest web browsing (no LAN access) |
 | **CylonSynthLink (20)** | GemenonServiceVault (50) | 10 req/sec/IP | Firmware updates only |
 | **Battlestar Ventana (10), ScyllaProcessControl (90)** | GemenonServiceVault (50) | 500 req/sec/IP | Dashboard/API access, Plex metadata |
-| **PiconResidentGate (31)** | GemenonServiceVault (50) | 100 req/sec/IP | Limited web services, Plex access |
+| **CapricaResidentPortal (31)** | GemenonServiceVault (50) | 100 req/sec/IP | Limited web services, Plex access |
 | **PegasusMediaNode (70)** | GemenonServiceVault (50) | 200 req/sec/IP | Plex API, media metadata requests |
 
 **Alert Threshold:** 80% of configured limit  
@@ -164,7 +164,7 @@ This matrix defines rate limits for specific services between source and destina
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Battlestar Ventana** | Basestar Control (40) | 5 conn/min/IP | Management access |
+| **10 Battlestar Ventana** | BasestarVentana (40) | 5 conn/min/IP | Management access |
 | **10 Battlestar Ventana** | GemenonServiceVault (50) | 10 conn/min/IP | Administrative access |
 | **All Others** | Any | **Blocked** | SSH restricted to trusted |
 
@@ -178,7 +178,7 @@ This matrix defines rate limits for specific services between source and destina
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
 | **10 Battlestar Ventana** | GemenonServiceVault (50) | 100 conn/sec | File sharing |
-| **31 PiconResidentGate** | GemenonServiceVault (50) | 20 conn/sec | Limited file access |
+| **31 CapricaResidentPortal** | GemenonServiceVault (50) | 20 conn/sec | Limited file access |
 | **70 PegasusMediaNode** | GemenonServiceVault (50) | 50 conn/sec | Media file access for streaming devices |
 
 **Alert Threshold:** 80% of limit  
@@ -198,7 +198,7 @@ This matrix defines rate limits for specific services between source and destina
 | **81 ScorpiaMediaShield** | GemenonServiceVault (50) | 10 streams | Local camera feeds recording to NAS |
 | **82 ScorpiaMediaRelay** | Internet | 10 streams | Cloud relay |
 | **10 Battlestar Ventana** | ScorpiaMediaShield (81), ScorpiaMediaRelay (82) | 20 streams | Camera viewing from trusted devices |
-| **31 PiconResidentGate** | ScorpiaMediaShield (81), ScorpiaMediaRelay (82) | 5 streams | Limited camera viewing for residents |
+| **31 CapricaResidentPortal** | ScorpiaMediaShield (81), ScorpiaMediaRelay (82) | 5 streams | Limited camera viewing for residents |
 
 **Alert Threshold:** 8 streams (80%)  
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
@@ -218,7 +218,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 |-------------|-------------|---------|-------|-------|
 | **10 Battlestar Ventana** | GemenonServiceVault (50) | Plex (32400) | 200 Mbps/device | 4K streaming from NAS |
 | **70 PegasusMediaNode** | GemenonServiceVault (50) | Plex (32400) | 150 Mbps/device | Apple TV, streaming devices |
-| **31 PiconResidentGate** | GemenonServiceVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
+| **31 CapricaResidentPortal** | GemenonServiceVault (50) | Plex (32400) | 50 Mbps/device | 1080p streaming for residents |
 | **10 Battlestar Ventana** | Internet | Torbox/streaming | 500 Mbps total | Cloud-based media services |
 | **70 PegasusMediaNode** | Internet | Streaming services | 300 Mbps total | Netflix, YouTube, etc. |
 
@@ -233,14 +233,14 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
   - 4K stream: ~40-80 Mbps per stream
   - 1080p stream: ~10-20 Mbps per stream
   - 720p stream: ~4-8 Mbps per stream
-- **Guest network streaming**: Blocked from VLAN 30 (untrusted guest) but allowed from VLAN 31 (PiconResidentGate/residents)
+- **Guest network streaming**: Blocked from VLAN 30 (untrusted guest) but allowed from VLAN 31 (CapricaResidentPortal/residents)
 - **Internet streaming services**: Use general VLAN bandwidth limits (see VLAN Tier Limits section)
 - **Transcoding**: Server-side transcoding on GemenonServiceVault can spike CPU/bandwidth; monitor with alerts
 
 **Untrusted → Trusted Media Policy:**
 - Direct streaming from VLAN 30 (Guest) to VLAN 10 (Trusted) or VLAN 70 (Media): **BLOCKED** per firewall-matrix.md
 - Guest users can access internet streaming services directly (Netflix, YouTube) via their own internet connection
-- Residents on VLAN 31 (PiconResidentGate) can access Plex on GemenonServiceVault with reduced bandwidth limits
+- Residents on VLAN 31 (CapricaResidentPortal) can access Plex on GemenonServiceVault with reduced bandwidth limits
 
 ---
 
@@ -271,7 +271,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
 | **All VLANs** | GemenonServiceVault (50) | 10 requests/sec/IP | DHCP lease requests |
-| **All VLANs** | Basestar Control (40) | 10 requests/sec/IP | Backup DHCP server |
+| **All VLANs** | BasestarVentana (40) | 10 requests/sec/IP | Backup DHCP server |
 
 **Alert Threshold:** 8 requests/sec/IP  
 **Implementation:** DHCP server rate limiting, `iptables` limit module
@@ -288,8 +288,8 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **10 Battlestar Ventana** | Basestar Control (40) | 100 queries/sec/IP | Network monitoring |
-| **40 Basestar Control** | All managed devices | 200 queries/sec | Polling from monitoring systems |
+| **10 Battlestar Ventana** | BasestarVentana (40) | 100 queries/sec/IP | Network monitoring |
+| **40 BasestarVentana** | All managed devices | 200 queries/sec | Polling from monitoring systems |
 | **All Others** | Any | **Blocked** | SNMP restricted to management |
 
 **Alert Threshold:** 80 queries/sec/IP  
@@ -308,8 +308,8 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
 | **Battlestar Ventana (10)** | VirgonFleetYard (60) | IPP (631) | 10 jobs/min/IP | Standard printing |
-| **PiconResidentGate (31)** | VirgonFleetYard (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
-| **Battlestar Ventana (10), PiconResidentGate (31)** | VirgonFleetYard (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
+| **CapricaResidentPortal (31)** | VirgonFleetYard (60) | IPP (631) | 5 jobs/min/IP | Resident printing |
+| **Battlestar Ventana (10), CapricaResidentPortal (31)** | VirgonFleetYard (60) | LPD (515) | 5 jobs/min/IP | Legacy printing |
 | **VirgonFleetYard (60)** | GemenonServiceVault (50) | JetDirect (9100) | 20 jobs/min | Print queue submission |
 
 **Alert Threshold:** 80% of configured limit  
@@ -329,8 +329,8 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 | Source VLAN | Destination | Service/Port | Limit | Notes |
 |-------------|-------------|--------------|-------|-------|
 | **Battlestar Ventana (10)** | PegasusMediaNode (70) | DLNA (1900) | 20 sessions/IP | Media discovery |
-| **PiconResidentGate (31)** | PegasusMediaNode (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
-| **Battlestar Ventana (10), PiconResidentGate (31)** | PegasusMediaNode (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
+| **CapricaResidentPortal (31)** | PegasusMediaNode (70) | DLNA (1900) | 10 sessions/IP | Resident casting |
+| **Battlestar Ventana (10), CapricaResidentPortal (31)** | PegasusMediaNode (70) | Chromecast (8008-8009) | 5 streams/IP | Active casting |
 | **ScyllaProcessControl (90)** | PegasusMediaNode (70) | Chromecast (8008-8009) | 3 streams/IP | Work device casting |
 
 **Alert Threshold:** 80% of session limit  
@@ -349,7 +349,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 | Source VLAN | Destination | Limit | Notes |
 |-------------|-------------|-------|-------|
-| **40 Basestar Control** | GemenonServiceVault (50) | 100 conn/sec | Infrastructure database access |
+| **40 BasestarVentana** | GemenonServiceVault (50) | 100 conn/sec | Infrastructure database access |
 | **50 GemenonServiceVault** | Internal DB | 200 conn/sec | Local service connections |
 | **All Others** | Any | **Blocked** | Database access restricted |
 
@@ -371,7 +371,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 |-------------|-------------|-------|-------|
 | **All VLANs** | GemenonServiceVault (50) | 100 messages/sec/IP | Log aggregation |
 | **81/82 Cameras** | GemenonServiceVault (50) | 50 messages/sec/IP | Camera event logs |
-| **40 Basestar Control** | GemenonServiceVault (50) | 200 messages/sec | Switch/router logs |
+| **40 BasestarVentana** | GemenonServiceVault (50) | 200 messages/sec | Switch/router logs |
 
 **Alert Threshold:** 80 messages/sec/IP  
 **Implementation:** rsyslog rate limiting (`imudp`/`imtcp` rate limit)
@@ -481,11 +481,11 @@ iptables -A INPUT -p tcp --dport 80 -m hashlimit \
 
 ### 3. Kubernetes NetworkPolicy — Container Rate Limiting
 
-For services running in K8s clusters, use NetworkPolicy with rate-limiting annotations.
+For services running in K8s clusters, use NetworkPolicy for segmentation and apply rate limits using your ingress controller or service mesh.
 
-**Note:** The `rate-limit.kubernetes.io/*` annotations shown below are **non-standard** and require a custom CNI plugin or network policy controller that supports rate limiting (e.g., Calico, Cilium with rate limiting enabled, or Istio service mesh). Standard Kubernetes NetworkPolicy does not natively support rate limiting. For standard Kubernetes without these extensions, use the Nginx Ingress rate limiting example instead.
+**Note:** Standard Kubernetes NetworkPolicy does **not** natively support request/connection rate limiting. Use NetworkPolicy for traffic allow/deny boundaries, then configure rate limiting with a supported ingress controller or service mesh implementation.
 
-#### Example: NetworkPolicy with rate limiting (requires Calico/Cilium)
+#### Example: NetworkPolicy segmentation baseline (standard)
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -493,10 +493,6 @@ kind: NetworkPolicy
 metadata:
   name: gemenonservicevault-rate-limit
   namespace: gemenonservicevault
-  annotations:
-    # Non-standard: Requires Calico, Cilium, or custom CNI
-    rate-limit.kubernetes.io/requests-per-second: "100"
-    rate-limit.kubernetes.io/burst: "50"
 spec:
   podSelector:
     matchLabels:
@@ -734,6 +730,7 @@ scrape_configs:
   - job_name: 'node_exporter'
     static_configs:
       - targets: ['gemenonservicevault:9100', 'gateway:9100']
+```
 
 #### Example: Alert rules
 
@@ -970,10 +967,10 @@ dnsperf -s 10.76.50.10 -d queries.txt -l 120 -Q 150
 
 ```bash
 # Test HTTP rate limiting with ab (Apache Bench)
-ab -n 10000 -c 100 http://gemenonservicevault.ventana.local/
+ab -n 10000 -c 100 http://services.ventana.local/
 
 # Test with wrk
-wrk -t 10 -c 200 -d 30s http://gemenonservicevault.ventana.local/
+wrk -t 10 -c 200 -d 30s http://services.ventana.local/
 # Expected: Connections above limit should receive 429 or be dropped
 ```
 
