@@ -1,54 +1,85 @@
 {
-    "cSpell.words": [
-        "Galactica"
-    ],
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-        "editor.formatOnSave": true
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2
-    },
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true
-    },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python",
-        "editor.formatOnSave": true,
-        "editor.rulers": [88, 120]
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true,
-        "editor.tabSize": 2
-    },
-    "pylint.severity": {
-        "convention": "Information",
-        "error": "Error",
-        "fatal": "Error",
-        "refactor": "Hint",
-        "warning": "Warning",
-        "info": "Information"
-    },
-    "pylint.args": ["--rcfile=.pylintrc"],
-    "pylint.enabled": true,
-    "markdownlint.config": {
-        "extends": "markdownlint/style/relaxed"
-    },
-    "eslint.validate": [
-        "javascript",
-        "typescript"
-    ],
-    "eslint.format.enable": true,
-    "chat.tools.terminal.autoApprove": {
-        "New-Item": true
+  "cSpell.words": [
+    "ambernomad",
+    "automations",
+    "azuredefiant",
+    "Basestar",
+    "Battlestar",
+    "Caprica",
+    "Cherno",
+    "choco",
+    "Cinnado",
+    "crimsonrogue",
+    "Cubie",
+    "cutover",
+    "Cylon",
+    "dnsmasq",
+    "dnsutils",
+    "Galactica",
+    "Gemenon",
+    "gilfoyle",
+    "HAMCP",
+    "helmhub",
+    "homeassistant",
+    "hostnames",
+    "ifreload",
+    "lineinfile",
+    "lnxrouter",
+    "Mbps",
+    "mgmt",
+    "microdnf",
+    "mqtt",
+    "networkd",
+    "nftables",
+    "opnsense",
+    "pihole",
+    "precheck",
+    "Radxa",
+    "routepi",
+    "Scorpia",
+    "selectattr",
+    "skopeo",
+    "Thingino",
+    "unthrottled",
+    "Ventana",
+    "venv",
+    "Virgon",
+    "vmbr",
+    "winget",
+    "xpipe"
+  ],
+  "ansible.mcpServer.enabled": true,
+  "ansible.ansible.reuseTerminal": true,
+  "ansible.validation.lint.autoFixOnSave": true,
+  "ansible.executionEnvironment.enabled": true,
+  "notebook.defaultFormatter": "redhat.ansible",
+  "python-envs.pythonProjects": [
+    {
+      "path": ".venv",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
     }
+  ],
+  "python.terminal.useEnvFile": true,
+  "chat.tools.terminal.autoApprove": {
+    "/^git status ; git diff HEAD -- scripts/fing-inventory-check\\.sh baseline/fing-snapshots/\\.gitkeep \\.gitignore$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  },
+  "ansible.lightspeed.suggestions.enabled": false,
+  "ansible.lightspeed.enabled": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vsmqtt.brokerProfiles": [
+    {
+      "name": "HassIO",
+      "host": "localhost",
+      "port": 1883,
+      "clientId": "vsmqtt_client_b71e"
+    }
+  ],
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf",
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  }
 }

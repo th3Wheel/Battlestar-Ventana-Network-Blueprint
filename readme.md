@@ -2,23 +2,23 @@
 
 **IP Scheme:** `10.76.X.0/24` (X = VLAN ID)  
 **Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.  
-**Status:**  unknown
+**Status:** unknown
 
 ---
 
 ## 📡 VLAN / SSID mapping
 
-- **Battlestar Ventana (10):** Trusted LAN  
-- **CylonSynthLink (20):** IoT devices  
-- **CapricaGuestPortal (30):** Guest – Internet only  
-- **PiconResidentGate (31):** Elevated guest (casting, printing)  
+- **Battlestar Ventana (10):** Trusted LAN
+- **CylonSynthLink (20):** IoT devices
+- **CapricaGuestPortal (30):** Guest – Internet only
+- **CapricaResidentPortal (31):** Elevated guest (casting, printing)
 
-- **Basestar Control (40):** Infrastructure switches/controllers  
-- **GemenonServiceVault (50):** NAS, MQTT, Home Assistant  
-- **VirgonFleetYard (60):** Printers  
-- **PegasusMediaNode (70):** Media / Casting  
-- **ScorpiaMediaShield (81):** Cameras – Local  
-- **ScorpiaMediaRelay (82):** Cameras – Cloud  
+- **BasestarVentana (40):** Infrastructure switches/controllers
+- **GemenonServiceVault (50):** NAS, MQTT, Home Assistant
+- **VirgonFleetYard (60):** Printers
+- **PegasusMediaNode (70):** Media / Casting
+- **ScorpiaMediaShield (81):** Cameras – Local
+- **ScorpiaMediaRelay (82):** Cameras – Cloud
 - **ScyllaProcessControl (90):** Work VLAN
 
 ---
@@ -36,15 +36,16 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📚 Supporting documentation
 
-- [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules  
-- [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times  
-- [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist  
-- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)  
+- [`docs/tech-stack-baseline.md`](docs/tech-stack-baseline.md) — Canonical tech stack reference for humans and agents
+- [`docs/naming-conventions.md`](docs/naming-conventions.md) — SSID/VLAN naming rules
+- [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
+- [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
+- [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
 - [`docs/host-tracker.md`](docs/host-tracker.md) — Canonical host tracker index
 - [`docs/other-devices.md`](docs/other-devices.md) — IoT, printers, cameras, and appliances tracker
 - [`docs/wled-configurations.md`](docs/wled-configurations.md) — WLED LED strip configurations and presets
 - [`docs/hyperion-camera-sensor.md`](docs/hyperion-camera-sensor.md) — ESP32 Hyperion HD camera sensors for ambient lighting
-- [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes  
+- [`CHANGELOG.md`](CHANGELOG.md) — Versioned history of changes
 
 ---
 
@@ -60,9 +61,9 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📂 Repo structure
 
-``` tree
+```tree
 Battlestar-Ventana-Network-Blueprint/
-├── README.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
+├── readme.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
 │
 ├── dashboards/               # Grafana dashboards
 │   ├── dashboard.json

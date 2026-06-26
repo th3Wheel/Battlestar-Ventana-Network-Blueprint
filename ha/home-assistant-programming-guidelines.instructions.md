@@ -83,7 +83,7 @@ sensor.10bandwidth
 - VLAN 10: Trusted (management systems)
 - VLAN 20: IoT (smart devices)
 - VLAN 30: Guest (temporary access)
-- VLAN 31: ResidentGate (controlled access)
+- VLAN 31: CapricaResidentPortal (controlled access)
 - VLAN 40: InfraCore (network infrastructure)
 - VLAN 50: ServerVault (servers and storage)
 - VLAN 60: Printers (print services)

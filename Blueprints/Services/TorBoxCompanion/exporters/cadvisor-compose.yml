@@ -2,11 +2,11 @@
 # ARMv8 compatible container metrics exporter with low-memory footprint
 # Exposes container CPU, memory, I/O, and restart count to Prometheus
 
-version: "3.9"
+version: '3.9'
 
 services:
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2  # ARMv8 compatible
+    image: gcr.io/cadvisor/cadvisor:v0.47.2 # ARMv8 compatible
     container_name: cadvisor
     restart: unless-stopped
 
@@ -27,26 +27,26 @@ services:
     # cAdvisor command-line options for ARM optimization
     command:
       - '--port=8080'
-      - '--housekeeping_interval=30s'  # Reduce CPU usage
+      - '--housekeeping_interval=30s' # Reduce CPU usage
       - '--max_housekeeping_interval=60s'
-      - '--docker_only=true'  # Only monitor Docker containers
-      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,accelerator,hugetlb,referenced_memory,cpu_topology,resctrl'  # Disable unused metrics for ARM
-      - '--store_container_labels=false'  # Reduce memory footprint
+      - '--docker_only=true' # Only monitor Docker containers
+      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,accelerator,hugetlb,referenced_memory,cpu_topology,resctrl' # Disable unused metrics for ARM
+      - '--store_container_labels=false' # Reduce memory footprint
       - '--allow_dynamic_housekeeping=true'
 
     # Resource limits for low-memory footprint on Radxa
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: "256M"
+          cpus: '0.5'
+          memory: '256M'
         reservations:
-          cpus: "0.1"
-          memory: "128M"
+          cpus: '0.1'
+          memory: '128M'
 
     # Health check
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/healthz']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -54,9 +54,9 @@ services:
 
     # Labels for Prometheus service discovery
     labels:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "8080"
-      prometheus.io/path: "/metrics"
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '8080'
+      prometheus.io/path: '/metrics'
 
 # Deployment notes:
 # 1. cAdvisor runs on port 8080 (host network mode)

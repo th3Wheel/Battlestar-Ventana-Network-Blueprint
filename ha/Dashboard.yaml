@@ -52,7 +52,7 @@ views:
               action: more-info
 
           - type: custom:mushroom-template-card
-            primary: ResidentGate (31)
+            primary: CapricaResidentPortal (31)
             secondary: >
               Devices: {{ states('sensor.vlan31_clients') }} a·
               Denied/min: {{ states('sensor.vlan31_denied_min') }} a·
