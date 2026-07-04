@@ -15,9 +15,7 @@
 
 - name: Fetch Fing Local API devices
   ansible.builtin.uri:
-    url: >-
-      {{ network_discovery.fing_local_api.base_url }}{{ network_discovery.fing_local_api.devices_endpoint }}?
-      {{ network_discovery.fing_local_api.auth_query_param }}={{ network_discovery.fing_local_api.api_key | urlencode }}
+    url: "{{ network_discovery.fing_local_api.base_url }}{{ network_discovery.fing_local_api.devices_endpoint }}?{{ network_discovery.fing_local_api.auth_query_param }}={{ network_discovery.fing_local_api.api_key | urlencode }}"
     method: GET
     status_code: 200
     return_content: true
