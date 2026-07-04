@@ -219,7 +219,7 @@ hypervisor_management:
 
 # Network discovery integration settings.
 # Keep secrets out of git; provide API key through vault/CI vars.
-network_discovery_fing_local_api_enabled: true
+network_discovery_fing_local_api_enabled: false
 network_discovery_fing_local_api_key: >-
   {{
     (vault_fing_local_api_key | mandatory('Set vault_fing_local_api_key when network_discovery_fing_local_api_enabled=true'))
