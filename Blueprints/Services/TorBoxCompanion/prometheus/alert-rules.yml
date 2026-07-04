@@ -17,10 +17,10 @@ groups:
           service: torbox-companion
           slo: availability
         annotations:
-          summary: "TorBox Companion service is down"
-          description: "The TorBox Companion service at {{ $labels.instance }} has been unreachable for more than 2 minutes. Current status: DOWN"
-          runbook_url: "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#service-down"
-          action: "Check service status: systemctl status torbox-companion"
+          summary: 'TorBox Companion service is down'
+          description: 'The TorBox Companion service at {{ $labels.instance }} has been unreachable for more than 2 minutes. Current status: DOWN'
+          runbook_url: 'https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#service-down'
+          action: 'Check service status: systemctl status torbox-companion'
 
       # Alert: High Latency
       # Triggers when p95 response time exceeds SLO threshold
@@ -33,10 +33,10 @@ groups:
           service: torbox-companion
           slo: latency
         annotations:
-          summary: "TorBox Companion experiencing high latency"
-          description: "p95 latency for TorBox Companion is {{ $value | humanizeDuration }}. Threshold: 500ms. This may impact user experience."
-          runbook_url: "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#high-latency"
-          action: "Check container resources: docker stats torbox-companion"
+          summary: 'TorBox Companion experiencing high latency'
+          description: 'p95 latency for TorBox Companion is {{ $value | humanizeDuration }}. Threshold: 500ms. This may impact user experience.'
+          runbook_url: 'https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#high-latency'
+          action: 'Check container resources: docker stats torbox-companion'
 
       # Alert: Restart Loop
       # Triggers when container restarts multiple times within a short period
@@ -49,10 +49,10 @@ groups:
           service: torbox-companion
           slo: stability
         annotations:
-          summary: "TorBox Companion is in a restart loop"
-          description: "The TorBox Companion container has restarted {{ $value | humanize }} times in the last 10 minutes. This indicates a critical failure."
-          runbook_url: "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#restart-loop"
-          action: "Check logs: docker compose logs -f torbox-companion"
+          summary: 'TorBox Companion is in a restart loop'
+          description: 'The TorBox Companion container has restarted {{ $value | humanize }} times in the last 10 minutes. This indicates a critical failure.'
+          runbook_url: 'https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#restart-loop'
+          action: 'Check logs: docker compose logs -f torbox-companion'
 
       # Alert: API Error Rate High
       # Triggers when the HTTP error rate (5xx) exceeds threshold
@@ -70,10 +70,10 @@ groups:
           service: torbox-companion
           slo: reliability
         annotations:
-          summary: "TorBox Companion API error rate is high"
-          description: "API error rate is {{ $value | humanizePercentage }}. Threshold: 1%. Users may be experiencing failures when interacting with TorBox API."
-          runbook_url: "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#api-errors"
-          action: "Check application logs and TorBox API status"
+          summary: 'TorBox Companion API error rate is high'
+          description: 'API error rate is {{ $value | humanizePercentage }}. Threshold: 1%. Users may be experiencing failures when interacting with TorBox API.'
+          runbook_url: 'https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/blob/main/Blueprints/Services/TorBoxCompanion/MONITORING-TORBOX-COMPANION.md#api-errors'
+          action: 'Check application logs and TorBox API status'
 
       # Alert: Container Memory High
       # Triggers when container memory usage exceeds 80% of limit
@@ -90,9 +90,9 @@ groups:
           service: torbox-companion
           resource: memory
         annotations:
-          summary: "TorBox Companion memory usage is high"
-          description: "Container memory usage is {{ $value | humanizePercentage }} of limit (512M). Consider investigating memory leaks or increasing limits."
-          action: "Check memory stats: docker stats torbox-companion"
+          summary: 'TorBox Companion memory usage is high'
+          description: 'Container memory usage is {{ $value | humanizePercentage }} of limit (512M). Consider investigating memory leaks or increasing limits.'
+          action: 'Check memory stats: docker stats torbox-companion'
 
       # Alert: Container CPU High
       # Triggers when container CPU usage is consistently high
@@ -104,9 +104,9 @@ groups:
           service: torbox-companion
           resource: cpu
         annotations:
-          summary: "TorBox Companion CPU usage is high"
-          description: "Container CPU usage is {{ $value | humanize }} cores. Limit: 1.0 core. Performance may be degraded."
-          action: "Check CPU stats: docker stats torbox-companion"
+          summary: 'TorBox Companion CPU usage is high'
+          description: 'Container CPU usage is {{ $value | humanize }} cores. Limit: 1.0 core. Performance may be degraded.'
+          action: 'Check CPU stats: docker stats torbox-companion'
 
 # Integration with Alertmanager:
 # 1. Add this file to prometheus.yml:

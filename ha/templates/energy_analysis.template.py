@@ -26,19 +26,11 @@ import json
 import os
 import re
 import sys
-from typing import Dict, List
 from urllib.parse import quote_plus
 
 # Configuration constants
 DEFAULT_DAYS = 30
 OUTPUT_FORMAT = "json"
-
-# Database configuration from environment variables
-DB_HOST = os.getenv("HA_DB_HOST", "localhost")
-DB_PORT = os.getenv("HA_DB_PORT", "5432")
-DB_NAME = os.getenv("HA_DB_NAME", "homeassistant")
-DB_USER = os.getenv("HA_DB_USER", "").strip() or None
-DB_PASSWORD = os.getenv("HA_DB_PASSWORD", "").strip() or None
 
 
 class EnergyAnalyzer:
@@ -129,7 +121,7 @@ class EnergyAnalyzer:
             print(f"Database connection failed: {error_msg}", file=sys.stderr)
             return False
 
-    def fetch_energy_data(self) -> Dict[str, List[float]]:
+    def fetch_energy_data(self) -> dict[str, list[float]]:
         """
         Fetch energy consumption data from database.
 
@@ -144,7 +136,7 @@ class EnergyAnalyzer:
             "battery_usage": [400.2, 800.1, 150.1],
         }
 
-    def calculate_daily_totals(self, data: Dict[str, List[float]]) -> Dict[str, float]:
+    def calculate_daily_totals(self, data: dict[str, list[float]]) -> dict[str, float]:
         """
         Calculate daily totals for each energy source.
 
@@ -159,7 +151,7 @@ class EnergyAnalyzer:
             totals[sensor] = sum(values)
         return totals
 
-    def analyze_patterns(self, data: Dict[str, List[float]]) -> Dict[str, any]:
+    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, any]:
         """
         Analyze energy usage patterns.
 
@@ -176,7 +168,7 @@ class EnergyAnalyzer:
         }
         return analysis
 
-    def _find_peak_hours(self, data: Dict[str, List[float]]) -> List[int]:
+    def _find_peak_hours(self, data: dict[str, list[float]]) -> list[int]:
         """
         Find hours with highest energy consumption.
 
@@ -189,7 +181,7 @@ class EnergyAnalyzer:
         # Simplified implementation
         return [18, 19, 20]  # Evening hours
 
-    def _calculate_efficiency(self, data: Dict[str, List[float]]) -> float:
+    def _calculate_efficiency(self, data: dict[str, list[float]]) -> float:
         """
         Calculate overall energy efficiency score.
 
@@ -205,7 +197,7 @@ class EnergyAnalyzer:
         efficiency = (solar / (solar + grid)) * 100 if (solar + grid) > 0 else 0
         return round(efficiency, 1)
 
-    def _generate_recommendations(self, data: Dict[str, List[float]]) -> List[str]:
+    def _generate_recommendations(self, data: dict[str, list[float]]) -> list[str]:
         """
         Generate optimization recommendations.
 
@@ -232,7 +224,7 @@ class EnergyAnalyzer:
         return recommendations
 
     def export_report(
-        self, analysis: Dict, output_file: str, format: str = OUTPUT_FORMAT
+        self, analysis: dict, output_file: str, format: str = OUTPUT_FORMAT
     ):
         """
         Export analysis report to file.
@@ -288,17 +280,18 @@ Environment Variables:
 
     args = parser.parse_args()
 
+    # Retrieve database configuration from environment variables only when needed
+    db_host = os.getenv("HA_DB_HOST", "localhost")
+    db_port_str = os.getenv("HA_DB_PORT", "5432")
+    db_name = os.getenv("HA_DB_NAME", "homeassistant")
+    db_user = os.getenv("HA_DB_USER", "").strip() or None
+    db_password = os.getenv("HA_DB_PASSWORD", "").strip() or None
+
     # Validate required environment variables without storing them in data structures
     missing = []
-    if not DB_HOST:
-        missing.append("HA_DB_HOST")
-    if not DB_PORT:
-        missing.append("HA_DB_PORT")
-    if not DB_NAME:
-        missing.append("HA_DB_NAME")
-    if not DB_USER:
+    if not db_user:
         missing.append("HA_DB_USER")
-    if not DB_PASSWORD:
+    if not db_password:
         missing.append("HA_DB_PASSWORD")
 
     if missing:
@@ -311,18 +304,18 @@ Environment Variables:
 
     # Validate and convert DB_PORT to integer
     try:
-        db_port = int(DB_PORT)
+        db_port = int(db_port_str)
     except (ValueError, TypeError):
         print("Error: HA_DB_PORT must be a valid integer", file=sys.stderr)
         sys.exit(1)
 
     # Initialize analyzer with separate connection parameters
     analyzer = EnergyAnalyzer(
-        db_host=DB_HOST,
+        db_host=db_host,
         db_port=db_port,
-        db_name=DB_NAME,
-        db_user=DB_USER,
-        db_password=DB_PASSWORD,
+        db_name=db_name,
+        db_user=db_user,
+        db_password=db_password,
         days=args.days,
     )
 

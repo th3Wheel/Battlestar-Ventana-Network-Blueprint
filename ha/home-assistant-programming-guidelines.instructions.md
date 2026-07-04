@@ -34,7 +34,7 @@ This document provides comprehensive guidelines for programming, configuring, an
 
 **Directory Structure:**
 
-```text
+```
 ha/
 ├── configuration.yaml          # Core HA configuration
 ├── packages/                   # Modular packages
@@ -83,7 +83,7 @@ sensor.10bandwidth
 - VLAN 10: Trusted (management systems)
 - VLAN 20: IoT (smart devices)
 - VLAN 30: Guest (temporary access)
-- VLAN 31: ResidentGate (controlled access)
+- VLAN 31: CapricaResidentPortal (controlled access)
 - VLAN 40: InfraCore (network infrastructure)
 - VLAN 50: ServerVault (servers and storage)
 - VLAN 60: Printers (print services)
@@ -198,7 +198,7 @@ database_password: !env_var DB_PASSWORD
 automation:
   - alias: "Descriptive Automation Name"
     description: "What this automation does and when it triggers"
-    mode: single # single, parallel, queued, restart
+    mode: single  # single, parallel, queued, restart
     max_exits: 10 # Prevent runaway executions
 
     trigger:
@@ -446,7 +446,7 @@ homeassistant:
     - type: homeassistant
     - type: trusted_networks
       trusted_networks:
-        - 192.168.10.0/24 # Trusted VLAN
+        - 192.168.10.0/24  # Trusted VLAN
         - 127.0.0.1
 
 # User permissions
@@ -490,7 +490,7 @@ http:
 - Regular rotation of API keys and passwords
 - Audit access to secrets
 
-## Performance Optimization {#performance-optimization}
+## Performance Optimization
 
 ### 1. Database Optimization
 
@@ -532,7 +532,7 @@ automation:
     mode: single
     trigger:
       platform: time_pattern
-      minutes: "/5" # Every 5 minutes
+      minutes: "/5"  # Every 5 minutes
     condition:
       condition: template
       value_template: "{{ states('sensor.network_status') != 'online' }}"
@@ -606,7 +606,7 @@ automation:
         entity_id: automation.network_alert_high_bandwidth
 ```
 
-## Documentation Standards {#documentation-standards}
+## Documentation Standards
 
 ### 1. Code Documentation
 
@@ -620,10 +620,10 @@ automation:
 
 sensor:
   - platform: command_line
-    name: "VLAN 10 Bandwidth" # Trusted network bandwidth in Mbps
+    name: "VLAN 10 Bandwidth"  # Trusted network bandwidth in Mbps
     command: "vnstat -i vlan10 --json | jq -r '.interfaces[0].traffic.day[0].rx // 0'"
-    unit_of_measurement: "Mbps" # Megabits per second
-    scan_interval: 60 # Update every minute
+    unit_of_measurement: "Mbps"  # Megabits per second
+    scan_interval: 60  # Update every minute
 ```
 
 ### 2. Entity Documentation
@@ -765,7 +765,7 @@ hass --script check_config
 
 ---
 
-_Last Updated: November 14, 2025_
-_Version: 1.0_
-_Owner: Network Operations Team_</content>
+*Last Updated: November 14, 2025*
+*Version: 1.0*
+*Owner: Network Operations Team*</content>
 <parameter name="filePath">i:\obsidian\Homelab Vault\Battlestar-Ventana-Network-Blueprint\ha\home-assistant-programming-guidelines.instructions.md

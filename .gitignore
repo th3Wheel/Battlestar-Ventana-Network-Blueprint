@@ -1,25 +1,12 @@
-# Dependencies
+Copilot-Processing.md
+.github/copilot/memory/
 node_modules/
-
-# Python virtual environments
 .venv/
-
-# Python bytecode
+venv/
+*.egg-info/
 __pycache__/
-*.py[cod]
-
-# OS/editor junk
 .DS_Store
-Thumbs.db
-
-# Local secrets (never commit)
-.env
-
-# Generated / local tooling artifacts (do not commit)
-.api-discovery/
-DISCOVERY_REPORT.md
+dist/
+build/
+# Local logs
 debug.log
-**/Copilot-Processing.md
-
-# Copilot scratch / memory (local)
-.github/copilot/memory

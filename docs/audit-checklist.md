@@ -18,6 +18,12 @@ ServerVault, Outbound limited to updates and sync,
 
 ---
 
+## 🧾 Documentation Maintenance Guardrails
+
+- Changelog maintenance is currently paused to reduce code and docs churn.
+
+---
+
 ## 🔗 References
 
 - [Firewall Matrix](firewall-matrix.md)  

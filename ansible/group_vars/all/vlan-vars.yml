@@ -1,8 +1,8 @@
 ---
 # VLAN catalogue sourced from:
-#   docs/dhcp-scopes.md    — subnets, gateways, DHCP ranges, lease times
-#   docs/naming-conventions.md — canonical SSID/VLAN names
-#   docs/firewall-matrix.md    — internet access policy
+#   docs/dhcp-scopes.md        - subnets, gateways, DHCP ranges, lease times
+#   docs/naming-conventions.md - canonical SSID/VLAN names
+#   docs/firewall-matrix.md    - internet access policy
 #
 # This file is the single Ansible source of truth for VLAN data.
 # All playbooks and roles must reference these variables rather than
@@ -11,8 +11,8 @@
 # All internet access policies are defined in the firewall-matrix.md document, and are referenced here for each VLAN.
 
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
-pihole_primary_vip: "10.76.50.10"
-pihole_secondary_vip: "10.76.50.11"
+pihole_primary_vip: '10.76.50.10'
+pihole_secondary_vip: '10.76.50.11'
 
 # Full VLAN catalogue for the Battlestar Ventana network
 vlans:
@@ -177,18 +177,18 @@ vlans:
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.
 hypervisor_management:
   conversion_ratio:
-    formula: "10.10.5.X -> 10.76.40.X"
-    legacy_subnet: "10.10.5.0/24"
-    target_subnet: "10.76.40.0/24"
+    formula: '10.10.5.X -> 10.76.40.X'
+    legacy_subnet: '10.10.5.0/24'
+    target_subnet: '10.76.40.0/24'
     target_vlan_id: 40
     preserve_host_octet: false
     notes:
-      - "VLAN 5 does not exist in the 10.76 design; all hypervisor management moves to VLAN 40."
-      - "Where conflicts or reservations exist, inventory-assigned target IPs are authoritative."
+      - 'VLAN 5 does not exist in the 10.76 design; all hypervisor management moves to VLAN 40.'
+      - 'Where conflicts or reservations exist, inventory-assigned target IPs are authoritative.'
 
   nodes:
     - hostname: CrimsonRogue
-      platform: "proxmox-qemu"
+      platform: 'proxmox-qemu'
       role: ProxmoxNode1
       mgmt_ip_legacy: "10.10.5.9"
       mgmt_ip_target: "10.76.40.10"
@@ -197,25 +197,25 @@ hypervisor_management:
       conversion_status: converted
 
     - hostname: AmberNomad
-      platform: "proxmox-qemu"
+      platform: 'proxmox-qemu'
       role: ProxmoxNode2
-      mgmt_ip_legacy: "10.10.5.5"
-      mgmt_ip_target: "10.76.40.11"
+      mgmt_ip_legacy: '10.10.5.5'
+      mgmt_ip_target: '10.76.40.11'
       mgmt_bridge: vmbr0
       mgmt_vlan_id: 40
-      mgmt_mac: "00:23:24:f1:00:96"
+      mgmt_mac: '00:23:24:f1:00:96'
       conversion_status: converted
 
     - hostname: AzureDefiant
-      platform: "proxmox-qemu"
+      platform: 'proxmox-qemu'
       role: ProxmoxNode3
-      mgmt_ip_legacy: "10.10.5.6"
-      mgmt_ip_target: "10.76.40.12"
+      mgmt_ip_legacy: '10.10.5.6'
+      mgmt_ip_target: '10.76.40.12'
       mgmt_bridge: vmbr0
       mgmt_vlan_id: 40
-      mgmt_mac: "40:8d:5c:f6:1e:ef"
+      mgmt_mac: '40:8d:5c:f6:1e:ef'
       conversion_status: converted
-      conversion_note: "Target IP follows canonical inventory reservation."
+      conversion_note: 'Target IP follows canonical inventory reservation.'
 
 # Network discovery integration settings.
 # Keep secrets out of git; provide API key through vault/CI vars.
@@ -231,9 +231,9 @@ network_discovery:
   fing_local_api:
     enabled: "{{ network_discovery_fing_local_api_enabled | bool }}"
     source: fing
-    base_url: "http://10.10.0.136:49090/1"
-    devices_endpoint: "/devices"
-    people_endpoint: "/people"
+    base_url: 'http://10.10.0.136:49090/1'
+    devices_endpoint: '/devices'
+    people_endpoint: '/people'
     auth_query_param: auth
     api_key: "{{ network_discovery_fing_local_api_key }}"
     timeout_seconds: 10

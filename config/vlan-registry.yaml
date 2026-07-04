@@ -1,0 +1,203 @@
+# vlan-registry.yaml
+# Machine-readable VLAN catalogue — Battlestar Ventana Network
+#
+# Source of truth hierarchy:
+#   1. This file (config/vlan-registry.yaml)
+#   2. ansible/group_vars/all/vlan-vars.yml  (Ansible consumers)
+#   3. docs/dhcp-scopes.md                  (human-readable reference)
+#   4. docs/naming-conventions.md           (canonical SSID/VLAN names)
+#
+# Update policy:
+#   - Any change MUST be mirrored to docs/dhcp-scopes.md and naming-conventions.md.
+#   - VLAN IDs and subnet allocations are immutable without an ADR.
+#   - Referenced by: /.github/copilot-instructions.md (Determinism Rules)
+#
+# Subnet scheme: 10.76.<VLAN_ID>.0/24  (X = VLAN ID)
+
+vlans:
+  - id: 10
+    name: BattlestarVentana
+    ssid: 'Battlestar Ventana'
+    trust_zone: trusted
+    purpose: 'Primary trusted LAN — user workstations, laptops, phones'
+    subnet: '10.76.10.0/24'
+    gateway: '10.76.10.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.10.100'
+      range_end: '10.76.10.199'
+      lease_time: '24h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: unrestricted
+    notes: 'Fully trusted zone; direct access to services and infrastructure permitted.'
+
+  - id: 20
+    name: CylonSynthLink
+    ssid: 'CylonSynthLink'
+    trust_zone: iot
+    purpose: 'IoT devices — sensors, smart plugs, cameras, appliances'
+    subnet: '10.76.20.0/24'
+    gateway: '10.76.20.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.20.100'
+      range_end: '10.76.20.199'
+      lease_time: '7d'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: 'limited — cloud services permitted, internal resources blocked, throttled 2 Mbps'
+    notes: 'No lateral movement to trusted subnets. Cloud-facing IoT permitted via allowlist.'
+
+  - id: 30
+    name: CapricaGuestPortal
+    ssid: 'CapricaGuestPortal'
+    trust_zone: untrusted
+    purpose: 'Guest — Internet-only access'
+    subnet: '10.76.30.0/24'
+    gateway: '10.76.30.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.30.100'
+      range_end: '10.76.30.199'
+      lease_time: '2h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: 'unrestricted — internal resources blocked, throttled 5 Mbps'
+    notes: 'No access to any internal VLAN. Internet egress only.'
+
+  - id: 31
+    name: CapricaResidentPortal
+    ssid: 'CapricaResidentPortal'
+    trust_zone: elevated_guest
+    purpose: 'Trusted guest — casting, printing, limited service access'
+    subnet: '10.76.31.0/24'
+    gateway: '10.76.31.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.31.100'
+      range_end: '10.76.31.199'
+      lease_time: '4h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: 'unrestricted — internal resources blocked except media/print, throttled 10 Mbps, MAC allowlist required'
+    notes: 'Semi-trusted. MACs must be pre-approved for access.'
+
+  - id: 40
+    name: BasestarVentana
+    ssid: 'Basestar Ventana'
+    trust_zone: infrastructure
+    purpose: 'Infrastructure — hypervisors, switches, network controllers'
+    subnet: '10.76.40.0/24'
+    gateway: '10.76.40.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.40.10'
+      range_end: '10.76.40.99'
+      lease_time: '7d'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: blocked
+    notes: 'Management plane. No internet egress. Static IPs preferred for all nodes.'
+
+  - id: 50
+    name: GemenonServiceVault
+    ssid: 'GemenonVault'
+    trust_zone: services
+    purpose: 'NAS, MQTT, Home Assistant, Pi-hole, Prometheus, Grafana'
+    subnet: '10.76.50.0/24'
+    gateway: '10.76.50.1'
+    dhcp:
+      enabled: false
+      range_start: ''
+      range_end: ''
+      lease_time: ''
+      dns_primary: ''
+      dns_secondary: ''
+    internet_access: limited
+    notes: 'All hosts use static IPs. DHCP disabled. Central service plane.'
+
+  - id: 60
+    name: VirgonFleetYard
+    ssid: 'VirgonFleetYard'
+    trust_zone: semi_trusted
+    purpose: 'Printers'
+    subnet: '10.76.60.0/24'
+    gateway: '10.76.60.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.60.100'
+      range_end: '10.76.60.199'
+      lease_time: '24h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: blocked
+    notes: 'Printers only. Internet egress blocked. Trusted/resident VLANs may initiate print jobs.'
+
+  - id: 70
+    name: PegasusMediaNode
+    ssid: 'PegasusMedia'
+    trust_zone: semi_trusted
+    purpose: 'Media streaming — smart TVs, Apple TV, streaming sticks, casting targets'
+    subnet: '10.76.70.0/24'
+    gateway: '10.76.70.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.70.100'
+      range_end: '10.76.70.199'
+      lease_time: '24h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: unrestricted
+    notes: 'Casting targets reachable from trusted/resident VLANs. No lateral movement to services.'
+
+  - id: 81
+    name: ScorpiaMediaShield
+    ssid: 'ScorpiaMedia'
+    trust_zone: surveillance
+    purpose: 'Cameras — local recording only (no cloud relay)'
+    subnet: '10.76.81.0/24'
+    gateway: '10.76.81.1'
+    dhcp:
+      enabled: false
+      range_start: ''
+      range_end: ''
+      lease_time: ''
+      dns_primary: ''
+      dns_secondary: ''
+    internet_access: blocked
+    notes: 'All camera hosts use static IPs. Internet egress blocked. View-only from trusted/services.'
+
+  - id: 82
+    name: ScorpiaMediaRelay
+    ssid: 'ScorpiaMediaRelay'
+    trust_zone: surveillance
+    purpose: 'Cameras — cloud relay (remote access)'
+    subnet: '10.76.82.0/24'
+    gateway: '10.76.82.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.82.100'
+      range_end: '10.76.82.199'
+      lease_time: '24h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: 'limited — outbound relay to cloud NVR permitted only'
+    notes: 'Egress policy: cloud NVR relay allowlisted. No inbound from internet.'
+
+  - id: 90
+    name: ScyllaProcessControl
+    ssid: 'ScyllaProcessControl'
+    trust_zone: work
+    purpose: 'Work VLAN — corporate compliance bubble'
+    subnet: '10.76.90.0/24'
+    gateway: '10.76.90.1'
+    dhcp:
+      enabled: true
+      range_start: '10.76.90.100'
+      range_end: '10.76.90.199'
+      lease_time: '24h'
+      dns_primary: '10.76.50.10'
+      dns_secondary: '10.76.50.11'
+    internet_access: unrestricted
+    notes: 'Isolated work zone. Treated as untrusted by internal services. Corporate traffic segmented here.'

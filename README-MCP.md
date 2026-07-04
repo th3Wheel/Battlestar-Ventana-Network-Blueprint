@@ -5,6 +5,7 @@ This repository is configured to use multiple MCP (Model Context Protocol) serve
 ## Supported Servers
 
 - **Context7**: Semantic code search and documentation retrieval
+- **Home Assistant MCP**: Home automation control and observability via HA-MCP
 - **XPipe**: Remote command execution and infrastructure integration
 
 ## Environment Setup
@@ -14,11 +15,13 @@ This repository is configured to use multiple MCP (Model Context Protocol) serve
 - Environment Name: `copilot`
 - Required Secrets:
   - `COPILOT_MCP_CONTEXT7_KEY` – Context7 API key
+  - `HAMCP_SERVER_URL` – Home Assistant MCP endpoint URL (optional)
+  - `HAMCP_API_TOKEN` – Home Assistant MCP bearer token (optional)
   - `XPIPE_API_TOKEN` – XPipe authentication token (optional)
 
 ### MCP Configuration File
 
-The `mcp-config.json` file contains the MCP servers configuration in the standard MCP format. This file supports both Context7 and XPipe servers:
+The `mcp-config.json` file contains the MCP servers configuration in the standard MCP format. This file supports Context7, Home Assistant MCP, and XPipe servers:
 
 ```json
 {
@@ -26,6 +29,13 @@ The `mcp-config.json` file contains the MCP servers configuration in the standar
     "context7": {
       "command": "npx",
       "args": ["-y", "@context7/mcp-server"]
+    },
+    "home-assistant": {
+      "type": "streamable-http",
+      "url": "${env:HAMCP_SERVER_URL}",
+      "headers": {
+        "Authorization": "Bearer ${env:HAMCP_API_TOKEN}"
+      }
     },
     "xpipe": {
       "type": "streamable-http",
@@ -44,6 +54,42 @@ The `mcp-config.json` file contains the MCP servers configuration in the standar
 - Compatible with MCP-compliant development tools, IDEs, and command-line utilities
 - Used by tools like Claude Desktop, Cline, and other MCP-enabled applications
 - Can be consumed by any tool implementing the MCP standard configuration format
+
+### Source of Truth and Sync Model
+
+This repository uses `mcp-config.json` as the source of truth for shared MCP server entries.
+
+Run sync to propagate shared entries into agent-specific files:
+
+```bash
+npm run mcp:sync
+```
+
+Validate sync state without writing changes:
+
+```bash
+npm run mcp:sync:check
+```
+
+Validate sync state and reject unexpected MCP config files anywhere in the repo:
+
+```bash
+npm run mcp:guard
+```
+
+Current sync targets:
+
+- `.mcp.json` (`mcpServers`)
+- `.cursor/mcp.json` (`mcpServers`)
+- `.vscode/mcp.json` (`servers`)
+- `.gemini/settings.json` (`mcpServers`)
+
+Synchronization behavior:
+
+- Any server key that exists in `mcp-config.json` is managed and will be overwritten in all targets.
+- Server keys not present in `mcp-config.json` are treated as agent-specific and preserved.
+- This allows each agent/client to keep custom entries while ensuring shared servers stay consistent.
+- The guard check fails if any MCP config file appears outside the approved inventory or if an approved config is missing.
 
 ### Local Development Setup
 
@@ -66,15 +112,21 @@ The `mcp-config.json` file contains the MCP servers configuration in the standar
 
 4. Set API keys in your environment:
 
-   ```bash
-   # Context7
-   export CONTEXT7_API_KEY="your-api-key-here"
+  ```bash
+  # Context7
+  export CONTEXT7_API_KEY="your-api-key-here"
 
-   # XPipe (retrieved from 1Password)
-   export XPIPE_API_TOKEN=$(op read "op://homelab/xpipe/api-token")
-   ```
+  # XPipe (retrieved from 1Password)
+  export XPIPE_API_TOKEN=$(op read "op://homelab/xpipe/api-token")
 
-5. Start XPipe daemon (if using XPipe):
+  # Home Assistant MCP
+  export HAMCP_SERVER_URL="http://your-ha-mcp-host:PORT/mcp"
+  export HAMCP_API_TOKEN=$(op read "op://homelab/home-assistant/mcp-token")
+  ```
+
+  See `.env.example` for a minimal local template.
+
+1. Start XPipe daemon (if using XPipe):
 
    ```bash
    xpipe
@@ -349,7 +401,7 @@ XPipe MCP Conduit uses the same configuration and VS Code setup described in **X
 
 Replace `YOUR_XPIPE_API_TOKEN` with your token from XPipe Settings → MCP.
 
-### VS Code Integration
+#### VS Code Integration
 
 For VS Code, add to `.vscode/settings.json`:
 
@@ -377,7 +429,7 @@ $env:XPIPE_API_TOKEN = $(op read "op://homelab/xpipe/api-token")
 export XPIPE_API_TOKEN=$(op read "op://homelab/xpipe/api-token")
 ```
 
-### Available Tools
+#### Available Tools
 
 XPipe exposes MCP tools based on your configured shell connections and commands. Common operations include:
 
@@ -388,7 +440,7 @@ XPipe exposes MCP tools based on your configured shell connections and commands.
 
 Refer to [XPipe MCP Documentation](https://docs.xpipe.io/guide/mcp) for complete tool reference.
 
-### Service Integration
+#### Service Integration
 
 XPipe integrates with services defined in `infrastructure/xpipe/` and Docker Compose configurations. Use the MCP tools to:
 
@@ -397,14 +449,14 @@ XPipe integrates with services defined in `infrastructure/xpipe/` and Docker Com
 - Manage service lifecycles
 - Access remote infrastructure
 
-### Security Notes
+#### Security Notes
 
 - XPipe daemon runs locally on port 21721 (configurable)
 - API tokens are bound to your XPipe account
 - All operations are auditable through XPipe's built-in logging
 - Never commit API tokens to version control; use environment variables
 
-### Troubleshooting
+#### Troubleshooting
 
 #### XPipe Daemon Not Running
 

@@ -11,7 +11,7 @@
       "args": [],
       "execution": {
         "type": "shell",
-        "command": "python \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\""
+        "command": "python3 \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\""
       }
     },
     {
@@ -21,7 +21,7 @@
       "args": [],
       "execution": {
         "type": "shell",
-        "command": "python -c \"with open('${REPO_ROOT}/home-assistant/automations.yaml', 'w') as f: f.write('[]\\n')\""
+        "command": "echo '[]' > home-assistant/automations.yaml"
       }
     },
     {
@@ -31,7 +31,7 @@
       "args": [],
       "execution": {
         "type": "shell",
-        "command": "python \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\" || python -c \"with open('${REPO_ROOT}/home-assistant/automations.yaml', 'w') as f: f.write('[]\\n')\""
+        "command": "python3 \"${REPO_ROOT}/home-assistant/guardrails/validate_automations.py\" || echo '[]' > \"${REPO_ROOT}/home-assistant/automations.yaml\""
       }
     },
     {

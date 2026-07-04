@@ -1,3 +1,4 @@
+---
 extends: default
 
 ignore: |
@@ -21,7 +22,8 @@ rules:
   trailing-spaces: enable
   new-lines:
     type: unix
-  truthy: disable
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
   braces:
     max-spaces-inside: 1
   empty-lines:

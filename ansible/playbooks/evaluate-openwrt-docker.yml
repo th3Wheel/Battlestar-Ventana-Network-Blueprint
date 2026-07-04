@@ -9,7 +9,7 @@
 #   full-matrix    — TASK-013: iterate all 11 VLANs in the container
 #   generate-config — TASK-014: emit docker-compose.yml and UCI backups
 
-- name: "Phase 1 — Research: document OpenWrt Docker capabilities (TASK-005)"
+- name: 'Phase 1 — Research: document OpenWrt Docker capabilities (TASK-005)'
   hosts: localhost
   gather_facts: false
   tags: [research]
@@ -18,7 +18,7 @@
       vars:
         openwrt_eval_task: research
 
-- name: "Phase 1 — Provision: launch OpenWrt container (TASK-006)"
+- name: 'Phase 1 — Provision: launch OpenWrt container (TASK-006)'
   hosts: lab_docker
   gather_facts: true
   tags: [provision]
@@ -27,7 +27,7 @@
       vars:
         openwrt_eval_task: provision
 
-- name: "Phase 3 — Full matrix: validate all 11 VLANs in OpenWrt container (TASK-013)"
+- name: 'Phase 3 — Full matrix: validate all 11 VLANs in OpenWrt container (TASK-013)'
   hosts: lab_docker
   gather_facts: false
   tags: [full-matrix]
@@ -36,7 +36,7 @@
       vars:
         openwrt_eval_task: full_matrix
 
-- name: "Phase 3 — Generate config: emit docker-compose.yml and UCI backups (TASK-014)"
+- name: 'Phase 3 — Generate config: emit docker-compose.yml and UCI backups (TASK-014)'
   hosts: lab_docker
   gather_facts: false
   tags: [generate-config]

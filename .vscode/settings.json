@@ -8,7 +8,9 @@
     "Caprica",
     "Cherno",
     "choco",
+    "Cinnado",
     "crimsonrogue",
+    "Cubie",
     "cutover",
     "Cylon",
     "dnsmasq",
@@ -17,6 +19,7 @@
     "Galactica",
     "Gemenon",
     "gilfoyle",
+    "HAMCP",
     "helmhub",
     "homeassistant",
     "hostnames",
@@ -27,10 +30,13 @@
     "mgmt",
     "microdnf",
     "mqtt",
+    "networkd",
+    "nftables",
     "opnsense",
     "pihole",
     "precheck",
     "Radxa",
+    "routepi",
     "Scorpia",
     "selectattr",
     "skopeo",
@@ -39,26 +45,9 @@
     "Ventana",
     "venv",
     "Virgon",
-    "vmbr"
-  ],
-  "markdownlint.ignore": [
-    "**/.git/**",
-    "**/.vscode/**",
-    "**/.venv/**",
-    "**/.ruff_cache/**",
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/coverage/**",
-    "**/.github/**/doNotLint/**",
-    "**/.github/instructions/code-review-generic.instructions.md",
-    "**/.github/instructions/gilfoyle-code-review.instructions.md",
-    "**/.github/instructions/markdown.instructions.md",
-    "**/.github/instructions/self-explanatory-code-commenting.instructions.md",
-    "**/.github/instructions/shell.instructions.md",
-    "**/.github/instructions/taming-copilot.instructions.md",
-    "**/.github/copilot/memory/**",
-    "**/.github/copilot/agent-memory/**",
-    "**/.github/copilot/agent-logs/**"
+    "vmbr",
+    "winget",
+    "xpipe"
   ],
   "ansible.mcpServer.enabled": true,
   "ansible.ansible.reuseTerminal": true,
@@ -90,5 +79,8 @@
       "clientId": "vsmqtt_client_b71e"
     }
   ],
-  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf"
+  "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf",
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  }
 }
