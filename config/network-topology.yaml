@@ -1,0 +1,151 @@
+# network-topology.yaml
+# Machine-readable network topology — Battlestar Ventana Network
+#
+# Source of truth for:
+#   - VLAN subnet assignments (canonical)
+#   - Hypervisor / physical node management IPs
+#   - Pi-hole HA VIP addresses
+#   - DNS naming scheme
+#
+# Referenced by: /.github/copilot-instructions.md (Determinism Rules, primary source)
+# Fallback for: docs/ip-allocation.md (static device assignments)
+#
+# Subnet scheme: 10.76.<VLAN_ID>.0/24
+# DNS scheme:    <service>.<zone>.ventana.internal
+#
+# IMPORTANT: Host-level IP assignments (cameras, services, VMs) are tracked in:
+#   - docs/host-tracker.md        (general static assignments)
+#   - docs/device-inventory.md    (IoT/sensor devices)
+# Those files are authoritative for individual device IPs.
+
+network:
+  domain: 'ventana.internal'
+  subnet_scheme: '10.76.<VLAN_ID>.0/24'
+  vlan_registry: 'config/vlan-registry.yaml'
+
+# ─── Infrastructure VIPs and Reserved Addresses ──────────────────────────────
+
+services:
+  pihole:
+    primary_vip: '10.76.50.10'
+    secondary_vip: '10.76.50.11'
+    vlan: 50
+    dns_record: 'pihole.services.ventana.internal'
+    notes: 'Floating VIPs managed by keepalived VRRP. See ADR-005.'
+
+  dns_upstream:
+    description: 'Unbound recursive resolver, co-located with Pi-hole nodes'
+    port: 5335
+    bound_to: loopback
+
+# ─── Hypervisor Management Nodes (VLAN 40 — BasestarVentana) ─────────────────
+
+hypervisors:
+  addressing_note: >
+    Legacy management was on 10.10.5.0/24. All hypervisor management IPs
+    have migrated to 10.76.40.0/24 (VLAN 40 — BasestarVentana).
+    Host octet is NOT preserved from legacy; see per-node mgmt_ip_target.
+
+  nodes:
+    - hostname: CrimsonRogue
+      platform: proxmox-qemu
+      role: ProxmoxNode1
+      mgmt_ip: '10.76.40.10'
+      mgmt_vlan: 40
+      mgmt_bridge: vmbr0
+      legacy_ip: '10.10.5.10'
+      conversion_status: converted
+      dns_record: 'crimsonrogue.infra.ventana.internal'
+
+    - hostname: AmberNomad
+      platform: proxmox-qemu
+      role: ProxmoxNode2
+      mgmt_ip: '10.76.40.11'
+      mgmt_vlan: 40
+      mgmt_bridge: vmbr0
+      mgmt_mac: '00:23:24:f1:00:96'
+      legacy_ip: '10.10.5.5'
+      conversion_status: converted
+      dns_record: 'ambernomad.infra.ventana.internal'
+
+    - hostname: AzureDefiant
+      platform: proxmox-qemu
+      role: ProxmoxNode3
+      mgmt_ip: '10.76.40.12'
+      mgmt_vlan: 40
+      mgmt_bridge: vmbr0
+      mgmt_mac: '40:8d:5c:f6:1e:ef'
+      legacy_ip: '10.10.5.6'
+      conversion_status: converted
+      dns_record: 'azuredefiant.infra.ventana.internal'
+
+# ─── VLAN Topology Summary ────────────────────────────────────────────────────
+# Full VLAN details live in config/vlan-registry.yaml.
+# This section provides a quick-reference index for topology consumers.
+
+vlan_topology:
+  - id: 10
+    name: BattlestarVentana
+    subnet: '10.76.10.0/24'
+    gateway: '10.76.10.1'
+    trust_zone: trusted
+
+  - id: 20
+    name: CylonSynthLink
+    subnet: '10.76.20.0/24'
+    gateway: '10.76.20.1'
+    trust_zone: iot
+
+  - id: 30
+    name: CapricaGuestPortal
+    subnet: '10.76.30.0/24'
+    gateway: '10.76.30.1'
+    trust_zone: untrusted
+
+  - id: 31
+    name: CapricaResidentPortal
+    subnet: '10.76.31.0/24'
+    gateway: '10.76.31.1'
+    trust_zone: elevated_guest
+
+  - id: 40
+    name: BasestarVentana
+    subnet: '10.76.40.0/24'
+    gateway: '10.76.40.1'
+    trust_zone: infrastructure
+
+  - id: 50
+    name: GemenonServiceVault
+    subnet: '10.76.50.0/24'
+    gateway: '10.76.50.1'
+    trust_zone: services
+
+  - id: 60
+    name: VirgonFleetYard
+    subnet: '10.76.60.0/24'
+    gateway: '10.76.60.1'
+    trust_zone: semi_trusted
+
+  - id: 70
+    name: PegasusMediaNode
+    subnet: '10.76.70.0/24'
+    gateway: '10.76.70.1'
+    trust_zone: semi_trusted
+
+  - id: 81
+    name: ScorpiaMediaShield
+    subnet: '10.76.81.0/24'
+    gateway: '10.76.81.1'
+    trust_zone: surveillance
+
+  - id: 82
+    name: ScorpiaMediaRelay
+    subnet: '10.76.82.0/24'
+    gateway: '10.76.82.1'
+    trust_zone: surveillance
+
+  - id: 90
+    name: ScyllaProcessControl
+    subnet: '10.76.90.0/24'
+    gateway: '10.76.90.1'
+    trust_zone: work

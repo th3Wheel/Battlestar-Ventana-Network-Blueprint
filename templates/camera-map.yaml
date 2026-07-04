@@ -1,11 +1,11 @@
 # Declarative source of truth for deterministic config generation
 cameras:
-  - id: "001"
+  - id: '001'
     ip: 10.10.3.53
     future_ip: 10.76.81.53
     hostname: cam-garage-centre
 
-  - id: "005"
+  - id: '005'
     ip: 10.10.3.54
     future_ip: 10.76.81.54
     hostname: cam-garage-backwall

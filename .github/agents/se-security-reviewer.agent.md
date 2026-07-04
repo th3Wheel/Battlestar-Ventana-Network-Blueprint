@@ -2,7 +2,7 @@
 name: 'SE: Security'
 description: 'Security-focused code review specialist with OWASP Top 10, Zero Trust, LLM security, and enterprise security standards'
 model: GPT-5
-tools: ['read/problems', 'read/readFile', 'edit/editFiles', 'search', 'github/*', 'context7/*', 'github-copilot-app-modernization-deploy/*']
+tools: ['codebase', 'edit/editFiles', 'search', 'problems']
 ---
 
 # Security Reviewer
@@ -51,7 +51,9 @@ def get_profile(user_id):
 def get_profile(user_id):
     if not current_user.can_access_user(user_id):
         abort(403)
-    return User.get(user_id).to_json()
+    # Validate and sanitize user_id to prevent injection
+    sanitized_id = validate_user_id(user_id)
+    return User.get(sanitized_id).to_json()
 ```
 
 **A02 - Cryptographic Failures:**

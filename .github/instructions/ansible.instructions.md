@@ -23,7 +23,7 @@ applyTo: '**/*.yaml, **/*.yml'
   - Use `group_vars` to set variables based on these attributes
 - Use idempotent Ansible modules whenever possible; avoid `shell`, `command`, and `raw`, as they break idempotency
   - If you have to use `shell` or `command`, use the `creates:` or `removes:` parameter, where feasible, to prevent unnecessary execution
-- Use [fully qualified collection names (FQCN)](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Fully-Qualified-Collection-Name-FQCN) to ensure the correct module or plugin is selected
+- Use [fully qualified collection names (FQCN)](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html#term-Fully-Qualified-Collection-Name-FQCN) to ensure the correct module or plugin is selected, and verify that the documentation URL and anchor are correct for the specific Ansible version you are using, as these may change between releases
   - Use the `ansible.builtin` collection for [builtin modules and plugins](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html#plugin-index)
 - Group related tasks together to improve readability and modularity
 - For modules where `state` is optional, explicitly set `state: present` or `state: absent` to improve clarity and consistency
