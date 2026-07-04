@@ -69,6 +69,13 @@
       "problemMatcher": []
     },
     {
+      "label": "ansible: evaluate fing local api (--check)",
+      "type": "shell",
+      "command": "ansible-playbook",
+      "args": ["ansible/playbooks/evaluate-fing-local-api.yml", "--check"],
+      "problemMatcher": []
+    },
+    {
       "label": "cameras: generate configs",
       "type": "shell",
       "command": "bash",

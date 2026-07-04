@@ -8,7 +8,7 @@
 # All playbooks and roles must reference these variables rather than
 # hard-coding any IP addresses or VLAN IDs.
 
-# all internet access policies are defined in the firewall-matrix.md document, and are referenced here for each VLAN.
+# All internet access policies are defined in the firewall-matrix.md document, and are referenced here for each VLAN.
 
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: "10.76.50.10"
@@ -28,7 +28,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted
+    wan_egress: unrestricted
 
   - id: 20
     name: CylonSynthLink
@@ -42,7 +42,8 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: limited, cloud services only, throttled to 2Mbps
+    wan_egress: limited
+    wan_egress_details: cloud services only, throttled to 2Mbps
 
   - id: 30
     name: CapricaGuestPortal
@@ -56,7 +57,8 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted, but blocked from internal resources and throttled to 5Mbps
+    wan_egress: limited
+    wan_egress_details: blocked from internal resources and throttled to 5Mbps
 
   - id: 31
     name: CapricaResidentPortal
@@ -70,7 +72,8 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted outbound, blocked internal resources except media players, throttled to 10Mbps, mac address whitelist required for access
+    wan_egress: unrestricted
+    wan_egress_details: outbound, blocked internal resources except media players, throttled to 10Mbps, mac address whitelist required for access
 
   - id: 40
     name: BasestarVentana
@@ -84,7 +87,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: blocked
+    wan_egress: blocked
 
   - id: 50
     name: GemenonServiceVault
@@ -94,12 +97,12 @@ vlans:
     gateway: "10.76.50.1"
     dhcp_range_start: ""
     dhcp_range_end: ""
-    lease_time: ""
-    dns: ""
-    dns_secondary: ""
+    lease_time: null
+    dns: null
+    dns_secondary: null
     dhcp_enabled: false
-    internet_access: limited
-
+    wan_egress: blocked
+  
   - id: 60
     name: VirgonFleetYard
     ssid: "VirgonFleetYard"
@@ -112,7 +115,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: blocked
+    wan_egress: blocked
 
   - id: 70
     name: PegasusMediaNode
@@ -126,7 +129,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted
+    wan_egress: unrestricted
 
   - id: 81
     name: ScorpiaMediaShield
@@ -140,7 +143,7 @@ vlans:
     dns: ""
     dns_secondary: ""
     dhcp_enabled: false
-    internet_access: blocked
+    wan_egress: blocked
 
   - id: 82
     name: ScorpiaMediaRelay
@@ -154,7 +157,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: limited
+    wan_egress: limited
 
   - id: 90
     name: ScyllaProcessControl
@@ -168,7 +171,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted
+    wan_egress: unrestricted
 
 # Hypervisor management addressing source of truth.
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.
@@ -216,16 +219,23 @@ hypervisor_management:
 
 # Network discovery integration settings.
 # Keep secrets out of git; provide API key through vault/CI vars.
+network_discovery_fing_local_api_enabled: true
+network_discovery_fing_local_api_key: >-
+  {{
+    (vault_fing_local_api_key | mandatory('Set vault_fing_local_api_key when network_discovery_fing_local_api_enabled=true'))
+    if (network_discovery_fing_local_api_enabled | bool)
+    else (vault_fing_local_api_key | default(''))
+  }}
+
 network_discovery:
   fing_local_api:
-    enabled: true
+    enabled: "{{ network_discovery_fing_local_api_enabled | bool }}"
     source: fing
     base_url: "http://10.10.0.136:49090/1"
     devices_endpoint: "/devices"
     people_endpoint: "/people"
     auth_query_param: auth
-    api_key: "{{ vault_fing_local_api_key }}"
+    api_key: "{{ network_discovery_fing_local_api_key }}"
     timeout_seconds: 10
     poll_interval_seconds: 60
-    # Note: vault_fing_local_api_key must be defined and non-empty in vault/CI vars
-    # Tasks using this API key should assert it is defined before use
+    # Note: this fails fast when enabled and key is missing.
