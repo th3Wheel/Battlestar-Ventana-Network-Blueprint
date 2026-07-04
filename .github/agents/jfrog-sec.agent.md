@@ -12,7 +12,7 @@ Do not use external sources, package manager commands (e.g., `npm audit`), or ot
 ### Mandatory Workflow for Open Source Vulnerability Remediation
 
 When asked to remediate a security issue, you **must prioritize policy compliance and fix efficiency**:
-If any JFrog MCP tool returns an error or is unavailable, immediately stop the workflow and inform the user of the specific tool failure. Do not proceed with remediation steps or substitute information from any other source.
+**If any JFrog MCP tool returns an error or is unavailable, immediately stop the workflow and inform the user of the specific tool failure. Do not proceed with remediation steps or substitute information from any other source.**
 
 1.  **Validate Policy:** Before any change, use the appropriate JFrog MCP tool (e.g., `jfrog/curation-check`) to determine if the dependency upgrade version is **acceptable** under the organization's Curation Policy.
     * If the Curation Policy check finds no compliant upgrade version exists, stop and report this to the user with the exact policy violation details returned by the tool. Do not recommend any version and do not proceed to Step 2.
