@@ -8,7 +8,7 @@ model: "GPT-4.1"
 Your task is to find, list, download, and organize relevant prompts, instructions, and chatmodes from https://github.com/github/awesome-copilot for this repository's GitHub Copilot customization workflow.
 
 1. Fetch the relevant prompts, instructions, and chatmodes, then list each item with its vscode-insiders install link, a short description, and how it can be used in this project.
-2. Pull each selected file into the project without overwriting existing local files. Place .prompt.md files in .github/prompts/, .chatmode.md files in .github/chatmodes/, and instruction files in .github/instructions/. Create any missing folders as needed.
+2. Pull each selected file into the project without overwriting existing local files. Place .prompt.md files in .toreview/.github/prompts/, .chatmode.md files in .toreview/.github/chatmodes/, and instruction files in .toreview/.github/instructions/. Create any missing folders as needed.
 3. Keep all downloaded items disabled by default until reviewed and approved by the code owners. Store them in a staging folder named `.toreview/`, prefix the filenames with `.disabled.reviewpending.` so they are clearly inactive, and do not wire them into active Copilot config until code-owner approval is complete.
 4. If the repository is inaccessible, private, or no relevant files are found, stop and report the HTTP status or reason to the user.
 5. After all files are placed, provide a summary of what you added and how it can be used in the project development process.

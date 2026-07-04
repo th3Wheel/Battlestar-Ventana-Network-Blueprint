@@ -42,7 +42,7 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: limited; cloud services only, throttle:2Mbps
+    internet_access: limited, cloud services only, throttled to 2Mbps
 
   - id: 30
     name: CapricaGuestPortal
