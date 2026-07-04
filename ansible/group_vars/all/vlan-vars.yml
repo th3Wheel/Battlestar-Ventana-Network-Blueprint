@@ -57,8 +57,8 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    wan_egress: limited
-    wan_egress_details: blocked from internal resources and throttled to 5Mbps
+    wan_egress: unrestricted
+    wan_egress_details: internet only (no LAN access), throttled to 5Mbps
 
   - id: 31
     name: CapricaResidentPortal
@@ -101,7 +101,7 @@ vlans:
     dns: null
     dns_secondary: null
     dhcp_enabled: false
-    wan_egress: blocked
+    wan_egress: limited 
   
   - id: 60
     name: VirgonFleetYard
