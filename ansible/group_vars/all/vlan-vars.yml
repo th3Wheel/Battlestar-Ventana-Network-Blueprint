@@ -8,6 +8,8 @@
 # All playbooks and roles must reference these variables rather than
 # hard-coding any IP addresses or VLAN IDs.
 
+# all internet access policies are defined in the firewall-matrix.md document, and are referenced here for each VLAN.
+
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: "10.76.50.10"
 pihole_secondary_vip: "10.76.50.11"
@@ -23,12 +25,8 @@ vlans:
     dhcp_range_start: "10.76.10.100"
     dhcp_range_end: "10.76.10.199"
     lease_time: "24h"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
-=======
-    dns: "{{ pihole_primary_ip }}"
->>>>>>> origin/master
     dhcp_enabled: true
     internet_access: unrestricted
 
@@ -40,18 +38,11 @@ vlans:
     gateway: "10.76.20.1"
     dhcp_range_start: "10.76.20.100"
     dhcp_range_end: "10.76.20.199"
-<<<<<<< HEAD
-    lease_time: 7d
+    lease_time: "7d"
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: limited such that devices can access cloud services but not internal resources, throttled to 2Mbps
-=======
-    lease_time: "12h"
-    dns: "{{ pihole_primary_ip }}"
-    dhcp_enabled: true
-    internet_access: limited
->>>>>>> origin/master
+    internet_access: limited; cloud services only, throttle:2Mbps
 
   - id: 30
     name: CapricaGuestPortal
@@ -61,7 +52,6 @@ vlans:
     gateway: "10.76.30.1"
     dhcp_range_start: "10.76.30.100"
     dhcp_range_end: "10.76.30.199"
-<<<<<<< HEAD
     lease_time: "2h"
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
@@ -72,63 +62,33 @@ vlans:
     name: CapricaResidentPortal
     ssid: "CapricaResidentPortal"
     purpose: "Trusted Guest (casting, printing)"
-=======
-    lease_time: "8h"
-    dns: "{{ pihole_primary_ip }}"
-    dhcp_enabled: true
-    internet_access: unrestricted
-
-  - id: 31
-    name: PiconResidentGate
-    ssid: "PiconResidentGate"
-    purpose: "Elevated Guest (casting, printing)"
->>>>>>> origin/master
     subnet: "10.76.31.0/24"
     gateway: "10.76.31.1"
     dhcp_range_start: "10.76.31.100"
     dhcp_range_end: "10.76.31.199"
-<<<<<<< HEAD
     lease_time: "4h"
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted, but blocked from internal resources except media players etc, throttled to 10Mbps, mac address whitelist required for access
+    internet_access: unrestricted outbound, blocked internal resources except media players, throttled to 10Mbps, mac address whitelist required for access
 
   - id: 40
     name: BasestarVentana
     ssid: "Basestar Ventana"
-=======
-    lease_time: "8h"
-    dns: "{{ pihole_primary_ip }}"
-    dhcp_enabled: true
-    internet_access: unrestricted
-
-  - id: 40
-    name: BasestarControl
-    ssid: "Basestar Control"
->>>>>>> origin/master
     purpose: "Infrastructure switches and controllers"
     subnet: "10.76.40.0/24"
     gateway: "10.76.40.1"
     dhcp_range_start: "10.76.40.10"
     dhcp_range_end: "10.76.40.99"
     lease_time: "7d"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
-=======
-    dns: "{{ pihole_primary_ip }}"
->>>>>>> origin/master
     dhcp_enabled: true
     internet_access: blocked
 
   - id: 50
     name: GemenonServiceVault
-<<<<<<< HEAD
     ssid: "GemenonVault"
-=======
-    ssid: "ServerVault"
->>>>>>> origin/master
     purpose: "NAS, MQTT, Home Assistant"
     subnet: "10.76.50.0/24"
     gateway: "10.76.50.1"
@@ -136,10 +96,7 @@ vlans:
     dhcp_range_end: ""
     lease_time: ""
     dns: ""
-<<<<<<< HEAD
     dns_secondary: ""
-=======
->>>>>>> origin/master
     dhcp_enabled: false
     internet_access: limited
 
@@ -152,44 +109,28 @@ vlans:
     dhcp_range_start: "10.76.60.100"
     dhcp_range_end: "10.76.60.199"
     lease_time: "24h"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
-=======
-    dns: "{{ pihole_primary_ip }}"
->>>>>>> origin/master
     dhcp_enabled: true
     internet_access: blocked
 
   - id: 70
     name: PegasusMediaNode
-<<<<<<< HEAD
     ssid: "PegasusMedia"
-=======
-    ssid: "PegasusMediaNode"
->>>>>>> origin/master
     purpose: "Media and Casting"
     subnet: "10.76.70.0/24"
     gateway: "10.76.70.1"
     dhcp_range_start: "10.76.70.100"
     dhcp_range_end: "10.76.70.199"
     lease_time: "24h"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
-=======
-    dns: "{{ pihole_primary_ip }}"
->>>>>>> origin/master
     dhcp_enabled: true
     internet_access: unrestricted
 
   - id: 81
     name: ScorpiaMediaShield
-<<<<<<< HEAD
     ssid: "ScorpiaMedia"
-=======
-    ssid: "ScorpiaMediaShield"
->>>>>>> origin/master
     purpose: "Cameras — Local"
     subnet: "10.76.81.0/24"
     gateway: "10.76.81.1"
@@ -197,10 +138,7 @@ vlans:
     dhcp_range_end: ""
     lease_time: ""
     dns: ""
-<<<<<<< HEAD
     dns_secondary: ""
-=======
->>>>>>> origin/master
     dhcp_enabled: false
     internet_access: blocked
 
@@ -213,12 +151,8 @@ vlans:
     dhcp_range_start: "10.76.82.100"
     dhcp_range_end: "10.76.82.199"
     lease_time: "24h"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
-=======
-    dns: "{{ pihole_primary_ip }}"
->>>>>>> origin/master
     dhcp_enabled: true
     internet_access: limited
 
@@ -231,7 +165,6 @@ vlans:
     dhcp_range_start: "10.76.90.100"
     dhcp_range_end: "10.76.90.199"
     lease_time: "24h"
-<<<<<<< HEAD
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
@@ -254,7 +187,7 @@ hypervisor_management:
     - hostname: CrimsonRogue
       platform: "proxmox-qemu"
       role: ProxmoxNode1
-      mgmt_ip_legacy: "10.10.5.10"
+      mgmt_ip_legacy: "10.10.5.9"
       mgmt_ip_target: "10.76.40.10"
       mgmt_bridge: vmbr0
       mgmt_vlan_id: 40
@@ -291,11 +224,8 @@ network_discovery:
     devices_endpoint: "/devices"
     people_endpoint: "/people"
     auth_query_param: auth
-    api_key: "{{ vault_fing_local_api_key | default('') }}"
+    api_key: "{{ vault_fing_local_api_key }}"
     timeout_seconds: 10
     poll_interval_seconds: 60
-=======
-    dns: "{{ pihole_primary_ip }}"
-    dhcp_enabled: true
-    internet_access: unrestricted
->>>>>>> origin/master
+    # Note: vault_fing_local_api_key must be defined and non-empty in vault/CI vars
+    # Tasks using this API key should assert it is defined before use
