@@ -15,9 +15,6 @@ Central index for all hostname pools, device trackers, and service matrices in t
 - WLED configurations, presets, and segment mappings  
   → [docs/wled-configurations.md](wled-configurations.md)
 
-- Hyperion HD camera sensors for ambient lighting  
-  → [docs/hyperion-camera-sensor.md](hyperion-camera-sensor.md)
-
 - VLAN firewall policy matrix  
   → [docs/firewall-matrix.md](firewall-matrix.md)
 

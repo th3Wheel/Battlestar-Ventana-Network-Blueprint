@@ -149,7 +149,7 @@ This Ansible role transforms a fresh Radxa Cubie A5E installation into a product
 
 ## Example Output
 
-``` text
+```
 TASK [radxa_docker_host_bootstrap : Display success message] *********************
 ok: [radxa-host] => {
     "msg": "✓ Radxa Docker Host Bootstrap completed successfully!\nHost IP: 10.10.20.11\nVLAN: 20\nDocker: radxa-host: Debian GNU/Linux\nPi-hole directory: /srv/pihole-docker\nReady for Pi-hole deployment"
@@ -160,22 +160,22 @@ ok: [radxa-host] => {
 
 ### Common Issues
 
-#### **Network Interface Detection Fails**
+**Network Interface Detection Fails**
 
 - Ensure the primary Ethernet interface follows standard naming (`end0`, `eth0`)
 - Check `ip link show` output on target system
 
-#### **Firewall Blocks Connections**
+**Firewall Blocks Connections**
 
 - Review `radxa_allowed_networks` and `radxa_allowed_ports`
 - Temporarily disable nftables: `systemctl stop nftables`
 
-#### **Docker Installation Fails**
+**Docker Installation Fails**
 
 - Verify internet connectivity and DNS resolution
 - Check if Docker repository is accessible
 
-#### **Repository Clone Fails**
+**Repository Clone Fails**
 
 - Validate `radxa_route_pi_repo_url` is accessible
 - Ensure SSH keys or credentials are configured for private repos

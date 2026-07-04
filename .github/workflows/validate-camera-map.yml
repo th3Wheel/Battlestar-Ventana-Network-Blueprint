@@ -3,8 +3,8 @@ name: Validate Camera Map
 on:
   push:
     paths:
-      - 'templates/camera-map.yaml'
-      - 'scripts/**'
+      - "templates/camera-map.yaml"
+      - "scripts/**"
   pull_request:
 
 jobs:

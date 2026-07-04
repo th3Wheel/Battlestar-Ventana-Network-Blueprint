@@ -1,7 +1,0 @@
----
-- name: Install and configure thefuck on all supported hosts
-  hosts: thefuck_hosts
-  become: false
-  roles:
-    - role: ../../roles/thefuck
-      tags: [thefuck]

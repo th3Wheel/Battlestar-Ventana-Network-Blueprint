@@ -1,5 +1,6 @@
 [MASTER]
 max-line-length=120
+ignore=node_modules
 ignore-patterns=^\.venv/.*
 disable=
     missing-docstring,

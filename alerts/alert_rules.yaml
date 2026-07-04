@@ -20,11 +20,11 @@ groups:
     labels: { severity: warning }
     annotations:
       summary: "Guest egress >2× baseline"
-  - alert: CapricaResidentPortalDeniedAttempts
+  - alert: ResidentGateDeniedAttempts
     expr: rate(firewall_denied_packets_total{vlan="31"}[5m]) > 10
     labels: { severity: warning }
     annotations:
-      summary: "Excessive denied LAN attempts from CapricaResidentPortal"
+      summary: "Excessive denied LAN attempts from ResidentGate"
   - alert: InfraPortFlaps
     expr: increase(infra_port_flaps_total{vlan="40"}[24h]) > 2
     labels: { severity: warning }

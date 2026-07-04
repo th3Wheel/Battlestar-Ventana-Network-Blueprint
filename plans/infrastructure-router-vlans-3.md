@@ -45,8 +45,8 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 | 10 | Battlestar Ventana (Trusted) | 10.76.10.0/24 | 10.76.10.1 | 10.76.10.100–199 | 24h | 10.76.50.10 |
 | 20 | CylonSynthLink (IoT) | 10.76.20.0/24 | 10.76.20.1 | 10.76.20.100–199 | 12h | 10.76.50.10 |
 | 30 | CapricaGuestPortal (Guest) | 10.76.30.0/24 | 10.76.30.1 | 10.76.30.100–199 | 8h | 10.76.50.10 |
-| 31 | CapricaResidentPortal (Elevated Guest) | 10.76.31.0/24 | 10.76.31.1 | 10.76.31.100–199 | 8h | 10.76.50.10 |
-| 40 | BasestarVentana (InfraCore) | 10.76.40.0/24 | 10.76.40.1 | 10.76.40.10–99 | 7d | 10.76.50.10 |
+| 31 | PiconResidentGate (Elevated Guest) | 10.76.31.0/24 | 10.76.31.1 | 10.76.31.100–199 | 8h | 10.76.50.10 |
+| 40 | Basestar Control (InfraCore) | 10.76.40.0/24 | 10.76.40.1 | 10.76.40.10–99 | 7d | 10.76.50.10 |
 | 50 | GemenonServiceVault (Services) | 10.76.50.0/24 | 10.76.50.1 | Static only | — | — |
 | 60 | VirgonFleetYard (Printers) | 10.76.60.0/24 | 10.76.60.1 | 10.76.60.100–199 | 24h | 10.76.50.10 |
 | 70 | PegasusMediaNode (Media) | 10.76.70.0/24 | 10.76.70.1 | 10.76.70.100–199 | 24h | 10.76.50.10 |

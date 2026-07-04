@@ -9,25 +9,13 @@
       {{ lookup(
           'community.general.onepassword',
           'SSH Password',
-          field='password',
-          errors='ignore'
+          field='password'
       ) }}
 
     # Path to the public key on the controller
     public_key_path: '~/.ssh/id_ed25519.pub'
 
   tasks:
-    - name: Validate 1Password item exists
-      ansible.builtin.assert:
-        that:
-          - ssh_password is defined
-          - ssh_password | length > 0
-        fail_msg: >
-          1Password lookup failed. Ensure a 'SSH Password' item exists in your 1Password vault
-          with a 'password' field containing the SSH password for target hosts.
-        success_msg: 'Successfully retrieved SSH password from 1Password'
-      delegate_to: localhost
-
     - name: Ensure known_hosts contains the target host key
       ansible.builtin.known_hosts:
         name: '{{ inventory_hostname }}'

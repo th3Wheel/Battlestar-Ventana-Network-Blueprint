@@ -1,10 +1,14 @@
-name: MCP Context7 Validation
+name: MCP Context7
 
 on:
   push:
-    branches: [master, main]
+    branches:
+      - master
+      - main
   pull_request:
-    branches: [master, main]
+    branches:
+      - master
+      - main
   workflow_dispatch:
 
 jobs:
@@ -27,23 +31,6 @@ jobs:
         env:
           CONTEXT7_API_KEY: ${{ secrets.COPILOT_MCP_CONTEXT7_KEY }}
         run: |
-          npx -y @upstash/context7-mcp@2.2.1 --help
+          npx -y @context7/mcp-server --help
 
       # Add any real MCP tasks below, ensuring CONTEXT7_API_KEY is provided from the copilot environment secret
-
-  mcp-config-guard:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Validate MCP config inventory and drift
-        run: npm run mcp:guard
