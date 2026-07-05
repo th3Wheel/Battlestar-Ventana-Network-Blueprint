@@ -97,11 +97,11 @@ vlans:
     gateway: "10.76.50.1"
     dhcp_range_start: ""
     dhcp_range_end: ""
-    lease_time: null
-    dns: null
-    dns_secondary: null
+    lease_time: ""
+    dns: ""
+    dns_secondary: ""
     dhcp_enabled: false
-    wan_egress: limited 
+    wan_egress: limited
   
   - id: 60
     name: VirgonFleetYard

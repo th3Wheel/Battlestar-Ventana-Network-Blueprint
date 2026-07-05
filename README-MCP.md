@@ -126,7 +126,7 @@ Synchronization behavior:
 
   See `.env.example` for a minimal local template.
 
-1. Start XPipe daemon (if using XPipe):
+5. Start XPipe daemon (if using XPipe):
 
    ```bash
    xpipe

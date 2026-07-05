@@ -4,8 +4,9 @@
     {
       "label": "markdownlint: check",
       "type": "shell",
-      "command": "markdownlint",
+      "command": "npx",
       "args": [
+        "markdownlint",
         "**/*.md",
         "-c",
         ".markdownlint.jsonc",
@@ -17,8 +18,9 @@
     {
       "label": "markdownlint: fix",
       "type": "shell",
-      "command": "markdownlint",
+      "command": "npx",
       "args": [
+        "markdownlint",
         "**/*.md",
         "-c",
         ".markdownlint.jsonc",

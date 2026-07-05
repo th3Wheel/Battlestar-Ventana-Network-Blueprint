@@ -7,7 +7,7 @@
       - network_discovery is defined and network_discovery.fing_local_api is defined and (not (network_discovery.fing_local_api.enabled | bool) or ((network_discovery.fing_local_api.base_url | default('') | string | length) > 0))
       - network_discovery is defined and network_discovery.fing_local_api is defined and (not (network_discovery.fing_local_api.enabled | bool) or ((network_discovery.fing_local_api.devices_endpoint | default('') | string | length) > 0))
       - network_discovery is defined and network_discovery.fing_local_api is defined and (not (network_discovery.fing_local_api.enabled | bool) or ((network_discovery.fing_local_api.people_endpoint | default('') | string | length) > 0))
-      - network_discovery is defined and network_discovery.fing_local_api is defined and (not (network_discovery.fing_local_api.enabled | bool) or ((network_discovery.fing_local_api.auth_query_param | default('') | string | length) > 0))
+      - network_discovery is defined and network_discovery.fing_local_api is defined and (not (network_discovery.fing_local_api.enabled | bool) or (((network_discovery.fing_local_api.auth_query_param | default('') | string | length) > 0) and (network_discovery.fing_local_api.timeout_seconds is defined) and ((network_discovery.fing_local_api.timeout_seconds | int) > 0)))
     fail_msg: >-
       Fing Local API integration is enabled but required settings are missing.
       Confirm network_discovery.fing_local_api.* values and set a non-empty API key in vault/CI variables.
