@@ -1,3 +1,4 @@
+#!/bin/bash
 # Battlestar Ventana Network Blueprint — Agent Suite Deployment Script
 #
 # Reads all agent suite files from the SOURCE directory (default: the directory
@@ -114,7 +115,8 @@ install_file() {
     log_dry "$(basename "${src_abs}")  →  ${dest_rel}"
     ((INSTALLED++)) || true; return 0
   fi
-  local dest_dir="$(dirname "${dest_abs}")"
+  local dest_dir
+  dest_dir="$(dirname "${dest_abs}")"
   [[ -d "${dest_dir}" ]] || { mkdir -p "${dest_dir}"; log_info "Created: ${dest_rel%/*}/"; }
   if [[ -f "${dest_abs}" ]] && $DO_BACKUP; then
     cp "${dest_abs}" "${dest_abs}.bak.${TIMESTAMP}"
