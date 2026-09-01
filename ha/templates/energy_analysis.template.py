@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+from typing import Any
 from urllib.parse import quote_plus
 
 # Configuration constants
@@ -151,7 +152,7 @@ class EnergyAnalyzer:
             totals[sensor] = sum(values)
         return totals
 
-    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, any]:
+    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, Any]:
         """
         Analyze energy usage patterns.
 
