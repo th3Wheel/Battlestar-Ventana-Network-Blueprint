@@ -71,7 +71,7 @@ class EnergyAnalyzer:
         self.db_user = db_user
         self.db_password = db_password
         self.days = days
-        self.data = {}
+        self.data: dict[str, list[float]] = {}
 
     def _sanitize_credential(self, error_msg: str, credential: str) -> str:
         """
