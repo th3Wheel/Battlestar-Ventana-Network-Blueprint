@@ -42,17 +42,39 @@ while IFS= read -r cam; do
 
   mkdir -p "$OUTDIR/$host"
 
-  sed \
-    -e "s/ip_address=.*/ip_address=$ip/" \
-    -e "s/hostname=.*/hostname=$host/" \
-    "$TEMPLATE" \
-    > "$OUTDIR/$host/thingino.conf"
+  export ip host
+  awk '
+  BEGIN {
+      ip = ENVIRON["ip"]
+      host = ENVIRON["host"]
+  }
+  {
+      if ($0 ~ /^ip_address=/) {
+          print "ip_address=" ip
+      } else if ($0 ~ /^hostname=/) {
+          print "hostname=" host
+      } else {
+          print $0
+      }
+  }
+  ' "$TEMPLATE" > "$OUTDIR/$host/thingino.conf"
 
-  sed \
-    -e "s/fw_setenv ipaddr .*/fw_setenv ipaddr $ip/" \
-    -e "s/fw_setenv hostname .*/fw_setenv hostname $host/" \
-    "$RUNONCE_TEMPLATE" \
-    > "$OUTDIR/$host/runonce.sh"
+  export ip host
+  awk '
+  BEGIN {
+      ip = ENVIRON["ip"]
+      host = ENVIRON["host"]
+  }
+  {
+      if ($0 ~ /^fw_setenv ipaddr /) {
+          print "fw_setenv ipaddr " ip
+      } else if ($0 ~ /^fw_setenv hostname /) {
+          print "fw_setenv hostname " host
+      } else {
+          print $0
+      }
+  }
+  ' "$RUNONCE_TEMPLATE" > "$OUTDIR/$host/runonce.sh"
   chmod +x "$OUTDIR/$host/runonce.sh"
 done < <("$YQ_BIN" -r '.cameras[].id' "$MAP")
 

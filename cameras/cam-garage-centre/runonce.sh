@@ -10,13 +10,13 @@ fw_setenv wlanssid "op://homelab/Secureiotwifi/ssid"
 fw_setenv wlanpass "op://homelab/Secureiotwifi/password"
 
 # Static IP Configuration
-fw_setenv ipaddr 10.76.81.53
-fw_setenv gateway 10.76.81.1
+fw_setenv ipaddr 10.10.3.53
+fw_setenv gateway 10.10.20.1
 fw_setenv netmask 255.255.255.0
-fw_setenv dns 10.76.81.1
+fw_setenv dns 10.10.20.1
 
 # Hostname
-fw_setenv hostname cam-garage-centre&|
+fw_setenv hostname cam-garage-centre
 
 # --- Security Configuration ---
 
@@ -29,7 +29,7 @@ chmod 700 /root/.ssh
 
 # Add authorized SSH public key (replace with your public key)
 cat > /root/.ssh/authorized_keys <<'SSHEOF'
-ssh-rsa AAAAB3...& user@host
+op://homelab/CameraSSHPublicKey
 SSHEOF
 
 chmod 600 /root/.ssh/authorized_keys
