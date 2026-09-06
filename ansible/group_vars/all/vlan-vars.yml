@@ -8,6 +8,8 @@
 # All playbooks and roles must reference these variables rather than
 # hard-coding any IP addresses or VLAN IDs.
 
+# All internet access policies are defined in the firewall-matrix.md document and are referenced here for each VLAN.
+
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: '10.76.50.10'
 pihole_secondary_vip: '10.76.50.11'
@@ -40,7 +42,8 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'limited - cloud services permitted, internal resources blocked, throttled 2 Mbps'
+    internet_access: limited
+    internet_access_notes: "Cloud services only, throttled to 2Mbps"
 
   - id: 30
     name: CapricaGuestPortal
@@ -68,7 +71,8 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked except media/print, throttled 10 Mbps, MAC allowlist required'
+    internet_access: unrestricted
+    internet_access_notes: "Outbound only; blocked internal resources except media players; throttled to 10Mbps; MAC address whitelist required for access"
 
   - id: 40
     name: BasestarVentana
