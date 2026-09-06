@@ -19,7 +19,7 @@
     - name: Assert SSH password is available from 1Password
       ansible.builtin.assert:
         that:
-          - ssh_password | length > 0
+          - ssh_password | default('') | trim | length > 0
         fail_msg: >-
           Failed to retrieve a non-empty SSH password from 1Password item
           "SSH Password" field "password"
