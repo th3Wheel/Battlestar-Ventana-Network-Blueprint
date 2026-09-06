@@ -12,10 +12,10 @@ tags: [bug, dotfiles, fzf, ansible, shell]
 
 ![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
 
-Two defects were discovered during branch review of the dotfiles feature branch:
+One defect was discovered during branch review of the dotfiles feature branch:
 
 1. **fzf version incompatibility** — `.bashrc` may use `fzf --bash` (introduced in fzf **≥ 0.48.0**), so startup must guard that path and fall back cleanly on older distro versions (e.g., Ubuntu 22.04 ships **fzf 0.29.0**).
-This plan addresses both defects with the minimum changes required.
+This plan addresses this defect with the minimum changes required.
 
 ---
 
