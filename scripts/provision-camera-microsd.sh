@@ -154,10 +154,14 @@ generate_runonce() {
     }
     {
         $0 = safe_replace($0, "10.10.20.X", f_ip)
-        $0 = safe_replace($0, "10.10.20.1", gw)
+        if ($0 ~ /^fw_setenv gateway /) {
+            $0 = "fw_setenv gateway " gw
+        }
         $0 = safe_replace($0, "cam-d1-XXX", hn)
         $0 = safe_replace($0, "255.255.255.0", nm)
-        $0 = safe_replace($0, "10.10.20.1", dns)
+        if ($0 ~ /^fw_setenv dns /) {
+            $0 = "fw_setenv dns " dns
+        }
         $0 = safe_replace($0, "op://homelab/CameraSSHPublicKey", ssh_key)
         print $0
     }
