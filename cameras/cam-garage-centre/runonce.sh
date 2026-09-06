@@ -11,9 +11,9 @@ fw_setenv wlanpass "op://homelab/Secureiotwifi/password"
 
 # Static IP Configuration
 fw_setenv ipaddr 10.10.3.53
-fw_setenv gateway 10.10.20.1
+fw_setenv gateway 10.10.3.1
 fw_setenv netmask 255.255.255.0
-fw_setenv dns 10.10.20.1
+fw_setenv dns 10.10.3.1
 
 # Hostname
 fw_setenv hostname cam-garage-centre
