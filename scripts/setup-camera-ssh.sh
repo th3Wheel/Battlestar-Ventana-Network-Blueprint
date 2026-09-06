@@ -16,6 +16,8 @@ set -euo pipefail
 #   --validate              Test SSH connections to all cameras
 #   --help                  Show this help message
 
+set -euo pipefail
+
 # Configuration
 KEY_TYPE="ed25519"
 KEY_PATH="${HOME}/.ssh/id_camera"
