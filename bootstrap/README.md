@@ -14,7 +14,7 @@ This playbook deploys SSH keys from an Ansible controller running inside a Proxm
 
 - Proxmox host with an Ansible controller LXC already created
 - 1Password CLI (`op`) installed and authenticated on the Proxmox host
-- SSH password stored in 1Password under 'SSH Password' item
+- SSH password stored in 1Password under 'SSH Password' item with a `password` field
 - Target host must allow password authentication (temporarily, if needed)
 - `pexpect` Python module available for the `ansible.builtin.expect` module
 

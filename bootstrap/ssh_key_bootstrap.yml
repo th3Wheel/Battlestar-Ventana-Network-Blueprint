@@ -16,6 +16,15 @@
     public_key_path: '~/.ssh/id_ed25519.pub'
 
   tasks:
+    - name: Assert SSH password is available from 1Password
+      ansible.builtin.assert:
+        that:
+          - ssh_password | length > 0
+        fail_msg: >-
+          Failed to retrieve a non-empty SSH password from 1Password item
+          "SSH Password" field "password"
+      delegate_to: localhost
+
     - name: Ensure known_hosts contains the target host key
       ansible.builtin.known_hosts:
         name: '{{ inventory_hostname }}'
