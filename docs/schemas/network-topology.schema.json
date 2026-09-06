@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./docs/schemas/network-topology.schema.json",
+  "title": "Network Topology",
+  "description": "Bare-minimum schema to enable YAML schema loading for config/network-topology.yaml.",
+  "type": "object",
+  "properties": {
+    "network": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

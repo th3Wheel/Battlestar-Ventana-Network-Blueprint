@@ -1,0 +1,52 @@
+---
+- name: Install Linux prerequisites for thefuck
+  ansible.builtin.package:
+    name:
+      - python3-dev
+      - python3-pip
+      - python3-setuptools
+    state: present
+  become: true
+
+- name: Install thefuck for current user
+  ansible.builtin.pip:
+    name: thefuck
+    state: present
+    executable: pip3
+    extra_args: --user
+  become: false
+
+- name: Ensure ~/.local/bin is in Bash PATH
+  ansible.builtin.blockinfile:
+    path: '{{ ansible_env.HOME }}/.bashrc'
+    create: true
+    marker: '# {mark} THEFUCK_PATH'
+    block: |
+      if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+          export PATH="$HOME/.local/bin:$PATH"
+      fi
+  become: false
+
+- name: Configure thefuck in Bash profile
+  ansible.builtin.blockinfile:
+    path: '{{ ansible_env.HOME }}/.bashrc'
+    create: true
+    marker: '# {mark} THEFUCK'
+    block: "{{ lookup('template', 'bashrc_thefuck.j2') }}"
+  become: false
+
+- name: Check whether zsh is installed
+  ansible.builtin.command: which zsh
+  register: thefuck_zsh_check
+  changed_when: false
+  failed_when: false
+  become: false
+
+- name: Configure thefuck in Zsh profile
+  ansible.builtin.blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    create: true
+    marker: '# {mark} THEFUCK'
+    block: "{{ lookup('template', 'zshrc_thefuck.j2') }}"
+  when: thefuck_zsh_check.rc == 0
+  become: false

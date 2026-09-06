@@ -1,0 +1,179 @@
+version: "1"
+
+# XPipe quick-command definitions for Docker Compose stacks.
+# Executed on the ServerVault host (VLAN 50 — 10.76.50.0/24).
+#
+# Each script changes to the repository root before running Compose so the
+# commands work regardless of the working directory XPipe uses at execution
+# time.  REPO_DIR must be exported on the remote host before use:
+#   export REPO_DIR=/opt/repos/Battlestar-Ventana-Network-Blueprint
+#
+# Each stack exposes five commands:
+#   up       — bring the stack up in detached mode
+#   down     — stop and remove containers
+#   logs     — tail/stream service logs
+#   status   — show running container states (used as keep-alive health check)
+#   restart  — restart all containers in the stack (simultaneous, brief downtime)
+
+groups:
+  - name: core-network
+    description: Core network infrastructure services
+    commands:
+      - name: up
+        description: Start core network services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml up -d
+      - name: down
+        description: Stop core network services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml down
+      - name: logs
+        description: Stream core network service logs
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml logs -f
+      - name: status
+        description: Show running state of core-network containers (keep-alive health check)
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml ps
+      - name: restart
+        description: Restart core network services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/core-network/docker-compose.yml restart
+
+  - name: pihole
+    description: Pi-hole DNS ad-blocking services
+    commands:
+      - name: up
+        description: Start Pi-hole and Unbound services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml up -d
+      - name: down
+        description: Stop Pi-hole and Unbound services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml down
+      - name: logs
+        description: Stream Pi-hole and Unbound service logs
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml logs -f
+      - name: status
+        description: Show running state of Pi-hole containers (keep-alive health check)
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml ps
+      - name: restart
+        description: Restart Pi-hole and Unbound services
+        script: cd "${REPO_DIR:?REPO_DIR must be set to the repository root}" && docker compose -f infrastructure/pihole/docker-compose.yml restart
+# XPipe Commands Configuration
+# Commands exposed as MCP tools for infrastructure management
+# See: https://docs.xpipe.io/guide/mcp
+
+commands:
+  # ============================================================================
+  # Core Network Services
+  # ============================================================================
+
+  start-core-network:
+    exec: 'docker compose -f infrastructure/core-network/docker-compose.yml up -d'
+    description: Start core network Docker Compose services
+
+  stop-core-network:
+    exec: 'docker compose -f infrastructure/core-network/docker-compose.yml down'
+    description: Stop core network services
+
+  logs-core-network:
+    exec: 'docker compose -f infrastructure/core-network/docker-compose.yml logs -f --tail=200'
+    description: Stream logs from core network services
+
+  # ============================================================================
+  # Pi-hole DHCP/DNS Cluster
+  # ============================================================================
+
+  start-pihole-cluster:
+    exec: 'docker compose -f infrastructure/pihole/docker-compose.yml up -d'
+    description: Start Pi-hole dual-node HA cluster
+
+  stop-pihole-cluster:
+    exec: 'docker compose -f infrastructure/pihole/docker-compose.yml down'
+    description: Stop Pi-hole dual-node HA cluster
+
+  logs-pihole:
+    exec: 'docker compose -f infrastructure/pihole/docker-compose.yml logs -f --tail=200'
+    description: Stream logs from Pi-hole containers
+
+  # ============================================================================
+  # Proxmox Infrastructure
+  # ============================================================================
+
+  status-proxmox:
+    exec: 'ssh root@proxmox-01.local "pvecm status"'
+    description: Check Proxmox node and cluster status
+
+  # ============================================================================
+  # Radxa Remote Access
+  # ============================================================================
+
+  shell-radxa-01:
+    exec: 'ssh root@radxa-01.local'
+    description: Open shell on radxa-01 remote host
+
+  exec-radxa-01:
+    exec: 'ssh root@radxa-01.local "docker ps"'
+    description: Execute command on radxa-01 remote host
+
+  logs-radxa-01:
+    exec: 'ssh root@radxa-01.local "docker compose -f /opt/docker-compose.yml logs -f --tail=200"'
+    description: Stream logs from radxa-01 Docker containers
+
+  # ============================================================================
+  # Network Diagnostics
+  # ============================================================================
+
+  ping-gateway:
+    exec: 'ping -c 4 10.76.10.1'
+    description: Ping network gateway to verify connectivity
+
+  test-dns:
+    exec: 'dig @10.76.50.10 example.com +short'
+    description: Test DNS resolution against local DNS server
+
+  network-status:
+    exec: 'ip addr && ip route && resolvectl status'
+    description: Get network status and diagnostics
+
+    # ============================================================================
+    # Add new commands following this pattern:
+    # ============================================================================
+    # command-name:
+    #   exec: 'your-command-here'
+    #   description: Brief description of what the command does
+
+connections:
+  # Local connections for container management
+  local:
+    type: local
+    description: Local system for Docker Compose and container management
+
+  # Remote connections for infrastructure access
+  radxa-01:
+    type: ssh
+    host: radxa-01.local
+    user: root
+    description: Radxa SBC host for Docker services
+
+  proxmox-01:
+    type: ssh
+    host: proxmox-01.local
+    user: root
+    description: Proxmox hypervisor node 1
+
+secrets:
+  # Secrets are referenced from 1Password vault
+  # Format: op://vault/item/field
+
+  pi-hole-password:
+    source: 1password
+    vault: homelab
+    item: pi-hole
+    field: admin-password
+
+  proxmox-token:
+    source: 1password
+    vault: homelab
+    item: proxmox
+    field: api-token
+
+  radxa-ssh-key:
+    source: 1password
+    vault: homelab
+    item: radxa-ssh
+    field: private-key

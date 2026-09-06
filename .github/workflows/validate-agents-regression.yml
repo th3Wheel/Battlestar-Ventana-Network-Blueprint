@@ -1,0 +1,24 @@
+name: Validate Agents Regression
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths:
+      - '.github/agents/validate-agents.sh'
+      - 'scripts/check-validator-line-endings.sh'
+      - 'scripts/fixtures/agents/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-agents-regression:
+    name: Validate LF/CRLF regression checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run validate-agents.sh line-ending regression script
+        run: bash scripts/check-validator-line-endings.sh

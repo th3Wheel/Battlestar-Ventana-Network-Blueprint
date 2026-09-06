@@ -1,0 +1,138 @@
+# Node Exporter Docker Compose - TorBox Companion Host Monitoring
+# ARMv8 compatible host metrics exporter for Radxa ARM board
+# Exposes CPU, memory, disk, network, and system metrics to Prometheus
+
+version: '3.9'
+
+services:
+  node-exporter:
+    image: prom/node-exporter:v1.7.0 # ARMv8 compatible
+    container_name: node-exporter
+    restart: unless-stopped
+
+    # Host network mode for accurate host metrics
+    network_mode: host
+
+    # Host PID namespace for process metrics
+    pid: host
+
+    # Mount points for host metrics collection
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /etc/hostname:/etc/nodename:ro
+      - /etc/localtime:/etc/localtime:ro
+
+    # Node Exporter command-line options for ARM optimization
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.netclass.ignored-devices=^(veth.*|docker.*|br-.*|lo)$$'
+      - '--collector.netdev.device-exclude=^(veth.*|docker.*|br-.*|lo)$$'
+      - '--no-collector.arp'
+      - '--no-collector.bcache'
+      - '--no-collector.bonding'
+      - '--no-collector.btrfs'
+      - '--no-collector.edac'
+      - '--no-collector.entropy'
+      - '--no-collector.fibrechannel'
+      - '--no-collector.hwmon'
+      - '--no-collector.infiniband'
+      - '--no-collector.ipvs'
+      - '--no-collector.mdadm'
+      - '--no-collector.nfs'
+      - '--no-collector.nfsd'
+      - '--no-collector.nvme'
+      - '--no-collector.powersupplyclass'
+      - '--no-collector.rapl'
+      - '--no-collector.schedstat'
+      - '--no-collector.selinux'
+      - '--no-collector.softnet'
+      - '--no-collector.tapestats'
+      - '--no-collector.textfile'
+      - '--no-collector.thermal_zone'
+      - '--no-collector.timex'
+      - '--no-collector.udp_queues'
+      - '--no-collector.xfs'
+      - '--no-collector.zfs'
+      - '--web.listen-address=:9100'
+      - '--web.telemetry-path=/metrics'
+
+    # Resource limits for low-memory footprint on Radxa
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: '128M'
+        reservations:
+          cpus: '0.05'
+          memory: '64M'
+
+    # Health check
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9100/metrics']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    # Labels for Prometheus service discovery
+    labels:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '9100'
+      prometheus.io/path: '/metrics'
+
+# Deployment notes:
+# 1. Node Exporter runs on port 9100 (host network mode)
+# 2. Firewall rule required:
+#    sudo firewall-cmd --zone=home --add-port=9100/tcp --permanent
+#    sudo firewall-cmd --reload
+# 3. Prometheus scrape config:
+#    - job_name: 'node-exporter'
+#      static_configs:
+#        - targets: ['radxa-host:9100']
+#          labels:
+#            host: 'radxa'
+#            role: 'torbox-companion-host'
+# 4. Start Node Exporter:
+#    docker compose -f node-exporter-compose.yml up -d
+# 5. Verify metrics:
+#    curl http://localhost:9100/metrics
+
+# ARM-specific optimizations:
+# - Disabled collectors not relevant to ARM boards (nvme, rapl, etc.)
+# - Excluded virtual network interfaces (veth, docker bridges)
+# - Limited memory to 128M
+# - Reduced CPU allocation
+
+# Key metrics exposed:
+# - node_cpu_seconds_total: CPU usage by mode (user, system, idle, etc.)
+# - node_memory_MemTotal_bytes: Total system memory
+# - node_memory_MemAvailable_bytes: Available memory
+# - node_memory_MemFree_bytes: Free memory
+# - node_disk_io_time_seconds_total: Disk I/O time
+# - node_disk_read_bytes_total: Disk read bytes
+# - node_disk_written_bytes_total: Disk write bytes
+# - node_filesystem_avail_bytes: Available filesystem space
+# - node_filesystem_size_bytes: Filesystem size
+# - node_network_receive_bytes_total: Network receive bytes
+# - node_network_transmit_bytes_total: Network transmit bytes
+# - node_load1, node_load5, node_load15: System load averages
+# - node_boot_time_seconds: System boot time
+# - node_time_seconds: Current system time
+
+# Enabled collectors (default + custom):
+# - cpu: CPU statistics
+# - diskstats: Disk I/O statistics
+# - filesystem: Filesystem usage
+# - loadavg: Load averages
+# - meminfo: Memory statistics
+# - netdev: Network device statistics
+# - netstat: Network stack statistics
+# - stat: System statistics
+# - time: System time
+# - uname: System information
+# - vmstat: Virtual memory statistics
