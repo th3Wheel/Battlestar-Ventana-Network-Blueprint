@@ -1,14 +1,11 @@
 ---
-# VLAN catalogue sourced from:
-#   docs/dhcp-scopes.md        - subnets, gateways, DHCP ranges, lease times
-#   docs/naming-conventions.md - canonical SSID/VLAN names
-#   docs/firewall-matrix.md    - internet access policy
+# VLAN catalogue projected from:
+#   config/vlan-registry.yaml - canonical VLAN, DHCP, and policy data
+#   config/static-ip-inventory.yaml - temporary address inventory
 #
-# This file is the single Ansible source of truth for VLAN data.
-# All playbooks and roles must reference these variables rather than
-# hard-coding any IP addresses or VLAN IDs.
-
-# All internet access policies are defined in the firewall-matrix.md document and are referenced here for each VLAN.
+# This file is an Ansible-compatible projection of the canonical registry.
+# Playbooks and roles must reference these variables rather than hard-coding
+# any IP addresses or VLAN IDs.
 
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: '10.76.50.10'
@@ -28,7 +25,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [infrastructure, services, iot, print, media, surveillance, work]
 
   - id: 20
     name: CylonSynthLink
@@ -42,8 +45,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: limited
-    internet_access_notes: 'Cloud services only, throttled to 2Mbps'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: 2
+      destinations: [cloud_services]
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 30
     name: CapricaGuestPortal
@@ -57,7 +65,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked, throttled 5 Mbps'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 5
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 31
     name: CapricaResidentPortal
@@ -71,8 +85,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: unrestricted
-    internet_access_notes: 'Outbound only; blocked internal resources except media players; throttled to 10Mbps; MAC address whitelist required for access'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 10
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [media, print]
 
   - id: 40
     name: BasestarVentana
@@ -86,7 +105,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: blocked
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 50
     name: GemenonServiceVault
@@ -100,7 +125,13 @@ vlans:
     dns: ""
     dns_secondary: ""
     dhcp_enabled: false
-    internet_access: 'limited'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [approved_service_dependencies]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, infrastructure, iot, print, media, surveillance, work]
 
   - id: 60
     name: VirgonFleetYard
@@ -114,7 +145,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'blocked'
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest, services]
 
   - id: 70
     name: PegasusMediaNode
@@ -128,7 +165,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest]
 
   - id: 81
     name: ScorpiaMediaShield
@@ -142,7 +185,13 @@ vlans:
     dns: ""
     dns_secondary: ""
     dhcp_enabled: false
-    internet_access: 'blocked'
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
 
   - id: 82
     name: ScorpiaMediaRelay
@@ -156,7 +205,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'limited'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [cloud_nvr_relay]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
 
   - id: 90
     name: ScyllaProcessControl
@@ -170,7 +225,13 @@ vlans:
     dns: "{{ pihole_primary_vip }}"
     dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
 # Hypervisor management addressing source of truth.
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.

@@ -3,12 +3,13 @@
 #
 # Source of truth hierarchy:
 #   1. This file (config/vlan-registry.yaml)
-#   2. ansible/group_vars/all/vlan-vars.yml  (Ansible consumers)
-#   3. docs/dhcp-scopes.md                  (human-readable reference)
-#   4. docs/naming-conventions.md           (canonical SSID/VLAN names)
+#   2. config/static-ip-inventory.yaml     (temporary address inventory)
+#   3. ansible/group_vars/all/vlan-vars.yml (Ansible projection)
+#   4. docs/dhcp-scopes.md                 (human-readable reference)
+#   5. docs/naming-conventions.md          (human-readable reference)
 #
 # Update policy:
-#   - Any change MUST be mirrored to docs/dhcp-scopes.md and naming-conventions.md.
+#   - Any change MUST be reflected in derived documentation and projections.
 #   - VLAN IDs and subnet allocations are immutable without an ADR.
 #   - Referenced by: /.github/copilot-instructions.md (Determinism Rules)
 #
@@ -29,7 +30,19 @@ vlans:
       lease_time: '24h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: unrestricted
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [infrastructure, services, iot, print, media, surveillance, work]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Fully trusted zone; direct access to services and infrastructure permitted.'
 
   - id: 20
@@ -46,7 +59,19 @@ vlans:
       lease_time: '7d'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: 'limited — cloud services permitted, internal resources blocked, throttled 2 Mbps'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: 2
+      destinations: [cloud_services]
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'No lateral movement to trusted subnets. Cloud-facing IoT permitted via allowlist.'
 
   - id: 30
@@ -63,7 +88,19 @@ vlans:
       lease_time: '2h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: 'unrestricted — internal resources blocked, throttled 5 Mbps'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 5
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'No access to any internal VLAN. Internet egress only.'
 
   - id: 31
@@ -80,7 +117,19 @@ vlans:
       lease_time: '4h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: 'unrestricted — internal resources blocked except media/print, throttled 10 Mbps, MAC allowlist required'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 10
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [media, print]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Semi-trusted. MACs must be pre-approved for access.'
 
   - id: 40
@@ -97,7 +146,19 @@ vlans:
       lease_time: '7d'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: blocked
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
+    ipv6:
+      status: planned
+    wireless:
+      hidden: true
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Management plane. No internet egress. Static IPs preferred for all nodes.'
 
   - id: 50
@@ -114,7 +175,19 @@ vlans:
       lease_time: ''
       dns_primary: ''
       dns_secondary: ''
-    internet_access: limited
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [approved_service_dependencies]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, infrastructure, iot, print, media, surveillance, work]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: true
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'All hosts use static IPs. DHCP disabled. Central service plane.'
 
   - id: 60
@@ -131,7 +204,19 @@ vlans:
       lease_time: '24h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: blocked
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest, services]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: true
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Printers only. Internet egress blocked. Trusted/resident VLANs may initiate print jobs.'
 
   - id: 70
@@ -148,7 +233,19 @@ vlans:
       lease_time: '24h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: unrestricted
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Casting targets reachable from trusted/resident VLANs. No lateral movement to services.'
 
   - id: 81
@@ -165,7 +262,19 @@ vlans:
       lease_time: ''
       dns_primary: ''
       dns_secondary: ''
-    internet_access: blocked
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: true
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'All camera hosts use static IPs. Internet egress blocked. View-only from trusted/services.'
 
   - id: 82
@@ -182,7 +291,19 @@ vlans:
       lease_time: '24h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: 'limited — outbound relay to cloud NVR permitted only'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [cloud_nvr_relay]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Egress policy: cloud NVR relay allowlisted. No inbound from internet.'
 
   - id: 90
@@ -199,5 +320,17 @@ vlans:
       lease_time: '24h'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
-    internet_access: unrestricted
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
+    ipv6:
+      status: planned
+    wireless:
+      hidden: false
+      security: wpa2_wpa3_personal
+      ap_groups: []
     notes: 'Isolated work zone. Treated as untrusted by internal services. Corporate traffic segmented here.'
