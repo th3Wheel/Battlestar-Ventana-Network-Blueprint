@@ -52,7 +52,7 @@ def validate_policy(policy: Any, path: str, allowlist_required: bool = True) -> 
 def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
     """Validate VLAN identity, addressing, DHCP, policy, IPv6, and wireless metadata."""
     vlans = document.get("vlans")
-    require(isinstance(vlans, list), "registry.vlans must be a list")
+    require(isinstance(vlans, list), "vlans must be a list")
     vlans = cast(list[dict[str, Any]], vlans)
     by_id: dict[int, dict[str, Any]] = {}
     names: set[str] = set()
@@ -65,7 +65,7 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
         vlan_id = cast(int, vlan_id)
         require(vlan_id not in by_id, f"duplicate VLAN ID {vlan_id}")
         name = vlan.get("name")
-        require(isinstance(name, str) and name not in names, f"{path}.name must be unique and non-empty")
+        require(isinstance(name, str) and name.strip() and name not in names, f"{path}.name must be unique and non-empty")
         name = cast(str, name)
         subnet = vlan.get("subnet")
         gateway = vlan.get("gateway")

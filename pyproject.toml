@@ -1,7 +1,7 @@
 [project]
 name = "battlestar-ventana-network-blueprint"
 version = "0.1.0"
-description = "Add your description here"
+description = "Battlestar Ventana network architecture, automation, and policy blueprint"
 readme = "README.md"
 authors = [
     { name = "th3wheel", email = "tnwheeler@gmail.com" }

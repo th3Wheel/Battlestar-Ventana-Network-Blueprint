@@ -60,7 +60,6 @@
       "packageManager": "ms-python.python:pip"
     }
   ],
-  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
   "python.terminal.useEnvFile": true,
   "chat.tools.terminal.autoApprove": {
     "/^git status ; git diff HEAD -- scripts/fing-inventory-check\\.sh baseline/fing-snapshots/\\.gitkeep \\.gitignore$/": {
