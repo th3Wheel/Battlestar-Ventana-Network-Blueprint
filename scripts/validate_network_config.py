@@ -65,8 +65,10 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
         vlan_id = cast(int, vlan_id)
         require(vlan_id not in by_id, f"duplicate VLAN ID {vlan_id}")
         name = vlan.get("name")
-        require(isinstance(name, str) and name.strip() and name not in names, f"{path}.name must be unique and non-empty")
-        name = cast(str, name)
+        require(isinstance(name, str), f"{path}.name must be a string")
+        name = cast(str, name).strip()
+        require(name and name not in names, f"{path}.name must be unique and non-empty")
+        vlan["name"] = name
         subnet = vlan.get("subnet")
         gateway = vlan.get("gateway")
         expected_subnet = f"10.76.{vlan_id}.0/24"
@@ -77,7 +79,9 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
         dhcp = vlan.get("dhcp")
         require(isinstance(dhcp, dict), f"{path}.dhcp must be a mapping")
         dhcp = cast(dict[str, Any], dhcp)
-        if dhcp.get("enabled"):
+        enabled = dhcp.get("enabled")
+        require(isinstance(enabled, bool), f"{path}.dhcp.enabled must be a boolean")
+        if enabled:
             require(
                 bool(dhcp.get("range_start") and dhcp.get("range_end")),
                 f"VLAN {vlan_id} DHCP range is incomplete",
