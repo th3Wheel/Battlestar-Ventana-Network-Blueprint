@@ -180,7 +180,7 @@ mosquitto_pub -t homelab/dns/state -m "MASTER"
 
 ### Reliability & Failover Flow
 
-```mermaid
+``` mermaid
 flowchart TB
   subgraph Cluster[DNS/DHCP Cluster]
     DNS1[Pi-hole/Unbound – dns1]
