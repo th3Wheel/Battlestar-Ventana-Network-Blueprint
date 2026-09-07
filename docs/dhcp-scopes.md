@@ -10,14 +10,14 @@ All subnets follow the `10.76.X.0/24` convention (X = VLAN ID).
 | VLAN | Subnet | Gateway | Lease Time | DNS |
 |------|--------|---------|------------|-----|
 | 10 BattlestarVentana | 10.76.10.0/24 | 10.76.10.1 | 24h | Local DNS |
-| 20 CylonSynthLink | 10.76.20.0/24 | 10.76.20.1 | 12h | Local DNS |
-| 30 CapricaGuestPortal | 10.76.30.0/24 | 10.76.30.1 | 8h | Local DNS |
-| 31 CapricaResidentPortal | 10.76.31.0/24 | 10.76.31.1 | 8h | Local DNS |
-| 40 BasestarVentana | 10.76.40.0/24 | 10.76.40.1 | 24h | Local DNS |
-| 50 GemenonServiceVault | 10.76.50.0/24 | 10.76.50.1 | 24h | Local DNS |
+| 20 CylonSynthLink | 10.76.20.0/24 | 10.76.20.1 | 7d | Local DNS |
+| 30 CapricaGuestPortal | 10.76.30.0/24 | 10.76.30.1 | 2h | Local DNS |
+| 31 CapricaResidentPortal | 10.76.31.0/24 | 10.76.31.1 | 4h | Local DNS |
+| 40 BasestarVentana | 10.76.40.0/24 | 10.76.40.1 | 7d | Local DNS |
+| 50 GemenonServiceVault | 10.76.50.0/24 | 10.76.50.1 | Disabled | Static DNS |
 | 60 VirgonFleetYard | 10.76.60.0/24 | 10.76.60.1 | 24h | Local DNS |
-| 70 PegasusMediaNode | 10.76.70.0/24 | 10.76.70.1 | 12h | Local DNS |
-| 81 ScorpiaMediaShield | 10.76.81.0/24 | 10.76.81.1 | 24h | Local DNS |
+| 70 PegasusMediaNode | 10.76.70.0/24 | 10.76.70.1 | 24h | Local DNS |
+| 81 ScorpiaMediaShield | 10.76.81.0/24 | 10.76.81.1 | Disabled | Static DNS |
 | 82 ScorpiaMediaRelay | 10.76.82.0/24 | 10.76.82.1 | 24h | Local DNS |
 | 90 ScyllaProcessControl | 10.76.90.0/24 | 10.76.90.1 | 24h | Local DNS |
 
@@ -39,7 +39,7 @@ All subnets follow the `10.76.X.0/24` convention (X = VLAN ID).
 | Hostname | IP Address | MAC Address | Service | Notes |
 |----------|------------|-------------|---------|-------|
 | servervault-hyperion | 10.76.50.20 | TBD | Hyperion HD Server | Ambient lighting processing server |
-| servervault-mqtt | 10.76.50.10 | TBD | MQTT Broker | IoT telemetry and control |
+| servervault-mqtt | 10.76.50.25 | TBD | MQTT Broker | IoT telemetry and control |
 
 ---
 
