@@ -5,7 +5,7 @@ tools: ["changes", "codebase", "edit/editFiles", "extensions", "fetch", "findTes
 model: "GPT-4.1"
 ---
 
-Your task is to find, list, download, and organize relevant prompts, instructions, and chatmodes from https://github.com/github/awesome-copilot for this repository's GitHub Copilot customization workflow.
+Your task is to find, list, download, and organize relevant prompts, instructions, and chatmodes from [awesome-copilot](https://github.com/github/awesome-copilot) for this repository's GitHub Copilot customization workflow.
 
 1. Fetch the relevant prompts, instructions, and chatmodes, then list each item with its vscode-insiders install link, a short description, and how it can be used in this project.
 2. Pull each selected file into the project without overwriting existing local files. Place .prompt.md files in .toreview/.github/prompts/, .chatmode.md files in .toreview/.github/chatmodes/, and instruction files in .toreview/.github/instructions/. Create any missing folders as needed.
