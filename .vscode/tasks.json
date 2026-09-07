@@ -8,6 +8,7 @@
 				"Lint: YAML",
 				"Lint: JavaScript/TypeScript",
 				"Lint: Python (Ruff)",
+				"Lint: Python (ty)",
 				"Lint: Python (Pylint)"
 			],
 			"problemMatcher": []
@@ -19,6 +20,7 @@
 				"Format: YAML (Prettier)",
 				"Lint: JavaScript/TypeScript Fix",
 				"Lint: Python (Ruff) Fix",
+				"Format: Python (Ruff)",
 				"Format: Python (Black)",
 				"Format: Python (isort)"
 			],
@@ -196,12 +198,31 @@
 			}
 		},
 		{
+			"label": "Lint: Python (ty)",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"ty",
+				"check"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
 			"label": "Lint: Python (Ruff)",
 			"type": "shell",
-			"command": "powershell",
+			"command": "uv",
 			"args": [
-				"-Command",
-				".venv/Scripts/ruff.exe check ."
+				"run",
+				"ruff",
+				"check",
+				"."
 			],
 			"problemMatcher": {
 				"owner": "ruff",
@@ -228,10 +249,13 @@
 		{
 			"label": "Lint: Python (Ruff) Fix",
 			"type": "shell",
-			"command": "powershell",
+			"command": "uv",
 			"args": [
-				"-Command",
-				".venv/Scripts/ruff.exe check . --fix"
+				"run",
+				"ruff",
+				"check",
+				".",
+				"--fix"
 			],
 			"problemMatcher": {
 				"owner": "ruff",
@@ -248,6 +272,25 @@
 					"message": 5
 				}
 			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": true
+			}
+		},
+		{
+			"label": "Format: Python (Ruff)",
+			"type": "shell",
+			"command": "uv",
+			"args": [
+				"run",
+				"ruff",
+				"format",
+				"--check",
+				"."
+			],
+			"problemMatcher": [],
 			"presentation": {
 				"reveal": "always",
 				"panel": "shared",
