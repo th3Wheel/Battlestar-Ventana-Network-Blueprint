@@ -1,334 +1,268 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Lint: All",
-			"dependsOn": [
-				"Lint: Markdown",
-				"Lint: YAML",
-				"Lint: JavaScript/TypeScript",
-				"Lint: Python (Ruff)",
-				"Lint: Python (ty)",
-				"Lint: Python (Pylint)"
-			],
-			"problemMatcher": []
-		},
-		{
-			"label": "Lint: All Fix",
-			"dependsOn": [
-				"Lint: Markdown Fix",
-				"Format: YAML (Prettier)",
-				"Lint: JavaScript/TypeScript Fix",
-				"Lint: Python (Ruff) Fix",
-				"Format: Python (Ruff)",
-				"Format: Python (Black)",
-				"Format: Python (isort)"
-			],
-			"problemMatcher": []
-		},
-		{
-			"label": "Lint: Markdown",
-			"type": "shell",
-			"command": "markdownlint",
-			"args": [
-				"**/*.md"
-			],
-			"problemMatcher": {
-				"owner": "markdownlint",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"code": 4,
-					"message": 6,
-					"severity": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Markdown Fix",
-			"type": "shell",
-			"command": "markdownlint",
-			"args": [
-				"**/*.md",
-				"--fix"
-			],
-			"problemMatcher": {
-				"owner": "markdownlint",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"code": 4,
-					"message": 6,
-					"severity": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: YAML",
-			"type": "shell",
-			"command": "yamllint",
-			"args": [
-				"."
-			],
-			"problemMatcher": {
-				"owner": "yamllint",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+\\[(error|warning)\\]\\s+(.*)\\s+\\((.*)\\)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"severity": 4,
-					"message": 5,
-					"code": 6
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Format: YAML (Prettier)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"npx prettier --write --no-error-on-unmatched-pattern '**/*.yml' '**/*.yaml'"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: JavaScript/TypeScript",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"eslint",
-				"."
-			],
-			"problemMatcher": "$eslint-stylish",
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: JavaScript/TypeScript Fix",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"eslint",
-				".",
-				"--fix"
-			],
-			"problemMatcher": "$eslint-stylish",
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Python (Pylint)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-File",
-				".github/scripts/run_pylint.ps1"
-			],
-			"problemMatcher": {
-				"owner": "pylint",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+):\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"severity": 4,
-					"message": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Python (ty)",
-			"type": "shell",
-			"command": "uv",
-			"args": [
-				"run",
-				"ty",
-				"check"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Python (Ruff)",
-			"type": "shell",
-			"command": "uv",
-			"args": [
-				"run",
-				"ruff",
-				"check",
-				"."
-			],
-			"problemMatcher": {
-				"owner": "ruff",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"severity": 4,
-					"message": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Lint: Python (Ruff) Fix",
-			"type": "shell",
-			"command": "uv",
-			"args": [
-				"run",
-				"ruff",
-				"check",
-				".",
-				"--fix"
-			],
-			"problemMatcher": {
-				"owner": "ruff",
-				"fileLocation": [
-					"relative",
-					"${workspaceFolder}"
-				],
-				"pattern": {
-					"regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
-					"file": 1,
-					"line": 2,
-					"column": 3,
-					"severity": 4,
-					"message": 5
-				}
-			},
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Format: Python (Ruff)",
-			"type": "shell",
-			"command": "uv",
-			"args": [
-				"run",
-				"ruff",
-				"format",
-				"--check",
-				"."
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Format: Python (Black)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				".venv/Scripts/black.exe ."
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		},
-		{
-			"label": "Format: Python (isort)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				".venv/Scripts/isort.exe ."
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			}
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Lint: All",
+      "dependsOn": [
+        "Lint: Markdown",
+        "Lint: YAML",
+        "Lint: JavaScript/TypeScript",
+        "Lint: Python (Ruff)",
+        "Lint: Python (ty)",
+        "Lint: Python (Pylint)"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: All Fix",
+      "dependsOn": [
+        "Lint: Markdown Fix",
+        "Format: YAML (Prettier)",
+        "Lint: JavaScript/TypeScript Fix",
+        "Lint: Python (Ruff) Fix",
+        "Format: Python (Ruff)",
+        "Format: Python (Black)",
+        "Format: Python (isort)"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint: Markdown",
+      "type": "shell",
+      "command": "markdownlint",
+      "args": ["**/*.md"],
+      "problemMatcher": {
+        "owner": "markdownlint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "code": 4,
+          "message": 6,
+          "severity": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Markdown Fix",
+      "type": "shell",
+      "command": "markdownlint",
+      "args": ["**/*.md", "--fix"],
+      "problemMatcher": {
+        "owner": "markdownlint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "code": 4,
+          "message": 6,
+          "severity": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: YAML",
+      "type": "shell",
+      "command": "yamllint",
+      "args": ["."],
+      "problemMatcher": {
+        "owner": "yamllint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+\\[(error|warning)\\]\\s+(.*)\\s+\\((.*)\\)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5,
+          "code": 6
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Format: YAML (Prettier)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-Command", "npx prettier --write --no-error-on-unmatched-pattern '**/*.yml' '**/*.yaml'"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: JavaScript/TypeScript",
+      "type": "shell",
+      "command": "npx",
+      "args": ["eslint", "."],
+      "problemMatcher": "$eslint-stylish",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: JavaScript/TypeScript Fix",
+      "type": "shell",
+      "command": "npx",
+      "args": ["eslint", ".", "--fix"],
+      "problemMatcher": "$eslint-stylish",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (Pylint)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-File", ".github/scripts/run_pylint.ps1"],
+      "problemMatcher": {
+        "owner": "pylint",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (ty)",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ty", "check"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (Ruff)",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ruff", "check", "."],
+      "problemMatcher": {
+        "owner": "ruff",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Lint: Python (Ruff) Fix",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ruff", "check", ".", "--fix"],
+      "problemMatcher": {
+        "owner": "ruff",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Format: Python (Ruff)",
+      "type": "shell",
+      "command": "uv",
+      "args": ["run", "ruff", "format", "--check", "."],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Format: Python (Black)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-Command", ".venv/Scripts/black.exe ."],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Format: Python (isort)",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-Command", ".venv/Scripts/isort.exe ."],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    }
+  ]
 }
