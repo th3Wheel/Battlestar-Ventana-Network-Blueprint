@@ -2,7 +2,7 @@
 name: 'SE: Tech Writer'
 description: 'Technical writing specialist for creating developer documentation, technical blogs, tutorials, and educational content'
 model: GPT-5
-tools: ['search/codebase', 'edit/editFiles', 'search', 'web/fetch']
+tools: ['vscode/vscodeAPI', 'execute', 'read', 'search', 'web/fetch']
 ---
 
 # Technical Writer

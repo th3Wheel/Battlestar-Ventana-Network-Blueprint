@@ -754,7 +754,6 @@ jobs:
 ```
 
 **Testing Checklist:**
-
 * [ ] Unit tests for all custom functions
 * [ ] Integration tests for automations
 * [ ] End-to-end tests for critical workflows

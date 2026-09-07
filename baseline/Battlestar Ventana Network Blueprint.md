@@ -13,7 +13,7 @@
 | Battlestar Ventana   | 10   | 10.76.10.0/24    | Trusted LAN  |
 | CylonSynthLink       | 20   | 10.76.20.0/24    | IoT devices  |
 | CapricaGuestPortal   | 30   | 10.76.30.0/24    | Guest – Internet only  |
-| CapricaResidentPortal    | 31   | 10.76.31.0/24    | Semi‑trusted residents (casting, printing, limited LAN)  |
+| PiconResidentGate    | 31   | 10.76.31.0/24    | Semi‑trusted residents (casting, printing, limited LAN)  |
 | ScyllaProcessControl | 90   | 10.76.90.0/24    | Work VLAN (compliance bubble)  |
 | PegasusMediaNode     | 70   | 10.76.70.0/24    | Media / Casting  |
 | ScorpiaMediaShield   | 81   | 10.76.81.0/24    | Cameras – Local  |
@@ -36,7 +36,7 @@
 | **10 Trusted**       | ✅ | ✅ Limited | ❌ | ✅ Limited | ✅ | ✅ | ✅ | ✅ | ✅ View | ✅ View | ✅  |
 | **20 IoT**           | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ Limited | ❌ | ❌ | ❌ | ❌ | ❌  |
 | **30 Guest**         | ❌ | ❌ | ✅ Internet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌  |
-| **31 CapricaResidentPortal**  | ✅ Limited | ❌ | ❌ | ✅ Internet | ❌ | ✅ Limited | ✅ Full | ✅ Full | ❌ | ❌ | ❌  |
+| **31 ResidentGate**  | ✅ Limited | ❌ | ❌ | ✅ Internet | ❌ | ✅ Limited | ✅ Full | ✅ Full | ❌ | ❌ | ❌  |
 | **40 Infra**         | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌  |
 | **50 Servers**       | ✅ | ✅ Limited | ❌ | ✅ Limited | ✅ | ✅ | ✅ | ✅ Limited | ✅ View | ✅ View | ✅ Limited  |
 | **60 Printers**      | ✅ | ❌ | ❌ | ✅ Limited | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ Limited  |
@@ -54,7 +54,7 @@
 | 10   | 10.76.10.0/24    | 10.76.10.100–199     | 10.76.10.1  | 10.76.50.10   | 24h        | Trusted LAN  |
 | 20   | 10.76.20.0/24    | 10.76.20.100–199     | 10.76.20.1  | 10.76.50.10   | 12h        | IoT devices  |
 | 30   | 10.76.30.0/24    | 10.76.30.100–199     | 10.76.30.1  | 10.76.50.10   | 6h         | Guest Internet  |
-| 31   | 10.76.31.0/24    | 10.76.31.100–199     | 10.76.31.1  | 10.76.50.10   | 12h        | CapricaResidentPortal  |
+| 31   | 10.76.31.0/24    | 10.76.31.100–199     | 10.76.31.1  | 10.76.50.10   | 12h        | ResidentGate  |
 | 40   | 10.76.40.0/24    | 10.76.40.10–99       | 10.76.40.1  | 10.76.50.10   | 7d         | InfraCore  |
 | 50   | 10.76.50.0/24    | Static only          | 10.76.50.1  | —             | —          | ServerVault  |
 | 60   | 10.76.60.0/24    | 10.76.60.100–199     | 10.76.60.1  | 10.76.50.10   | 24h        | Printers  |
@@ -67,7 +67,7 @@
 
 ## 🧩 Dashboard Spec
 
-- **CapricaResidentPortal Panel**: DHCP leases, connected clients, bandwidth usage, anomaly alerts  
+- **ResidentGate Panel**: DHCP leases, connected clients, bandwidth usage, anomaly alerts  
 - **IoT Panel**: Device uptime, firmware status, blocked/allowed flows  
 - **Media Panel**: Cast targets, playback status, volume sliders  
 - **Printer Panel**: Ink/toner levels, job queue, quick cancel  
@@ -102,7 +102,7 @@
 
 ## 📜 Versioning
 
-- **v1.0** – Initial production release with CapricaResidentPortal integration  
+- **v1.0** – Initial production release with ResidentGate integration  
 - **vNext** – Add VLANs for future IoT segmentation, lab environments, or compliance zones  
 
 ---

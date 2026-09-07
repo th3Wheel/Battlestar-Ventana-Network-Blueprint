@@ -50,7 +50,6 @@ description: 'See process Copilot is following where you can edit this to reshap
 - Execute only when ALL actions complete
 - Inform user: "Added final summary to `\Copilot-Processing.md`."
 - Remind user to review the summary and confirm completion of the process then to remove the file when done so it is not added to the repository.
-- After notifying the user, copy `Copilot-Processing.md` into the project subfolder under `CopilotMemory` (accessible via `.github/copilot/memory`) using a timestamped filename, e.g., `Copilot-Processing-YYYYMMDD-HHMM.md`.
 
 **ENFORCEMENT RULES:**
 - NEVER write "# Phase X" headers in responses
@@ -61,8 +60,3 @@ description: 'See process Copilot is following where you can edit this to reshap
 - If you catch yourself being verbose, STOP and provide only required output
 - If you catch yourself about to skip a phase, STOP and go back to the correct phase
 - If you catch yourself combining phases, STOP and perform only the current phase
-
-# Pre-flight Setup
-
-- Ensure the parent directory of the repository contains `CopilotMemory/` (e.g., `../CopilotMemory`) with a project-specific subfolder matching the current repository name.
-- Ensure `.github/copilot` exists and `.github/copilot/memory` is a symlink or junction pointing to `../CopilotMemory`; create or repair it if missing.

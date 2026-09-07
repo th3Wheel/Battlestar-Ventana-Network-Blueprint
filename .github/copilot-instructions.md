@@ -1,36 +1,24 @@
-## Context7 MCP Integration (CRITICAL - Read First)
+# GitHub Copilot Instructions for Battlestar Ventana Network Blueprint
 
-**MANDATORY:** Before starting ANY task, ALWAYS leverage Context7 MCP to gather comprehensive context about the repository, codebase, and related resources.
+This document provides guidance for GitHub Copilot when working with the Battlestar Ventana Network Blueprint repository. These patterns ensure consistency with the established security posture and automation framework.
 
-### Context7 Usage Requirements
+---
 
-1. **Pre-Task Discovery (REQUIRED):**
-   - Use Context7 MCP to search for relevant documentation, code patterns, and architectural decisions BEFORE making changes
-   - Query Context7 for similar implementations, related VLANs, existing firewall rules, and naming patterns
-   - Identify dependencies and cross-references using Context7's semantic search capabilities
+## 1. Architecture Context
 
-2. **Continuous Context Gathering:**
-   - Invoke Context7 MCP at every decision point to validate assumptions
-   - Use Context7 to find examples of similar changes in repository history
-   - Query Context7 for related documentation that might need updating alongside your changes
+### Network Segmentation Model
 
-3. **Context7 Query Patterns:**
-   - **For VLAN changes:** "Find all references to VLAN [ID], DHCP scopes, firewall rules, and service definitions"
-   - **For firewall updates:** "Show firewall rules involving [source] to [destination], related services, and port definitions"
-   - **For naming:** "Find naming patterns for [VLANs/SSIDs/hosts], theme conventions, and similar examples"
-   - **For architecture:** "Retrieve architectural decisions, zone models, and related design documents"
-   - **For cross-references:** "Find all files mentioning [service/VLAN/host] and their relationships"
+- **Zone-based security**: VLANs organized by trust level (Trusted, Semi-Trusted, Untrusted, Services, Infrastructure, Surveillance)
+- **Address scheme**: `10.76.X.0/24` where X = VLAN ID
+- **Naming convention**: Battlestar Galactica themed names for memorability and auditability
 
-4. **Validation Before Commit:**
-   - Use Context7 to verify all affected files are identified and updated
-   - Query for TODOs, cross-references, and dependencies that might be impacted
-   - Ensure consistency across documentation using Context7's semantic analysis
+### Key Security Zones
 
 - **Trusted (10, 90)**: Full access to services, strict authentication
 - **Semi-Trusted (31, 60, 70)**: Function-specific access only
 - **Untrusted (20, 30)**: Internet-only or minimal telemetry
 - **Services (50)**: ServerVault - central service hub
-- **Infrastructure (40)**: InfraCore (BasestarVentana VLAN) - management plane
+- **Infrastructure (40)**: InfraCore (Basestar Control VLAN) - management plane
 - **Surveillance (81, 82)**: Camera networks with view-only access
 
 ---
@@ -49,9 +37,9 @@ When suggesting firewall rules or service access:
 Example:
 
 ```markdown
-| Source VLAN | Destination VLAN | Ports | Protocol | Justification       |
-| ----------- | ---------------- | ----- | -------- | ------------------- |
-| 20 IoT      | 50 ServerVault   | 8883  | TCP      | MQTT telemetry only |
+| Source VLAN | Destination VLAN | Ports | Protocol | Justification |
+|-------------|------------------|-------|----------|---------------|
+| 20 IoT | 50 ServerVault | 8883 | TCP | MQTT telemetry only |
 ```
 
 ### Rate-Limiting Standards
@@ -173,8 +161,8 @@ Example secrets pattern:
 mqtt:
   host: servervault.internal
   port: 8883
-  username: ${MQTT_USERNAME} # from secret manager
-  password: ${MQTT_PASSWORD} # from secret manager
+  username: ${MQTT_USERNAME}  # from secret manager
+  password: ${MQTT_PASSWORD}  # from secret manager
 ```
 
 ### Automation Standards
@@ -374,4 +362,4 @@ Use `docs/audit-checklist.md` for periodic reviews:
 
 ---
 
-_These instructions ensure that Copilot suggestions align with the Battlestar Ventana Network Blueprint's security-first, documentation-driven, and automation-focused approach._
+*These instructions ensure that Copilot suggestions align with the Battlestar Ventana Network Blueprint's security-first, documentation-driven, and automation-focused approach.*

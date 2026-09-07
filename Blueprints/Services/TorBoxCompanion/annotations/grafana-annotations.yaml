@@ -11,9 +11,9 @@
 # Use this structure in your CI/CD pipeline
 deployment_annotation:
   dashboardUID: torbox-companion
-  panelId: null # null = all panels
-  time: '{{ .Timestamp }}' # Unix timestamp in milliseconds
-  timeEnd: '{{ .TimestampEnd }}' # Optional: end time for range annotation
+  panelId: null  # null = all panels
+  time: "{{ .Timestamp }}"  # Unix timestamp in milliseconds
+  timeEnd: "{{ .TimestampEnd }}"  # Optional: end time for range annotation
   tags:
     - deployment
     - torbox-companion
@@ -29,7 +29,7 @@ deployment_annotation:
 restart_annotation:
   dashboardUID: torbox-companion
   panelId: null
-  time: '{{ .Timestamp }}'
+  time: "{{ .Timestamp }}"
   tags:
     - restart
     - torbox-companion
@@ -45,11 +45,11 @@ restart_annotation:
 systemd_event_annotation:
   dashboardUID: torbox-companion
   panelId: null
-  time: '{{ .Timestamp }}'
+  time: "{{ .Timestamp }}"
   tags:
     - systemd
     - torbox-companion
-    - '{{ .EventType }}'
+    - "{{ .EventType }}"
   text: |
     ⚙️ systemd Event: {{ .EventType }}
     Service: torbox-companion.service

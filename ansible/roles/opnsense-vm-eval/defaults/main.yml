@@ -5,28 +5,27 @@
 opnsense_eval_task: provision
 
 # Proxmox host running the OPNsense VM
-proxmox_host: '10.76.40.10'
-proxmox_user: 'root@pam'
+proxmox_host: "10.76.40.10"
+proxmox_user: "root@pam"
 # proxmox_password: vault-encrypted — set in ansible vault or CI secret
 
 # OPNsense VM configuration
 opnsense_vm_id: 200
-opnsense_vm_name: 'opnsense-eval'
+opnsense_vm_name: "opnsense-eval"
 opnsense_vm_memory_mb: 2048
 opnsense_vm_cores: 2
 opnsense_vm_disk_gb: 8
 # OPNsense ISO must be pre-uploaded to Proxmox local storage
-opnsense_iso: 'local:iso/OPNsense-24.7-dvd-amd64.iso'
-opnsense_vm_bridge: 'vmbr0'
+opnsense_iso: "local:iso/OPNsense-24.7-dvd-amd64.iso"
+opnsense_vm_bridge: "vmbr0"
 # OPNsense management IP assigned after first boot (WAN interface)
-opnsense_mgmt_ip: '10.76.40.20'
+opnsense_mgmt_ip: "10.76.40.20"
 opnsense_mgmt_port: 443
-opnsense_api_key: '' # set in vault
-opnsense_api_secret: '' # set in vault
-opnsense_validate_certs: true # TLS certificate verification for API calls
+opnsense_api_key: ""     # set in vault
+opnsense_api_secret: ""  # set in vault
 
 # Directory for research output files (relative to repo root)
-research_output_dir: '{{ playbook_dir }}/../../projects/route-pi-squared/research'
+research_output_dir: "{{ playbook_dir }}/../../projects/route-pi-squared/research"
 
 # LAN interface name inside OPNsense (typically vtnet1 in KVM/Proxmox)
-opnsense_lan_iface: 'vtnet1'
+opnsense_lan_iface: "vtnet1"

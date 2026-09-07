@@ -64,7 +64,7 @@ The current `docs/services.md` defines *which* traffic is allowed between VLANs,
 - **VLAN 90 (Work):** 100 Mbps (VPN tunnel constraint; adjust per ISP)
 
 ### Semi-Trusted Zone (Zones 31, 60, 70)
-- **VLAN 31 (CapricaResidentPortal):** 50 Mbps (residential casting/printing)
+- **VLAN 31 (ResidentGate):** 50 Mbps (residential casting/printing)
 - **VLAN 60 (Printers):** 100 Mbps (print job queueing)
 - **VLAN 70 (Media):** 500 Mbps (streaming workload)
 
@@ -248,6 +248,10 @@ flowchart TD
          interval: 30s
    ```
 
+---
+
+```
+
 ### Key Deliverables for This Section
 
 1. **Linkerd deployment manifest** (control plane + proxy injection)
@@ -263,7 +267,6 @@ flowchart TD
 ### Context: Why Automated Generation
 
 Manual firewall rules are:
-
 - **Error-prone:** Typos in ports/protocols
 - **Unmaintainable:** Adding a VLAN requires manual rule updates
 - **Unauditable:** No version control of rule changes
@@ -619,7 +622,7 @@ inhibit_rules:
 | **10 Trusted**       | ✅ | 🟡 Limited | ❌ | 🟡 Limited | ✅ | ✅ | ✅ | ✅ | 🔵 View | 🔵 View | ✅  |
 | **20 IoT**           | ❌ | ✅ | ❌ | ❌ | ❌ | 🟡 Limited | ❌ | ❌ | ❌ | ❌ | ❌  |
 | **30 Guest**         | ❌ | ❌ | ✅ Internet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌  |
-| **31 CapricaResidentPortal**  | 🟡 Limited | ❌ | ❌ | ✅ Internet | ❌ | 🟡 Limited | ✅ Full | ✅ Full | ❌ | ❌ | ❌  |
+| **31 ResidentGate**  | 🟡 Limited | ❌ | ❌ | ✅ Internet | ❌ | 🟡 Limited | ✅ Full | ✅ Full | ❌ | ❌ | ❌  |
 | **40 InfraCore**     | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌  |
 | **50 ServerVault**   | ✅ | 🟡 Limited | ❌ | 🟡 Limited | ✅ | ✅ | ✅ | 🟡 Limited | 🔵 View | 🔵 View | 🟡 Limited  |
 | **60 Printers**      | ✅ | ❌ | ❌ | 🟡 Limited | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🟡 Limited  |
@@ -642,7 +645,7 @@ inhibit_rules:
 | Battlestar Ventana | 10 | 10.76.10.0/24 | Trusted LAN |
 | CylonSynthLink | 20 | 10.76.20.0/24 | IoT devices |
 | CapricaGuestPortal | 30 | 10.76.30.0/24 | Guest – Internet only |
-| CapricaResidentPortal | 31 | 10.76.31.0/24 | Semi-trusted (casting, printing, limited LAN) |
+| PiconResidentGate | 31 | 10.76.31.0/24 | Semi-trusted (casting, printing, limited LAN) |
 | InfraCore | 40 | 10.76.40.0/24 | Switches, controllers |
 | ServerVault | 50 | 10.76.50.0/24 | NAS, MQTT, Home Assistant |
 | VirgonFleetYard | 60 | 10.76.60.0/24 | Printers |
@@ -717,7 +720,7 @@ Already complete and verified:
 
 ### Phase 2: Semi-Trusted Zone Completion
 
-- [ ] **VLAN 31 (CapricaResidentPortal) → ServerVault (50):** Limited access specifics
+- [ ] **VLAN 31 (ResidentGate) → ServerVault (50):** Limited access specifics
   - SMB (445), IPP (631), HTTPS (443) — verify scope per firewall matrix
 
 - [ ] **VLAN 70 (Media) → ServerVault (50):** Complete TCP ports for streaming

@@ -33,43 +33,10 @@ This pack is attached to each Proxmox host in XPipe. All commands are host-agnos
 
 **Run on:** Proxmox host
 
-**Security Note:** The following command executes a remote script from GitHub's
-`main` branch. To mitigate supply-chain risks:
-
-1. **Pin to a specific commit** instead of `main` to ensure immutability
-2. **Verify script integrity** by checking commit hash or signature
-3. **Review the script** before first use at:
-   <https://github.com/community-scripts/ProxmoxVE/blob/main/ct/debian.sh>
-4. **Consider vendoring** the script locally in your infrastructure repository
-
-**Command (using pinned commit):**
+**Command:**
 
 ```bash
-# 1. Visit https://github.com/community-scripts/ProxmoxVE/commits/main/ct/debian.sh
-# 2. Select a commit you've reviewed and verified
-# 3. Replace with the full commit SHA (example shown below)
-COMMIT_SHA="a1b2c3d4e5f6789012345678901234567890abcd"  # Replace with actual verified commit SHA
-
-curl -fsSL "https://raw.githubusercontent.com/community-scripts/ProxmoxVE/${COMMIT_SHA}/ct/debian.sh" \
-  -o /tmp/debian-lxc-setup.sh
-
-# Review the script before execution
-less /tmp/debian-lxc-setup.sh
-
-# Execute after review
-bash /tmp/debian-lxc-setup.sh
-
-# Clean up
-rm /tmp/debian-lxc-setup.sh
-```
-
-**Alternative (vendor locally):**
-
-Store a reviewed copy of the script in your repository and reference it instead:
-
-```bash
-# Example: script stored in your infrastructure automation repository
-bash scripts/proxmox/debian-lxc-setup.sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/debian.sh)"
 ```
 
 This is interactive by design (CTID, hostname, disk, RAM, network).
@@ -213,9 +180,6 @@ export SSH_ASKPASS=\$(mktemp)
 export DISPLAY=:0
 export TARGET_PASSWORD='$PASSWORD'
 
-# Set up cleanup trap to ensure temporary file is removed even on error
-trap 'rm -f \$SSH_ASKPASS' EXIT INT TERM
-
 # Create temporary askpass script that returns the password from environment
 cat > \$SSH_ASKPASS << 'EOF'
 #!/bin/bash
@@ -235,7 +199,8 @@ sudo -u ansible \
   ssh-copy-id -f -i /home/ansible/.ssh/id_ed25519.pub \
   {{target_user}}@{{target_host}}
 
-# Clean up (trap will also handle this)
+# Clean up
+rm -f \$SSH_ASKPASS
 unset TARGET_PASSWORD
 "
 ```
