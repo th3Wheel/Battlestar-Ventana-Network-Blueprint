@@ -45,7 +45,10 @@ def validate_policy(policy: Any, path: str, allowlist_required: bool = True) -> 
         require(destinations, f"{path}.destinations cannot be empty for allowlist mode")
     if mode in {"allow", "deny"}:
         require(not destinations, f"{path}.destinations must be empty for {mode} mode")
-    require(rate_limit is None or isinstance(rate_limit, int), f"{path}.rate_limit_mbps must be an integer or null")
+    require(
+        rate_limit is None or isinstance(rate_limit, int),
+        f"{path}.rate_limit_mbps must be an integer or null",
+    )
     require(rate_limit is None or rate_limit > 0, f"{path}.rate_limit_mbps must be positive")
 
 
