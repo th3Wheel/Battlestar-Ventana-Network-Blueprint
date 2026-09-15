@@ -30,10 +30,15 @@
       "label": "Lint: Markdown",
       "type": "shell",
       "command": "markdownlint",
-      "args": ["**/*.md"],
+      "args": [
+        "**/*.md"
+      ],
       "problemMatcher": {
         "owner": "markdownlint",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
           "file": 1,
@@ -55,10 +60,16 @@
       "label": "Lint: Markdown Fix",
       "type": "shell",
       "command": "markdownlint",
-      "args": ["**/*.md", "--fix"],
+      "args": [
+        "**/*.md",
+        "--fix"
+      ],
       "problemMatcher": {
         "owner": "markdownlint",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+)?\\s+(MD\\d+)/(.*)\\s+(.*)$",
           "file": 1,
@@ -80,10 +91,15 @@
       "label": "Lint: YAML",
       "type": "shell",
       "command": "yamllint",
-      "args": ["."],
+      "args": [
+        "."
+      ],
       "problemMatcher": {
         "owner": "yamllint",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+):\\s+\\[(error|warning)\\]\\s+(.*)\\s+\\((.*)\\)$",
           "file": 1,
@@ -105,7 +121,10 @@
       "label": "Format: YAML (Prettier)",
       "type": "shell",
       "command": "powershell",
-      "args": ["-Command", "npx prettier --write --no-error-on-unmatched-pattern '**/*.yml' '**/*.yaml'"],
+      "args": [
+        "-Command",
+        "npx prettier --write --no-error-on-unmatched-pattern '**/*.yml' '**/*.yaml'"
+      ],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -118,7 +137,10 @@
       "label": "Lint: JavaScript/TypeScript",
       "type": "shell",
       "command": "npx",
-      "args": ["eslint", "."],
+      "args": [
+        "eslint",
+        "."
+      ],
       "problemMatcher": "$eslint-stylish",
       "presentation": {
         "reveal": "always",
@@ -131,7 +153,11 @@
       "label": "Lint: JavaScript/TypeScript Fix",
       "type": "shell",
       "command": "npx",
-      "args": ["eslint", ".", "--fix"],
+      "args": [
+        "eslint",
+        ".",
+        "--fix"
+      ],
       "problemMatcher": "$eslint-stylish",
       "presentation": {
         "reveal": "always",
@@ -144,10 +170,17 @@
       "label": "Lint: Python (Pylint)",
       "type": "shell",
       "command": "powershell",
-      "args": ["-NoProfile", "-File", ".github/scripts/run_pylint.ps1"],
+      "args": [
+        "-NoProfile",
+        "-File",
+        ".github/scripts/run_pylint.ps1"
+      ],
       "problemMatcher": {
         "owner": "pylint",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+):\\s+(.*)$",
           "file": 1,
@@ -168,7 +201,11 @@
       "label": "Lint: Python (ty)",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "ty", "check"],
+      "args": [
+        "run",
+        "ty",
+        "check"
+      ],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -181,10 +218,18 @@
       "label": "Lint: Python (Ruff)",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "ruff", "check", "."],
+      "args": [
+        "run",
+        "ruff",
+        "check",
+        "."
+      ],
       "problemMatcher": {
         "owner": "ruff",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
           "file": 1,
@@ -205,10 +250,19 @@
       "label": "Lint: Python (Ruff) Fix",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "ruff", "check", ".", "--fix"],
+      "args": [
+        "run",
+        "ruff",
+        "check",
+        ".",
+        "--fix"
+      ],
       "problemMatcher": {
         "owner": "ruff",
-        "fileLocation": ["relative", "${workspaceFolder}"],
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
         "pattern": {
           "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)$",
           "file": 1,
@@ -229,7 +283,12 @@
       "label": "Format: Python (Ruff)",
       "type": "shell",
       "command": "uv",
-      "args": ["run", "ruff", "format", "--check", "."],
+      "args": [
+        "run",
+        "ruff",
+        "format",
+        "."
+      ],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -242,7 +301,10 @@
       "label": "Format: Python (Black)",
       "type": "shell",
       "command": "powershell",
-      "args": ["-Command", ".venv/Scripts/black.exe ."],
+      "args": [
+        "-Command",
+        ".venv/Scripts/black.exe ."
+      ],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -255,7 +317,10 @@
       "label": "Format: Python (isort)",
       "type": "shell",
       "command": "powershell",
-      "args": ["-Command", ".venv/Scripts/isort.exe ."],
+      "args": [
+        "-Command",
+        ".venv/Scripts/isort.exe ."
+      ],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
