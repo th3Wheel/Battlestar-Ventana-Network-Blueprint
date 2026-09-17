@@ -1,12 +1,11 @@
 ---
-# VLAN catalogue sourced from:
-#   docs/dhcp-scopes.md        - subnets, gateways, DHCP ranges, lease times
-#   docs/naming-conventions.md - canonical SSID/VLAN names
-#   docs/firewall-matrix.md    - internet access policy
+# VLAN catalogue projected from:
+#   config/vlan-registry.yaml - canonical VLAN, DHCP, and policy data
+#   config/static-ip-inventory.yaml - temporary address inventory
 #
-# This file is the single Ansible source of truth for VLAN data.
-# All playbooks and roles must reference these variables rather than
-# hard-coding any IP addresses or VLAN IDs.
+# This file is an Ansible-compatible projection of the canonical registry.
+# Playbooks and roles must reference these variables rather than hard-coding
+# any IP addresses or VLAN IDs.
 
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: '10.76.50.10'
@@ -26,7 +25,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [infrastructure, services, iot, print, media, surveillance, work]
 
   - id: 20
     name: CylonSynthLink
@@ -40,7 +45,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'limited - cloud services permitted, internal resources blocked, throttled 2 Mbps'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: 2
+      destinations: [cloud_services]
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 30
     name: CapricaGuestPortal
@@ -54,12 +65,18 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked, throttled 5 Mbps'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 5
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 31
     name: CapricaResidentPortal
     ssid: 'CapricaResidentPortal'
-    purpose: 'Trusted guest (casting, printing)'
+    purpose: 'Trusted Guest (casting, printing)'
     subnet: '10.76.31.0/24'
     gateway: '10.76.31.1'
     dhcp_range_start: '10.76.31.100'
@@ -68,11 +85,17 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked except media/print, throttled 10 Mbps, MAC allowlist required'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: 10
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [media, print]
 
   - id: 40
     name: BasestarVentana
-    ssid: 'BasestarVentana'
+    ssid: 'Basestar Ventana'
     purpose: 'Infrastructure switches and controllers'
     subnet: '10.76.40.0/24'
     gateway: '10.76.40.1'
@@ -82,7 +105,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'blocked'
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
   - id: 50
     name: GemenonServiceVault
@@ -96,7 +125,13 @@ vlans:
     dns: ''
     dns_secondary: ''
     dhcp_enabled: false
-    internet_access: 'limited'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [approved_service_dependencies]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, infrastructure, iot, print, media, surveillance, work]
 
   - id: 60
     name: VirgonFleetYard
@@ -110,7 +145,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'blocked'
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest, services]
 
   - id: 70
     name: PegasusMediaNode
@@ -124,7 +165,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, elevated_guest]
 
   - id: 81
     name: ScorpiaMediaShield
@@ -138,7 +185,13 @@ vlans:
     dns: ''
     dns_secondary: ''
     dhcp_enabled: false
-    internet_access: 'blocked'
+    internet_policy:
+      mode: deny
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
 
   - id: 82
     name: ScorpiaMediaRelay
@@ -152,7 +205,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'limited'
+    internet_policy:
+      mode: allowlist
+      rate_limit_mbps: null
+      destinations: [cloud_nvr_relay]
+    inter_vlan_policy:
+      mode: allowlist
+      destinations: [trusted, services]
 
   - id: 90
     name: ScyllaProcessControl
@@ -166,7 +225,13 @@ vlans:
     dns: '{{ pihole_primary_vip }}'
     dns_secondary: '{{ pihole_secondary_vip }}'
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    internet_policy:
+      mode: allow
+      rate_limit_mbps: null
+      destinations: []
+    inter_vlan_policy:
+      mode: deny
+      destinations: []
 
 # Hypervisor management addressing source of truth.
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.
@@ -185,7 +250,7 @@ hypervisor_management:
     - hostname: CrimsonRogue
       platform: 'proxmox-qemu'
       role: ProxmoxNode1
-      mgmt_ip_legacy: '10.10.5.10'
+      mgmt_ip_legacy: '10.10.5.9'
       mgmt_ip_target: '10.76.40.10'
       mgmt_bridge: vmbr0
       mgmt_vlan_id: 40
@@ -222,6 +287,8 @@ network_discovery:
     devices_endpoint: '/devices'
     people_endpoint: '/people'
     auth_query_param: auth
-    api_key: "{{ vault_fing_local_api_key | default('') }}"
+    api_key: '{{ vault_fing_local_api_key }}'
     timeout_seconds: 10
     poll_interval_seconds: 60
+    # Note: vault_fing_local_api_key must be defined and non-empty in vault/CI vars
+    # Tasks using this API key should assert it is defined before use

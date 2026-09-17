@@ -10,9 +10,9 @@ Please create or update the following files in the repo:
 - `docs/hyperion-wled/hyperion.config.json`
 - `docs/hyperion-wled/wled-roomwsh.json`
 - `docs/hyperion-wled/SETUP.md`
-📦 File Contents
+  📦 File Contents
 
-device-wled-ws2815.json
+infrastructure/hyperion/device-wled-ws2815.json
 
 {
   "device": {
@@ -28,12 +28,12 @@ segments-wled-map.json
 
 {
   "wledSegments": [
-    { "id": 0, "name": "L1_23px", "start": 0,  "end": 22 },
-    { "id": 1, "name": "L2_12px", "start": 0,  "end": 11 },
-    { "id": 2, "name": "L3_8px",  "start": 0,  "end": 7  },
+    { "id": 0, "name": "L1_23px", "start": 0, "end": 22 },
+    { "id": 1, "name": "L2_12px", "start": 0, "end": 11 },
+    { "id": 2, "name": "L3_8px", "start": 0, "end": 7 },
     { "id": 3, "name": "R1_23px", "start": 23, "end": 45 },
     { "id": 4, "name": "R2_10px", "start": 23, "end": 32 },
-    { "id": 5, "name": "R3_8px",  "start": 23, "end": 30 }
+    { "id": 5, "name": "R3_8px", "start": 23, "end": 30 }
   ]
 }
 
@@ -55,9 +55,9 @@ instances-room-split.json
 
 {
   "instances": [
-    { "name": "Left",  "enabled": true,  "leds": { "firstLed": 0,  "lastLed": 22 } },
-    { "name": "Right", "enabled": true,  "leds": { "firstLed": 23, "lastLed": 45 } },
-    { "name": "All",   "enabled": false, "leds": { "firstLed": 0,  "lastLed": 45 } }
+    { "name": "Left", "enabled": true, "leds": { "firstLed": 0, "lastLed": 22 } },
+    { "name": "Right", "enabled": true, "leds": { "firstLed": 23, "lastLed": 45 } },
+    { "name": "All", "enabled": false, "leds": { "firstLed": 0, "lastLed": 45 } }
   ]
 }
 
@@ -107,7 +107,9 @@ This config is designed to support screen capture, ambient effects, and WLED fal
 
 Ensure JSON is valid and formatted with 2-space indentation
 workflow to validate the JSON files automatically.
+
 ---
+
 agent: context7
 description: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
 model: gpt-4-turbo

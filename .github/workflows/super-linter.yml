@@ -20,11 +20,31 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+
       - name: Install Ansible
-        run: python3 -m pip install -r ansible/requirements.txt ansible-lint
+        run: python -m pip install -r ansible/requirements.txt ansible-lint
 
       - name: Install Ansible collections
-        run: ansible-galaxy collection install -r ansible/collections/requirements.yml
+        run: ANSIBLE_CONFIG=ansible/ansible.cfg ansible-galaxy collection install -r ansible/collections/requirements.yml
+
+      - name: Install uv
+        run: python -m pip install uv
+
+      - name: Synchronize Python environment
+        run: uv sync --locked
+
+      - name: Run Ruff
+        run: uv run ruff check .
+
+      - name: Run Ruff format check
+        run: uv run ruff format --check .
+
+      - name: Run ty
+        run: uv run ty check
 
       - name: Lint Code Base
         uses: github/super-linter@v4
