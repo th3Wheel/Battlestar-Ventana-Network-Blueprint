@@ -29,31 +29,31 @@
 
 - Role structure (recommended):
 
-``` yaml
+```yaml
 roles/
-  pihole_ha/
-    tasks/
-      main.yml
-      pihole.yml
-      unbound.yml
-      keepalived.yml
-      healthcheck.yml
-    templates/
-      keepalived.conf.j2
-      unbound.conf.j2
-    files/
-      pihole_custom.list
-    vars/
-      main.yml
-    handlers/
-      main.yml
-    meta/
-      main.yml
+pihole_ha/
+tasks/
+main.yml
+pihole.yml
+unbound.yml
+keepalived.yml
+healthcheck.yml
+templates/
+keepalived.conf.j2
+unbound.conf.j2
+files/
+pihole_custom.list
+vars/
+main.yml
+handlers/
+main.yml
+meta/
+main.yml
 ```
 
 - Example `tasks/main.yml`:
 
-``` yaml
+```yaml
 - name: Include Pi-hole tasks
   include_tasks: pihole.yml
 
@@ -69,7 +69,7 @@ roles/
 
 - Example `templates/keepalived.conf.j2`:
 
-``` conf
+```conf
 vrrp_instance VI_1 {
   state {{ keepalived_state }}
   interface {{ keepalived_interface }}
@@ -102,7 +102,7 @@ vrrp_script chk_pihole {
 
 - Inventory group:
 
-``` ini
+```ini
 [dns_cluster]
 dns1 ansible_host=10.10.5.21 keepalived_state=MASTER keepalived_priority=100
 dns2 ansible_host=10.10.5.22 keepalived_state=BACKUP keepalived_priority=90
@@ -115,7 +115,7 @@ keepalived_interface=eth0
 
 - Playbook snippet:
 
-``` yaml
+```yaml
 - hosts: dns_cluster
   vars:
     keepalived_auth_pass: "{{ lookup('ansible.builtin.env', 'KEEPALIVED_PASS') }}"
@@ -127,7 +127,7 @@ keepalived_interface=eth0
 
 - Runtime injection via 1Password CLI:
 
-``` bash
+```bash
 export KEEPALIVED_PASS=$(op read "op://Homelab/DNS Cluster/keepalived_auth_pass")
 ansible-playbook deploy_dns.yml
 ```
@@ -141,7 +141,7 @@ ansible-playbook deploy_dns.yml
 
 - Prometheus Node Exporter installation:
 
-``` yaml
+```yaml
 - name: Install node exporter
   ansible.builtin.apt:
     name: prometheus-node-exporter
@@ -163,7 +163,7 @@ keepalived_state{instance="{{ inventory_hostname }}"} 1
 
 - Example REST sensor:
 
-``` yaml
+```yaml
 sensor:
   - platform: rest
     name: DNS Cluster State
@@ -174,13 +174,13 @@ sensor:
 
 - Example MQTT publication:
 
-``` bash
+```bash
 mosquitto_pub -t homelab/dns/state -m "MASTER"
 ```
 
 ### Reliability & Failover Flow
 
-``` mermaid
+```mermaid
 flowchart TB
   subgraph Cluster[DNS/DHCP Cluster]
     DNS1[Pi-hole/Unbound – dns1]
