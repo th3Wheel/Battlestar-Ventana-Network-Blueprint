@@ -29,26 +29,26 @@
 
 - Role structure (recommended):
 
-```yaml
+```text
 roles/
-pihole_ha/
-tasks/
-main.yml
-pihole.yml
-unbound.yml
-keepalived.yml
-healthcheck.yml
-templates/
-keepalived.conf.j2
-unbound.conf.j2
-files/
-pihole_custom.list
-vars/
-main.yml
-handlers/
-main.yml
-meta/
-main.yml
+└── pihole_ha/
+    ├── tasks/
+    │   ├── main.yml
+    │   ├── pihole.yml
+    │   ├── unbound.yml
+    │   ├── keepalived.yml
+    │   └── healthcheck.yml
+    ├── templates/
+    │   ├── keepalived.conf.j2
+    │   └── unbound.conf.j2
+    ├── files/
+    │   └── pihole_custom.list
+    ├── vars/
+    │   └── main.yml
+    ├── handlers/
+    │   └── main.yml
+    └── meta/
+        └── main.yml
 ```
 
 - Example `tasks/main.yml`:
@@ -150,9 +150,9 @@ ansible-playbook deploy_dns.yml
 
 - Textfile collector for VRRP state:
 
-``` ini
-/var/lib/node_exporter/textfile_collector/vrrp.prom
+The collector writes a `.prom` file to `/var/lib/node_exporter/textfile_collector/vrrp.prom` in the textfile directory, and the file contents themselves should contain only metric lines:
 
+```ini
 keepalived_state{instance="{{ inventory_hostname }}"} 1
 ```
 
