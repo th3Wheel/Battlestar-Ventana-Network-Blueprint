@@ -2,7 +2,7 @@
 name = "battlestar-ventana-network-blueprint"
 version = "0.1.0"
 description = "Battlestar Ventana network architecture, automation, and policy blueprint"
-readme = "README.md"
+readme = "readme.md"
 authors = [
     { name = "th3wheel", email = "tnwheeler@gmail.com" }
 ]

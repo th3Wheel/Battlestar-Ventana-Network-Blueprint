@@ -7,6 +7,24 @@
         "@context7/mcp-server"
       ]
     },
+    "home-assistant": {
+      "type": "streamable-http",
+      "url": "${env:HAMCP_SERVER_URL}",
+      "headers": {
+        "Authorization": "Bearer ${env:HAMCP_API_TOKEN}"
+      }
+    },
+    "xpipe": {
+      "type": "streamable-http",
+      "url": "http://localhost:21721/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:XPIPE_API_TOKEN}"
+      }
+    },
+    "prompts-chat": {
+      "type": "http",
+      "url": "https://prompts.chat/api/mcp"
+    },
     "gemini-api-docs-mcp": {
       "url": "https://gemini-api-docs-mcp.dev"
     },
