@@ -22,6 +22,7 @@ This document defines VLAN-specific rate-limiting policies and DDoS mitigation g
 ---
 
 ## 🎯 Overview
+
 Rate limiting is a critical security control that protects the network from:
 
 - **DDoS attacks** — Distributed denial of service attempts
@@ -142,6 +143,7 @@ This matrix defines rate limits for specific services between source and destina
 **Implementation:** Nginx rate limiting, K8s NetworkPolicy, UFW rate limits
 
 **Notes:**
+
 - HTTP/HTTPS limits apply to request rate, not bandwidth (see Media Streaming section for bandwidth limits)
 - Plex uses HTTPS/32400 for metadata, transcoding control, and authentication
 - High-bandwidth media streaming is covered separately in "Media Streaming Services" section
@@ -185,6 +187,7 @@ This matrix defines rate limits for specific services between source and destina
 **Implementation:** Samba `max connections`, NFSv4 connection limits
 
 **Notes:**
+
 - Media devices (70) access GemenonServiceVault for local media file streaming
 - Connections are per-device; limit accommodates multiple simultaneous streams
 - Consider higher limits if running multiple 4K streams concurrently
@@ -204,6 +207,7 @@ This matrix defines rate limits for specific services between source and destina
 **Implementation:** Frigate/Shinobi stream limits, switch QoS
 
 **Notes:**
+
 - Camera recording to NAS (81/82 → 50): Continuous streams limited to prevent storage saturation
 - Live viewing (10/31 → 81/82): On-demand streams with per-VLAN limits
 - Recording streams are prioritized over live viewing in QoS policies
@@ -224,11 +228,13 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 
 **Alert Threshold:** 80% of bandwidth limit
 **Implementation:**
+
 - Application-level: Plex transcoding quality settings, bandwidth limits per user
 - Network-level: tc QoS shaping, per-VLAN bandwidth allocation
 - Monitor: Plex dashboard metrics, Tautulli for session tracking
 
 **Notes:**
+
 - **Plex streaming from GemenonServiceVault (50)**: Bandwidth limits account for multiple concurrent streams
   - 4K stream: ~40-80 Mbps per stream
   - 1080p stream: ~10-20 Mbps per stream
@@ -238,6 +244,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 - **Transcoding**: Server-side transcoding on GemenonServiceVault can spike CPU/bandwidth; monitor with alerts
 
 **Untrusted → Trusted Media Policy:**
+
 - Direct streaming from VLAN 30 (Guest) to VLAN 10 (Trusted) or VLAN 70 (Media): **BLOCKED** per firewall-matrix.md
 - Guest users can access internet streaming services directly (Netflix, YouTube) via their own internet connection
 - Residents on VLAN 31 (CapricaResidentPortal) can access Plex on GemenonServiceVault with reduced bandwidth limits
@@ -277,6 +284,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** DHCP server rate limiting, `iptables` limit module
 
 **Notes:**
+
 - DHCP requests are typically infrequent (renew every few hours)
 - High request rates may indicate DHCP starvation attack
 - Limit prevents exhaustion of DHCP pool
@@ -296,6 +304,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** SNMP daemon rate limiting, SNMPv3 with authentication
 
 **Notes:**
+
 - SNMP monitoring tools can generate high query rates during polling
 - SNMPv3 authentication required; SNMPv1/v2c discouraged for security
 - Restrict SNMP to management VLAN (10, 40) only
@@ -316,6 +325,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** CUPS rate limiting, printer firmware job limits
 
 **Notes:**
+
 - IPP (Internet Printing Protocol) is modern standard; prefer over LPD
 - LPD (Line Printer Daemon) is legacy but still in use
 - JetDirect (9100) used by printers to submit jobs to print server
@@ -337,6 +347,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** mDNS/Avahi rate limiting, Chromecast device limits
 
 **Notes:**
+
 - DLNA (1900 UDP) uses multicast for device discovery
 - Chromecast control uses TCP ports 8008-8009
 - Multiple discovery sessions normal during device browsing
@@ -357,6 +368,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** PostgreSQL `max_connections`, connection pooling (PgBouncer)
 
 **Notes:**
+
 - Database connections should use connection pooling to reduce overhead
 - High connection rates may indicate connection leak or attack
 - Restrict PostgreSQL access to infrastructure and services only
@@ -377,13 +389,16 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 **Implementation:** rsyslog rate limiting (`imudp`/`imtcp` rate limit)
 
 **Notes:**
+
 - Syslog rate limiting prevents log flooding and disk saturation
 - Camera motion events can generate high log rates
 - Infrastructure devices (switches, firewalls) can burst during events
 - Use rsyslog rate limiting directives:
+
   ```
   module(load="imudp" ratelimit.interval="1" ratelimit.burst="100")
   ```
+
 - Monitor syslog disk usage and rotate logs appropriately
 
 ---

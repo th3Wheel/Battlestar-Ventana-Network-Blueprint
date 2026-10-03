@@ -8,6 +8,8 @@
 # All playbooks and roles must reference these variables rather than
 # hard-coding any IP addresses or VLAN IDs.
 
+# All internet access policies are defined in the firewall-matrix.md document, and are referenced here for each VLAN.
+
 # Pi-hole DNS server (GemenonServiceVault, VLAN 50)
 pihole_primary_vip: '10.76.50.10'
 pihole_secondary_vip: '10.76.50.11'
@@ -16,157 +18,160 @@ pihole_secondary_vip: '10.76.50.11'
 vlans:
   - id: 10
     name: BattlestarVentana
-    ssid: 'Battlestar Ventana'
-    purpose: 'Trusted LAN'
-    subnet: '10.76.10.0/24'
-    gateway: '10.76.10.1'
-    dhcp_range_start: '10.76.10.100'
-    dhcp_range_end: '10.76.10.199'
-    lease_time: '24h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "Battlestar Ventana"
+    purpose: "Trusted LAN"
+    subnet: "10.76.10.0/24"
+    gateway: "10.76.10.1"
+    dhcp_range_start: "10.76.10.100"
+    dhcp_range_end: "10.76.10.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    wan_egress: unrestricted
 
   - id: 20
     name: CylonSynthLink
-    ssid: 'CylonSynthLink'
-    purpose: 'IoT devices'
-    subnet: '10.76.20.0/24'
-    gateway: '10.76.20.1'
-    dhcp_range_start: '10.76.20.100'
-    dhcp_range_end: '10.76.20.199'
-    lease_time: '7d'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "CylonSynthLink"
+    purpose: "IoT devices"
+    subnet: "10.76.20.0/24"
+    gateway: "10.76.20.1"
+    dhcp_range_start: "10.76.20.100"
+    dhcp_range_end: "10.76.20.199"
+    lease_time: "7d"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'limited - cloud services permitted, internal resources blocked, throttled 2 Mbps'
+    wan_egress: limited
+    wan_egress_details: cloud services only, throttled to 2Mbps
 
   - id: 30
     name: CapricaGuestPortal
-    ssid: 'CapricaGuestPortal'
-    purpose: 'Guest - Internet only'
-    subnet: '10.76.30.0/24'
-    gateway: '10.76.30.1'
-    dhcp_range_start: '10.76.30.100'
-    dhcp_range_end: '10.76.30.199'
-    lease_time: '2h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "CapricaGuestPortal"
+    purpose: "Guest — Internet only"
+    subnet: "10.76.30.0/24"
+    gateway: "10.76.30.1"
+    dhcp_range_start: "10.76.30.100"
+    dhcp_range_end: "10.76.30.199"
+    lease_time: "2h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked, throttled 5 Mbps'
+    wan_egress: unrestricted
+    wan_egress_details: internet only (no LAN access), throttled to 5Mbps
 
   - id: 31
     name: CapricaResidentPortal
-    ssid: 'CapricaResidentPortal'
-    purpose: 'Trusted guest (casting, printing)'
-    subnet: '10.76.31.0/24'
-    gateway: '10.76.31.1'
-    dhcp_range_start: '10.76.31.100'
-    dhcp_range_end: '10.76.31.199'
-    lease_time: '4h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "CapricaResidentPortal"
+    purpose: "Trusted Guest (casting, printing)"
+    subnet: "10.76.31.0/24"
+    gateway: "10.76.31.1"
+    dhcp_range_start: "10.76.31.100"
+    dhcp_range_end: "10.76.31.199"
+    lease_time: "4h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted - internal resources blocked except media/print, throttled 10 Mbps, MAC allowlist required'
+    wan_egress: unrestricted
+    wan_egress_details: outbound, blocked internal resources except media players, throttled to 10Mbps, mac address whitelist required for access
 
   - id: 40
     name: BasestarVentana
-    ssid: 'BasestarVentana'
-    purpose: 'Infrastructure switches and controllers'
-    subnet: '10.76.40.0/24'
-    gateway: '10.76.40.1'
-    dhcp_range_start: '10.76.40.10'
-    dhcp_range_end: '10.76.40.99'
-    lease_time: '7d'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "Basestar Ventana"
+    purpose: "Infrastructure switches and controllers"
+    subnet: "10.76.40.0/24"
+    gateway: "10.76.40.1"
+    dhcp_range_start: "10.76.40.10"
+    dhcp_range_end: "10.76.40.99"
+    lease_time: "7d"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'blocked'
+    wan_egress: blocked
 
   - id: 50
     name: GemenonServiceVault
-    ssid: 'GemenonVault'
-    purpose: 'NAS, MQTT, Home Assistant'
-    subnet: '10.76.50.0/24'
-    gateway: '10.76.50.1'
-    dhcp_range_start: ''
-    dhcp_range_end: ''
-    lease_time: ''
-    dns: ''
-    dns_secondary: ''
+    ssid: "GemenonVault"
+    purpose: "NAS, MQTT, Home Assistant"
+    subnet: "10.76.50.0/24"
+    gateway: "10.76.50.1"
+    dhcp_range_start: ""
+    dhcp_range_end: ""
+    lease_time: ""
+    dns: ""
+    dns_secondary: ""
     dhcp_enabled: false
-    internet_access: 'limited'
-
+    wan_egress: limited
+  
   - id: 60
     name: VirgonFleetYard
-    ssid: 'VirgonFleetYard'
-    purpose: 'Printers'
-    subnet: '10.76.60.0/24'
-    gateway: '10.76.60.1'
-    dhcp_range_start: '10.76.60.100'
-    dhcp_range_end: '10.76.60.199'
-    lease_time: '24h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "VirgonFleetYard"
+    purpose: "Printers"
+    subnet: "10.76.60.0/24"
+    gateway: "10.76.60.1"
+    dhcp_range_start: "10.76.60.100"
+    dhcp_range_end: "10.76.60.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'blocked'
+    wan_egress: blocked
 
   - id: 70
     name: PegasusMediaNode
-    ssid: 'PegasusMedia'
-    purpose: 'Media and Casting'
-    subnet: '10.76.70.0/24'
-    gateway: '10.76.70.1'
-    dhcp_range_start: '10.76.70.100'
-    dhcp_range_end: '10.76.70.199'
-    lease_time: '24h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "PegasusMedia"
+    purpose: "Media and Casting"
+    subnet: "10.76.70.0/24"
+    gateway: "10.76.70.1"
+    dhcp_range_start: "10.76.70.100"
+    dhcp_range_end: "10.76.70.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    wan_egress: unrestricted
 
   - id: 81
     name: ScorpiaMediaShield
-    ssid: 'ScorpiaMedia'
-    purpose: 'Cameras - Local'
-    subnet: '10.76.81.0/24'
-    gateway: '10.76.81.1'
-    dhcp_range_start: ''
-    dhcp_range_end: ''
-    lease_time: ''
-    dns: ''
-    dns_secondary: ''
+    ssid: "ScorpiaMedia"
+    purpose: "Cameras — Local"
+    subnet: "10.76.81.0/24"
+    gateway: "10.76.81.1"
+    dhcp_range_start: ""
+    dhcp_range_end: ""
+    lease_time: ""
+    dns: ""
+    dns_secondary: ""
     dhcp_enabled: false
-    internet_access: 'blocked'
+    wan_egress: blocked
 
   - id: 82
     name: ScorpiaMediaRelay
-    ssid: 'ScorpiaMediaRelay'
-    purpose: 'Cameras - Cloud'
-    subnet: '10.76.82.0/24'
-    gateway: '10.76.82.1'
-    dhcp_range_start: '10.76.82.100'
-    dhcp_range_end: '10.76.82.199'
-    lease_time: '24h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "ScorpiaMediaRelay"
+    purpose: "Cameras — Cloud"
+    subnet: "10.76.82.0/24"
+    gateway: "10.76.82.1"
+    dhcp_range_start: "10.76.82.100"
+    dhcp_range_end: "10.76.82.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'limited'
+    wan_egress: limited
 
   - id: 90
     name: ScyllaProcessControl
-    ssid: 'ScyllaProcessControl'
-    purpose: 'Work VLAN (compliance bubble)'
-    subnet: '10.76.90.0/24'
-    gateway: '10.76.90.1'
-    dhcp_range_start: '10.76.90.100'
-    dhcp_range_end: '10.76.90.199'
-    lease_time: '24h'
-    dns: '{{ pihole_primary_vip }}'
-    dns_secondary: '{{ pihole_secondary_vip }}'
+    ssid: "ScyllaProcessControl"
+    purpose: "Work VLAN (compliance bubble)"
+    subnet: "10.76.90.0/24"
+    gateway: "10.76.90.1"
+    dhcp_range_start: "10.76.90.100"
+    dhcp_range_end: "10.76.90.199"
+    lease_time: "24h"
+    dns: "{{ pihole_primary_vip }}"
+    dns_secondary: "{{ pihole_secondary_vip }}"
     dhcp_enabled: true
-    internet_access: 'unrestricted'
+    wan_egress: unrestricted
 
 # Hypervisor management addressing source of truth.
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.
@@ -185,8 +190,8 @@ hypervisor_management:
     - hostname: CrimsonRogue
       platform: 'proxmox-qemu'
       role: ProxmoxNode1
-      mgmt_ip_legacy: '10.10.5.10'
-      mgmt_ip_target: '10.76.40.10'
+      mgmt_ip_legacy: "10.10.5.9"
+      mgmt_ip_target: "10.76.40.10"
       mgmt_bridge: vmbr0
       mgmt_vlan_id: 40
       conversion_status: converted
@@ -214,14 +219,23 @@ hypervisor_management:
 
 # Network discovery integration settings.
 # Keep secrets out of git; provide API key through vault/CI vars.
+network_discovery_fing_local_api_enabled: false
+network_discovery_fing_local_api_key: >-
+  {{
+    (vault_fing_local_api_key | mandatory('Set vault_fing_local_api_key when network_discovery_fing_local_api_enabled=true'))
+    if (network_discovery_fing_local_api_enabled | bool)
+    else (vault_fing_local_api_key | default(''))
+  }}
+
 network_discovery:
   fing_local_api:
-    enabled: true
+    enabled: "{{ network_discovery_fing_local_api_enabled | bool }}"
     source: fing
     base_url: 'http://10.10.0.136:49090/1'
     devices_endpoint: '/devices'
     people_endpoint: '/people'
     auth_query_param: auth
-    api_key: "{{ vault_fing_local_api_key | default('') }}"
+    api_key: "{{ network_discovery_fing_local_api_key }}"
     timeout_seconds: 10
     poll_interval_seconds: 60
+    # Note: this fails fast when enabled and key is missing.

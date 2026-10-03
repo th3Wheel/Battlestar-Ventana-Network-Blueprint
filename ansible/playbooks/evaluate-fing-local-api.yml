@@ -1,0 +1,7 @@
+---
+- name: Evaluate Fing Local API integration
+  hosts: localhost
+  gather_facts: false
+
+  roles:
+    - role: fing-local-api

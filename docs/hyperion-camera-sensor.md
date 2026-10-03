@@ -87,12 +87,14 @@ flowchart TB
 ### Recommended Camera Models
 
 #### Option 1: ESP32-CAM with OV2640 (Budget-Friendly)
+
 - **Resolution:** 640x480 @ 10-15fps
 - **Latency:** 100-150ms
 - **Cost:** ~$10 USD
 - **Best for:** Standard 1080p TVs, shorter distances (<2m)
 
 #### Option 2: ESP32-CAM with OV5640 (High Performance)
+
 - **Resolution:** 1280x720 @ 15-20fps
 - **Latency:** 80-120ms
 - **Cost:** ~$15 USD
@@ -124,6 +126,7 @@ The recommended Hyperion variant for modern setups:
 ### ESP32 Firmware Options
 
 #### Option A: ESP32-Hyperion-Grabber (Recommended)
+
 ```bash
 # Flash using PlatformIO
 git clone https://github.com/hyperion-project/esp32-hyperion-grabber
@@ -132,12 +135,14 @@ pio run --target upload
 ```
 
 **Configuration:**
+
 - Hyperion server IP: `10.76.50.20`
 - Hyperion port: `19444` (UDP) or `19445` (TCP)
 - Frame rate: `10fps` (adjustable based on performance)
 - Resolution: `640x480` (default)
 
 #### Option B: Custom ESPHome Integration
+
 ```yaml
 # esphome/hyperion-camera.yaml
 esphome:
@@ -211,6 +216,7 @@ services:
 ```
 
 **Deploy:**
+
 ```bash
 cd /opt/hyperion
 docker-compose up -d
@@ -490,6 +496,7 @@ For standard TV ambient lighting with LED strips around the edges:
 ```
 
 **Explanation:**
+
 - `index`: LED position (0-59 for 60 LED setup)
 - `hscan`: Horizontal position on screen (0.0 = left, 1.0 = right)
 - `vscan`: Vertical position on screen (0.0 = top, 1.0 = bottom)
@@ -544,7 +551,7 @@ For room-wide ambient lighting or multiple LED zones:
 - [ ] Configure Wi-Fi credentials (SSID: CylonSynthLink)
 - [ ] Set Hyperion server IP (10.76.50.20) and port (19444)
 - [ ] Test frame streaming (verify UDP packets received)
-- [ ] Access Hyperion web UI (http://10.76.50.20:8090)
+- [ ] Access Hyperion web UI (<http://10.76.50.20:8090>)
 - [ ] Configure LED layout and output device
 - [ ] Test ambient lighting response to screen content
 
@@ -568,6 +575,7 @@ For room-wide ambient lighting or multiple LED zones:
 **Symptoms:** ESP32-CAM not showing up on network
 
 **Solutions:**
+
 1. Verify SSID and password in firmware configuration
 2. Ensure VLAN 20 is configured correctly on router/switch
 3. Check signal strength (ESP32 2.4GHz Wi-Fi only)
@@ -579,6 +587,7 @@ For room-wide ambient lighting or multiple LED zones:
 **Symptoms:** Hyperion web UI shows "No signal" or 0fps
 
 **Solutions:**
+
 1. Verify firewall rules allow UDP 19444 from IoT (20) to ServerVault (50)
 2. Check Hyperion server IP and port in ESP32 configuration
 3. Test UDP connectivity: `nc -u -l 19444` on server, send test frame from camera
@@ -590,6 +599,7 @@ For room-wide ambient lighting or multiple LED zones:
 **Symptoms:** <5fps, latency >200ms, choppy lighting
 
 **Solutions:**
+
 1. Reduce camera resolution (e.g., 640x480 → 320x240)
 2. Lower JPEG quality setting (less compression = larger frames but faster)
 3. Check Wi-Fi signal strength and interference (use 5GHz if supported)
@@ -601,6 +611,7 @@ For room-wide ambient lighting or multiple LED zones:
 **Symptoms:** LED colors don't match screen content accurately
 
 **Solutions:**
+
 1. Recalibrate camera white balance and exposure
 2. Adjust Hyperion LED layout/mapping in web UI
 3. Increase LED smoothing or transition time for more stable colors
@@ -612,6 +623,7 @@ For room-wide ambient lighting or multiple LED zones:
 **Symptoms:** ESP32-CAM becomes hot to touch, random reboots
 
 **Solutions:**
+
 1. Ensure adequate ventilation around camera module
 2. Add small heatsink to ESP32 chip
 3. Reduce frame rate (e.g., 10fps → 5fps)
@@ -741,6 +753,7 @@ cameras:
 For accurate color reproduction with HDR content:
 
 1. Enable HDR tone mapping in Hyperion:
+
 ```json
 {
   "color": {
@@ -756,7 +769,8 @@ For accurate color reproduction with HDR content:
 }
 ```
 
-2. Adjust camera exposure compensation:
+1. Adjust camera exposure compensation:
+
 ```cpp
 // In ESP32 firmware
 sensor_t *s = esp_camera_sensor_get();
