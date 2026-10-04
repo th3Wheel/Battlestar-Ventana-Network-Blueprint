@@ -2,7 +2,7 @@
   "device": {
     "name": "wled_ws2815_six",
     "type": "wled",
-    "output": "10.10.10.50",
+    "output": "10.76.20.101",
     "colorOrder": "grb",
     "hardwareLedCount": 46
   }

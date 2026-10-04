@@ -36,14 +36,14 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [infrastructure, services, iot, print, media, surveillance, work]
+      destinations: [iot, elevated_guest, infrastructure, services, print, media, surveillance]
     ipv6:
       status: planned
     wireless:
       hidden: false
       security: wpa2_wpa3_personal
       ap_groups: []
-    notes: 'Fully trusted zone; direct access to services and infrastructure permitted.'
+    notes: 'Fully trusted zone; access is restricted by the firewall matrix.'
 
   - id: 20
     name: CylonSynthLink
@@ -64,15 +64,15 @@ vlans:
       rate_limit_mbps: 2
       destinations: [cloud_services]
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [services]
     ipv6:
       status: planned
     wireless:
       hidden: false
       security: wpa2_wpa3_personal
       ap_groups: []
-    notes: 'No lateral movement to trusted subnets. Cloud-facing IoT permitted via allowlist.'
+    notes: 'No lateral movement except limited ServerVault telemetry and firmware access.'
 
   - id: 30
     name: CapricaGuestPortal
@@ -123,7 +123,7 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [media, print]
+      destinations: [trusted, services, print, media]
     ipv6:
       status: planned
     wireless:
@@ -151,8 +151,8 @@ vlans:
       rate_limit_mbps: null
       destinations: []
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [trusted, services, work]
     ipv6:
       status: planned
     wireless:
@@ -181,7 +181,7 @@ vlans:
       destinations: [approved_service_dependencies]
     inter_vlan_policy:
       mode: allowlist
-      destinations: [trusted, infrastructure, iot, print, media, surveillance, work]
+      destinations: [trusted, iot, elevated_guest, infrastructure, print, media, surveillance]
     ipv6:
       status: planned
     wireless:
@@ -239,7 +239,7 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [trusted, elevated_guest]
+      destinations: [trusted, elevated_guest, services]
     ipv6:
       status: planned
     wireless:
@@ -325,12 +325,12 @@ vlans:
       rate_limit_mbps: null
       destinations: []
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [media]
     ipv6:
       status: planned
     wireless:
       hidden: false
       security: wpa2_wpa3_personal
       ap_groups: []
-    notes: 'Isolated work zone. Treated as untrusted by internal services. Corporate traffic segmented here.'
+    notes: 'Work zone; inter-VLAN access is limited to Pegasus media services.'

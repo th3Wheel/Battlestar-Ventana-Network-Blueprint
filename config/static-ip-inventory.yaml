@@ -16,7 +16,7 @@ inventory:
       notes: Floating Pi-hole service address managed by HA failover.
 
     - hostname: pihole-node-01
-      address: 10.76.50.11
+      address: 10.76.50.15
       vlan_id: 50
       address_type: physical_node
       service: pihole

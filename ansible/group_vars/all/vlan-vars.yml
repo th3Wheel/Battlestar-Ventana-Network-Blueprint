@@ -31,7 +31,7 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [infrastructure, services, iot, print, media, surveillance, work]
+      destinations: [iot, elevated_guest, infrastructure, services, print, media, surveillance]
 
   - id: 20
     name: CylonSynthLink
@@ -50,8 +50,8 @@ vlans:
       rate_limit_mbps: 2
       destinations: [cloud_services]
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [services]
 
   - id: 30
     name: CapricaGuestPortal
@@ -91,7 +91,7 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [media, print]
+      destinations: [trusted, services, print, media]
 
   - id: 40
     name: BasestarVentana
@@ -110,8 +110,8 @@ vlans:
       rate_limit_mbps: null
       destinations: []
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [trusted, services, work]
 
   - id: 50
     name: GemenonServiceVault
@@ -131,7 +131,7 @@ vlans:
       destinations: [approved_service_dependencies]
     inter_vlan_policy:
       mode: allowlist
-      destinations: [trusted, infrastructure, iot, print, media, surveillance, work]
+      destinations: [trusted, iot, elevated_guest, infrastructure, print, media, surveillance]
 
   - id: 60
     name: VirgonFleetYard
@@ -171,7 +171,7 @@ vlans:
       destinations: []
     inter_vlan_policy:
       mode: allowlist
-      destinations: [trusted, elevated_guest]
+      destinations: [trusted, elevated_guest, services]
 
   - id: 81
     name: ScorpiaMediaShield
@@ -230,8 +230,8 @@ vlans:
       rate_limit_mbps: null
       destinations: []
     inter_vlan_policy:
-      mode: deny
-      destinations: []
+      mode: allowlist
+      destinations: [media]
 
 # Hypervisor management addressing source of truth.
 # This captures the legacy-to-target conversion used for Proxmox/QEMU nodes.
