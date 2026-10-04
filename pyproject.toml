@@ -32,6 +32,7 @@ target-version = "py314"
 extend-exclude = [
     ".venv",
     "node_modules",
+    "ansible/collections",
     "ha/templates",
 ]
 
