@@ -40,19 +40,58 @@ while IFS= read -r cam; do
   [ "$ip" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no IP address" >&2; exit 1; }
   [ "$host" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no hostname" >&2; exit 1; }
 
+  if [[ ! "$ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
+    echo "Error: Invalid IP address for camera ID \"$cam\": \"$ip\"" >&2
+    exit 1
+  fi
+  IFS=. read -r -a ip_octets <<< "$ip"
+  for octet in "${ip_octets[@]}"; do
+    if ((10#$octet > 255)); then
+      echo "Error: Invalid IP address for camera ID \"$cam\": \"$ip\"" >&2
+      exit 1
+    fi
+  done
+
+  if [[ ! "$host" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$ ]] || (( ${#host} > 253 )); then
+    echo "Error: Invalid hostname for camera ID \"$cam\": \"$host\"" >&2
+    exit 1
+  fi
+
   mkdir -p "$OUTDIR/$host"
 
-  sed \
-    -e "s/ip_address=.*/ip_address=$ip/" \
-    -e "s/hostname=.*/hostname=$host/" \
-    "$TEMPLATE" \
-    > "$OUTDIR/$host/thingino.conf"
+  export ip host
+  awk '
+  BEGIN {
+      ip = ENVIRON["ip"]
+      host = ENVIRON["host"]
+  }
+  {
+      if ($0 ~ /^ip_address=/) {
+          print "ip_address=" ip
+      } else if ($0 ~ /^hostname=/) {
+          print "hostname=" host
+      } else {
+          print $0
+      }
+  }
+  ' "$TEMPLATE" > "$OUTDIR/$host/thingino.conf"
 
-  sed \
-    -e "s/fw_setenv ipaddr .*/fw_setenv ipaddr $ip/" \
-    -e "s/fw_setenv hostname .*/fw_setenv hostname $host/" \
-    "$RUNONCE_TEMPLATE" \
-    > "$OUTDIR/$host/runonce.sh"
+  export ip host
+  awk '
+  BEGIN {
+      ip = ENVIRON["ip"]
+      host = ENVIRON["host"]
+  }
+  {
+      if ($0 ~ /^fw_setenv ipaddr /) {
+          print "fw_setenv ipaddr " ip
+      } else if ($0 ~ /^fw_setenv hostname /) {
+          print "fw_setenv hostname " host
+      } else {
+          print $0
+      }
+  }
+  ' "$RUNONCE_TEMPLATE" > "$OUTDIR/$host/runonce.sh"
   chmod +x "$OUTDIR/$host/runonce.sh"
 done < <("$YQ_BIN" -r '.cameras[].id' "$MAP")
 
