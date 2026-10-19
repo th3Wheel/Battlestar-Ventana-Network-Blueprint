@@ -63,7 +63,7 @@ generate_keypair() {
     
     # Check if key already exists
     if [[ -f "$KEY_PATH" ]]; then
-        read -p "Key already exists at $KEY_PATH. Overwrite? (y/n): " -n 1 -r
+        read -r -p "Key already exists at $KEY_PATH. Overwrite? (y/n): " -n 1
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             log_warn "Skipping keypair generation"
@@ -117,7 +117,7 @@ store_in_secrets() {
     log_info "Creating/updating vault entry..."
     
     # This is a simplified example - adjust based on your Op:// vault structure
-    read -p "Enter Op:// vault name (default: homelab): " vault_input
+    read -r -p "Enter Op:// vault name (default: homelab): " vault_input
     VAULT_PATH="${vault_input:-homelab}"
     
     # Create the vault item if it doesn't exist
@@ -195,7 +195,7 @@ validate_ssh_access() {
 
         log_info "Testing SSH to $hostname ($ip)..."
         
-        if ssh -o ConnectTimeout=5 \
+        if ssh -n -o ConnectTimeout=5 \
                -o StrictHostKeyChecking=accept-new \
                -i "$KEY_PATH" \
                "root@${ip}" "echo OK" &>/dev/null; then
@@ -298,7 +298,7 @@ if [[ $# -eq 0 ]]; then
     echo "4. Validate SSH access"
     echo "5. Do all of the above"
     echo "6. Exit"
-    read -p "Select option (1-6): " choice
+    read -r -p "Select option (1-6): " choice
 
     case $choice in
         1) main --generate ;;

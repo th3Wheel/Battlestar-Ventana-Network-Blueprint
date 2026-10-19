@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+from typing import Any
 from urllib.parse import quote_plus
 
 # Configuration constants
@@ -70,7 +71,7 @@ class EnergyAnalyzer:
         self.db_user = db_user
         self.db_password = db_password
         self.days = days
-        self.data = {}
+        self.data: dict[str, list[float]] = {}
 
     def _sanitize_credential(self, error_msg: str, credential: str) -> str:
         """
@@ -151,7 +152,7 @@ class EnergyAnalyzer:
             totals[sensor] = sum(values)
         return totals
 
-    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, any]:
+    def analyze_patterns(self, data: dict[str, list[float]]) -> dict[str, Any]:
         """
         Analyze energy usage patterns.
 
