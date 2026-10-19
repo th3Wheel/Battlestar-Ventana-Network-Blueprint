@@ -63,7 +63,7 @@ generate_keypair() {
     
     # Check if key already exists
     if [[ -f "$KEY_PATH" ]]; then
-        read -r -p "Key already exists at $KEY_PATH. Overwrite? (y/n): " -n 1 -r
+        read -r -p "Key already exists at $KEY_PATH. Overwrite? (y/n): " -n 1
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             log_warn "Skipping keypair generation"
