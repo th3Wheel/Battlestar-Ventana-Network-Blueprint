@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a problem in the network blueprint, documentation, or tooling.
+title: '[Bug]: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem clearly. Remove secrets and private network
+        details from logs or configuration before sharing them.
+  - type: input
+    id: area
+    attributes:
+      label: Affected area
+      description: Name the affected service, document, script, or configuration.
+      placeholder: 'For example: DHCP scopes or Pi-hole'
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Explain the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: List the steps or conditions that make the problem occur.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Relevant context
+      description: Include versions or sanitized output that may help reproduce it.
+    validations:
+      required: false
