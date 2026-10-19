@@ -11,11 +11,14 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+readonly REPO_ROOT
 readonly INVENTORY="$REPO_ROOT/docs/device-inventory.md"
 readonly SNAPSHOTS_DIR="$REPO_ROOT/baseline/fing-snapshots"
 readonly FING_BASE_URL="${FING_BASE_URL:-http://localhost:49090/1}"
-readonly TODAY="$(date -u +%Y-%m-%d)"
+
+TODAY="$(date -u +%Y-%m-%d)"
+readonly TODAY
 
 # --- Validate dependencies ---
 for cmd in curl jq; do
@@ -127,8 +130,11 @@ echo ""
 echo "[MATCHED] ${MATCHED_COUNT} device(s) confirmed in both Fing and inventory."
 
 # --- Change tracking: diff against most recent previous snapshot ---
-PREV_SNAPSHOT="$(ls -1 "$SNAPSHOTS_DIR"/fing-*.json 2>/dev/null \
-    | grep -v "fing-$TODAY.json" | tail -1 || true)"
+PREV_SNAPSHOT=""
+for snapshot in "$SNAPSHOTS_DIR"/fing-*.json; do
+    [[ -f "$snapshot" && "$snapshot" != "$SNAPSHOTS_DIR/fing-$TODAY.json" ]] || continue
+    PREV_SNAPSHOT="$snapshot"
+done
 
 if [[ -n "$PREV_SNAPSHOT" ]]; then
     PREV_DATE="$(basename "$PREV_SNAPSHOT" .json | sed 's/fing-//')"
@@ -160,7 +166,7 @@ if [[ -n "$PREV_SNAPSHOT" ]]; then
         fi
         if [[ -n "$LOST" ]]; then
             echo "[-] Gone since $PREV_DATE:"
-            echo "$LOST" | sed 's/^/  /'
+            echo "  ${LOST//$'\n'/$'\n'  }"
         fi
     fi
 fi
