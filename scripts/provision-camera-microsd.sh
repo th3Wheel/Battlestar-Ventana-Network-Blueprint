@@ -116,6 +116,24 @@ generate_runonce() {
     
     hostname=$(yq eval ".cameras[] | select(.id == \"$camera_id\") | .hostname" "$CAMERA_MAP")
     future_ip=$(yq eval ".cameras[] | select(.id == \"$camera_id\") | .future_ip" "$CAMERA_MAP")
+
+    if [[ ! "$future_ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
+        log_error "Invalid IP address for camera $camera_id: $future_ip"
+        return 1
+    fi
+    local -a ip_octets
+    IFS=. read -r -a ip_octets <<< "$future_ip"
+    for octet in "${ip_octets[@]}"; do
+        if ((10#$octet > 255)); then
+            log_error "Invalid IP address for camera $camera_id: $future_ip"
+            return 1
+        fi
+    done
+
+    if [[ ! "$hostname" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$ ]] || (( ${#hostname} > 253 )); then
+        log_error "Invalid hostname for camera $camera_id: $hostname"
+        return 1
+    fi
     
     # Extract IP octets for VLAN calculation (assuming 10.76.X.Y format)
     gateway=$(echo "$future_ip" | awk -F. '{print $1"."$2"."$3".1"}')
@@ -124,6 +142,10 @@ generate_runonce() {
     
     # Read SSH key
     ssh_key_content=$(cat "$SSH_KEY_FILE")
+    if [[ -z "$ssh_key_content" || "$ssh_key_content" == *$'\n'* ]] || grep -Fxq 'SSHEOF' "$SSH_KEY_FILE"; then
+        log_error "SSH public key must be a single line and must not contain the heredoc delimiter"
+        return 1
+    fi
     
     # Generate runonce.sh from template
     cat "$RUNONCE_TEMPLATE" > "$output_file"
