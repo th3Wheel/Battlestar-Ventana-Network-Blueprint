@@ -40,6 +40,23 @@ while IFS= read -r cam; do
   [ "$ip" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no IP address" >&2; exit 1; }
   [ "$host" = "null" ] && { echo "Error: Camera ID \"$cam\" not found or has no hostname" >&2; exit 1; }
 
+  if [[ ! "$ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then
+    echo "Error: Invalid IP address for camera ID \"$cam\": \"$ip\"" >&2
+    exit 1
+  fi
+  IFS=. read -r -a ip_octets <<< "$ip"
+  for octet in "${ip_octets[@]}"; do
+    if ((10#$octet > 255)); then
+      echo "Error: Invalid IP address for camera ID \"$cam\": \"$ip\"" >&2
+      exit 1
+    fi
+  done
+
+  if [[ ! "$host" =~ ^[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$ ]] || (( ${#host} > 253 )); then
+    echo "Error: Invalid hostname for camera ID \"$cam\": \"$host\"" >&2
+    exit 1
+  fi
+
   mkdir -p "$OUTDIR/$host"
 
   export ip host
