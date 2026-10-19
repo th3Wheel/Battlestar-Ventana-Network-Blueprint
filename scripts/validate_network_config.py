@@ -70,7 +70,7 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
         name = vlan.get("name")
         require(isinstance(name, str), f"{path}.name must be a string")
         name = cast(str, name).strip()
-        require(name and name not in names, f"{path}.name must be unique and non-empty")
+        require(bool(name) and name not in names, f"{path}.name must be unique and non-empty")
         vlan["name"] = name
         subnet = vlan.get("subnet")
         gateway = vlan.get("gateway")

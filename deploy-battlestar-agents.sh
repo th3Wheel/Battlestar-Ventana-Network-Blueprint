@@ -1,4 +1,6 @@
-# Battlestar Ventana Network Blueprint — Agent Suite Deployment Script
+#!/usr/bin/env bash
+
+# Battlestar Ventana Network Blueprint -- Agent Suite Deployment Script
 #
 # Reads all agent suite files from the SOURCE directory (default: the directory
 # this script lives in) and installs them into the correct repository structure
@@ -101,6 +103,8 @@ install_file() {
   local dest_rel="${PARTS[$last_index]}"
 
   local dest_abs="${REPO_ROOT}/${dest_rel}"
+  local dest_dir
+  dest_dir="$(dirname -- "${dest_abs}")"
   local src_abs=""
   for (( i=0; i<${#PARTS[@]}-1; i++ )); do
     local candidate="${SOURCE_DIR}/${PARTS[$i]}"
