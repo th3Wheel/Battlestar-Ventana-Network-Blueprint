@@ -1,0 +1,290 @@
+---
+groups:
+  - name: siem_hard_violations
+    interval: 30s
+    rules:
+      # Critical policy violations requiring immediate attention
+      - alert: UnauthorizedVLANAccess
+        expr: rate(firewall_blocked_cross_vlan_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "Unauthorized cross-VLAN access detected"
+          description: "VLAN {{ $labels.source_vlan }} attempted unauthorized access to VLAN {{ $labels.dest_vlan }}. This violates network segmentation policy."
+          runbook_url: "https://wiki.example.com/runbooks/unauthorized-vlan-access"
+
+      - alert: GuestNetworkPolicyViolation
+        expr: sum by (source_vlan, dest_vlan) (firewall_denied_packets_total{source_vlan=~"30|31",dest_vlan=~"10|20|40|50|81|82|90"}) > 5
+        for: 1m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "Guest network attempting to access restricted VLANs"
+          description: "Guest VLAN {{ $labels.source_vlan }} tried accessing protected VLAN {{ $labels.dest_vlan }}. Guest networks must remain isolated."
+          runbook_url: "https://wiki.example.com/runbooks/guest-policy-violation"
+
+      - alert: IoTUnauthorizedOutbound
+        expr: |
+          rate(firewall_denied_packets_total{
+            source_vlan="20",
+            protocol!~"mqtt|https"
+          }[5m]) > 3
+        for: 5m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "IoT device attempting unauthorized protocols"
+          description: "IoT VLAN (20) device {{ $labels.source_ip }} attempting non-MQTT/HTTPS traffic. IoT devices are restricted to telemetry only."
+          runbook_url: "https://wiki.example.com/runbooks/iot-policy-violation"
+
+      - alert: AuthenticationFailureSurge
+        expr: rate(auth_failed_attempts_total[5m]) > 10
+        for: 3m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "High rate of authentication failures detected"
+          description: "{{ $value | humanize }} failed authentication attempts per minute from {{ $labels.source_ip }}. Possible brute force attack."
+          runbook_url: "https://wiki.example.com/runbooks/auth-failure-surge"
+
+      - alert: CameraAccessViolation
+        expr: |
+          sum by (source_vlan, dest_vlan) (firewall_denied_packets_total{
+            dest_vlan=~"81|82",
+            source_vlan!~"10|50"
+          }) > 0
+        for: 2m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "Unauthorized camera access attempt"
+          description: "VLAN {{ $labels.source_vlan }} attempting to access camera VLAN {{ $labels.dest_vlan }}. Only Trusted (10) and ServerVault (50) have view access."
+          runbook_url: "https://wiki.example.com/runbooks/camera-access-violation"
+
+      - alert: WorkVLANLateralMovement
+        expr: |
+          rate(firewall_denied_packets_total{
+            source_vlan="90",
+            dest_vlan!~"70|40|50|90"
+          }[5m]) > 5
+        for: 5m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "Work VLAN attempting unauthorized lateral movement"
+          description: "Work VLAN (90) trying to access restricted VLAN {{ $labels.dest_vlan }}. Work VLAN is allowed to access Media VLAN (70), management VLANs (40/50), and Internet egress only."
+          runbook_url: "https://wiki.example.com/runbooks/work-vlan-violation"
+
+  - name: siem_threshold_violations
+    interval: 1m
+    rules:
+      # Resource threshold violations
+      - alert: BandwidthThresholdExceeded
+        expr: |
+          rate(interface_bytes_total[10m]) >
+          (avg_over_time(rate(interface_bytes_total[10m])[24h:10m]) * 2)
+        for: 15m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "Bandwidth usage exceeds 2× baseline"
+          description: "Interface {{ $labels.interface }} on VLAN {{ $labels.vlan }} using {{ $value | humanize }}bps, exceeding baseline by 2×."
+          runbook_url: "https://wiki.example.com/runbooks/bandwidth-threshold"
+
+      - alert: StorageCapacityHigh
+        expr: |
+          (storage_used_bytes / storage_total_bytes) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "Storage capacity exceeds 85%"
+          description: "Server {{ $labels.server }} on ServerVault VLAN (50) storage at {{ $value | humanizePercentage }}."
+          runbook_url: "https://wiki.example.com/runbooks/storage-capacity"
+
+      - alert: ConnectionRateExceeded
+        expr: rate(connection_attempts_total[5m]) > 100
+        for: 10m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "Connection rate exceeds threshold"
+          description: "Service {{ $labels.service }} on {{ $labels.vlan }} receiving {{ $value | humanize }} connections/min, exceeding safe threshold."
+          runbook_url: "https://wiki.example.com/runbooks/connection-rate"
+
+      - alert: DNSQueryRateSpike
+        expr: |
+          rate(dns_queries_total[5m]) >
+          (avg_over_time(rate(dns_queries_total[5m])[1h:5m]) * 5)
+        for: 10m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "DNS query rate 5× above normal"
+          description: "VLAN {{ $labels.vlan }} generating {{ $value | humanize }} DNS queries/sec, possible DNS tunneling or DDoS."
+          runbook_url: "https://wiki.example.com/runbooks/dns-query-spike"
+
+      - alert: FirewallRuleHitRateHigh
+        expr: |
+          rate(firewall_rule_hits_total[10m]) > 1000
+        for: 15m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "Firewall rule processing rate high"
+          description: "Firewall rule {{ $labels.rule_id }} hit {{ $value | humanize }} times/sec, may indicate scanning or misconfiguration."
+          runbook_url: "https://wiki.example.com/runbooks/firewall-hit-rate"
+
+      - alert: SSIDConnectionFailureRate
+        expr: |
+          rate(wifi_connection_failures_total[10m]) /
+          rate(wifi_connection_attempts_total[10m]) > 0.3
+        for: 10m
+        labels:
+          severity: warning
+          category: threshold_violation
+          team: operations
+        annotations:
+          summary: "WiFi connection failure rate exceeds 30%"
+          description: "SSID {{ $labels.ssid }} on VLAN {{ $labels.vlan }} has {{ $value | humanizePercentage }} failure rate."
+          runbook_url: "https://wiki.example.com/runbooks/wifi-failures"
+
+  - name: siem_anomaly_detection
+    interval: 2m
+    rules:
+      # Anomalous behavior detection
+      - alert: TrafficPatternAnomaly
+        expr: |
+          abs(
+            rate(interface_bytes_total[5m]) -
+            avg_over_time(rate(interface_bytes_total[5m])[1h:5m])
+          ) > (
+            3 * stddev_over_time(rate(interface_bytes_total[5m])[1h:5m])
+          )
+        for: 20m
+        labels:
+          severity: info
+          category: anomaly
+          team: monitoring
+        annotations:
+          summary: "Traffic pattern deviates from baseline"
+          description: "VLAN {{ $labels.vlan }} traffic deviating by 3 standard deviations from normal pattern."
+          runbook_url: "https://wiki.example.com/runbooks/traffic-anomaly"
+
+      - alert: OffHoursAccessAnomaly
+        expr: |
+          count_over_time(
+            access_log_entries{hour=~"0[0-7]|2[2-3]"}[1h]
+          ) > 10
+        labels:
+          severity: info
+          category: anomaly
+          team: monitoring
+        annotations:
+          summary: "Unusual off-hours access detected"
+          description: "{{ $value }} access attempts during off-hours (10pm-7am) from user {{ $labels.user }} on VLAN {{ $labels.vlan }}."
+          runbook_url: "https://wiki.example.com/runbooks/offhours-access"
+
+      - alert: NewDeviceBehaviorAnomaly
+        expr: |
+          count by (device_mac, vlan) (
+            (device_first_seen_timestamp > (time() - 3600))
+            and (rate(device_bytes_total[10m]) > 10000000)  # 10 MB/sec threshold
+          ) > 0
+        labels:
+          severity: info
+          category: anomaly
+          team: monitoring
+        annotations:
+          summary: "New device with unusual traffic pattern"
+          description: "Device {{ $labels.device_mac }} on VLAN {{ $labels.vlan }} sending {{ $value | humanize }}bps within 1 hour of first appearance."
+          runbook_url: "https://wiki.example.com/runbooks/new-device-anomaly"
+
+      - alert: ProtocolDistributionAnomaly
+        expr: |
+          abs(
+            sum by (vlan, protocol) (rate(protocol_bytes_total[10m])) /
+            sum by (vlan) (rate(protocol_bytes_total[10m])) -
+            avg_over_time(
+              (
+                sum by (vlan, protocol) (rate(protocol_bytes_total[10m])) /
+                sum by (vlan) (rate(protocol_bytes_total[10m]))
+              )[24h:10m]
+            )
+          ) > 0.2
+        for: 30m
+        labels:
+          severity: info
+          category: anomaly
+          team: monitoring
+        annotations:
+          summary: "Protocol distribution deviates from normal"
+          description: "VLAN {{ $labels.vlan }} protocol {{ $labels.protocol }} usage deviates by {{ $value | humanizePercentage }} from 24h average."
+          runbook_url: "https://wiki.example.com/runbooks/protocol-anomaly"
+
+      - alert: GeographicAccessAnomaly
+        expr: |
+          count by (user, source_country) (
+            rate(access_attempts_geographic_mismatch_total[1h])
+          ) > 0
+        labels:
+          severity: info
+          category: anomaly
+          team: monitoring
+        annotations:
+          summary: "Access from unusual geographic location"
+          description: "User {{ $labels.user }} accessing from {{ $labels.source_country }}, outside their registered home location. Investigate potential account compromise."
+          runbook_url: "https://wiki.example.com/runbooks/geographic-anomaly"
+
+  - name: siem_service_health
+    interval: 1m
+    rules:
+      # Service-specific health and policy checks
+      - alert: VPNTunnelPolicyViolation
+        expr: |
+          sum by (vlan) (vpn_tunnel_established{vlan!="90"}) > 0
+        for: 5m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "VPN tunnel established outside Work VLAN"
+          description: "VPN tunnel detected on VLAN {{ $labels.vlan }}. VPN access is restricted to Work VLAN (90) only."
+          runbook_url: "https://wiki.example.com/runbooks/vpn-policy"
+
+      - alert: PrinterVLANViolation
+        expr: |
+          sum by (vlan, device_name) (printer_device_total{vlan!="60"}) > 0
+        for: 10m
+        labels:
+          severity: critical
+          category: hard_violation
+          team: security
+        annotations:
+          summary: "Printer device detected outside designated VLAN"
+          description: "Printer {{ $labels.device_name }} found on VLAN {{ $labels.vlan }}. All printers must be on Printers VLAN (60)."
+          runbook_url: "https://wiki.example.com/runbooks/printer-vlan"
