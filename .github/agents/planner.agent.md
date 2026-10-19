@@ -10,9 +10,10 @@ description: >
 tools:
   - read
   - search
-  - codebase
+  - search/codebase
   - githubRepo
-  - problems
+  - read/problems
+  - vscodeTasks/problems
   - comment
 triggers:
   - "plan this"
@@ -24,7 +25,7 @@ triggers:
   - "scope this out"
   - "create issues for this"
   - "sprint planning"
-model: gpt-4o
+model: auto
 temperature: 0
 ---
 
@@ -219,4 +220,4 @@ Required action: [what the human must do to proceed]
 | `config/vlan-registry.yaml` | VLAN assignments |
 | `docs/naming-conventions.md` | Canonical naming conventions for VLANs, hosts, and devices |
 | `docs/change-log/firewall-changes.md` | Firewall change history |
-| `CHANGELOG.md` | Recent changes for current-state awareness |
+| `CHANGELOG.md` | Recent changes for current-state awareness |
