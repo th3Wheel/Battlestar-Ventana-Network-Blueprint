@@ -6,17 +6,17 @@ readme = "README.md"
 authors = [
     { name = "th3wheel", email = "tnwheeler@gmail.com" }
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.15"
 dependencies = []
 
 [dependency-groups]
 dev = [
-    "black==26.3.1",
-    "isort==7.0.0",
-    "pylint==4.0.4",
+    "djlint==1.36.4",
     "pyyaml==6.0.3",
     "ruff==0.14.11",
     "ty==0.0.78",
+    "yamllint==1.37.1",
+    "uv_build>=0.12.10,<0.13.0"
 ]
 
 [project.scripts]
@@ -26,11 +26,14 @@ battlestar-ventana-network-blueprint = "battlestar_ventana_network_blueprint:mai
 requires = ["uv_build>=0.12.10,<0.13.0"]
 build-backend = "uv_build"
 
+[tool.uv.extra-build-variables]
+pyyaml = { PYYAML_FORCE_LIBYAML = "0" }
+
 [tool.ruff]
 line-length = 120
-target-version = "py314"
+target-version = "py315"
 extend-exclude = [
-    ".venv",
+    ".venv*",
     "node_modules",
     "ha/templates",
 ]
@@ -43,7 +46,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.ty.environment]
-python-version = "3.14"
+python-version = "3.15"
 
 [tool.ty.src]
 include = [

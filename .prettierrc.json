@@ -4,5 +4,13 @@
   "tabWidth": 2,
   "semi": true,
   "printWidth": 120,
-  "arrowParens": "always"
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": ".yamllint",
+      "options": {
+        "parser": "yaml"
+      }
+    }
+  ]
 }

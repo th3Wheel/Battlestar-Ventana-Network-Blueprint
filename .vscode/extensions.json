@@ -1,17 +1,21 @@
 {
-    "recommendations": [
-        "GitHub.copilot",
-        "GitHub.copilot-chat",
-        "GitHub.vscode-pull-request-github",
-        "upstash.context7-mcp",
-        "DavidAnson.vscode-markdownlint",
-        "esbenp.prettier-vscode",
-        "ms-python.python",
-        "redhat.vscode-yaml",
-        "charliermarsh.ruff",
-        "dbaeumer.vscode-eslint",
-        "timonwong.shellcheck",
-        "hashicorp.terraform",
-        "task.vscode-task"
-    ]
+  "recommendations": [
+    "GitHub.copilot-chat",
+    "GitHub.vscode-pull-request-github",
+    "GitHub.vscode-github-actions",
+    "upstash.context7-mcp",
+    "ms-azuretools.vscode-docker",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "redhat.ansible",
+    "redhat.vscode-yaml",
+    "charliermarsh.ruff",
+    "dbaeumer.vscode-eslint",
+    "timonwong.shellcheck",
+    "hashicorp.terraform",
+    "task.vscode-task",
+    "1password.op-vscode",
+    "anthropic.claude-code",
+    "ms-azuretools.vscode-containers"
+  ]
 }

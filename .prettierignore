@@ -1,5 +1,6 @@
 node_modules/
 .venv/
+.venv*/
 venv/
 
 # Exclude Jinja2 templates - they should be formatted with djlint instead

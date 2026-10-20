@@ -1,0 +1,3 @@
+# Infer the shell dialect from each script's shebang.
+# Do not read sourced files that were not supplied as lint inputs.
+external-sources=false

@@ -2,6 +2,8 @@ Copilot-Processing.md
 .github/copilot/memory/
 node_modules/
 .venv/
+.venv-ansible/
+.venv*/
 venv/
 *.egg-info/
 __pycache__/
@@ -9,4 +11,8 @@ __pycache__/
 dist/
 build/
 # Local logs
-debug.log
+debug.log\
+.copilot-migration-recovery/
+.tsupgrader/
+ai-readyness/
+.github/modernize/*

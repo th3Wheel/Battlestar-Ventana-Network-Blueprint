@@ -53,13 +53,6 @@
   "ansible.validation.lint.autoFixOnSave": true,
   "ansible.executionEnvironment.enabled": true,
   "notebook.defaultFormatter": "redhat.ansible",
-  "python-envs.pythonProjects": [
-    {
-      "path": ".venv",
-      "envManager": "ms-python.python:venv",
-      "packageManager": "ms-python.python:pip"
-    }
-  ],
   "python.terminal.useEnvFile": true,
   "chat.tools.terminal.autoApprove": {
     "/^git status ; git diff HEAD -- scripts/fing-inventory-check\\.sh baseline/fing-snapshots/\\.gitkeep \\.gitignore$/": {
@@ -80,6 +73,22 @@
   ],
   "idf.currentSetup": "C:\\esp\\v5.5.2\\esp-idf",
   "[shellscript]": {
-    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
-  }
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "markdown.validate.enabled": true,
+  "ty.completions.completeFunctionParentheses": true,
+  "ty.experimental.useUv": "on",
+  "js/ts.server.goMemLimit": "2048MiB",
+  "js/ts.preferences.autoImportEntrypointDirectorySearch": true,
+  "js/ts.showDebugInfo": true,
+  "uv.sendUvCommandToTerminal": true,
+  "remote.WSL.debug": true,
+  "shellcheck.watchConfigFiles.workspace": true,
+  "python-envs.defaultEnvManager": "ms-python.python:venv",
+  "[toml]": {
+    "editor.defaultFormatter": "bodil.prettier-toml"
+  },
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

@@ -4,6 +4,7 @@ extends: default
 ignore: |
   node_modules/
   .venv/
+  .venv*/
   venv/
   molecule/
   ha/templates/*.template.yaml

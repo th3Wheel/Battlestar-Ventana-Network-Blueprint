@@ -235,7 +235,7 @@ droid exec --help | grep -A 20 "Examples"
 
 | Task | Command |
 |------|---------|
-| Install | `curl -fsSL https://app.factory.ai/cli | sh` |
+| Install | `curl -fsSL https://app.factory.ai/cli \| sh` |
 | Verify | `droid --version` |
 | Analyze code | `droid exec "review code for issues"` |
 | Fix typos | `droid exec --auto low "fix typos in docs"` |
@@ -268,4 +268,3 @@ This custom agent is designed to work within GitHub Copilot's coding agent envir
 - Always validate `droid exec` commands before running in CI/CD pipelines
 - Refer to the [Droid CLI documentation](https://docs.factory.ai) for the latest features
 - Test integration patterns locally before deploying to production workflows
-

@@ -4,26 +4,42 @@
   "description": "Network documentation and configuration repository",
   "type": "module",
   "scripts": {
-    "lint:js": "eslint .",
-    "lint:js:fix": "eslint . --fix",
-    "lint:md": "markdownlint \"**/*.md\"",
-    "lint:md:fix": "markdownlint \"**/*.md\" --fix",
-    "lint:yaml": "yamllint .",
-    "format:yaml": "prettier --write \"**/*.{yml,yaml}\"",
-    "mcp:sync": "node scripts/sync-mcp-configs.mjs",
-    "mcp:sync:check": "node scripts/sync-mcp-configs.mjs --check",
-    "mcp:guard": "node scripts/sync-mcp-configs.mjs --guard",
-    "lint": "npm run lint:js && npm run lint:md && npm run lint:yaml",
-    "fix": "npm run lint:js:fix && npm run lint:md:fix && npm run format:yaml"
+    "test": "vitest run",
+    "lint:js": "eslint \"**/*.{js,mjs,cjs}\"",
+    "lint:js:fix": "eslint \"**/*.{js,mjs,cjs}\" --fix",
+    "lint:eslint": "eslint .",
+    "lint:eslint:fix": "eslint . --fix",
+    "lint:md": "eslint \"**/*.md\"",
+    "lint:md:fix": "eslint \"**/*.md\" --fix",
+    "lint:python": "uv run ruff check . && uv run ruff format --check . && uv run ty check",
+    "lint:python:fix": "uv run ruff check . --fix && uv run ruff format .",
+    "lint:shell": "node scripts/lint-shell.mjs",
+    "lint:yaml": "uv run yamllint .",
+    "format:yaml:check": "prettier --check \"**/*.{yml,yaml,yamllint}\"",
+    "format:yaml": "prettier --write \"**/*.{yml,yaml,yamllint}\"",
+    "mcp:sync": "node scripts/sync-mcp-configs.ts",
+    "mcp:sync-check": "node scripts/sync-mcp-configs.ts --check",
+    "mcp:guard": "node scripts/sync-mcp-configs.ts --guard",
+    "lint": "npm run lint:eslint && npm run lint:yaml && npm run lint:python && npm run lint:shell && npm run format:yaml:check",
+    "fix": "npm run lint:eslint:fix && npm run lint:python:fix && npm run format:yaml"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "eslint": "^9.39.2",
-    "markdownlint-cli": "^0.49.0",
-    "prettier": "^3.7.4"
+    "@eslint/css": "^2.0.0",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^2.1.0",
+    "@eslint/markdown": "^8.0.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.10",
+    "prettier-eslint": "^17.1.2",
+    "typescript": "^4.9.5",
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.4"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=26.10.0"
   },
   "keywords": [
     "network",
@@ -39,9 +55,17 @@
     "url": "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint.git"
   },
   "dependencies": {
-    "@go-task/cli": "^3.50.0"
+    "@go-task/cli": "^3.54.0",
+    "skills": "^1.7.2"
+  },
+  "overrides": {
+    "basic-ftp": "6.2.3",
+    "micromark-extension-math": {
+      "katex": "0.18.2"
+    }
   },
   "allowScripts": {
-    "@go-task/cli@3.50.0": true
+    "esbuild@0.28.2": true,
+    "@go-task/cli@3.54.0": true
   }
 }

@@ -3,7 +3,7 @@
 version: '3'
 
 includes:
-  markdownlint: ./tasks/markdownlint.yml
+  eslint: ./tasks/eslint.yml
   ansible: ./tasks/ansible.yml
   dotfiles: ./tasks/dotfiles.yml
   cameras: ./tasks/cameras.yml
@@ -33,6 +33,21 @@ tasks:
     desc: 'Preview dotfile deployment without writing any files'
     cmds:
       - bash scripts/deploy-dotfiles.sh --dry-run
+
+  mcp:sync:
+    desc: 'Synchronize MCP server configuration files'
+    cmds:
+      - npm run mcp:sync
+
+  mcp:sync-check:
+    desc: 'Check MCP server configuration synchronization without writing files'
+    cmds:
+      - npm run mcp:sync-check
+
+  mcp:guard:
+    desc: 'Validate the expected MCP configuration files and synchronization state'
+    cmds:
+      - npm run mcp:guard
 
   agents:validate-line-endings:
     desc: 'Run validate-agents.sh regression check for LF and CRLF fixtures'

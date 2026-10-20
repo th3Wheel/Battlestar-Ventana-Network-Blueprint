@@ -3,19 +3,23 @@ version: '3'
 
 tasks:
   bootstrap-dry-run:
-    desc: Bootstrap Ansible environment (dry-run)
+    desc: Preview isolated Linux/WSL controller synchronization
+    platforms: [linux]
     cmds:
-      - pwsh ./ansible/bootstrap-env.ps1 -DryRun
+      - uv sync --project ansible/controller --locked --dry-run
 
   bootstrap:
-    desc: Bootstrap Ansible environment
+    desc: Synchronize isolated Linux/WSL Ansible controller
+    platforms: [linux]
     cmds:
-      - pwsh ./ansible/bootstrap-env.ps1
+      - uv sync --project ansible/controller --locked
+      - uv run --project ansible/controller --locked ansible-galaxy collection install -r ansible/collections/requirements.yml
 
   smoke-test:
     desc: Smoke-test router evaluation playbooks (--check)
+    platforms: [linux]
     cmds:
-      - ansible-playbook
+      - uv run --project ansible/controller --locked ansible-playbook
         ansible/playbooks/evaluate-linux-router.yml
         ansible/playbooks/evaluate-openwrt-docker.yml
         ansible/playbooks/evaluate-opnsense-vm.yml
@@ -23,10 +27,12 @@ tasks:
 
   deploy-pihole-ha-check:
     desc: Deploy Pi-hole Keepalived HA (--check)
+    platforms: [linux]
     cmds:
-      - ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml --check
+      - uv run --project ansible/controller --locked ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml --check
 
   deploy-pihole-ha:
     desc: Deploy Pi-hole Keepalived HA
+    platforms: [linux]
     cmds:
-      - ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml
+      - uv run --project ansible/controller --locked ansible-playbook ansible/playbooks/deploy-pihole-keepalived-ha.yml
