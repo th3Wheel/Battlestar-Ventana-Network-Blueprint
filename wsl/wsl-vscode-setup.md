@@ -123,10 +123,10 @@ starts.
    - GitHub Copilot
    - Claude Code
 
-2. Open your project inside WSL:
+2. From Windows PowerShell, open your project inside WSL:
 
-   ```bash
-           code .
+   ```powershell
+   code --remote wsl+Ubuntu /home/your-ubuntu-username/your-project
    ```
 
 3. Confirm extensions show under **WSL: Ubuntu**.
