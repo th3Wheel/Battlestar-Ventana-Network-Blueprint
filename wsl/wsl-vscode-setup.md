@@ -11,6 +11,7 @@
     nestedVirtualization=true
     dnsTunneling=true
     networkingMode=mirrored
+    [experimental]
     autoMemoryReclaim=gradual
 ```
 
@@ -70,6 +71,7 @@
     nestedVirtualization=true
     dnsTunneling=true
     networkingMode=mirrored
+    [experimental]
     autoMemoryReclaim=gradual
     "@
     Set-Content -Path "$env:USERPROFILE\.wslconfig" -Value $config
