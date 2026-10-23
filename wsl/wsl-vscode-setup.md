@@ -73,7 +73,7 @@
     networkingMode=mirrored
     [experimental]
     autoMemoryReclaim=gradual
-    "@
+"@
     Set-Content -Path "$env:USERPROFILE\.wslconfig" -Value $config
 ```
 
