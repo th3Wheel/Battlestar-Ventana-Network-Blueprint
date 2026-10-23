@@ -110,6 +110,12 @@ EOF'
     docker version
 ```
 
+### Restart WSL
+
+From Windows PowerShell, run `wsl --shutdown`, then reopen Ubuntu before
+continuing. The `/etc/wsl.conf` settings are applied when the distribution
+starts.
+
 ### VS Code-side
 
 1. Install extensions:
