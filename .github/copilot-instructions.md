@@ -1,16 +1,17 @@
 ## Context7 MCP Integration (CRITICAL - Read First)
 
-**MANDATORY:** Before starting ANY task, ALWAYS leverage Context7 MCP to gather comprehensive context about the repository, codebase, and related resources.
+For tasks that inspect or modify this repository, use Context7 MCP before making changes. For unrelated tasks, do not use Context7.
 
 ### Context7 Usage Requirements
 
 1. **Pre-Task Discovery (REQUIRED):**
    - Use Context7 MCP to search for relevant documentation, code patterns, and architectural decisions BEFORE making changes
+   - If Context7 is unavailable or returns no relevant results, inspect the repository directly, state that Context7 could not be used, and do not claim its results were verified.
    - Query Context7 for similar implementations, related VLANs, existing firewall rules, and naming patterns
    - Identify dependencies and cross-references using Context7's semantic search capabilities
 
 2. **Continuous Context Gathering:**
-   - Invoke Context7 MCP at every decision point to validate assumptions
+   - Use Context7 at three checkpoints: before changes to inspect relevant files and patterns, when a significant uncertainty arises, and before completion to verify affected references.
    - Use Context7 to find examples of similar changes in repository history
    - Query Context7 for related documentation that might need updating alongside your changes
 
@@ -21,7 +22,7 @@
    - **For architecture:** "Retrieve architectural decisions, zone models, and related design documents"
    - **For cross-references:** "Find all files mentioning [service/VLAN/host] and their relationships"
 
-4. **Validation Before Commit:**
+4. **Validation Before Completion:**
    - Use Context7 to verify all affected files are identified and updated
    - Query for TODOs, cross-references, and dependencies that might be impacted
    - Ensure consistency across documentation using Context7's semantic analysis
