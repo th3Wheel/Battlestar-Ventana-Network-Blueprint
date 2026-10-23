@@ -20,22 +20,40 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '26.10.0'
+          cache: npm
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Lint Markdown with ESLint
+        run: npm run lint:md
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: '.python-version'
 
-      - name: Install Ansible
-        run: python -m pip install -r ansible/requirements.txt ansible-lint
-
-      - name: Install Ansible collections
-        run: ANSIBLE_CONFIG=ansible/ansible.cfg ansible-galaxy collection install -r ansible/collections/requirements.yml
-
       - name: Install uv
-        run: python -m pip install uv
+        run: python -m pip install uv==0.13.1
 
       - name: Synchronize Python environment
         run: uv sync --locked
+
+      - name: Synchronize isolated Ansible controller
+        run: uv sync --project ansible/controller --locked
+
+      - name: Verify Ansible controller
+        run: |
+          uv run --project ansible/controller --locked ansible --version
+          uv run --project ansible/controller --locked ansible-lint --version
+          uv run --project ansible/controller --locked molecule --version
+
+      - name: Install Ansible collections
+        run: ANSIBLE_CONFIG=ansible/ansible.cfg uv run --project ansible/controller --locked ansible-galaxy collection install -r ansible/collections/requirements.yml
 
       - name: Run Ruff
         run: uv run ruff check .
@@ -52,5 +70,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: 'master'
           LINTER_RULES_PATH: '.'
-          MARKDOWN_CONFIG_FILE: '.markdownlint.jsonc'
+          VALIDATE_MARKDOWN: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

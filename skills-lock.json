@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-ready": {
+      "source": "johnpapa/ai-ready",
+      "sourceType": "github",
+      "skillPath": "skills/ai-ready/SKILL.md",
+      "computedHash": "974470a8a5b406e2c42de97125e1dd3903e6b193fb6c0788e06327fbd9c16803"
+    }
+  }
+}

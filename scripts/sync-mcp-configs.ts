@@ -1,13 +1,29 @@
+import { execFile } from 'node:child_process';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+type RootKey = 'mcpServers' | 'servers' | 'mcp.servers';
+type TargetRootKey = Exclude<RootKey, 'mcp.servers'>;
+type ConfigRecord = Record<string, unknown>;
+type ServerMap = Record<string, unknown>;
+
+interface Target {
+  file: string;
+  rootKey: TargetRootKey;
+}
+
+interface DiscoveredConfig {
+  file: string;
+  rootKey: RootKey;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
 
 const sourceFile = path.join(repoRoot, 'mcp-config.json');
-const targets = [
+const targets: Target[] = [
   { file: '.mcp.json', rootKey: 'mcpServers' },
   { file: '.cursor/mcp.json', rootKey: 'mcpServers' },
   { file: '.vscode/mcp.json', rootKey: 'servers' },
@@ -17,7 +33,7 @@ const targets = [
 const guardOnly = process.argv.includes('--guard');
 const checkOnly = process.argv.includes('--check') || guardOnly;
 
-const allowedConfigFiles = new Map([
+const allowedConfigFiles = new Map<string, RootKey>([
   ['mcp-config.json', 'mcpServers'],
   ['.mcp.json', 'mcpServers'],
   ['.cursor/mcp.json', 'mcpServers'],
@@ -26,7 +42,33 @@ const allowedConfigFiles = new Map([
   ['infrastructure/xpipe/mcp-config.example.json', 'mcpServers'],
 ]);
 
-function stripJsonComments(input) {
+async function getIgnoredPaths(paths: string[]): Promise<Set<string>> {
+  if (paths.length === 0) {
+    return new Set();
+  }
+
+  const result = await new Promise<string>((resolve, reject) => {
+    const child = execFile(
+      'git',
+      ['check-ignore', '--no-index', '--stdin', '-z'],
+      { cwd: repoRoot, encoding: 'utf8' },
+      (error, stdout, stderr) => {
+        if (error && error.code !== 1) {
+          reject(new Error(`git check-ignore failed: ${stderr || error.message}`, { cause: error }));
+          return;
+        }
+
+        resolve(stdout);
+      }
+    );
+
+    child.stdin?.end(paths.join('\0') + '\0');
+  });
+
+  return new Set(result.split('\0').filter(Boolean).map((ignoredPath) => ignoredPath.replace(/\/$/, '')));
+}
+
+function stripJsonComments(input: string): string {
   let output = '';
   let inString = false;
   let inLineComment = false;
@@ -89,41 +131,53 @@ function stripJsonComments(input) {
   return output;
 }
 
-function parseJsonFlexible(text, filePath) {
+function parseJsonFlexible(text: string, filePath: string): unknown {
   try {
     return JSON.parse(text);
   } catch {
     try {
       return JSON.parse(stripJsonComments(text));
-    } catch (error) {
-      throw new Error(`Failed to parse JSON from ${filePath}: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to parse JSON from ${filePath}: ${message}`, { cause: error });
     }
   }
 }
 
-function getServersObject(config, rootKey) {
-  if (config && typeof config[rootKey] === 'object' && config[rootKey] !== null) {
-    return config[rootKey];
+function isNonNullObject(value: unknown): value is object {
+  return typeof value === 'object' && value !== null;
+}
+
+function getProperty(value: unknown, key: string): unknown {
+  if (!isNonNullObject(value)) {
+    return undefined;
   }
 
-  if (rootKey === 'mcpServers' && config && typeof config.servers === 'object' && config.servers !== null) {
-    return config.servers;
+  return (value as ConfigRecord)[key];
+}
+
+function getServersObject(config: unknown, rootKey: TargetRootKey): ServerMap {
+  const rootValue = getProperty(config, rootKey);
+  if (isNonNullObject(rootValue)) {
+    return rootValue as ServerMap;
   }
 
-  if (rootKey === 'servers' && config && typeof config.mcpServers === 'object' && config.mcpServers !== null) {
-    return config.mcpServers;
+  const alternateRootKey: TargetRootKey = rootKey === 'mcpServers' ? 'servers' : 'mcpServers';
+  const alternateValue = getProperty(config, alternateRootKey);
+  if (isNonNullObject(alternateValue)) {
+    return alternateValue as ServerMap;
   }
 
   return {};
 }
 
-function looksLikeServerMap(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+function looksLikeServerMap(value: unknown): value is ServerMap {
+  if (!isNonNullObject(value) || Array.isArray(value)) {
     return false;
   }
 
-  return Object.values(value).some((entry) => {
-    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+  return Object.values(value).some((entry: unknown) => {
+    if (!isNonNullObject(entry) || Array.isArray(entry)) {
       return false;
     }
 
@@ -131,14 +185,24 @@ function looksLikeServerMap(value) {
   });
 }
 
-async function walkRepo(directory, collected = []) {
+async function walkRepo(directory: string, collected: string[] = []): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
+  const relativePaths = entries.map((entry) =>
+    path.relative(repoRoot, path.join(directory, entry.name)).replaceAll('\\', '/')
+  );
+  const ignoredPaths = await getIgnoredPaths(
+    entries.map((entry, index) => (entry.isDirectory() ? `${relativePaths[index]}/` : relativePaths[index]))
+  );
 
-  for (const entry of entries) {
+  for (const [index, entry] of entries.entries()) {
+    if (ignoredPaths.has(relativePaths[index])) {
+      continue;
+    }
+
     const absolutePath = path.join(directory, entry.name);
 
     if (entry.isDirectory()) {
-      if (entry.name === '.git' || entry.name === 'node_modules') {
+      if (entry.name === '.git') {
         continue;
       }
 
@@ -152,9 +216,9 @@ async function walkRepo(directory, collected = []) {
   return collected;
 }
 
-async function discoverMcpConfigs() {
+async function discoverMcpConfigs(): Promise<DiscoveredConfig[]> {
   const files = await walkRepo(repoRoot);
-  const discovered = [];
+  const discovered: DiscoveredConfig[] = [];
 
   for (const absolutePath of files) {
     const relativePath = path.relative(repoRoot, absolutePath).replaceAll('\\', '/');
@@ -164,7 +228,7 @@ async function discoverMcpConfigs() {
       continue;
     }
 
-    let parsed;
+    let parsed: unknown;
     try {
       parsed = parseJsonFlexible(await readFile(absolutePath, 'utf8'), relativePath);
     } catch {
@@ -175,10 +239,10 @@ async function discoverMcpConfigs() {
       continue;
     }
 
-    const rootCandidates = [
-      ['mcpServers', parsed?.mcpServers],
-      ['servers', parsed?.servers],
-      ['mcp.servers', parsed?.['mcp.servers']],
+    const rootCandidates: [RootKey, unknown][] = [
+      ['mcpServers', getProperty(parsed, 'mcpServers')],
+      ['servers', getProperty(parsed, 'servers')],
+      ['mcp.servers', getProperty(parsed, 'mcp.servers')],
     ];
 
     for (const [rootKey, value] of rootCandidates) {
@@ -192,15 +256,15 @@ async function discoverMcpConfigs() {
   return discovered;
 }
 
-function getExpectedFiles() {
+function getExpectedFiles(): Set<string> {
   return new Set(allowedConfigFiles.keys());
 }
 
-function formatUnexpectedFiles(unexpectedFiles) {
+function formatUnexpectedFiles(unexpectedFiles: string[]): string {
   return unexpectedFiles.map((file) => `- ${file}`).join('\n');
 }
 
-function buildMergedServers(sharedServers, existingServers) {
+function buildMergedServers(sharedServers: ServerMap, existingServers: ServerMap): ServerMap {
   const managedServerNames = new Set(Object.keys(sharedServers));
   const unmanagedEntries = Object.entries(existingServers).filter(([name]) => !managedServerNames.has(name));
   return {
@@ -209,7 +273,7 @@ function buildMergedServers(sharedServers, existingServers) {
   };
 }
 
-async function fileExists(filePath) {
+async function fileExists(filePath: string): Promise<boolean> {
   try {
     await readFile(filePath, 'utf8');
     return true;
@@ -218,7 +282,7 @@ async function fileExists(filePath) {
   }
 }
 
-async function main() {
+async function main(): Promise<void> {
   const sourceText = await readFile(sourceFile, 'utf8');
   const sourceConfig = parseJsonFlexible(sourceText, sourceFile);
   const sharedServers = getServersObject(sourceConfig, 'mcpServers');
@@ -234,22 +298,22 @@ async function main() {
     .map(({ file, rootKey }) => `${file} (${rootKey})`)
     .sort();
 
-  const missingConfigs = [...expectedFiles].filter((file) => !discoveredConfigs.some((candidate) => candidate.file === file));
+  const missingConfigs = [...expectedFiles].filter(
+    (file) => !discoveredConfigs.some((candidate) => candidate.file === file)
+  );
 
-  const changes = [];
+  const changes: string[] = [];
 
   for (const target of targets) {
     const targetPath = path.join(repoRoot, target.file);
     const exists = await fileExists(targetPath);
-    const currentConfig = exists
-      ? parseJsonFlexible(await readFile(targetPath, 'utf8'), target.file)
-      : {};
+    const currentConfig = exists ? parseJsonFlexible(await readFile(targetPath, 'utf8'), target.file) : {};
 
     const existingServers = getServersObject(currentConfig, target.rootKey);
     const mergedServers = buildMergedServers(sharedServers, existingServers);
 
-    const nextConfig = {
-      ...currentConfig,
+    const nextConfig: ConfigRecord = {
+      ...(currentConfig as ConfigRecord),
       [target.rootKey]: mergedServers,
     };
 
@@ -264,7 +328,7 @@ async function main() {
     }
   }
 
-  const guardFailures = [];
+  const guardFailures: string[] = [];
 
   if (unexpectedConfigs.length > 0) {
     guardFailures.push('Unexpected MCP config files found:');
@@ -278,41 +342,42 @@ async function main() {
 
   if (checkOnly) {
     if (changes.length === 0 && guardFailures.length === 0) {
-      console.log('MCP configs already synchronized.');
+      process.stdout.write('MCP configs already synchronized.\n');
       return;
     }
 
     if (changes.length > 0) {
-      console.log('MCP configs out of sync:');
+      process.stdout.write('MCP configs out of sync:\n');
       for (const file of changes) {
-        console.log(`- ${file}`);
+        process.stdout.write(`- ${file}\n`);
       }
     }
 
     if (guardFailures.length > 0) {
-      console.error(guardFailures.join('\n'));
+      process.stderr.write(guardFailures.join('\n') + '\n');
     }
 
     process.exit(1);
   }
 
   if (guardFailures.length > 0) {
-    console.error(guardFailures.join('\n'));
+    process.stderr.write(guardFailures.join('\n') + '\n');
     process.exit(1);
   }
 
   if (changes.length === 0) {
-    console.log('MCP configs already synchronized.');
+    process.stdout.write('MCP configs already synchronized.\n');
     return;
   }
 
-  console.log('Synchronized MCP configs:');
+  process.stdout.write('Synchronized MCP configs:\n');
   for (const file of changes) {
-    console.log(`- ${file}`);
+    process.stdout.write(`- ${file}\n`);
   }
 }
 
-main().catch((error) => {
-  console.error(error.message);
+main().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  process.stderr.write(message + '\n');
   process.exit(1);
 });

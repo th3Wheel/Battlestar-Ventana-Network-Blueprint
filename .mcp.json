@@ -38,7 +38,7 @@
       ],
       "env": {
         "SENTRY_HOST": "${env:SENTRY_HOST:https://contoso.sentry.io}",
-        "SENTRY_ACCESS_TOKEN": "${env:SENTRY_ACCESS_TOKEN:NULL}"
+        "SENTRY_ACCESS_TOKEN": "${env:COPILOT_MCP_SENTRY_ACCESS_TOKEN:NULL}"
       }
     },
     "github-mcp-server": {
