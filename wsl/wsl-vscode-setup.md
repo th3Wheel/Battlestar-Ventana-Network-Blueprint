@@ -35,45 +35,45 @@
 
 ## VS Code + WSL Architecture Diagram (Mermaid)
 
-    ```mermaid
+```mermaid
 
-        flowchart TD
-            A[Windows 11 Host] --> B[WSL2 Kernel]
-            B --> C[Ubuntu Filesystem]
-            C --> D[VS Code Server (WSL Extension Host)]
-            A --> E[VS Code Client (Windows)]
-            E <--> D
-            D --> F[GitHub Copilot (WSL Extension)]
-            D --> G[Claude Code (WSL Extension)]
-            C --> H[Dev Tools: Git, Python, Node, Docker CLI]
-            A --> I[Docker Desktop (WSL Backend)]
-            I <--> C
+    flowchart TD
+        A[Windows 11 Host] --> B[WSL2 Kernel]
+        B --> C[Ubuntu Filesystem]
+        C --> D[VS Code Server (WSL Extension Host)]
+        A --> E[VS Code Client (Windows)]
+        E <--> D
+        D --> F[GitHub Copilot (WSL Extension)]
+        D --> G[Claude Code (WSL Extension)]
+        C --> H[Dev Tools: Git, Python, Node, Docker CLI]
+        A --> I[Docker Desktop (WSL Backend)]
+        I <--> C
 
-    ```
+```
 
 ## Complete Reproducible Setup Script (Package‑Manager‑Only)
 
 ### Windows-side (PowerShell)
 
-    ```powershell
+```powershell
 
-        wsl --install
-        wsl --shutdown
+    wsl --install
+    wsl --shutdown
 
-        # Create .wslconfig
-        $config = @"
-        [wsl2]
-        memory=12GB
-        processors=2
-        swap=0
-        localhostForwarding=true
-        nestedVirtualization=true
-        dnsTunneling=true
-        networkingMode=mirrored
-        autoMemoryReclaim=gradual
-        "@
-        Set-Content -Path "$env:USERPROFILE\.wslconfig" -Value $config
-    ```
+    # Create .wslconfig
+    $config = @"
+    [wsl2]
+    memory=12GB
+    processors=2
+    swap=0
+    localhostForwarding=true
+    nestedVirtualization=true
+    dnsTunneling=true
+    networkingMode=mirrored
+    autoMemoryReclaim=gradual
+    "@
+    Set-Content -Path "$env:USERPROFILE\.wslconfig" -Value $config
+```
 
 ### WSL-side (Ubuntu)
 
