@@ -99,7 +99,7 @@
     enabled=true
     mountFsTab=true
     options="metadata,umask=22,fmask=11"
-    EOF'
+EOF'
 
     # Enable Starship in Zsh
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc
