@@ -104,8 +104,10 @@ EOF'
     # Enable Starship in Zsh
     echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 
-    # Optional: Docker integration
-    sudo usermod -aG docker $USER
+    # Optional: Docker Desktop integration
+    # Install Docker Desktop on Windows and enable Ubuntu under Settings >
+    # Resources > WSL Integration, then check access:
+    docker version
 ```
 
 ### VS Code-side
