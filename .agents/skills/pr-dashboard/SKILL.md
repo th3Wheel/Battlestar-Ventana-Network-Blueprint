@@ -13,10 +13,14 @@ Generates and opens a GitHub PR dashboard in the browser for a given date range 
 
 Find the CLI script bundled with this skill and run it:
 
-If `SKILL_SCRIPT` is empty after searching, do not run `node`. Tell the user the pr-dashboard script could not be found and ask them to reinstall the skill or provide its path.
+Set `SKILL_DIR` to the directory containing this loaded `SKILL.md`. If the script is missing, do not run `node`; tell the user the pr-dashboard script could not be found and ask them to reinstall the skill or provide its path.
 
 ```bash
-SKILL_SCRIPT=$(find ~/.copilot -name "pr-dashboard-cli.mjs" -path "*/pr-dashboard/scripts/*" 2>/dev/null | head -1)
+SKILL_SCRIPT="$SKILL_DIR/scripts/pr-dashboard-cli.mjs"
+if [ ! -f "$SKILL_SCRIPT" ]; then
+  echo "The pr-dashboard script could not be found: $SKILL_SCRIPT" >&2
+  exit 1
+fi
 node "$SKILL_SCRIPT" "<query>" "<role>"
 ```
 

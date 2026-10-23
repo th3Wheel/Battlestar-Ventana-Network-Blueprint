@@ -12,10 +12,8 @@ tools:
     'search',
     'github/add_issue_comment',
     'create_issue',
-    'sentry/update_issue',
     'get_issue',
     'github/search_issues',
-    'sentry/search_issues',
   ]
 ---
 
