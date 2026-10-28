@@ -7,26 +7,61 @@ applyTo: '**/skills/**/SKILL.md'
 
 Instructions for creating effective and portable Agent Skills that enhance GitHub Copilot with specialized capabilities, workflows, and bundled resources.
 
+## Scope and Source of Truth
+
+Follow the [Agent Skills specification](https://agentskills.io/specification)
+for portable format requirements. Host documentation governs discovery and
+invocation behavior. Sections labeled as repository conventions or authoring
+advice are not additional requirements of the portable format.
+
+This instruction file's `description` and `applyTo` configure the guideline
+itself. They do not define the frontmatter schema for a `SKILL.md` file.
+
+## Contents
+
+- [What Are Agent Skills?](#what-are-agent-skills)
+- [Directory Structure](#directory-structure)
+- [Required SKILL.md Format](#required-skillmd-format)
+- [Bundling Resources](#bundling-resources)
+- [Progressive Loading Architecture](#progressive-loading-architecture)
+- [Content Guidelines](#content-guidelines)
+- [Writing High-Impact Skills](#writing-high-impact-skills)
+- [Common Patterns](#common-patterns)
+- [Validation Checklist](#validation-checklist)
+- [Related Resources](#related-resources)
+
 ## What Are Agent Skills?
 
 Agent Skills are self-contained folders with instructions and bundled resources that teach AI agents specialized capabilities. Unlike custom instructions (which define coding standards), skills enable task-specific workflows that can include scripts, examples, templates, and reference data.
 
 Key characteristics:
-- **Portable**: Works across VS Code, Copilot CLI, and Copilot coding agent
-- **Progressive loading**: Only loaded when relevant to the user's request
+- **Portable**: A shared format for supporting agents; host capabilities vary
+- **Progressive loading**: Metadata is loaded before detailed instructions
 - **Resource-bundled**: Can include scripts, templates, examples alongside instructions
-- **On-demand**: Activated automatically based on prompt relevance
+- **On-demand**: Hosts may activate skills based on relevance or explicit invocation
 
 ## Directory Structure
 
-Skills are stored in specific locations:
+The specification requires a skill directory containing `SKILL.md`; it does
+not prescribe host search paths. The following are repository authoring and
+search conventions, not guarantees of automatic discovery:
 
 | Location | Scope | Recommendation |
 |----------|-------|----------------|
-| `.github/skills/<skill-name>/` | Project/repository | Recommended for project skills |
-| `.claude/skills/<skill-name>/` | Project/repository | Legacy, for backward compatibility |
-| `~/.github/skills/<skill-name>/` | Personal (user-wide) | Recommended for personal skills |
-| `~/.claude/skills/<skill-name>/` | Personal (user-wide) | Legacy, for backward compatibility |
+| `.agents/skills/<skill-name>/` | Project/repository | Recommended for project skills |
+| `.github/skills/<skill-name>/` | Project/repository | Alternative for project skills |
+| `.claude/skills/<skill-name>/` | Project/repository | Check when searching existing skills |
+| `.codex/skills/<skill-name>/` | Project/repository | Check for Codex-specific skills; host support varies |
+| `~/.copilot/skills/<skill-name>/` | Personal (user-wide) | Recommended for personal skills |
+| `~/.agents/skills/<skill-name>/` | Personal (user-wide) | Alternative candidate; confirm host support |
+| `~/.claude/skills/<skill-name>/` | Personal (user-wide) | Check when searching existing personal skills |
+
+For project skills, create and maintain skills in `.agents/skills/` first. When
+searching a repository for existing skills, check `.agents/skills/`,
+`.github/skills/`, `.claude/skills/`, and `.codex/skills/` in that order, then
+check other applicable host-specific locations. This is the repository's
+authoring and search convention; automatic discovery and precedence depend on
+the host, and not every host supports every location.
 
 Each skill **must** have its own subdirectory containing at minimum a `SKILL.md` file.
 
@@ -34,23 +69,76 @@ Each skill **must** have its own subdirectory containing at minimum a `SKILL.md`
 
 ### Frontmatter (Required)
 
+Use YAML frontmatter followed by Markdown instructions. Minimal example for
+a directory named `webapp-testing`:
+
 ```yaml
 ---
 name: webapp-testing
-description: 'Toolkit for testing local web applications using Playwright. Use when asked to verify frontend functionality, debug UI behavior, capture browser screenshots, check for visual regressions, or view browser console logs. Supports Chrome, Firefox, and WebKit browsers.'
-license: Complete terms in LICENSE.txt
+description: Test local web applications. Use for browser-based verification.
 ---
 ```
 
 | Field | Required | Constraints |
 |-------|----------|-------------|
-| `name` | Yes | Lowercase, hyphens for spaces, max 64 characters (e.g., `webapp-testing`) |
-| `description` | Yes | 10–1024 characters, clear capabilities AND use cases, wrapped in single quotes |
-| `license` | No | Reference to LICENSE.txt (e.g., `Complete terms in LICENSE.txt`) or SPDX identifier |
+| `name` | Yes | String, 1-64 characters; lowercase alphanumeric characters and hyphens; must match the parent directory; no leading, trailing, or consecutive hyphens |
+| `description` | Yes | Non-empty string, 1-1024 characters; describe capabilities and when to use the skill |
+| `license` | No | License name or reference to a bundled license file |
+| `compatibility` | No | String, 1-500 characters when provided; specific environment requirements |
+| `metadata` | No | Mapping of string keys to string values |
+| `allowed-tools` | No | Space-separated string of pre-approved tools; experimental and host-dependent |
+
+Use valid YAML strings. Single quotes, double quotes, and plain scalars are
+acceptable; quote values when YAML syntax or implicit typing requires it.
+Do not impose a ten-character minimum on descriptions.
+
+### Names and Optional Fields
+
+The reference validator supports Unicode alphanumeric names, applying NFKC
+normalization and a lowercase check. As a **repository convention**, prefer
+ASCII lowercase letters, digits, and single hyphens for portability. Examples:
+`webapp-testing` and `pdf2-text` are valid; `Webapp`, `-webapp`, `webapp-`,
+and `webapp--testing` are invalid. Always match the parent directory name.
+
+Include `compatibility` only for specific requirements such as installed tools,
+network access, or an intended host. Most skills do not need it.
+
+Use reasonably unique keys in `metadata` for custom properties, including
+identifiers. Quote numeric-looking versions and boolean-looking values so
+they remain strings.
+
+Example using all optional fields for a directory named `webapp-testing`:
+
+```yaml
+---
+name: webapp-testing
+description: Test local web applications. Use for browser-based verification.
+license: Apache-2.0
+compatibility: Requires Node.js, Playwright, and a locally running web application.
+metadata:
+  example-org.skill-id: webapp-testing
+  example-org.version: "1.0"
+allowed-tools: Bash(npm:*) Read
+---
+```
+
+The license is illustrative, not a default license assignment. The tool names
+and argument syntax illustrate one host's convention; verify support before
+using them. `allowed-tools` does not establish a portable security boundary.
+
+### Nonstandard and Host-Specific Fields
+
+`id`, `applyTo`, and `disable-model-invocation` are not fields in the portable
+specification. Do not add them to portable frontmatter. Store a custom
+identifier under `metadata` instead of recommending a top-level `id`.
+If a skill needs host extensions, document them separately using that host's
+official documentation and check its handling of nonstandard fields.
 
 ### Description Best Practices
 
-**CRITICAL**: The `description` field is the PRIMARY mechanism for automatic skill discovery. Copilot reads ONLY the `name` and `description` to decide whether to load a skill. If your description is vague, the skill will never be activated.
+The `name` and `description` form the lightweight discovery surface. Describe
+capabilities and specific use cases clearly. A vague description makes relevant
+selection less likely; activation and explicit invocation depend on the host.
 
 **What to include in description:**
 1. **WHAT** the skill does (capabilities)
@@ -74,7 +162,10 @@ The poor description fails because:
 
 ### Body Content
 
-The body contains detailed instructions that Copilot loads AFTER the skill is activated. Recommended sections:
+The body contains instructions loaded after activation. The specification
+imposes no body format restrictions. The sections below and the content advice
+later in this guideline are repository authoring recommendations, not schema
+requirements. Include input/output examples and relevant edge cases.
 
 | Section | Purpose |
 |---------|---------|
@@ -113,7 +204,7 @@ For content quality principles (what to include and what to leave out), see [Wri
 - At least one browser engine installed: `npx playwright install chromium`
 ```
 
-**`## Step-by-Step Workflows`** — Numbered steps for repeatable procedures where sequence matters (build, deploy, environment setup). Describe WHAT to accomplish at each stage, not hardcoded file paths or line numbers — steps should be adaptable to different project structures. For complex workflows (>5 steps), split into `references/` files and link to them.
+**`## Step-by-Step Workflows`** — Numbered steps for repeatable procedures where sequence matters (build, deploy, environment setup). Describe WHAT to accomplish at each stage, not hardcoded file paths or line numbers — steps should be adaptable to different project structures. Consider moving lengthy workflows into linked `references/` files; there is no five-step limit in the specification.
 
 ```markdown
 ## Step-by-Step Workflows
@@ -153,31 +244,34 @@ For content quality principles (what to include and what to leave out), see [Wri
 
 ## Bundling Resources
 
-Skills can include additional files that Copilot accesses on-demand:
+A skill may contain any additional files and directories. `scripts/`,
+`references/`, and `assets/` are optional standard conventions; `templates/`
+is an optional repository convention. Resource access depends on the host and
+task, not an unconditional rule about whether a directory enters context.
 
 ### Supported Resource Types
 
 | Folder | Purpose | Loaded into Context? | Example Files |
 |--------|---------|---------------------|---------------|
-| `scripts/` | Executable automation that performs specific operations | When executed | `helper.py`, `validate.sh`, `build.ts` |
+| `scripts/` | Executable automation that performs specific operations | Source or output as needed | `helper.py`, `validate.sh`, `build.ts` |
 | `references/` | Documentation the AI agent reads to inform decisions | Yes, when referenced | `api_reference.md`, `schema.md`, `workflow_guide.md` |
-| `assets/` | **Static files used AS-IS** in output (not modified by the AI agent) | No | `logo.png`, `brand-template.pptx`, `custom-font.ttf` |
-| `templates/` | **Starter code/scaffolds that the AI agent MODIFIES** and builds upon | Yes, when referenced | `viewer.html` (insert algorithm), `hello-world/` (extend) |
+| `assets/` | Static resources, including templates, images, and data | As needed and supported by the host | `logo.png`, `report-template.html`, `lookup.json` |
+| `templates/` | Optional local organization for starter code/scaffolds | As needed | `viewer.html`, `hello-world/` |
 
 ### Directory Structure Example
 
-```
-.github/skills/my-skill/
+```text
+.agents/skills/my-skill/
 ├── SKILL.md              # Required: Main instructions
-├── LICENSE.txt           # Recommended: License terms (Apache 2.0 typical)
+├── LICENSE.txt           # Optional: Owner-selected license terms
 ├── scripts/              # Optional: Executable automation
 │   ├── helper.py         # Python script
 │   └── helper.ps1        # PowerShell script
 ├── references/           # Optional: Documentation loaded into context
 │   ├── api_reference.md
-│   ├── workflow-setup.md     # Detailed workflow (>5 steps)
+│   ├── workflow-setup.md     # Detailed workflow
 │   └── workflow-deployment.md
-├── assets/               # Optional: Static files used AS-IS in output
+├── assets/               # Optional: Templates, images, data
 │   ├── baseline.png      # Reference image for comparison
 │   └── report-template.html
 └── templates/            # Optional: Starter code the AI agent modifies
@@ -185,25 +279,22 @@ Skills can include additional files that Copilot accesses on-demand:
     └── config.template   # Config template the AI agent fills in
 ```
 
-> **LICENSE.txt**: When creating a skill, download the Apache 2.0 license text from https://www.apache.org/licenses/LICENSE-2.0.txt and save as `LICENSE.txt`. Update the copyright year and owner in the appendix section.
+Licensing is optional in this format. Use the owner's chosen license name or
+reference a bundled license file when needed. Do not download or assign Apache
+2.0 automatically, or change existing license terms without authorization.
 
-### Assets vs Templates: Key Distinction
+### Assets and Templates
 
-**Assets** are static resources **consumed unchanged** in the output:
-- A `logo.png` that gets embedded into a generated document
-- A `report-template.html` copied as output format
-- A `custom-font.ttf` applied to text rendering
-
-**Templates** are starter code/scaffolds that **the AI agent actively modifies**:
-- A `scaffold.py` where the AI agent inserts logic
-- A `config.template` where the AI agent fills in values based on user requirements
-- A `hello-world/` project directory that the AI agent extends with new features
-
-**Rule of thumb**: If the AI agent reads and builds upon the file content → `templates/`. If the file is used as-is in output → `assets/`.
+Templates may live in `assets/`, as the specification describes. This
+repository may use `templates/` for editable scaffolds, but that is not a
+required distinction. Neither directory makes a resource immutable. Explain
+whether a resource should be read, copied, or adapted for the task.
 
 ### Referencing Resources in SKILL.md
 
-Use relative paths to reference files within the skill directory:
+Use paths relative to the skill root. Link resources directly from `SKILL.md`
+and keep reference discovery one level deep; avoid chains of references that
+require loading several documents to find the needed file.
 
 ```markdown
 ## Available Scripts
@@ -221,14 +312,13 @@ Skills use three-level loading for efficiency:
 
 | Level | What Loads | When |
 |-------|------------|------|
-| 1. Discovery | `name` and `description` only | Always (lightweight metadata) |
-| 2. Instructions | Full `SKILL.md` body | When request matches description |
-| 3. Resources | Scripts, examples, docs | Only when Copilot references them |
+| 1. Discovery | `name` and `description` (approximately 100 tokens per skill) | At startup in the specification's loading model |
+| 2. Instructions | Full `SKILL.md` body (under 5,000 tokens recommended) | When the skill is activated |
+| 3. Resources | Scripts, references, assets, and other files | As needed for the task |
 
-This means:
-- Install many skills without consuming context
-- Only relevant content loads per task
-- Resources don't load until explicitly needed
+Metadata still consumes context even when a skill is not activated. Progressive
+disclosure reduces initial loading; it does not make installed skills free.
+Actual discovery, invocation, and resource access depend on the host.
 
 ## Content Guidelines
 
@@ -309,7 +399,11 @@ When fixing error handling in API handlers:
 
 ### Use Progressive Disclosure for Large Skills
 
-If your SKILL.md exceeds ~200 lines, consider splitting detailed content into subdirectories. This reduces context consumption — Copilot loads only the core instructions initially and pulls reference material on demand.
+The specification recommends keeping the main `SKILL.md` under 500 lines and
+the instructions under 5,000 tokens. These are authoring targets, not a
+frontmatter validity limit. As a local heuristic, consider splitting detailed
+content at approximately 200 lines. Move detail into directly linked reference
+files and state when to load each file.
 
 ```markdown
 ## Reference Files
@@ -355,21 +449,59 @@ This ensures traceability and allows resuming workflows if interrupted.
 Before publishing a skill:
 
 - [ ] `SKILL.md` has valid frontmatter with `name` and `description`
-- [ ] `name` is lowercase with hyphens, ≤64 characters
+- [ ] `name` is 1-64 characters and matches its parent directory
+- [ ] Name characters are lowercase alphanumeric or hyphens; no leading, trailing, or consecutive hyphens
+- [ ] ASCII naming is treated as a local portability convention, not a Unicode prohibition in the format
+- [ ] `description` is a non-empty string of 1-1024 characters
+- [ ] Optional `compatibility` is a string of 1-500 characters
+- [ ] Optional `metadata` maps string keys to string values
+- [ ] Optional `license` reflects the owner's choice or references bundled terms
+- [ ] Optional `allowed-tools` is a space-separated string with host support verified
+- [ ] Portable frontmatter contains no nonstandard top-level fields
 - [ ] `description` clearly states **WHAT** it does, **WHEN** to use it, and relevant **KEYWORDS**
 - [ ] `description` is concise and keyword-dense (respects context budget)
 - [ ] Body focuses on information Copilot wouldn't know from training data
 - [ ] Body includes when to use, prerequisites (if applicable), and core instructions
 - [ ] `## Gotchas` section present if skill involves non-obvious behavior, API quirks, or common traps
-- [ ] SKILL.md body under 500 lines (consider splitting into `references/` at ~200 lines; 500 is the hard maximum)
-- [ ] Large workflows (>5 steps) split into `references/` folder with clear links from SKILL.md
+- [ ] Aim for under 500 lines and under 5,000 instruction tokens; separate this advice from format validation
+- [ ] Detailed workflows have direct reference links where useful, without a mandatory step-count threshold
 - [ ] Scripts include help documentation and error handling
 - [ ] Relative paths used for all resource references
 - [ ] No hardcoded credentials or secrets
 
+### Reference Validation
+
+Use the [skills-ref reference library](https://github.com/agentskills/agentskills/tree/main/skills-ref)
+to validate a skill directory, not this instruction file. With an approved,
+pinned version already installed, run the following from the directory
+containing `my-skill`:
+
+```text
+skills-ref validate .\my-skill
+```
+
+This is the Windows spelling of the specification's relative-path example.
+Use the equivalent path syntax on other platforms. Record the validator
+version or commit and its actual results. Do not silently substitute versions
+or install tooling just to validate documentation.
+
+Reference validation checks frontmatter and naming, not editorial quality or
+host behavior. Source reviewed on 2026-10-18 at commit `547831f3`.
+The reviewed validator accepts empty `compatibility` and does
+not check nested `metadata` value types. Check those specification constraints
+explicitly; a successful validator result alone is insufficient.
+
+Check boundary cases: names of 1, 64, and 65 characters; uppercase, digits,
+invalid hyphens, and directory mismatch; descriptions of 0, 1, 1024, and 1025
+characters; compatibility of 0, 1, 500, and 501 characters when present; and
+non-string metadata values. Reject whitespace-only required strings.
+Parse examples as YAML, check bundled references, and verify host discovery
+separately. Report unavailable validation rather than claiming it passed.
+
 ## Related Resources
 
-- [Agent Skills Specification](https://agentskills.io/)
+- [Agent Skills Specification](https://agentskills.io/specification)
+- [Reference Validator Source](https://github.com/agentskills/agentskills/blob/547831f3a23724ba64a9b79bbf59c5e0bc8f2d1a/skills-ref/src/skills_ref/validator.py)
 - [VS Code Agent Skills Documentation](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
 - [Reference Skills Repository](https://github.com/anthropics/skills)
 - [Awesome Copilot Skills](https://github.com/github/awesome-copilot/blob/main/docs/README.skills.md)

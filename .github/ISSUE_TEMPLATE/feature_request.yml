@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement to the network blueprint or its tooling.
+title: '[Feature]: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the need and the expected outcome. Do not include credentials
+        or sensitive network details.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What task or gap would this request address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the change that would address the need.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Network or operational impact
+      description: Note affected VLANs, services, documentation, or workflows.
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: List other approaches or explain why none were considered.
+    validations:
+      required: false
