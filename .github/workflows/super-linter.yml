@@ -24,7 +24,7 @@ jobs:
         run: python3 -m pip install -r ansible/requirements.txt ansible-lint
 
       - name: Install Ansible collections
-        run: ansible-galaxy collection install -r ansible/collections/requirements.yml
+        run: ansible-galaxy collection install -r ansible/collections/requirements.yml -p ansible/collections
 
       - name: Lint Code Base
         uses: super-linter/super-linter@v9.0.0
