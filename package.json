@@ -39,7 +39,7 @@
     "url": "https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint.git"
   },
   "dependencies": {
-    "@go-task/cli": "^3.50.0"
+    "@go-task/cli": "^3.54.0"
   },
   "allowScripts": {
     "@go-task/cli@3.50.0": true
