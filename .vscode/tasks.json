@@ -2,14 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build: Hooks (watch)",
-      "type": "npm",
-      "script": "watch:hooks",
-      "isBackground": true,
-      "problemMatcher": "$tsc-watch",
-      "runOptions": { "runOn": "folderOpen" }
-    },
-    {
       "label": "Lint: All",
       "dependsOn": [
         "Lint: Markdown",

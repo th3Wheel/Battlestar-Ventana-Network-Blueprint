@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "removeComments": false
-  },
-  "include": [".claude/hooks/*.mts"]
-}
