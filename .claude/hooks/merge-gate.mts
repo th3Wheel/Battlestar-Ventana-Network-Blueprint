@@ -43,14 +43,16 @@ export function findMerges(command: string): Merge[] {
     for (let i = 0; i < tokens.length; i++) {
       if (at(i, 'gh') && at(i + 1, 'pr') && at(i + 2, 'merge')) {
         const merge: Extract<Merge, { kind: 'pr' }> = { kind: 'pr' };
+        let disableAuto = false;
         for (let j = i + 3; j < tokens.length; j++) {
           const token = tokens[j];
           if (token === '-R' || token === '--repo') {merge.repo = tokens[++j];}
           else if (token.startsWith('--repo=')) {merge.repo = token.slice(7);}
           else if (GH_VALUE_FLAGS.has(token)) {j++;}
+          else if (token === '--disable-auto') {disableAuto = true;}
           else if (!token.startsWith('-') && merge.selector === undefined) {merge.selector = token;}
         }
-        merges.push(merge);
+        if (!disableAuto) {merges.push(merge);}
       }
 
       if (at(i, 'gh') && at(i + 1, 'api')) {
