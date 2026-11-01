@@ -19,8 +19,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 CAMERA_MAP="${PROJECT_ROOT}/templates/camera-map.yaml"
 RUNONCE_TEMPLATE="${PROJECT_ROOT}/templates/runonce.sh.template"
-CONFIG_TEMPLATE="${PROJECT_ROOT}/templates/thingino.conf.template"
-
 SSH_KEY_FILE="${HOME}/.ssh/id_camera.pub"
 MOUNT_POINT="/mnt/camera-provision"
 DRY_RUN=false
@@ -177,7 +175,7 @@ detect_microsd_device() {
     
     # For interactive mode, ask user to select
     if [[ -t 0 ]]; then
-        read -p "Select device (number) or enter /dev/sdX: " user_input
+        read -r -p "Select device (number) or enter /dev/sdX: " user_input
         if [[ "$user_input" =~ ^[0-9]+$ ]]; then
             DEVICE="${devices[$user_input]%% *}"
         else
@@ -309,7 +307,7 @@ main() {
 
     if [[ -z "$CAMERA_ID" ]]; then
         list_cameras
-        read -p "Enter camera ID to provision (or 'all' for all): " CAMERA_ID
+        read -r -p "Enter camera ID to provision (or 'all' for all): " CAMERA_ID
     fi
 
     if [[ "$CAMERA_ID" == "all" ]]; then
