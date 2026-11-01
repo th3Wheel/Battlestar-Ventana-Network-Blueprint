@@ -1,0 +1,21 @@
+.vscode/tasks.json
+  s_967606c2abadc6::t_43eaa36a8193a2 4-11
+package.json
+  s_967606c2abadc6::t_a57a8ea297fddc 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "afc7832ad43c5a4efa6fd9fe82e828221eb6bfe0",
+  "prompts": {},
+  "sessions": {
+    "s_967606c2abadc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e38fd318-7215-4586-9465-8dfde8deb81a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
