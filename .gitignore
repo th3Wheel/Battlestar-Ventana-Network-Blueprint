@@ -3,6 +3,8 @@ Copilot-Processing.md
 node_modules/
 .venv/
 venv/
+# Installed Ansible collections belong in ~/.ansible/collections, never in the repo.
+ansible/collections/ansible_collections/
 *.egg-info/
 __pycache__/
 .DS_Store
