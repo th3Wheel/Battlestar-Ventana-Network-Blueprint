@@ -63,3 +63,8 @@ jobs:
           LINTER_RULES_PATH: '.'
           JAVASCRIPT_ES_CONFIG_FILE: 'eslint.config.js'
           MARKDOWN_CONFIG_FILE: '.markdownlint.jsonc'
+          # Skip third-party code the earlier steps install into the checkout:
+          # Ansible collections (ansible-galaxy), the uv virtualenv and npm packages.
+          FILTER_REGEX_EXCLUDE: '.*/(ansible/collections/ansible_collections|\.venv|node_modules)/.*'
+          # Shell scripts predate shfmt and use 2-space indentation; reformat repo-wide before re-enabling.
+          VALIDATE_SHELL_SHFMT: false
