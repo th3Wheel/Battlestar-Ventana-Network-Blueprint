@@ -10,6 +10,13 @@ on:
   push:
   pull_request:
     branches: ['master']
+
+# super-linter reports a commit status per language (MULTI_STATUS), which needs statuses: write.
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -29,6 +36,7 @@ jobs:
       - name: Lint Code Base
         uses: super-linter/super-linter@v9.0.0
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: 'master'
           LINTER_RULES_PATH: '.'
