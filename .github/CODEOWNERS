@@ -1,0 +1,33 @@
+# CODEOWNERS - Battlestar Ventana Network Blueprint
+
+# This file defines code ownership and required reviewers for pull requests
+# GitHub uses this file to automatically request reviews from owners
+#
+# Format: <path pattern> <owner>
+# Docs: <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners>
+#
+# ⚠️ STATUS: STUB — per-path ownership routing is NOT YET DEFINED
+# See GitHub Issue: <https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/issues/112>
+# Priority: HIGH — without per-path owners, all review routing falls to the
+# repository owner only, which creates a single point of approval
+#
+# When implementing, define separate owners for at minimum
+# - infra/prod/** (infrastructure changes)
+# - .github/** (CI/CD and governance changes)
+# - ansible/** (automation changes)
+# - config/** (canonical data source changes)
+# - docs/firewall-matrix.md (security policy changes)
+
+# Default owner - catches everything not matched by a more specific rule
+* @th3Wheel
+
+# ── Governance and CI ───────────────────────────────────────────────────────
+
+/.github/ @th3Wheel
+
+# ── Canonical config sources ────────────────────────────────────────────────
+/config/ @th3Wheel
+# ── Infrastructure automation ───────────────────────────────────────────────
+/ansible/ @th3Wheel
+# ── Documentation ───────────────────────────────────────────────────────────
+/docs/ @th3Wheel
