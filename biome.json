@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!.github/skills/doNotLint"]
+    "includes": ["**", "!.github/skills/doNotLint", "!**/*.html"]
   },
   "formatter": {
     "enabled": true,
@@ -32,16 +32,6 @@
     "enabled": true
   },
   "overrides": [
-    {
-      "includes": ["**/*.html"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "noUnusedVariables": "off"
-          }
-        }
-      }
-    },
     {
       "includes": [".agents/skills/pr-dashboard/scripts/lib/utils.mjs"],
       "linter": {
