@@ -415,7 +415,7 @@ function openInBrowser(filePath) {
     const out = await renderHtml(md, labelWithRange, prs);
     openInBrowser(out);
     console.log(`[pr-dashboard] Dashboard opened: ${out}`);
-  } catch {
+  } catch (e) {
     console.error('[pr-dashboard] Error:', e?.message || e);
     process.exit(1);
   }
