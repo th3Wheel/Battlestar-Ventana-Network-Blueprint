@@ -1,4 +1,4 @@
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -234,16 +234,16 @@ async function main() {
     .map(({ file, rootKey }) => `${file} (${rootKey})`)
     .sort();
 
-  const missingConfigs = [...expectedFiles].filter((file) => !discoveredConfigs.some((candidate) => candidate.file === file));
+  const missingConfigs = [...expectedFiles].filter(
+    (file) => !discoveredConfigs.some((candidate) => candidate.file === file)
+  );
 
   const changes = [];
 
   for (const target of targets) {
     const targetPath = path.join(repoRoot, target.file);
     const exists = await fileExists(targetPath);
-    const currentConfig = exists
-      ? parseJsonFlexible(await readFile(targetPath, 'utf8'), target.file)
-      : {};
+    const currentConfig = exists ? parseJsonFlexible(await readFile(targetPath, 'utf8'), target.file) : {};
 
     const existingServers = getServersObject(currentConfig, target.rootKey);
     const mergedServers = buildMergedServers(sharedServers, existingServers);
