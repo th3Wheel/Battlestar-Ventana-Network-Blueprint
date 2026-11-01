@@ -1,5 +1,7 @@
 # 💠 Battlestar Ventana Network Blueprint
 
+[![AI Ready](https://img.shields.io/badge/AI--Ready-yes-brightgreen?style=flat)](https://github.com/johnpapa/ai-ready)
+
 **IP Scheme:** `10.76.X.0/24` (X = VLAN ID)  
 **Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.  
 **Status:** unknown
@@ -94,4 +96,89 @@ CHANGELOG.md                  # Versioned history of changes
 
 ---
 
+## Developer checks
+
+The repository's validation tools require Node.js 26.10.0 or later, npm, `uv`,
+and Docker with a running Linux container engine. From the repository root:
+
+- Run `npm ci` to install the locked dependencies.
+- Run `npm test` to execute the Vitest test suite.
+- Run `npm run lint:md` to lint Markdown files with ESLint.
+- Run `npm run lint:eslint` to lint JavaScript, TypeScript, JSON, CSS, and Markdown files.
+- Run `npm run lint:eslint:fix` to apply ESLint fixes to supported files; use
+  `npm run lint:js:fix` or `npm run lint:md:fix` for a focused fix.
+- Run `npm run lint:python` to run Ruff linting, formatting checks, and ty type checks.
+- Run `npm run lint:python:fix` to apply Ruff fixes and formatting.
+- Run `npm run lint:yaml` to run the project-managed yamllint through `uv`;
+  no global yamllint installation or virtual-environment activation is needed.
+- Run `npm run lint:shell` to run ShellCheck on repository shell scripts.
+- ShellCheck runs only through Docker; no native installation is needed.
+  The [official ShellCheck image](https://github.com/koalaman/shellcheck#installing)
+  is pinned by version and immutable digest in `.shellcheck-image`. The wrapper
+  verifies `.shellcheck-version` (currently `0.11.0`), explicitly loads
+  `.shellcheckrc`, and clears `SHELLCHECK_OPTS`. It mounts the repository read-only,
+  disables container networking, and reports all severities in GCC format while
+  preserving script-level directives. Docker may download the image on first use;
+  offline runs require the pinned image to be cached. Start Docker Desktop with
+  Linux containers before running the check. Update both pin files together when
+  upgrading ShellCheck; there is no native fallback.
+  Git enforces LF line endings for `.shellcheckrc` and shell scripts so the
+  Linux container can read them correctly on Windows checkouts.
+- ShellCheck has no automatic fix mode. `yamllint` findings must be fixed
+  manually; use `npm run format:yaml` to apply Prettier formatting.
+- YAML formatting includes `.yamllint`, using an explicit YAML parser override.
+- Run `npm run lint` to run ESLint, YAML, Python, shell, and YAML formatting
+  checks; run `npm run fix` to apply supported ESLint, Ruff, and YAML formatting
+  fixes.
+
+Pass tool-specific options after `--`, for example
+`npm run lint:eslint -- --fix`. `npm run lint` is check-only; use `npm run fix`
+to apply all configured automatic fixes.
+
+The Markdown rules that currently flag legacy template/reference findings are
+temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/issues/127).
+
+### Python and Ansible environments
+
+- The root `pyproject.toml` and `uv.lock` are authoritative for Python development
+  tools. Run `uv sync --locked` from the repository root. Do not manually install
+  Ansible into this environment: synchronization removes undeclared packages.
+- Ruff replaces Black, isort, and Pylint in the root toolchain; ty provides
+  separate type checking. Ruff's selected rules do not cover every Pylint check.
+- `requirements.txt` is a generated compatibility export, not an independent
+  dependency source. Regenerate it after dependency changes with
+  `uv export --locked --no-hashes --no-emit-project --format requirements-txt --output-file requirements.txt`.
+- The Linux/WSL Ansible development controller has its own manifest and lockfile
+  in `ansible/controller/`, using Python 3.14 and Ansible Core 2.21.3.
+  From the repository root in Linux/WSL, run
+  `uv sync --project ansible/controller --locked`. Run controller tools with
+  `uv run --project ansible/controller --locked ansible --version`;
+  substitute `ansible-lint`, `molecule`, or `ansible-playbook` as needed.
+- Native Windows is not an Ansible control node. Do not share a virtual
+  environment between Windows and WSL; keep a separate Linux checkout/environment.
+  See the [Ansible controller requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
+- The legacy deployment execution environment still uses
+  `ansible/requirements.txt`, Python 3.11, and its existing Core constraints.
+  It is not upgraded by the development controller change. The legacy
+  `ansible/bootstrap-env.ps1` helper is not the new controller bootstrap;
+  use `task ansible:bootstrap` from Linux/WSL instead.
+- If uv warns about `VIRTUAL_ENV=.venv\.venv`, deactivate the stale environment
+  and open a fresh terminal. VS Code's Python project points at the repository
+  root, not the `.venv` directory. Do not use `--active` to redirect project
+  synchronization into the accidental nested environment.
+
+---
+
 🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*
+
+## Contributing
+
+1. Create a focused topic branch from the repository's default branch.
+2. Make related changes together and update affected documentation.
+3. Run `npm ci`, `npm test`, and `npm run lint` from the repository root.
+4. For MCP configuration changes, also run `npm run mcp:sync-check`.
+5. Open a pull request with the provided template. Keep secrets and private
+   network details out of issues, logs, and pull request descriptions.
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the contribution and review
+guidance.
