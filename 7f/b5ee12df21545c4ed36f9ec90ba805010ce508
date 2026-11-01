@@ -1,0 +1,25 @@
+.claude/settings.json
+  s_967606c2abadc6::t_64c81731025b42 5,9
+.github/hooks/merge-gate.json
+  s_967606c2abadc6::t_d9821265804d49 7-8
+.claude/hooks/merge-gate.mts
+  s_967606c2abadc6::t_03a9aebe295049 3-7,10,22-25,27-32,34-36,39,43,45,47-48,50-110,113-149,151-187,189-212,214-326,328-332,335,337-343,347-364,367-376,378-384,404-405,408-410,417-424,426-429,431-433,443,452-468
+tests/merge-gate.test.ts
+  s_967606c2abadc6::t_691b14bbf2e897 1-2,4-22,25,34-52,59-70,72-85,92-109,117-165,170,174-178,183-184,188-191,194,198-277
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7fb5ee12df21545c4ed36f9ec90ba805010ce508",
+  "prompts": {},
+  "sessions": {
+    "s_967606c2abadc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e38fd318-7215-4586-9465-8dfde8deb81a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
