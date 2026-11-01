@@ -1,0 +1,77 @@
+.agents/skills/wled-roomwsh/SKILL.md
+  s_cdfe2a57febfc4::t_b46fbb6e50ad15 10,12,18-22,24,26-29,34,39-41,43,45,56,58,72,74,82,84,86,106,108,110,118
+.github/agents/meta-agentic-project-scaffold.agent.md
+  s_cdfe2a57febfc4::t_837f5f5cec2798 8,10-15,17
+.github/scripts/run_pylint.ps1
+  s_cdfe2a57febfc4::t_0aef7b730978af 25-26
+.github/workflows/super-linter.yml
+  s_cdfe2a57febfc4::t_1d7b477d79bffb 23-27,29,32-47,50,55
+.github/workflows/validate-network-config.yml
+  s_cdfe2a57febfc4::t_9461aca57f4685 1-36
+.python-version
+  s_cdfe2a57febfc4::t_3faf4744c65188 1
+.vscode/tasks.json
+  s_cdfe2a57febfc4::t_7b6d259862d3ff 2-268
+Taskfile.yml
+  s_cdfe2a57febfc4::t_e4ba7a0c88730c 37-41
+ansible/group_vars/all/vlan-vars.yml
+  s_cdfe2a57febfc4::t_bcdb11bd2d2249 2-4,6-8,28-34,48-54,68-74,79,88-94,98,102-103,108-114,128-134,148-154,168-174,188-194,208-214,228-234,253,290,293-294
+ansible/requirements.txt
+  s_cdfe2a57febfc4::t_afa2bd83511a9f 1
+"baseline/Battlestar Ventana Network Blueprint.md"
+  s_cdfe2a57febfc4::t_ad691f84127ef0 58
+baseline/Battlestar-Ventana-Blueprint-Summary.md
+  s_cdfe2a57febfc4::t_99bca852f14ce0 58
+bootstrap/ssh_key_bootstrap.yml
+  s_cdfe2a57febfc4::t_1dbf879d9e997a 23-24,28,43
+config/static-ip-inventory.yaml
+  s_cdfe2a57febfc4::t_63caf282e78760 1-68
+config/vlan-registry.yaml
+  s_cdfe2a57febfc4::t_d2fee8810e503d 6-9,12,33-46,62-75,91-103,120-132,144-145,149-161,178-190,207-219,236-248,265-277,294-306,323-336
+docs/architecture/DNS-DHCP-Cluster-Blueprint.md
+  s_cdfe2a57febfc4::t_d437e55fc1aa30 32,34-51,56,72,105,118,130,144,153,155,166,177
+docs/dhcp-scopes.md
+  s_cdfe2a57febfc4::t_0974689190b08f 13-17,19-20,24-25,44
+docs/naming-conventions.md
+  s_cdfe2a57febfc4::t_c22cbdac819132 10-11
+docs/services.md
+  s_cdfe2a57febfc4::t_fc9a453b97438f 111
+docs/tech-stack-baseline.md
+  s_cdfe2a57febfc4::t_0ab1d3e4298757 8
+infrastructure/hyperion/README.md
+  s_cdfe2a57febfc4::t_b77753c31d6ea7 1-16
+infrastructure/hyperion/device-wled-ws2815.json
+  s_cdfe2a57febfc4::t_4489a5f30abb0c 5
+package-lock.json
+  s_cdfe2a57febfc4::t_8fdbc018d79c9e 17,184-186,189-191,197-199,203-204,211-220,356-358,420-422,971-973,1109-1111,1115,1119-1121,1345-1347,1397-1399,1414-1415,1425-1427,1449-1451,1457-1458,1461-1462,1464-1465,1486-1488,1495,1499-1501,1508-1530,1548-1550,1767-1769,2422-2424,2429,2483-2485,2602-2604
+package.json
+  s_cdfe2a57febfc4::t_7f5fada3ec0cc9 22
+plans/infrastructure-router-vlans-3.md
+  s_cdfe2a57febfc4::t_bf4a9f0b77fcdc 49
+pyproject.toml
+  s_cdfe2a57febfc4::t_265d9574c83927 1-56
+requirements.txt
+  s_cdfe2a57febfc4::t_57bb36d6c9763b 11
+scripts/validate_network_config.py
+  s_cdfe2a57febfc4::t_659d5d209c0fc9 1-201
+src/battlestar_ventana_network_blueprint/__init__.py
+  s_cdfe2a57febfc4::t_10ef8be49df78e 1-2
+uv.lock
+  s_cdfe2a57febfc4::t_45c32dd5f6d7b2 1-265
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d9e74483497818999be777982158b93ae4fe2a7b",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
