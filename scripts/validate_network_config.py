@@ -70,7 +70,7 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
         name = vlan.get("name")
         require(isinstance(name, str), f"{path}.name must be a string")
         name = cast(str, name).strip()
-        require(name and name not in names, f"{path}.name must be unique and non-empty")
+        require(bool(name) and name not in names, f"{path}.name must be unique and non-empty")
         vlan["name"] = name
         subnet = vlan.get("subnet")
         gateway = vlan.get("gateway")
@@ -125,6 +125,7 @@ def validate_inventory(document: dict[str, Any], vlans: dict[int, dict[str, Any]
     inventory = cast(dict[str, Any], inventory)
     reserved_ranges = inventory.get("reserved_ranges")
     require(isinstance(reserved_ranges, list), "inventory.reserved_ranges must be a list")
+    reserved_ranges = cast(list[Any], reserved_ranges)
     reserved_by_vlan: dict[int, list[tuple[int, int]]] = {}
     for index, address_range in enumerate(reserved_ranges):
         path = f"inventory.reserved_ranges[{index}]"
