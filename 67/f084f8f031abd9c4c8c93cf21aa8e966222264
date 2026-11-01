@@ -1,0 +1,29 @@
+package-lock.json
+  s_967606c2abadc6::t_e4dbb3bb486ebf 18-19,262-607,618-624,660-697,783-792,842-851,1053-1063,1091-1097,1301-1310,1320-1329,1420-1435,1810-2094,2147-2156,2901-2920,2937-2950,3095-3102,3104-3106,3116-3145,3254-3288,3401-3418,3503-3522,3582-3743,3760-3772
+package.json
+  s_967606c2abadc6::t_af22ac2f1b022f 16,24-25
+tests/merge-gate.test.js
+  s_967606c2abadc6::t_4c57b5e6dc0fd1 1-65
+.claude/hooks/merge-gate.mjs
+  s_967606c2abadc6::t_2a63c336404e98 1-136
+.claude/settings.json
+  s_967606c2abadc6::t_d26e512f0c35a1 1-15
+.github/hooks/merge-gate.json
+  s_967606c2abadc6::t_99df8c2ca3e92d 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "67f084f8f031abd9c4c8c93cf21aa8e966222264",
+  "prompts": {},
+  "sessions": {
+    "s_967606c2abadc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e38fd318-7215-4586-9465-8dfde8deb81a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
