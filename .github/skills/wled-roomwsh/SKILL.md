@@ -7,42 +7,55 @@ disable-model-invocation: true
 
 Task: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
 
-📁 Target Repo Structure
+## Target Repo Structure
 
-Please create or update the following files in the repo:
+Create or update these files in the repo:
 
 - `docs/hyperion-wled/README.md`
 - `docs/hyperion-wled/hyperion.config.json`
 - `docs/hyperion-wled/wled-roomwsh.json`
 - `docs/hyperion-wled/SETUP.md`
-📦 File Contents
+- `docs/hyperion-wled/segments-wled-map.json`
+- `docs/hyperion-wled/leds-room-layout.json`
+- `docs/hyperion-wled/instances-room-split.json`
+- `docs/hyperion-wled/screen-capture-hybrid.json`
+- `docs/hyperion-wled/priorities.json`
 
-device-wled-ws2815.json
+## Existing Source Configuration
 
+Use `infrastructure/hyperion/device-wled-ws2815.json` as reference only.
+Do not overwrite this existing file as part of the task.
+
+```json
 {
   "device": {
     "name": "wled_ws2815_six",
     "type": "wled",
-    "output": "10.10.10.50",
+    "output": "10.76.20.101",
     "colorOrder": "grb",
     "hardwareLedCount": 46
   }
 }
+```
 
-segments-wled-map.json
+## Generated File Contents
 
+Create `docs/hyperion-wled/segments-wled-map.json`:
+
+```json
 {
   "wledSegments": [
-    { "id": 0, "name": "L1_23px", "start": 0,  "end": 22 },
-    { "id": 1, "name": "L2_12px", "start": 0,  "end": 11 },
-    { "id": 2, "name": "L3_8px",  "start": 0,  "end": 7  },
+    { "id": 0, "name": "L1_23px", "start": 0, "end": 22 },
+    { "id": 1, "name": "L2_12px", "start": 0, "end": 11 },
+    { "id": 2, "name": "L3_8px", "start": 0, "end": 7 },
     { "id": 3, "name": "R1_23px", "start": 23, "end": 45 },
     { "id": 4, "name": "R2_10px", "start": 23, "end": 32 },
-    { "id": 5, "name": "R3_8px",  "start": 23, "end": 30 }
+    { "id": 5, "name": "R3_8px", "start": 23, "end": 30 }
   ]
 }
+```
 
-leds-room-layout.json
+Create `docs/hyperion-wled/leds-room-layout.json`:
 
 This file should define a 46-pixel layout with the following mapping:
 
@@ -56,18 +69,21 @@ hscan should span 0.0 to 1.0 across each strip, evenly divided per pixel
 
 Use index: 0–45 in order. If needed, generate the full array programmatically.
 
-instances-room-split.json
+Create `docs/hyperion-wled/instances-room-split.json`:
 
+```json
 {
   "instances": [
-    { "name": "Left",  "enabled": true,  "leds": { "firstLed": 0,  "lastLed": 22 } },
-    { "name": "Right", "enabled": true,  "leds": { "firstLed": 23, "lastLed": 45 } },
-    { "name": "All",   "enabled": false, "leds": { "firstLed": 0,  "lastLed": 45 } }
+    { "name": "Left", "enabled": true, "leds": { "firstLed": 0, "lastLed": 22 } },
+    { "name": "Right", "enabled": true, "leds": { "firstLed": 23, "lastLed": 45 } },
+    { "name": "All", "enabled": false, "leds": { "firstLed": 0, "lastLed": 45 } }
   ]
 }
+```
 
-screen-capture-hybrid.json
+Create `docs/hyperion-wled/screen-capture-hybrid.json`:
 
+```json
 {
   "grabber": {
     "framegrabber": {
@@ -87,9 +103,11 @@ screen-capture-hybrid.json
     }
   }
 }
+```
 
-priorities.json
+Create `docs/hyperion-wled/priorities.json`:
 
+```json
 {
   "priorities": {
     "screenCapture": 100,
@@ -97,6 +115,7 @@ priorities.json
     "wledDefault": 254
   }
 }
+```
 
 🧠 Notes for Agent
 
@@ -112,7 +131,9 @@ This config is designed to support screen capture, ambient effects, and WLED fal
 
 Ensure JSON is valid and formatted with 2-space indentation
 workflow to validate the JSON files automatically.
+
 ---
+
 agent: context7
 description: Add a complete configuration suite for a 6-segment WS2815-based ambient lighting system adapted for WLED and Hyperion-NG/HyperHDR. This system is used for immersive room lighting, not TV perimeter lighting, and is mounted on the ceiling and walls of a room opposite the TV.
 model: gpt-4-turbo

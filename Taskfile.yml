@@ -34,6 +34,11 @@ tasks:
     cmds:
       - bash scripts/deploy-dotfiles.sh --dry-run
 
+  validate:network:
+    desc: 'Validate config/vlan-registry.yaml and config/static-ip-inventory.yaml'
+    cmds:
+      - uv run python scripts/validate_network_config.py
+
   agents:validate-line-endings:
     desc: 'Run validate-agents.sh regression check for LF and CRLF fixtures'
     cmds:

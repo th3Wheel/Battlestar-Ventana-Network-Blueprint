@@ -5,7 +5,7 @@ If stack details change, update this file first.
 
 ### 📦 Core Stack
 
-- **Primary Languages**: Python 3.11+, TypeScript 5+, Bash (prefer POSIX-compliant shell scripts where feasible)
+- **Primary Languages**: Python 3.14+, TypeScript 5+, Bash (prefer POSIX-compliant shell scripts where feasible)
 
 ### ✅ Quality Tooling
 
