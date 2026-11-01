@@ -21,6 +21,8 @@ All subnets follow the `10.76.X.0/24` convention (X = VLAN ID).
 | 82 ScorpiaMediaRelay | 10.76.82.0/24 | 10.76.82.1 | 24h | Local DNS |
 | 90 ScyllaProcessControl | 10.76.90.0/24 | 10.76.90.1 | 24h | Local DNS |
 
+VLAN 40 uses `10.76.40.100`–`10.76.40.199` for DHCP; static management addresses are reserved in `10.76.40.10`–`10.76.40.99`.
+
 ---
 
 ## 📌 Static IP Reservations

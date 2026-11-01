@@ -141,8 +141,8 @@ vlans:
     gateway: '10.76.40.1'
     dhcp:
       enabled: true
-      range_start: '10.76.40.10'
-      range_end: '10.76.40.99'
+      range_start: '10.76.40.100'
+      range_end: '10.76.40.199'
       lease_time: '7d'
       dns_primary: '10.76.50.10'
       dns_secondary: '10.76.50.11'
