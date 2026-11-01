@@ -1,0 +1,19 @@
+bootstrap/ssh_key_bootstrap.yml
+  s_cdfe2a57febfc4::t_f8b4761312354e 23-24,28,43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8a8d272a82cddf6805114852b8cae59d66243fbe",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
