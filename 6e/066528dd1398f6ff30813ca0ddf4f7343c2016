@@ -1,0 +1,21 @@
+.claude/settings.json
+  s_967606c2abadc6::t_513f87721236ee 9
+.github/hooks/merge-gate.json
+  s_967606c2abadc6::t_6f3f6e2e3762a9 7-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6e066528dd1398f6ff30813ca0ddf4f7343c2016",
+  "prompts": {},
+  "sessions": {
+    "s_967606c2abadc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e38fd318-7215-4586-9465-8dfde8deb81a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
