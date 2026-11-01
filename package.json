@@ -15,6 +15,7 @@
     "mcp:guard": "node scripts/sync-mcp-configs.mjs --guard",
     "typecheck": "tsc -p tsconfig.json",
     "build:hooks": "tsc -p tsconfig.hooks.json",
+    "watch:hooks": "tsc -p tsconfig.hooks.json --watch --preserveWatchOutput",
     "build:hooks:check": "npm run build:hooks && git diff --exit-code -- .claude/hooks",
     "test": "npm run typecheck && vitest run",
     "lint": "npm run lint:js && npm run lint:md && npm run lint:yaml",
