@@ -108,7 +108,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ## 🟡 Semi‑Trusted Zone
 
-### VLAN 31: PiconResidentGate (Semi‑Trusted Residents)
+### VLAN 31: CapricaResidentPortal (Semi‑Trusted Residents)
 
 #### Outbound to ServerVault (50)
 
