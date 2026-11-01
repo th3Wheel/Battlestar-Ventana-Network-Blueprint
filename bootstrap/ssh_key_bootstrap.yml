@@ -20,12 +20,12 @@
     - name: Validate 1Password item exists
       ansible.builtin.assert:
         that:
-          - ssh_password is defined
-          - ssh_password | length > 0
+          # default(..., true) also replaces None/empty, which errors='ignore' can return.
+          - ssh_password | default('', true) | trim | length > 0
         fail_msg: >
           1Password lookup failed. Ensure a 'SSH Password' item exists in your 1Password vault
           with a 'password' field containing the SSH password for target hosts.
-        success_msg: 'Successfully retrieved SSH password from 1Password'
+        quiet: true
       delegate_to: localhost
 
     - name: Ensure known_hosts contains the target host key
@@ -40,6 +40,7 @@
           ssh-copy-id -i {{ public_key_path }} {{ ansible_user }}@{{ inventory_hostname }}
         responses:
           '(?i)password': '{{ ssh_password }}'
+      no_log: true
       delegate_to: localhost
 
     - name: Validate passwordless SSH now works
