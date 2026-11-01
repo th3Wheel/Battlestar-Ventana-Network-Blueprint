@@ -19,10 +19,12 @@
     - name: Assert SSH password is available from 1Password
       ansible.builtin.assert:
         that:
-          - ssh_password | default('') | trim | length > 0
+          # default(..., true) also replaces None/empty, not just undefined.
+          - ssh_password | default('', true) | trim | length > 0
         fail_msg: >-
           Failed to retrieve a non-empty SSH password from 1Password item
           "SSH Password" field "password"
+        quiet: true
       delegate_to: localhost
 
     - name: Ensure known_hosts contains the target host key
@@ -37,6 +39,7 @@
           ssh-copy-id -i {{ public_key_path }} {{ ansible_user }}@{{ inventory_hostname }}
         responses:
           '(?i)password': '{{ ssh_password }}'
+      no_log: true
       delegate_to: localhost
 
     - name: Validate passwordless SSH now works
