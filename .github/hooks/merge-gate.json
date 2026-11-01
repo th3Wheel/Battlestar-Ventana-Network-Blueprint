@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "node .claude/hooks/merge-gate.mjs --copilot",
+        "powershell": "node .claude/hooks/merge-gate.mjs --copilot",
+        "timeoutSec": 30
+      }
+    ]
+  }
+}
