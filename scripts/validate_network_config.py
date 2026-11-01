@@ -46,7 +46,7 @@ def validate_policy(policy: Any, path: str, allowlist_required: bool = True) -> 
     if mode in {"allow", "deny"}:
         require(not destinations, f"{path}.destinations must be empty for {mode} mode")
     require(
-        rate_limit is None or isinstance(rate_limit, int),
+        rate_limit is None or (isinstance(rate_limit, int) and not isinstance(rate_limit, bool)),
         f"{path}.rate_limit_mbps must be an integer or null",
     )
     require(rate_limit is None or rate_limit > 0, f"{path}.rate_limit_mbps must be positive")
@@ -119,10 +119,34 @@ def validate_registry(document: dict[str, Any]) -> dict[int, dict[str, Any]]:
 
 
 def validate_inventory(document: dict[str, Any], vlans: dict[int, dict[str, Any]]) -> None:
-    """Validate inventory uniqueness and ensure each address belongs to its VLAN."""
+    """Validate inventory uniqueness and ensure static addresses avoid DHCP pools."""
     inventory = document.get("inventory")
     require(isinstance(inventory, dict), "inventory must be a mapping")
     inventory = cast(dict[str, Any], inventory)
+    reserved_ranges = inventory.get("reserved_ranges")
+    require(isinstance(reserved_ranges, list), "inventory.reserved_ranges must be a list")
+    reserved_by_vlan: dict[int, list[tuple[int, int]]] = {}
+    for index, address_range in enumerate(reserved_ranges):
+        path = f"inventory.reserved_ranges[{index}]"
+        require(isinstance(address_range, dict), f"{path} must be a mapping")
+        vlan_id = address_range.get("vlan_id")
+        require(isinstance(vlan_id, int) and vlan_id in vlans, f"{path}.vlan_id is unknown")
+        vlan_id = cast(int, vlan_id)
+        network = ipaddress.ip_network(vlans[vlan_id]["subnet"])
+        start = address_range.get("start")
+        end = address_range.get("end")
+        require(isinstance(start, str) and isinstance(end, str), f"{path} must have string start and end")
+        start_address = ipaddress.ip_address(start)
+        end_address = ipaddress.ip_address(end)
+        require(
+            start_address.version == end_address.version
+            and start_address in network
+            and end_address in network
+            and start_address <= end_address,
+            f"{path} must be an ordered range within VLAN {vlan_id}",
+        )
+        reserved_by_vlan.setdefault(vlan_id, []).append((int(start_address), int(end_address)))
+
     addresses = inventory.get("addresses")
     require(isinstance(addresses, list), "inventory.addresses must be a list")
     addresses = cast(list[dict[str, Any]], addresses)
@@ -138,6 +162,19 @@ def validate_inventory(document: dict[str, Any], vlans: dict[int, dict[str, Any]
         vlan_id = cast(int, vlan_id)
         parsed = ipaddress.ip_address(address)
         require(parsed in ipaddress.ip_network(vlans[vlan_id]["subnet"]), f"{path}.address is outside VLAN {vlan_id}")
+        numeric_address = int(parsed)
+        require(
+            any(start <= numeric_address <= end for start, end in reserved_by_vlan.get(vlan_id, [])),
+            f"{path}.address is outside VLAN {vlan_id} reserved ranges",
+        )
+        dhcp = vlans[vlan_id]["dhcp"]
+        if dhcp["enabled"]:
+            dhcp_start = ipaddress.ip_address(dhcp["range_start"])
+            dhcp_end = ipaddress.ip_address(dhcp["range_end"])
+            require(
+                not int(dhcp_start) <= numeric_address <= int(dhcp_end),
+                f"{path}.address overlaps VLAN {vlan_id} DHCP range",
+            )
         seen.add(address)
 
 
