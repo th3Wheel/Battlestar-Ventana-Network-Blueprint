@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decide, findMerges, isRiskPath } from '../.claude/hooks/merge-gate.mjs';
+import { decide, findMerges, isRiskPath } from '../.claude/hooks/merge-gate.mts';
 
 describe('isRiskPath', () => {
   it.each(['config/router.yaml', 'ansible/site.yml', 'infrastructure/main.tf', 'mcp-config.json', '.vscode/mcp.json', '.gemini/settings.json'])(
@@ -37,7 +37,7 @@ describe('findMerges', () => {
 });
 
 describe('decide', () => {
-  const bash = (command) => ({ tool_name: 'Bash', tool_input: { command } });
+  const bash = (command: string) => ({ tool_name: 'Bash', tool_input: { command } });
 
   it('denies merges touching risk paths', () => {
     expect(decide(bash('gh pr merge 1'), () => ['docs/a.md', 'ansible/site.yml'])).toMatch(/ansible\/site\.yml/);
