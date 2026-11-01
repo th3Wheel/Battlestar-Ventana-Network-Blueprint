@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // pr-dashboard-cli.mjs
 // Standalone CLI for the PR dashboard — no Copilot SDK required.
 // Usage: node pr-dashboard-cli.mjs [query] [role]
@@ -6,12 +7,12 @@
 //   role:  one of "Authored by me" | "Requested reviews" | "Assigned to me" | "All"
 //          (default: "Authored by me")
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
-import { promisify } from 'util';
-import { execFile, spawn } from 'child_process';
-import { fileURLToPath } from 'url';
+import { execFile, spawn } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { parseDateRange } from './lib/utils.mjs';
 
 const execFileP = promisify(execFile);
@@ -19,7 +20,7 @@ const execFileP = promisify(execFile);
 function escapeHtml(s) {
   return String(s).replace(
     /[&<>"']/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' })[c]
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
   );
 }
 
@@ -32,7 +33,7 @@ const role = args[1] || 'Authored by me';
 function formatHumanDate(d) {
   try {
     return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  } catch (e) {
+  } catch {
     return d;
   }
 }
@@ -52,7 +53,7 @@ async function ghApi(args) {
         if (parsed?.message) {
           errorMessage = parsed.message;
         }
-      } catch (e) {
+      } catch {
         /* fall through */
       }
     }
@@ -137,7 +138,7 @@ async function getPrDetails(item) {
       } else {
         out.review = 'REVIEW_REQUIRED';
       }
-    } catch (e) {
+    } catch {
       /* ignore */
     }
 
@@ -149,7 +150,7 @@ async function getPrDetails(item) {
           out.ci = (status.state || '').toUpperCase();
         }
       }
-    } catch (e) {
+    } catch {
       /* ignore */
     }
 
@@ -186,12 +187,12 @@ async function getPrDetails(item) {
         out.bodyMarkdown = '';
         out.summary = '';
       }
-    } catch (e) {
+    } catch {
       out.bodyHtml = null;
     }
 
     return out;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -204,7 +205,7 @@ async function pMap(list, mapper, concurrency = 5) {
       const idx = i++;
       try {
         results[idx] = await mapper(list[idx]);
-      } catch (e) {
+      } catch {
         results[idx] = null;
       }
     }
@@ -242,14 +243,14 @@ async function renderHtml(md, label = 'PR Dashboard', prs = []) {
   let template;
   try {
     template = fs.readFileSync(templatePath, 'utf8');
-  } catch (e) {
+  } catch {
     template = `<html><head><title>PR Dashboard — ${escapeHtml(label)}</title></head><body><pre>${escapeHtml(JSON.stringify(md))}</pre></body></html>`;
   }
 
   function escapeHtml(s) {
     return String(s).replace(
       /[&<>"']/g,
-      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' })[c]
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
     );
   }
 
@@ -302,12 +303,12 @@ async function renderHtml(md, label = 'PR Dashboard', prs = []) {
 
   try {
     replaced = replaced.replace(/<title>[^<]*<\/title>/, `<title>PR Dashboard — ${escapeHtml(label)}</title>`);
-  } catch (e) {
+  } catch {
     /* Preserve the original title when optional replacement fails. */
   }
   try {
     replaced = replaced.replace(/<h1[^>]*>[^<]*<\/h1>/, `<h1>🔀 PR Dashboard — ${escapeHtml(label)}</h1>`);
-  } catch (e) {
+  } catch {
     /* Preserve the original heading when optional replacement fails. */
   }
 
@@ -343,14 +344,14 @@ async function renderHtml(md, label = 'PR Dashboard', prs = []) {
     replaceStat('stat merged', counts.merged);
     replaceStat('stat closed', counts.closed);
     replaceStat('stat draft', counts.draft);
-  } catch (e) {
+  } catch {
     /* Keep the dashboard if optional metadata or statistic replacement fails. */
   }
 
   try {
     const safe = String(label).replace(/[^a-z0-9]/gi, '_');
     replaced = replaced.replace(/const filename = '[^']*';/, `const filename = 'pr-dashboard-${safe}.md';`);
-  } catch (e) {
+  } catch {
     /* Keep the default filename when the optional replacement fails. */
   }
 
@@ -367,7 +368,7 @@ function openInBrowser(filePath) {
       ? spawn(opener, [filePath], { detached: true, stdio: 'ignore' })
       : spawn('cmd', ['/c', 'start', '""', filePath], { detached: true, stdio: 'ignore' });
     child.unref();
-  } catch (e) {
+  } catch {
     /* ignore */
   }
 }
@@ -396,7 +397,6 @@ function openInBrowser(filePath) {
     console.log(`[pr-dashboard] Found ${items.length} PR(s)`);
 
     if (!items.length) {
-      const extDir = path.dirname(fileURLToPath(import.meta.url));
       const noResultsPath = path.join(os.tmpdir(), 'pr-dashboard-no-results.html');
       fs.writeFileSync(
         noResultsPath,
@@ -415,7 +415,7 @@ function openInBrowser(filePath) {
     const out = await renderHtml(md, labelWithRange, prs);
     openInBrowser(out);
     console.log(`[pr-dashboard] Dashboard opened: ${out}`);
-  } catch (e) {
+  } catch {
     console.error('[pr-dashboard] Error:', e?.message || e);
     process.exit(1);
   }

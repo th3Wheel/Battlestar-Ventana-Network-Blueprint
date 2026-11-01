@@ -70,8 +70,8 @@
       <option>APPROVED</option><option>CHANGES_REQUESTED</option><option>REVIEW_REQUIRED</option>
     </select>
     <span class="visible-count" id="vc">0 PRs</span>
-    <button id="exportMdBtn" class="theme-toggle" onclick="downloadMarkdown()">📄 Export MD</button>
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+    <button type="button" id="exportMdBtn" class="theme-toggle" onclick="downloadMarkdown()">📄 Export MD</button>
+    <button type="button" class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
   </div>
 
   <table>
@@ -96,7 +96,7 @@
         r.style.display=show?"":"none";
         if(show)n++;
       });
-      document.getElementById("vc").textContent=n+" PR"+(n!==1?"s":"");
+      document.getElementById("vc").textContent=`${n} PR${n!==1?"s":""}`;
     }
     function toggleTheme(){
       const html=document.documentElement;
