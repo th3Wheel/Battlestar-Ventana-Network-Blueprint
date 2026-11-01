@@ -8,6 +8,9 @@ on:
     paths:
       - "**/*.json"
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -24,4 +27,4 @@ jobs:
           find . -name "*.json" -print0 | while IFS= read -r -d '' file; do
             echo "Checking $file"
             jq empty "$file" || exit 1
-          done
+          done
