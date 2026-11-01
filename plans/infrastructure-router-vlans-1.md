@@ -54,7 +54,7 @@ This plan defines the deterministic steps to create router configuration and VLA
 - GOAL-002: Create documentation and validation procedures for router deployment.
 
 | Task | Description | Completed | Date |
-|------|-------------|-----------|------|
+| ------ | ------------- | ----------- | ------ |
 | TASK-007 | Create `projects/route-pi-squared/docs/router-a5e.md` with step-by-step router configuration procedures. | ✅ | 2025-10-07 |
 | TASK-008 | Document VLAN 20 setup, DHCP configuration, and firewall rule application in the router documentation. | ✅ | 2025-10-07 |
 | TASK-009 | Add troubleshooting section covering common issues like NIC detection, VLAN tagging, and DHCP conflicts. | ✅ | 2025-10-07 |
@@ -128,7 +128,7 @@ If VLAN support is added to linux-router, it could become a viable alternative w
 
 ## 8. Related Specifications / Further Reading
 
-- [projects/route-pi-squared/infrastructure/radxa/docker-host-bootstrap.md](../projects/route-pi-squared/infrastructure/radxa/docker-host-bootstrap.md)
+- `projects/route-pi-squared/infrastructure/radxa/docker-host-bootstrap.md` (referenced file not present in this repository)
 - [systemd-networkd documentation](https://www.freedesktop.org/software/systemd/man/systemd.network.html)
 - [Radxa Cubie A5E documentation](https://docs.radxa.com/en/cubie/a5e)
 

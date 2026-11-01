@@ -22,5 +22,5 @@ if (-not $pythonFiles -or $pythonFiles.Count -eq 0) {
     exit 0
 }
 
-Write-Host "Linting $($pyFiles.Count) file(s)..."
-& $pythonExe -m pylint --rcfile (Join-Path $repoRoot ".pylintrc") @pyFiles
+Write-Host "Linting $($pythonFiles.Count) file(s)..."
+& $pythonExe -m pylint --rcfile (Join-Path $repoRoot ".pylintrc") @pythonFiles

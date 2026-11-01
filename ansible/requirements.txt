@@ -1,4 +1,4 @@
-ansible-core>=2.15,<2.18
+ansible-core>=2.21,<2.22
 docker>=6.1,<8
 proxmoxer>=2.0,<3
 requests>=2.31,<3
