@@ -1,0 +1,36 @@
+name: Validate Network Config
+
+on:
+  push:
+    paths:
+      - 'config/vlan-registry.yaml'
+      - 'config/static-ip-inventory.yaml'
+      - 'scripts/validate_network_config.py'
+      - '.github/workflows/validate-network-config.yml'
+  pull_request:
+    paths:
+      - 'config/vlan-registry.yaml'
+      - 'config/static-ip-inventory.yaml'
+      - 'scripts/validate_network_config.py'
+      - '.github/workflows/validate-network-config.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyYAML
+        run: pip install PyYAML==6.0.3
+
+      - name: Validate VLAN registry and static IP inventory
+        run: python scripts/validate_network_config.py
