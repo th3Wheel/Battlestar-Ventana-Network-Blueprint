@@ -1,0 +1,23 @@
+.env.example
+  s_cdfe2a57febfc4::t_7f03dfbc873d97 3-7
+.github/CODEOWNERS
+  s_cdfe2a57febfc4::t_3429b89b300529 1-33
+.github/agents/AGENT_REGISTRY.md
+  s_cdfe2a57febfc4::t_cb7b4cfaaba3f4 1-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "183f077d667f1297836aa70f6a511fa6d0db63dc",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
