@@ -10,15 +10,23 @@ on:
   push:
   pull_request:
     branches: ['master']
+
+# super-linter reports a commit status per language (MULTI_STATUS), which needs statuses: write.
+permissions:
+  contents: read
+  packages: read
+  statuses: write
+
 jobs:
   run-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -47,8 +55,9 @@ jobs:
         run: uv run ty check
 
       - name: Lint Code Base
-        uses: super-linter/super-linter@v9.0.0
+        uses: super-linter/super-linter@2da136927bd4a73596db63044b504547c62cb854 # v9.0.0
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: 'master'
           LINTER_RULES_PATH: '.'
