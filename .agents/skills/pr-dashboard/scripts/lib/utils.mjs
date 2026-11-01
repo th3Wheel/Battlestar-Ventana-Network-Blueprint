@@ -67,12 +67,41 @@ export function parseDateRange(text) {
   }
 
   // month-year like "february 2006" or "feb 2006"
-  if ((match = lower.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\s+(\d{4})\b/))) {
+  if (
+    (match = lower.match(
+      /\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\s+(\d{4})\b/
+    ))
+  ) {
     const monthStr = match[1];
     const year = parseInt(match[2], 10);
-    const months = { january:0, jan:0, february:1, feb:1, march:2, mar:2, april:3, apr:3, may:4, june:5, jun:5, july:6, jul:6, august:7, aug:7, september:8, sep:8, sept:8, october:9, oct:9, november:10, nov:10, december:11, dec:11 };
+    const months = {
+      january: 0,
+      jan: 0,
+      february: 1,
+      feb: 1,
+      march: 2,
+      mar: 2,
+      april: 3,
+      apr: 3,
+      may: 4,
+      june: 5,
+      jun: 5,
+      july: 6,
+      jul: 6,
+      august: 7,
+      aug: 7,
+      september: 8,
+      sep: 8,
+      sept: 8,
+      october: 9,
+      oct: 9,
+      november: 10,
+      nov: 10,
+      december: 11,
+      dec: 11,
+    };
     const mIdx = months[monthStr];
-    if (mIdx !== undefined && !isNaN(year)) {
+    if (mIdx !== undefined && !Number.isNaN(year)) {
       const start = new Date(year, mIdx, 1);
       const end = new Date(year, mIdx + 1, 0);
       const label = `${monthStr.charAt(0).toUpperCase()}${monthStr.slice(1)} ${year}`;
@@ -86,10 +115,14 @@ export function parseDateRange(text) {
   }
 
   // explicit like "Apr 1 - Apr 5" or "Apr 1 to Apr 5"
-  if ((match = text.match(/([A-Za-z]{3,}\s+\d{1,2}(?:,\s*\d{4})?)(?:\s*-\s*|\s+to\s+)([A-Za-z]{3,}\s+\d{1,2}(?:,\s*\d{4})?)/))) {
+  if (
+    (match = text.match(
+      /([A-Za-z]{3,}\s+\d{1,2}(?:,\s*\d{4})?)(?:\s*-\s*|\s+to\s+)([A-Za-z]{3,}\s+\d{1,2}(?:,\s*\d{4})?)/
+    ))
+  ) {
     const s = new Date(match[1]);
     const e = new Date(match[2]);
-    if (!isNaN(s) && !isNaN(e)) {
+    if (!Number.isNaN(s.getTime()) && !Number.isNaN(e.getTime())) {
       return { start: dateToYMD(s), end: dateToYMD(e), label: `${match[1]} → ${match[2]}` };
     }
   }
@@ -103,9 +136,38 @@ export function parseDateRange(text) {
   }
 
   // month-only like "february" or "feb" (assume current year)
-  if ((match = lower.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\b/))) {
+  if (
+    (match = lower.match(
+      /\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\b/
+    ))
+  ) {
     const monthStr = match[1];
-    const months = { january:0, jan:0, february:1, feb:1, march:2, mar:2, april:3, apr:3, may:4, june:5, jun:5, july:6, jul:6, august:7, aug:7, september:8, sep:8, sept:8, october:9, oct:9, november:10, nov:10, december:11, dec:11 };
+    const months = {
+      january: 0,
+      jan: 0,
+      february: 1,
+      feb: 1,
+      march: 2,
+      mar: 2,
+      april: 3,
+      apr: 3,
+      may: 4,
+      june: 5,
+      jun: 5,
+      july: 6,
+      jul: 6,
+      august: 7,
+      aug: 7,
+      september: 8,
+      sep: 8,
+      sept: 8,
+      october: 9,
+      oct: 9,
+      november: 10,
+      nov: 10,
+      december: 11,
+      dec: 11,
+    };
     const mIdx = months[monthStr];
     if (mIdx !== undefined) {
       const start = new Date(now.getFullYear(), mIdx, 1);
