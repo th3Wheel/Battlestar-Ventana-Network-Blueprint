@@ -40,7 +40,7 @@ services:
         # Static IP on the stack-internal bridge; referenced by PIHOLE_DNS_ below.
         ipv4_address: 172.20.0.2
     healthcheck:
-      test: ["CMD", "drill", "@127.0.0.1", "cloudflare.com"]
+      test: ['CMD', 'drill', '@127.0.0.1', 'cloudflare.com']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -52,14 +52,14 @@ services:
     depends_on:
       - unbound
     environment:
-      TZ: "America/Chicago"
+      TZ: 'America/Chicago'
       # Stack refuses to start if PIHOLE_WEBPASSWORD is unset or empty.
-      WEBPASSWORD: "${PIHOLE_WEBPASSWORD:?PIHOLE_WEBPASSWORD must be set in the environment}"
+      WEBPASSWORD: '${PIHOLE_WEBPASSWORD:?PIHOLE_WEBPASSWORD must be set in the environment}'
       # Upstream DNS: Unbound internal bridge IP, port 5335.
       # Port 5335: must match the interface directive in /srv/pihole/unbound/unbound.conf.
-      PIHOLE_DNS_: "172.20.0.2#5335"
-      DNSSEC: "true"
-      DNSMASQ_LISTENING: "all"
+      PIHOLE_DNS_: '172.20.0.2#5335'
+      DNSSEC: 'true'
+      DNSMASQ_LISTENING: 'all'
     networks:
       vlan50:
         # Static IP sourced from: ansible/group_vars/all/vlan-vars.yml — pihole_primary_ip
@@ -71,7 +71,7 @@ services:
     healthcheck:
       # Port 53 sourced from: docs/services.md (VLAN 50: DNS 53) and docs/firewall-matrix.md
       # Query against 127.0.0.1 — the local loopback is reachable from inside the container.
-      test: ["CMD", "dig", "+short", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
+      test: ['CMD', 'dig', '+short', '+norecurse', '+retry=0', '@127.0.0.1', 'pi.hole']
       interval: 30s
       timeout: 5s
       retries: 3
