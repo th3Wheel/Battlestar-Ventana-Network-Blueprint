@@ -21,8 +21,8 @@
 #   * Downloads the Debian 12 standard template if missing.
 #   * Applies nesting, keyctl, and cap_net_admin capabilities.
 #   * Converts the container into a template after applying updates.
-#   * By default, the container is not started automatically during creation.
-#     Use --autostart to start it immediately after creation.
+#   * The container is started temporarily to install packages, then stopped
+#     and converted into a template.
 
 set -euo pipefail
 
@@ -39,7 +39,6 @@ MEMORY_MB="1024"
 SWAP_MB="0"
 CTID=""
 REFRESH=0
-AUTOSTART=0
 
 usage() {
   cat <<'USAGE'
@@ -58,7 +57,6 @@ Options:
   --memory <mb>          RAM in MiB (default: 1024).
   --swap <mb>            Swap in MiB (default: 0).
   --refresh              Force refresh of the Debian template via pveam.
-  --autostart            Start the container automatically after creation.
   -h, --help             Show this help message and exit.
 USAGE
 }
@@ -127,10 +125,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --refresh)
       REFRESH=1
-      shift
-      ;;
-    --autostart)
-      AUTOSTART=1
       shift
       ;;
     -h|--help)

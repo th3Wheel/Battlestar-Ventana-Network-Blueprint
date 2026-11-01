@@ -23,7 +23,7 @@ if ! op whoami &> /dev/null; then
 fi
 
 # Clear/create .env file
-> .env
+: > .env
 
 echo "Converting safe.env to .env using 1Password CLI..."
 
@@ -33,12 +33,11 @@ while IFS='=' read -r key value || [ -n "$key" ]; do
     [[ -z "$key" || "$key" =~ ^[[:space:]]*# ]] && continue
     
     # Remove any trailing whitespace from key
-    key=$(echo "$key" | sed 's/[[:space:]]*$//')
+    key="${key%"${key##*[![:space:]]}"}"
     
     if [[ "$value" == op://* ]]; then
         echo "Fetching secret for $key..."
-        actual_value=$(op read "$value")
-        if [ $? -ne 0 ]; then
+        if ! actual_value=$(op read "$value"); then
             echo "Error: Failed to read secret for $key from 1Password"
             exit 1
         fi
