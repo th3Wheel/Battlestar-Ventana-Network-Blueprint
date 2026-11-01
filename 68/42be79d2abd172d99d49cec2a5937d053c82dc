@@ -1,0 +1,21 @@
+.github/workflows/validate-network-config.yml
+  s_cdfe2a57febfc4::t_8bcf55d5fcdfa2 1-36
+Taskfile.yml
+  s_cdfe2a57febfc4::t_d1dc0c722da4cf 37-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6842be79d2abd172d99d49cec2a5937d053c82dc",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
