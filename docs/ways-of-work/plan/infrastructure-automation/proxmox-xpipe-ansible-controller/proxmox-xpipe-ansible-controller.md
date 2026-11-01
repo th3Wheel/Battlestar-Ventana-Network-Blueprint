@@ -36,7 +36,12 @@ This pack is attached to each Proxmox host in XPipe. All commands are host-agnos
 **Command:**
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/debian.sh)"
+COMMIT_SHA="<PINNED_COMMIT_SHA>"
+SCRIPT_URL="https://raw.githubusercontent.com/community-scripts/ProxmoxVE/${COMMIT_SHA}/ct/debian.sh"
+curl -fL --proto '=https' --tlsv1.2 -o ./debian.sh "${SCRIPT_URL}"
+chmod 700 ./debian.sh
+less ./debian.sh   # review before execution
+bash ./debian.sh
 ```
 
 This is interactive by design (CTID, hostname, disk, RAM, network).
