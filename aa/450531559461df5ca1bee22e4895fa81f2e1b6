@@ -1,0 +1,19 @@
+.github/workflows/super-linter.yml
+  s_cdfe2a57febfc4::t_b646f053b37eb0 13-19,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aa450531559461df5ca1bee22e4895fa81f2e1b6",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
