@@ -1,0 +1,19 @@
+bootstrap/thefuck.sh
+  s_cdfe2a57febfc4::t_1d8d5b521a4d00 52-54,58-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "587251adf3e816a1683f972fe72faa4d82a5ea96",
+  "prompts": {},
+  "sessions": {
+    "s_cdfe2a57febfc4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bd906533-1ae2-447b-85fa-ce4a64ba2108",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
