@@ -49,11 +49,14 @@ ensure_python_tooling
 echo "Installing thefuck (user scope)..."
 pip3 install thefuck --user
 
-append_block_if_missing "$HOME/.bashrc" "$HOME/.local/bin" "$PATH_BLOCK"
+# The needle must stay unexpanded: PATH_BLOCK writes the literal text $HOME/.local/bin.
+# shellcheck disable=SC2016
+append_block_if_missing "$HOME/.bashrc" '$HOME/.local/bin' "$PATH_BLOCK"
 append_block_if_missing "$HOME/.bashrc" "thefuck --alias" "$THEFUCK_BLOCK"
 
 if [[ -f "$HOME/.zshrc" ]]; then
-    append_block_if_missing "$HOME/.zshrc" "$HOME/.local/bin" "$PATH_BLOCK"
+    # shellcheck disable=SC2016
+    append_block_if_missing "$HOME/.zshrc" '$HOME/.local/bin' "$PATH_BLOCK"
     append_block_if_missing "$HOME/.zshrc" "thefuck --alias" "$THEFUCK_BLOCK"
 fi
 
