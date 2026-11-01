@@ -4,7 +4,7 @@
 # This sets up 1Password Connect Server credentials for the repository
 
 set -e  # Exit on any error
-a
+set -o pipefail  # Fail on any error in a pipeline
 echo "Installing 1Password CLI..."
 
 # Detect OS
@@ -82,9 +82,7 @@ echo "Authentication successful."
 
 # Create Connect Server credentials
 echo "Creating 1Password Connect Server credentials..."
-op connect server create "Battlestar-Ventana-Connect" --vaults "Private" > 1password-credentials.json
-
-if [ $? -ne 0 ]; then
+if ! op connect server create "Battlestar-Ventana-Connect" --vaults "Private" > 1password-credentials.json; then
     echo "Error: Failed to create Connect Server credentials."
     exit 1
 fi
