@@ -4,8 +4,8 @@
     "preToolUse": [
       {
         "type": "command",
-        "bash": "node .claude/hooks/merge-gate.mts --copilot",
-        "powershell": "node .claude/hooks/merge-gate.mts --copilot",
+        "bash": "node \"$(git rev-parse --show-toplevel)/.claude/hooks/merge-gate.mts\" --copilot || exit 2",
+        "powershell": "node \"$(git rev-parse --show-toplevel)/.claude/hooks/merge-gate.mts\" --copilot; if ($LASTEXITCODE -ne 0) { exit 2 }",
         "timeoutSec": 30
       }
     ]

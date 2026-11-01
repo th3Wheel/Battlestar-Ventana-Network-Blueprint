@@ -2,11 +2,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash|PowerShell|mcp__.*merge_pull_request",
+        "matcher": "Bash|PowerShell|mcp__.*merge_pull_request|mcp__.*auto_?merge",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/merge-gate.mts\""
+            "command": "node \"${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/.claude/hooks/merge-gate.mts\" || exit 2"
           }
         ]
       }
