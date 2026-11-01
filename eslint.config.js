@@ -30,7 +30,7 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       'linebreak-style': ['error', 'unix'],
-      quotes: ['error', 'single'],
+      quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always'],
       'no-unused-vars': ['warn'],
       'no-console': 'warn',
