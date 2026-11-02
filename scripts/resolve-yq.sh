@@ -9,12 +9,12 @@
 
 set -euo pipefail
 
-if command -v yq &> /dev/null; then
+if command -v yq &>/dev/null; then
   echo "yq"
   exit 0
 fi
 
-if command -v yq.exe &> /dev/null; then
+if command -v yq.exe &>/dev/null; then
   command -v yq.exe
   exit 0
 fi
