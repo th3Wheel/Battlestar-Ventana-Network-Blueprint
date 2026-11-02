@@ -9,7 +9,18 @@ indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = false
-insert_final_newline = false
+insert_final_newline = true
 
-[*.{js,mjs,cjs,json,yml,yaml}]
+[*.{js,mjs,cjs,json,jsonc,yml,yaml,html,sh,j2,bashrc}]
 indent_size = 2
+
+[{.yamllint,.djlintrc}]
+indent_size = 2
+
+# Markdown nesting (ordered-list continuations, blockquotes) is not a multiple of a fixed width
+[*.md]
+indent_size = unset
+
+# Keep in step with .gitattributes (eol=crlf)
+[*.{ps1,bat,cmd}]
+end_of_line = crlf
