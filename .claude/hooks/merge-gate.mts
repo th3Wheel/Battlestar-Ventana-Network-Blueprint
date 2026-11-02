@@ -24,19 +24,43 @@ const DEADLINE_MS = 20_000;
 
 // Flags that take a separate value, so the value is not mistaken for a positional argument.
 const GH_VALUE_FLAGS = new Set([
-  '-R', '--repo', '-t', '--subject', '-b', '--body', '-F', '--body-file', '-A', '--author-email',
-  '--match-head-commit', '-X', '--method', '-f', '--raw-field', '--field', '-H', '--header', '-q',
-  '--jq', '--template', '--input', '--cache', '--hostname', '-p', '--preview',
+  '-R',
+  '--repo',
+  '-t',
+  '--subject',
+  '-b',
+  '--body',
+  '-F',
+  '--body-file',
+  '-A',
+  '--author-email',
+  '--match-head-commit',
+  '-X',
+  '--method',
+  '-f',
+  '--raw-field',
+  '--field',
+  '-H',
+  '--header',
+  '-q',
+  '--jq',
+  '--template',
+  '--input',
+  '--cache',
+  '--hostname',
+  '-p',
+  '--preview',
 ]);
-const GIT_VALUE_FLAGS = new Set([
-  '-c', '--git-dir', '--work-tree', '--namespace', '--config-env', '--super-prefix',
-]);
+const GIT_VALUE_FLAGS = new Set(['-c', '--git-dir', '--work-tree', '--namespace', '--config-env', '--super-prefix']);
 const PUSH_VALUE_FLAGS = new Set(['-o', '--push-option', '--receive-pack', '--exec', '--repo']);
 const WRAPPERS = new Set(['env', 'sudo', 'command', 'exec', 'time', 'nohup', 'nice']);
 const SHELLS = new Set(['bash', 'sh', 'zsh', 'dash', 'pwsh', 'powershell', 'cmd']);
 
 export function isRiskPath(file: string): boolean {
-  const path = file.replaceAll('\\', '/').replace(/^\.?\//, '').toLowerCase();
+  const path = file
+    .replaceAll('\\', '/')
+    .replace(/^\.?\//, '')
+    .toLowerCase();
   return RISK_FILES.has(path) || RISK_PREFIXES.some((prefix) => path.startsWith(prefix));
 }
 
@@ -58,12 +82,21 @@ export function makeRunner(timeoutMs = DEADLINE_MS): Runner {
   const deadline = Date.now() + timeoutMs;
   return (cmd, args) => {
     const remaining = deadline - Date.now();
-    if (remaining <= 0) {throw new Error('lookup deadline exceeded');}
+    if (remaining <= 0) {
+      throw new Error('lookup deadline exceeded');
+    }
     const result = spawnSync(cmd, args, {
-      encoding: 'utf8', timeout: remaining, maxBuffer: 64 * 1024 * 1024, windowsHide: true,
+      encoding: 'utf8',
+      timeout: remaining,
+      maxBuffer: 64 * 1024 * 1024,
+      windowsHide: true,
     });
-    if (result.error) {throw new Error(result.error.message);}
-    if (result.status !== 0) {throw new Error((result.stderr || `${cmd} exited with ${result.status}`).trim());}
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+    if (result.status !== 0) {
+      throw new Error((result.stderr || `${cmd} exited with ${result.status}`).trim());
+    }
     return result.stdout;
   };
 }
@@ -78,14 +111,18 @@ export function splitCommands(command: string): Word[][] {
   let dynamic = false;
   let inWord = false;
   const endWord = () => {
-    if (inWord) {words.push({ text, dynamic });}
+    if (inWord) {
+      words.push({ text, dynamic });
+    }
     text = '';
     dynamic = false;
     inWord = false;
   };
   const endCommand = () => {
     endWord();
-    if (words.length > 0) {commands.push(words);}
+    if (words.length > 0) {
+      commands.push(words);
+    }
     words = [];
   };
 
@@ -106,7 +143,9 @@ export function splitCommands(command: string): Word[][] {
           text += next;
           i++;
         } else {
-          if (c === '$' || c === '`') {dynamic = true;}
+          if (c === '$' || c === '`') {
+            dynamic = true;
+          }
           text += c;
         }
       }
@@ -114,12 +153,16 @@ export function splitCommands(command: string): Word[][] {
       inWord = true;
       text += command[++i];
     } else if (ch === '\n' || ';&|()`'.includes(ch)) {
-      if (ch === '`') {dynamic = true;}
+      if (ch === '`') {
+        dynamic = true;
+      }
       endCommand();
     } else if (/\s/.test(ch)) {
       endWord();
     } else {
-      if (ch === '$') {dynamic = true;}
+      if (ch === '$') {
+        dynamic = true;
+      }
       inWord = true;
       text += ch;
     }
@@ -140,10 +183,15 @@ function parseGh(words: Word[]): GhArgs {
   for (let i = 1; i < words.length; i++) {
     const word = words[i];
     const equals = word.text.match(/^(--?[\w-]+)=([\s\S]*)$/);
-    if (equals) {flags.push({ name: equals[1], value: { text: equals[2], dynamic: word.dynamic } });}
-    else if (GH_VALUE_FLAGS.has(word.text)) {flags.push({ name: word.text, value: words[++i] });}
-    else if (word.text.startsWith('-') && word.text.length > 1) {flags.push({ name: word.text });}
-    else {positionals.push(word);}
+    if (equals) {
+      flags.push({ name: equals[1], value: { text: equals[2], dynamic: word.dynamic } });
+    } else if (GH_VALUE_FLAGS.has(word.text)) {
+      flags.push({ name: word.text, value: words[++i] });
+    } else if (word.text.startsWith('-') && word.text.length > 1) {
+      flags.push({ name: word.text });
+    } else {
+      positionals.push(word);
+    }
   }
   return { positionals, flags };
 }
@@ -154,14 +202,22 @@ function analyzeGh(words: Word[], merges: Merge[]): void {
   const [group, action, selector] = positionals;
 
   if (group?.text === 'pr' && action?.text === 'merge') {
-    if (flag('--disable-auto')) {return;}
+    if (flag('--disable-auto')) {
+      return;
+    }
     if (flag('--auto')) {
-      merges.push(deny('`gh pr merge --auto` merges later, after this check, so the diff cannot be vouched for. Wait for checks, then merge immediately.'));
+      merges.push(
+        deny(
+          '`gh pr merge --auto` merges later, after this check, so the diff cannot be vouched for. Wait for checks, then merge immediately.'
+        )
+      );
       return;
     }
     const repo = flag('-R', '--repo')?.value;
     if (selector?.dynamic || repo?.dynamic) {
-      merges.push(deny('the PR or repository is a shell variable, so the diff cannot be inspected. Pass a literal PR number.'));
+      merges.push(
+        deny('the PR or repository is a shell variable, so the diff cannot be inspected. Pass a literal PR number.')
+      );
       return;
     }
     merges.push({ kind: 'pr', selector: selector?.text, repo: repo?.text });
@@ -175,7 +231,9 @@ function analyzeGh(words: Word[], merges: Merge[]): void {
       return;
     }
     const endpoint = action;
-    if (!endpoint) {return;}
+    if (!endpoint) {
+      return;
+    }
     if (/git\/refs\/heads\/(master|main)\b/i.test(endpoint.text)) {
       merges.push(deny('moving the default branch ref through the API cannot be inspected.'));
       return;
@@ -198,13 +256,20 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
   for (let i = 0; i < rest.length; i++) {
     const text = rest[i].text;
     if (text === '--all' || text === '--mirror') {
-      merges.push(deny(`\`git push ${text}\` can update the default branch and cannot be inspected. Push named branches.`));
+      merges.push(
+        deny(`\`git push ${text}\` can update the default branch and cannot be inspected. Push named branches.`)
+      );
       return;
     }
-    if (text === '-d' || text === '--delete') {deleting = true;}
-    else if (PUSH_VALUE_FLAGS.has(text)) {i++;}
-    else if (text.startsWith('-')) {continue;}
-    else {positionals.push(rest[i]);}
+    if (text === '-d' || text === '--delete') {
+      deleting = true;
+    } else if (PUSH_VALUE_FLAGS.has(text)) {
+      i++;
+    } else if (text.startsWith('-')) {
+      continue;
+    } else {
+      positionals.push(rest[i]);
+    }
   }
   if (positionals.some((w) => w.dynamic)) {
     merges.push(deny('the push remote or branch is a shell variable, so the destination cannot be determined.'));
@@ -213,15 +278,26 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
 
   const git = (args: string[]) => run('git', [...at(cwd), ...args]).trim();
   const config = (key: string): string => {
-    try {return git(['config', '--get', key]);} catch {return '';}
+    try {
+      return git(['config', '--get', key]);
+    } catch {
+      return '';
+    }
   };
   const currentBranch = (): string => {
-    try {return git(['symbolic-ref', '--short', '-q', 'HEAD']);} catch {
-      throw new Unresolvable('HEAD is detached, so the push destination cannot be determined. Name it, e.g. `git push origin my-branch`.');
+    try {
+      return git(['symbolic-ref', '--short', '-q', 'HEAD']);
+    } catch {
+      throw new Unresolvable(
+        'HEAD is detached, so the push destination cannot be determined. Name it, e.g. `git push origin my-branch`.'
+      );
     }
   };
   const remoteFor = (branch: string): string =>
-    config(`branch.${branch}.pushRemote`) || config('remote.pushDefault') || config(`branch.${branch}.remote`) || 'origin';
+    config(`branch.${branch}.pushRemote`) ||
+    config('remote.pushDefault') ||
+    config(`branch.${branch}.remote`) ||
+    'origin';
 
   try {
     const explicitRemote = positionals[0]?.text;
@@ -237,10 +313,18 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
       let destination = branch;
       if (mode === 'upstream' || mode === 'tracking') {
         destination = config(`branch.${branch}.merge`).replace(/^refs\/heads\//, '');
-        if (!destination) {throw new Unresolvable(`${branch} has no upstream, so the destination cannot be determined.`);}
+        if (!destination) {
+          throw new Unresolvable(`${branch} has no upstream, so the destination cannot be determined.`);
+        }
       }
       if (DEFAULT_BRANCHES.has(destination)) {
-        merges.push({ kind: 'push', remote: explicitRemote ?? remoteFor(branch), source: branch, branch: destination, cwd });
+        merges.push({
+          kind: 'push',
+          remote: explicitRemote ?? remoteFor(branch),
+          source: branch,
+          branch: destination,
+          cwd,
+        });
       }
       return;
     }
@@ -258,9 +342,13 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
         source = '';
         target = refspec;
       }
-      if (target === 'HEAD') {target = currentBranch();}
+      if (target === 'HEAD') {
+        target = currentBranch();
+      }
       target = target.replace(/^refs\/heads\//, '');
-      if (target.startsWith('refs/') || !DEFAULT_BRANCHES.has(target)) {continue;}
+      if (target.startsWith('refs/') || !DEFAULT_BRANCHES.has(target)) {
+        continue;
+      }
       if (source === '') {
         merges.push(deny(`deleting ${target} is not something an agent does.`));
         return;
@@ -268,7 +356,11 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
       merges.push({ kind: 'push', remote: explicitRemote ?? 'origin', source, branch: target, cwd });
     }
   } catch (error) {
-    merges.push(deny(error instanceof Unresolvable ? error.message : `could not resolve the push destination (${messageOf(error)}).`));
+    merges.push(
+      deny(
+        error instanceof Unresolvable ? error.message : `could not resolve the push destination (${messageOf(error)}).`
+      )
+    );
   }
 }
 
@@ -280,13 +372,17 @@ function analyze(words: Word[], run: Runner, merges: Merge[], depth = 0): void {
       start++;
     } else if (WRAPPERS.has(baseName(text))) {
       start++;
-      while (words[start]?.text.startsWith('-')) {start++;}
+      while (words[start]?.text.startsWith('-')) {
+        start++;
+      }
     } else {
       break;
     }
   }
   const command = words.slice(start);
-  if (command.length === 0) {return;}
+  if (command.length === 0) {
+    return;
+  }
   if (depth > 4) {
     merges.push(deny('commands are nested too deeply to inspect.'));
     return;
@@ -305,8 +401,13 @@ function analyze(words: Word[], run: Runner, merges: Merge[], depth = 0): void {
       return;
     }
     if (index >= 0) {
-      const script = command.slice(index + 1).map((w) => w.text).join(' ');
-      for (const inner of splitCommands(script)) {analyze(inner, run, merges, depth + 1);}
+      const script = command
+        .slice(index + 1)
+        .map((w) => w.text)
+        .join(' ');
+      for (const inner of splitCommands(script)) {
+        analyze(inner, run, merges, depth + 1);
+      }
     }
     return;
   }
@@ -320,7 +421,9 @@ function analyze(words: Word[], run: Runner, merges: Merge[], depth = 0): void {
       const text = command[i].text;
       if (text === '-C') {
         const value = command[++i];
-        if (!value) {break;}
+        if (!value) {
+          break;
+        }
         if (value.dynamic) {
           merges.push(deny('`git -C` points at a shell variable, so the repository cannot be determined.'));
           return;
@@ -332,7 +435,9 @@ function analyze(words: Word[], run: Runner, merges: Merge[], depth = 0): void {
         break;
       }
     }
-    if (command[i]?.text === 'push') {analyzePush(command.slice(i + 1), cwd, run, merges);}
+    if (command[i]?.text === 'push') {
+      analyzePush(command.slice(i + 1), cwd, run, merges);
+    }
   }
 }
 
@@ -340,7 +445,9 @@ function analyze(words: Word[], run: Runner, merges: Merge[], depth = 0): void {
 // but cannot be resolved comes back as { kind: 'deny' }.
 export function findMerges(command: string, run: Runner = makeRunner()): Merge[] {
   const merges: Merge[] = [];
-  for (const words of splitCommands(command)) {analyze(words, run, merges);}
+  for (const words of splitCommands(command)) {
+    analyze(words, run, merges);
+  }
   return merges;
 }
 
@@ -353,11 +460,15 @@ function pushFiles(merge: Extract<Located, { kind: 'push' }>, run: Runner): stri
   const tip = lines(git(['ls-remote', merge.remote, ref]))
     .map((line) => line.split(/\s+/))
     .find(([, name]) => name === ref)?.[0];
-  if (!tip) {throw new Error(`could not find ${ref} on ${merge.remote}`);}
+  if (!tip) {
+    throw new Error(`could not find ${ref} on ${merge.remote}`);
+  }
   try {
     git(['cat-file', '-e', `${tip}^{commit}`]);
   } catch {
-    throw new Error(`${merge.remote}/${merge.branch} is at ${tip.slice(0, 8)}, which is not fetched locally. Run git fetch first`);
+    throw new Error(
+      `${merge.remote}/${merge.branch} is at ${tip.slice(0, 8)}, which is not fetched locally. Run git fetch first`
+    );
   }
   // Compare trees directly (two dots) so a rewind that removes protected files is seen.
   // -z keeps odd filenames literal; --no-renames lists both sides of a move.
@@ -368,15 +479,34 @@ function prFiles(merge: Extract<Located, { kind: 'pr' }>, run: Runner): string[]
   let repo = merge.repo;
   let number = merge.selector;
   if (!repo || !number || !/^\d+$/.test(number)) {
-    if (number?.startsWith('-')) {throw new Error(`unexpected PR selector ${number}`);}
-    const url = run('gh', ['pr', 'view', ...(number ? [number] : []), ...(repo ? ['--repo', repo] : []), '--json', 'url', '--jq', '.url']).trim();
+    if (number?.startsWith('-')) {
+      throw new Error(`unexpected PR selector ${number}`);
+    }
+    const url = run('gh', [
+      'pr',
+      'view',
+      ...(number ? [number] : []),
+      ...(repo ? ['--repo', repo] : []),
+      '--json',
+      'url',
+      '--jq',
+      '.url',
+    ]).trim();
     const match = url.match(/\/([^/]+)\/([^/]+)\/pull\/(\d+)$/);
-    if (!match) {throw new Error(`could not resolve the PR from ${url || 'gh output'}`);}
+    if (!match) {
+      throw new Error(`could not resolve the PR from ${url || 'gh output'}`);
+    }
     repo = `${match[1]}/${match[2]}`;
     number = match[3];
   }
   // The files API reports previous_filename for renames, so a move out of config/ is seen.
-  const output = run('gh', ['api', '--paginate', `repos/${repo}/pulls/${number}/files`, '--jq', '.[] | (.filename, .previous_filename // empty) | @json']);
+  const output = run('gh', [
+    'api',
+    '--paginate',
+    `repos/${repo}/pulls/${number}/files`,
+    '--jq',
+    '.[] | (.filename, .previous_filename // empty) | @json',
+  ]);
   return lines(output).map((line) => JSON.parse(line) as string);
 }
 
@@ -405,8 +535,12 @@ function mergesFor(event: HookEvent, run: Runner): Merge[] {
   const tool = event.tool_name ?? event.toolName ?? '';
   const raw = event.tool_input ?? event.toolArgs ?? {};
   const input = (typeof raw === 'string' ? JSON.parse(raw) : raw) as ToolInput;
-  if (/^(bash|powershell)$/i.test(tool)) {return findMerges(input.command ?? '', run);}
-  if (/auto_?merge/i.test(tool)) {return [deny('enabling auto-merge merges later, after this check.')];}
+  if (/^(bash|powershell)$/i.test(tool)) {
+    return findMerges(input.command ?? '', run);
+  }
+  if (/auto_?merge/i.test(tool)) {
+    return [deny('enabling auto-merge merges later, after this check.')];
+  }
   if (/merge_pull_request$/.test(tool)) {
     const repo = input.owner && input.repo ? `${input.owner}/${input.repo}` : undefined;
     return [{ kind: 'pr', repo, selector: String(input.pullNumber ?? input.pull_number ?? '') || undefined }];
@@ -416,8 +550,7 @@ function mergesFor(event: HookEvent, run: Runner): Merge[] {
 
 export type Deps = { run?: Runner; listFiles?: (merge: Located) => string[] };
 
-const refusal = (detail: string): string =>
-  `Merge blocked by AGENTS.md "Never merges without a human": ${detail}`;
+const refusal = (detail: string): string => `Merge blocked by AGENTS.md "Never merges without a human": ${detail}`;
 
 export function decide(event: HookEvent, deps: Deps = {}): string | null {
   const run = deps.run ?? makeRunner();
@@ -425,14 +558,18 @@ export function decide(event: HookEvent, deps: Deps = {}): string | null {
   const blocked: string[] = [];
   try {
     for (const merge of mergesFor(event, run)) {
-      if (merge.kind === 'deny') {return refusal(merge.reason);}
+      if (merge.kind === 'deny') {
+        return refusal(merge.reason);
+      }
       blocked.push(...listFiles(merge).filter(isRiskPath));
     }
   } catch (error) {
     // Fail closed: if we cannot see what a merge changes, neither can we vouch for it.
     return `Merge blocked: could not verify what this merge changes (${messageOf(error)}).`;
   }
-  if (blocked.length === 0) {return null;}
+  if (blocked.length === 0) {
+    return null;
+  }
   return [
     'Merge blocked by AGENTS.md "Never merges without a human".',
     `This change touches: ${[...new Set(blocked)].join(', ')}.`,
@@ -453,7 +590,9 @@ async function main(): Promise<void> {
   let reason: string | null;
   try {
     let raw = '';
-    for await (const chunk of process.stdin) {raw += chunk;}
+    for await (const chunk of process.stdin) {
+      raw += chunk;
+    }
     reason = decide(JSON.parse(raw) as HookEvent);
   } catch (error) {
     // Claude Code only blocks on exit code 2; any other failure would let the call through.
@@ -463,7 +602,11 @@ async function main(): Promise<void> {
     process.exitCode = 2;
     return;
   }
-  if (reason) {emit(reason);}
+  if (reason) {
+    emit(reason);
+  }
 }
 
-if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {await main();}
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await main();
+}
