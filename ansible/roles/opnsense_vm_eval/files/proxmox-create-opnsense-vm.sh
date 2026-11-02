@@ -24,6 +24,9 @@ DISK_GB=""
 MGMT_IP=""
 
 while IFS='=' read -r key value; do
+  # Values are written double-quoted; drop one pair of surrounding quotes.
+  value="${value#\"}"
+  value="${value%\"}"
   case "${key}" in
     '' | '#'*) continue ;;
     PROXMOX_HOST) PROXMOX_HOST="${value}" ;;

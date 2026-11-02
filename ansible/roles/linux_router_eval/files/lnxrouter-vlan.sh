@@ -25,6 +25,9 @@ DNS=""
 DNS_SECONDARY=""
 
 while IFS='=' read -r key value; do
+  # Values are written double-quoted; drop one pair of surrounding quotes.
+  value="${value#\"}"
+  value="${value%\"}"
   case "${key}" in
     '' | '#'*) continue ;;
     PARENT_IFACE) PARENT_IFACE="${value}" ;;
