@@ -3,5 +3,5 @@
   hosts: thefuck_hosts
   become: false
   roles:
-    - role: ../../roles/thefuck
+    - role: thefuck
       tags: [thefuck]
