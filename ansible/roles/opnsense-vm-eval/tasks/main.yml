@@ -224,6 +224,7 @@
         path: '{{ research_output_dir }}/opnsense-vm-capabilities.md'
         line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item is succeeded else 'FAIL' }} | tested: true | date: {{ ansible_date_time.date }}"
         create: true
+        mode: '0644'
       loop: '{{ full_matrix_results.results }}'
       loop_control:
         label: 'VLAN {{ item.item.id }}'

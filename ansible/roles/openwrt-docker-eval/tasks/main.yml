@@ -111,6 +111,7 @@
         path: '{{ research_output_dir }}/openwrt-docker-capabilities.md'
         line: "- Full-matrix VLAN validation completed: {{ now().strftime('%Y-%m-%d') }}"
         create: true
+        mode: '0644'
       delegate_to: localhost
 
 - name: 'Generate config — emit docker-compose.yml and UCI backups'
