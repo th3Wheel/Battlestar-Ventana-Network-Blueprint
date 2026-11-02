@@ -11,4 +11,4 @@ RUN ansible-galaxy collection install -r /build/collections/requirements.yml \
     && chmod -R ug+rwx /usr/share/ansible/collections
 
 LABEL org.opencontainers.image.title="battlestar-ventana-ee" \
-      org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
+    org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
