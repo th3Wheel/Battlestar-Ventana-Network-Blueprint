@@ -11,7 +11,7 @@ charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-[*.{js,mjs,cjs,json,jsonc,yml,yaml,html,sh,j2,bashrc}]
+[*.{js,mjs,cjs,ts,mts,cts,tsx,json,jsonc,yml,yaml,html,sh,j2,bashrc}]
 indent_size = 2
 
 [{.yamllint,.djlintrc}]
