@@ -1,0 +1,5 @@
+[codespell]
+# Identifiers/test data that are not misspellings:
+#   prFiles - function in .claude/hooks/merge-gate.mts (pull-request files)
+#   caf     - "café", Git's escaped form of a non-ASCII path in tests/merge-gate.test.ts
+ignore-words-list = prfiles,caf
