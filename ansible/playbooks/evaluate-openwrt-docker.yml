@@ -14,33 +14,33 @@
   gather_facts: false
   tags: [research]
   roles:
-    - role: openwrt-docker-eval
+    - role: openwrt_docker_eval
       vars:
-        openwrt_eval_task: research
+        openwrt_docker_eval_task: research
 
 - name: 'Phase 1 — Provision: launch OpenWrt container (TASK-006)'
   hosts: lab_docker
   gather_facts: true
   tags: [provision]
   roles:
-    - role: openwrt-docker-eval
+    - role: openwrt_docker_eval
       vars:
-        openwrt_eval_task: provision
+        openwrt_docker_eval_task: provision
 
 - name: 'Phase 3 — Full matrix: validate all 11 VLANs in OpenWrt container (TASK-013)'
   hosts: lab_docker
   gather_facts: false
   tags: [full-matrix]
   roles:
-    - role: openwrt-docker-eval
+    - role: openwrt_docker_eval
       vars:
-        openwrt_eval_task: full_matrix
+        openwrt_docker_eval_task: full_matrix
 
 - name: 'Phase 3 — Generate config: emit docker-compose.yml and UCI backups (TASK-014)'
   hosts: lab_docker
   gather_facts: false
   tags: [generate-config]
   roles:
-    - role: openwrt-docker-eval
+    - role: openwrt_docker_eval
       vars:
-        openwrt_eval_task: generate_config
+        openwrt_docker_eval_task: generate_config
