@@ -2,17 +2,27 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
-  decide, findMerges, isRiskPath, makeRunner, splitCommands, type Located, type Runner,
+  decide,
+  findMerges,
+  isRiskPath,
+  makeRunner,
+  splitCommands,
+  type Located,
+  type Runner,
 } from '../.claude/hooks/merge-gate.mts';
 
 const HOOK = fileURLToPath(new URL('../.claude/hooks/merge-gate.mts', import.meta.url));
 
 // A stand-in for git/gh: answers only the commands it was told about, fails on the rest.
-const fake = (answers: Record<string, string> = {}): Runner => (cmd, args) => {
-  const key = [cmd, ...args].join(' ');
-  if (key in answers) {return answers[key];}
-  throw new Error(`unexpected: ${key}`);
-};
+const fake =
+  (answers: Record<string, string> = {}): Runner =>
+  (cmd, args) => {
+    const key = [cmd, ...args].join(' ');
+    if (key in answers) {
+      return answers[key];
+    }
+    throw new Error(`unexpected: ${key}`);
+  };
 const onBranch = (branch: string, extra: Record<string, string> = {}) =>
   fake({ 'git symbolic-ref --short -q HEAD': `${branch}\n`, ...extra });
 
@@ -22,12 +32,19 @@ const denied = (command: string, run: Runner = fake()) => {
 };
 
 describe('isRiskPath', () => {
-  it.each(['config/router.yaml', 'ansible/site.yml', 'infrastructure/main.tf', 'mcp-config.json', '.vscode/mcp.json', '.gemini/settings.json', 'Config/Router.yaml'])(
-    'flags %s', (file) => expect(isRiskPath(file)).toBe(true),
-  );
+  it.each([
+    'config/router.yaml',
+    'ansible/site.yml',
+    'infrastructure/main.tf',
+    'mcp-config.json',
+    '.vscode/mcp.json',
+    '.gemini/settings.json',
+    'Config/Router.yaml',
+  ])('flags %s', (file) => expect(isRiskPath(file)).toBe(true));
 
   it.each(['docs/config/readme.md', 'scripts/lint-shell.mjs', 'myconfig/x', '.vscode/settings.json'])(
-    'allows %s', (file) => expect(isRiskPath(file)).toBe(false),
+    'allows %s',
+    (file) => expect(isRiskPath(file)).toBe(false)
   );
 });
 
@@ -38,9 +55,14 @@ describe('splitCommands', () => {
   });
 
   it('splits on operators and subshell parentheses', () => {
-    expect(splitCommands('a && b || c; echo $(d e) | f').map((c) => c.map((w) => w.text).join(' '))).toEqual(
-      ['a', 'b', 'c', 'echo $', 'd e', 'f'],
-    );
+    expect(splitCommands('a && b || c; echo $(d e) | f').map((c) => c.map((w) => w.text).join(' '))).toEqual([
+      'a',
+      'b',
+      'c',
+      'echo $',
+      'd e',
+      'f',
+    ]);
   });
 
   it('marks expansions as dynamic, except in single quotes', () => {
@@ -61,7 +83,9 @@ describe('findMerges: gh', () => {
   });
 
   it('reads flags written as --flag=value', () => {
-    expect(findMerges('gh pr merge --body="Ready to merge" --repo=o/r 42')).toEqual([{ kind: 'pr', selector: '42', repo: 'o/r' }]);
+    expect(findMerges('gh pr merge --body="Ready to merge" --repo=o/r 42')).toEqual([
+      { kind: 'pr', selector: '42', repo: 'o/r' },
+    ]);
   });
 
   it.each(['gh -R o/r pr merge 42', 'gh pr -R o/r merge 42'])('finds the subcommand after options: %s', (command) => {
@@ -94,12 +118,22 @@ describe('findMerges: gh', () => {
   });
 
   it('refuses GraphQL merge mutations and default-branch ref moves', () => {
-    expect(denied('gh api graphql -f query="mutation { mergePullRequest(input: {pullRequestId: \\"x\\"}) { clientMutationId } }"')).toBe(true);
+    expect(
+      denied(
+        'gh api graphql -f query="mutation { mergePullRequest(input: {pullRequestId: \\"x\\"}) { clientMutationId } }"'
+      )
+    ).toBe(true);
     expect(denied('gh api -X PATCH repos/o/r/git/refs/heads/master -f sha=abc')).toBe(true);
   });
 
   it('sees merges hidden in wrappers and nested shells', () => {
-    for (const command of ['env GH_TOKEN=x gh pr merge 42', 'bash -c "gh pr merge 42"', 'echo $(gh pr merge 42)', 'sudo -E /usr/bin/gh.exe pr merge 42', 'pwsh -Command "gh pr merge 42"']) {
+    for (const command of [
+      'env GH_TOKEN=x gh pr merge 42',
+      'bash -c "gh pr merge 42"',
+      'echo $(gh pr merge 42)',
+      'sudo -E /usr/bin/gh.exe pr merge 42',
+      'pwsh -Command "gh pr merge 42"',
+    ]) {
       expect(findMerges(command)).toEqual([{ kind: 'pr', selector: '42' }]);
     }
   });
@@ -116,12 +150,18 @@ describe('findMerges: gh', () => {
 
 describe('findMerges: git push', () => {
   it('detects an explicit push to the default branch', () => {
-    expect(findMerges('git push origin HEAD:master')).toEqual([{ kind: 'push', remote: 'origin', source: 'HEAD', branch: 'master' }]);
-    expect(findMerges('git push --force origin +topic:refs/heads/main')).toEqual([{ kind: 'push', remote: 'origin', source: 'topic', branch: 'main' }]);
+    expect(findMerges('git push origin HEAD:master')).toEqual([
+      { kind: 'push', remote: 'origin', source: 'HEAD', branch: 'master' },
+    ]);
+    expect(findMerges('git push --force origin +topic:refs/heads/main')).toEqual([
+      { kind: 'push', remote: 'origin', source: 'topic', branch: 'main' },
+    ]);
   });
 
   it('uses the named source ref, not the checked-out branch', () => {
-    expect(findMerges('git push origin master')).toEqual([{ kind: 'push', remote: 'origin', source: 'master', branch: 'master' }]);
+    expect(findMerges('git push origin master')).toEqual([
+      { kind: 'push', remote: 'origin', source: 'master', branch: 'master' },
+    ]);
   });
 
   it('finds push after git options and keeps the directory', () => {
@@ -140,17 +180,26 @@ describe('findMerges: git push', () => {
   });
 
   it('resolves a bare push on the default branch', () => {
-    expect(findMerges('git push', onBranch('master'))).toEqual([{ kind: 'push', remote: 'origin', source: 'master', branch: 'master' }]);
+    expect(findMerges('git push', onBranch('master'))).toEqual([
+      { kind: 'push', remote: 'origin', source: 'master', branch: 'master' },
+    ]);
   });
 
   it('resolves HEAD to the current branch', () => {
-    expect(findMerges('git push origin HEAD', onBranch('master'))).toEqual([{ kind: 'push', remote: 'origin', source: 'HEAD', branch: 'master' }]);
+    expect(findMerges('git push origin HEAD', onBranch('master'))).toEqual([
+      { kind: 'push', remote: 'origin', source: 'HEAD', branch: 'master' },
+    ]);
     expect(findMerges('git push origin HEAD', onBranch('feat/x'))).toEqual([]);
   });
 
   it('follows the upstream when push.default says so', () => {
-    const run = onBranch('feat/x', { 'git config --get push.default': 'upstream\n', 'git config --get branch.feat/x.merge': 'refs/heads/master\n' });
-    expect(findMerges('git push', run)).toEqual([{ kind: 'push', remote: 'origin', source: 'feat/x', branch: 'master' }]);
+    const run = onBranch('feat/x', {
+      'git config --get push.default': 'upstream\n',
+      'git config --get branch.feat/x.merge': 'refs/heads/master\n',
+    });
+    expect(findMerges('git push', run)).toEqual([
+      { kind: 'push', remote: 'origin', source: 'feat/x', branch: 'master' },
+    ]);
   });
 
   it('refuses a bare push it cannot resolve', () => {
@@ -158,16 +207,24 @@ describe('findMerges: git push', () => {
     expect(denied('git push', onBranch('feat/x', { 'git config --get push.default': 'matching\n' }))).toBe(true);
   });
 
-  it.each(['git push --all', 'git push --mirror origin', 'git push origin "refs/heads/*:refs/heads/*"', 'git push origin $BRANCH', 'git push origin --delete master', 'git push origin :master', 'git -C $DIR push origin master'])(
-    'refuses %s', (command) => expect(denied(command)).toBe(true),
-  );
+  it.each([
+    'git push --all',
+    'git push --mirror origin',
+    'git push origin "refs/heads/*:refs/heads/*"',
+    'git push origin $BRANCH',
+    'git push origin --delete master',
+    'git push origin :master',
+    'git -C $DIR push origin master',
+  ])('refuses %s', (command) => expect(denied(command)).toBe(true));
 });
 
 describe('decide', () => {
   const bash = (command: string) => ({ tool_name: 'Bash', tool_input: { command } });
 
   it('denies merges touching risk paths', () => {
-    expect(decide(bash('gh pr merge 1'), { listFiles: () => ['docs/a.md', 'ansible/site.yml'] })).toMatch(/ansible\/site\.yml/);
+    expect(decide(bash('gh pr merge 1'), { listFiles: () => ['docs/a.md', 'ansible/site.yml'] })).toMatch(
+      /ansible\/site\.yml/
+    );
   });
 
   it('allows merges outside risk paths', () => {
@@ -179,9 +236,19 @@ describe('decide', () => {
   });
 
   it('gates the GitHub MCP merge tool', () => {
-    const event = { tool_name: 'mcp__claude_ai_github__merge_pull_request', tool_input: { owner: 'o', repo: 'r', pullNumber: 3 } };
+    const event = {
+      tool_name: 'mcp__claude_ai_github__merge_pull_request',
+      tool_input: { owner: 'o', repo: 'r', pullNumber: 3 },
+    };
     let seen: Located | undefined;
-    expect(decide(event, { listFiles: (m) => { seen = m; return ['.mcp.json']; } })).toMatch(/\.mcp\.json/);
+    expect(
+      decide(event, {
+        listFiles: (m) => {
+          seen = m;
+          return ['.mcp.json'];
+        },
+      })
+    ).toMatch(/\.mcp\.json/);
     expect(seen).toEqual({ kind: 'pr', repo: 'o/r', selector: '3' });
   });
 
@@ -195,13 +262,21 @@ describe('decide', () => {
   });
 
   it('fails closed when the diff cannot be listed', () => {
-    expect(decide(bash('gh pr merge 1'), { listFiles: () => { throw new Error('offline'); } })).toMatch(/could not verify.*offline/);
+    expect(
+      decide(bash('gh pr merge 1'), {
+        listFiles: () => {
+          throw new Error('offline');
+        },
+      })
+    ).toMatch(/could not verify.*offline/);
   });
 
   describe('listing a PR with gh', () => {
-    const files = (out: string, number = '42') => fake({
-      [`gh api --paginate repos/o/r/pulls/${number}/files --jq .[] | (.filename, .previous_filename // empty) | @json`]: out,
-    });
+    const files = (out: string, number = '42') =>
+      fake({
+        [`gh api --paginate repos/o/r/pulls/${number}/files --jq .[] | (.filename, .previous_filename // empty) | @json`]:
+          out,
+      });
 
     it('sees the old path of a renamed file', () => {
       const run = files('"docs/router.yaml"\n"config/router.yaml"\n');
@@ -209,13 +284,16 @@ describe('decide', () => {
     });
 
     it('decodes JSON-escaped non-ASCII names', () => {
-      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/caf\\u00e9.yaml"\n') })).toMatch(/config\/café\.yaml/);
+      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/caf\\u00e9.yaml"\n') })).toMatch(
+        /config\/café\.yaml/
+      );
     });
 
     it('resolves the PR from the current branch first', () => {
       const run = fake({
         'gh pr view --json url --jq .url': 'https://github.com/o/r/pull/9\n',
-        'gh api --paginate repos/o/r/pulls/9/files --jq .[] | (.filename, .previous_filename // empty) | @json': '"docs/a.md"\n',
+        'gh api --paginate repos/o/r/pulls/9/files --jq .[] | (.filename, .previous_filename // empty) | @json':
+          '"docs/a.md"\n',
       });
       expect(decide(bash('gh pr merge --squash'), { run })).toBeNull();
     });
@@ -223,15 +301,18 @@ describe('decide', () => {
 
   describe('listing a push with git', () => {
     const TIP = 'a'.repeat(40);
-    const push = (diff: string, extra: Record<string, string> = {}) => fake({
-      [`git ls-remote origin refs/heads/master`]: `${TIP}\trefs/heads/master\n`,
-      [`git cat-file -e ${TIP}^{commit}`]: '',
-      [`git diff --name-only -z --no-renames ${TIP} HEAD --`]: diff,
-      ...extra,
-    });
+    const push = (diff: string, extra: Record<string, string> = {}) =>
+      fake({
+        [`git ls-remote origin refs/heads/master`]: `${TIP}\trefs/heads/master\n`,
+        [`git cat-file -e ${TIP}^{commit}`]: '',
+        [`git diff --name-only -z --no-renames ${TIP} HEAD --`]: diff,
+        ...extra,
+      });
 
     it('compares the remote tip with the source, using NUL-separated names', () => {
-      expect(decide(bash('git push origin HEAD:master'), { run: push('docs/a.md\0config/café.yaml\0') })).toMatch(/config\/café\.yaml/);
+      expect(decide(bash('git push origin HEAD:master'), { run: push('docs/a.md\0config/café.yaml\0') })).toMatch(
+        /config\/café\.yaml/
+      );
       expect(decide(bash('git push origin HEAD:master'), { run: push('docs/a.md\0') })).toBeNull();
     });
 
@@ -241,7 +322,9 @@ describe('decide', () => {
     });
 
     it('fails closed when the remote branch cannot be found', () => {
-      expect(decide(bash('git push origin HEAD:master'), { run: fake({ 'git ls-remote origin refs/heads/master': '' }) })).toMatch(/could not find/);
+      expect(
+        decide(bash('git push origin HEAD:master'), { run: fake({ 'git ls-remote origin refs/heads/master': '' }) })
+      ).toMatch(/could not find/);
     });
   });
 });
@@ -257,7 +340,8 @@ describe('makeRunner', () => {
 });
 
 describe('the hook as a process', () => {
-  const run = (input: string, args: string[] = []) => spawnSync(process.execPath, [HOOK, ...args], { input, encoding: 'utf8' });
+  const run = (input: string, args: string[] = []) =>
+    spawnSync(process.execPath, [HOOK, ...args], { input, encoding: 'utf8' });
 
   it('stays silent for a tool call it does not gate', () => {
     const result = run(JSON.stringify({ tool_name: 'Read', tool_input: { file_path: 'x' } }));
@@ -265,7 +349,11 @@ describe('the hook as a process', () => {
   });
 
   it('denies in Claude Code and Copilot shapes', () => {
-    const event = JSON.stringify({ tool_name: 'Bash', toolName: 'bash', tool_input: { command: 'gh pr merge 1 --auto' } });
+    const event = JSON.stringify({
+      tool_name: 'Bash',
+      toolName: 'bash',
+      tool_input: { command: 'gh pr merge 1 --auto' },
+    });
     expect(JSON.parse(run(event).stdout).hookSpecificOutput.permissionDecision).toBe('deny');
     expect(JSON.parse(run(event, ['--copilot']).stdout).permissionDecision).toBe('deny');
   });
