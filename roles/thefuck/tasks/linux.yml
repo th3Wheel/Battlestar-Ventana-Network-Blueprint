@@ -20,6 +20,7 @@
   ansible.builtin.blockinfile:
     path: '{{ ansible_env.HOME }}/.bashrc'
     create: true
+    mode: '0644'
     marker: '# {mark} THEFUCK_PATH'
     block: |
       if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
@@ -31,6 +32,7 @@
   ansible.builtin.blockinfile:
     path: '{{ ansible_env.HOME }}/.bashrc'
     create: true
+    mode: '0644'
     marker: '# {mark} THEFUCK'
     block: "{{ lookup('template', 'bashrc_thefuck.j2') }}"
   become: false
@@ -46,6 +48,7 @@
   ansible.builtin.blockinfile:
     path: '{{ ansible_env.HOME }}/.zshrc'
     create: true
+    mode: '0644'
     marker: '# {mark} THEFUCK'
     block: "{{ lookup('template', 'zshrc_thefuck.j2') }}"
   when: thefuck_zsh_check.rc == 0
