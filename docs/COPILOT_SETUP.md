@@ -35,7 +35,7 @@
 # Verify all tools are installed before proceeding
 gh --version          # GitHub CLI >= 2.49.0
 gh extension list     # Should include gh-copilot
-node --version        # Node.js >= 20 (for Copilot CLI extension)
+node --version        # Node.js >= 26.10 (repo tooling and TypeScript hooks)
 python3 --version     # Python >= 3.11 (for repo linting)
 terraform --version   # Terraform >= 1.7 (if working on infra)
 ansible --version     # Ansible >= 2.15 (if working on infra)
