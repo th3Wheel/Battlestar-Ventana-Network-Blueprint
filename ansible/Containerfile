@@ -1,8 +1,8 @@
 ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:24.6.0
 FROM $EE_BASE_IMAGE
 
-# Installs below need root; the image drops back to the unprivileged runner user at the end.
-USER root
+# Installs below need root (UID 0); the image drops back to the unprivileged runner user at the end.
+USER 0
 
 # Install Python dependencies
 COPY requirements.txt /build/requirements.txt
