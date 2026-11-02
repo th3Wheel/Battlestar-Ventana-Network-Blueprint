@@ -1,0 +1,23 @@
+.github/workflows/mcp-workflow.yml
+  s_967606c2abadc6::t_bcb198baa1db72 24,46
+.github/workflows/test.yml
+  s_967606c2abadc6::t_5695f3abcf05c2 1-30
+docs/COPILOT_SETUP.md
+  s_967606c2abadc6::t_43c763351718e6 38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a343f02c732d7658938531af31221edb19893270",
+  "prompts": {},
+  "sessions": {
+    "s_967606c2abadc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e38fd318-7215-4586-9465-8dfde8deb81a",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
