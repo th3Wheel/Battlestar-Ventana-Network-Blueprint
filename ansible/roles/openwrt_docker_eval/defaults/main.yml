@@ -1,5 +1,5 @@
 ---
-# Default variables for openwrt-docker-eval role
+# Default variables for openwrt_docker_eval role
 
 openwrt_eval_task: research
 

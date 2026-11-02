@@ -1,5 +1,5 @@
 ---
-# Default variables for dotfiles-prereqs role
+# Default variables for dotfiles_prereqs role
 # Override in playbook vars or host_vars as needed
 
 dotfiles_tools:

@@ -1,5 +1,5 @@
 ---
-# Default variables for linux-router-eval role
+# Default variables for linux_router_eval role
 # Override in playbook vars or host_vars as needed
 
 linux_router_eval_task: research

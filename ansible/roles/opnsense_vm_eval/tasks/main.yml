@@ -1,5 +1,5 @@
 ---
-# opnsense-vm-eval role
+# opnsense_vm_eval role
 # Provisions an OPNsense VM on Proxmox (CrimsonRogue) and evaluates it against
 # the full Battlestar blueprint VLAN catalogue.
 # VLAN data is consumed from group_vars/all/vlan-vars.yml (source of truth).
@@ -179,7 +179,7 @@
 
           **VM:** {{ opnsense_vm_name }} (VMID {{ opnsense_vm_id }}) on CrimsonRogue
           **Management IP:** {{ opnsense_mgmt_ip }}
-          **Validated by:** ansible/roles/opnsense-vm-eval (validate task)
+          **Validated by:** ansible/roles/opnsense_vm_eval (validate task)
           **Date:** {{ ansible_date_time.date }}
 
           ## VLAN Validation Results (VLANs 20 and 40)

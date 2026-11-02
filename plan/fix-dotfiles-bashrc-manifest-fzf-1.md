@@ -61,9 +61,9 @@ This plan addresses both defects with the minimum changes required.
 
 | Task     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | Completed | Date |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---- |
-| TASK-006 | Open `ansible/roles/dotfiles-prereqs/tasks/main.yml`. Remove the three existing per-package-manager fzf tasks (`Install fzf via apt`, `Install fzf via pacman`, `Install fzf via dnf`). Replace them with a single task named `Install fzf from GitHub Releases` that runs the official fzf install script: `git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --bin` using `ansible.builtin.shell` with `creates: "{{ ansible_env.HOME }}/.fzf/bin/fzf"`. Restrict with `when: ansible_system == 'Linux'`. This mirrors the upstream-installer pattern already used for zoxide and starship. |           |      |
+| TASK-006 | Open `ansible/roles/dotfiles_prereqs/tasks/main.yml`. Remove the three existing per-package-manager fzf tasks (`Install fzf via apt`, `Install fzf via pacman`, `Install fzf via dnf`). Replace them with a single task named `Install fzf from GitHub Releases` that runs the official fzf install script: `git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --bin` using `ansible.builtin.shell` with `creates: "{{ ansible_env.HOME }}/.fzf/bin/fzf"`. Restrict with `when: ansible_system == 'Linux'`. This mirrors the upstream-installer pattern already used for zoxide and starship. |           |      |
 | TASK-007 | Add a follow-up task `Add fzf to PATH via .profile.d` that writes a one-line shell fragment `export PATH="$HOME/.fzf/bin:$PATH"` to `{{ ansible_env.HOME }}/.profile.d/fzf.sh` (create dir if absent), ensuring the binary is on PATH before `.bashrc` is sourced. Use `ansible.builtin.lineinfile` targeting that file. |           |      |
-| TASK-008 | Verify the updated playbook passes lint: run `ansible-lint ansible/roles/dotfiles-prereqs/tasks/main.yml` (or the project's standard lint command) and confirm zero errors. |           |      |
+| TASK-008 | Verify the updated playbook passes lint: run `ansible-lint ansible/roles/dotfiles_prereqs/tasks/main.yml` (or the project's standard lint command) and confirm zero errors. |           |      |
 
 ---
 
@@ -89,7 +89,7 @@ This plan addresses both defects with the minimum changes required.
 
 - **FILE-001**: `templates/dotfiles/manifest.yml` — Add new `bash-bashrc` entry (Phase 1, TASK-001).
 - **FILE-002**: `templates/dotfiles/shell/bash/.bashrc` — Replace unconditional `fzf --bash` call with version-gated block (Phase 2, TASK-004).
-- **FILE-003**: `ansible/roles/dotfiles-prereqs/tasks/main.yml` — Replace three per-PM fzf tasks with upstream installer + PATH task (Phase 3, TASK-006/TASK-007).
+- **FILE-003**: `ansible/roles/dotfiles_prereqs/tasks/main.yml` — Replace three per-PM fzf tasks with upstream installer + PATH task (Phase 3, TASK-006/TASK-007).
 
 ---
 
@@ -99,7 +99,7 @@ This plan addresses both defects with the minimum changes required.
 - **TEST-002**: `bash -n templates/dotfiles/shell/bash/.bashrc` MUST exit 0 with no output. Verifies TASK-005.
 - **TEST-003**: Simulate old fzf (≤ 0.29.0): set `fzf() { echo "0.29.0"; }` in a test shell, source `.bashrc`, confirm no error and no `fzf --bash` invocation (check via `set -x` trace). Verifies TASK-004 fallback branch.
 - **TEST-004**: Simulate new fzf (≥ 0.48.0): install fzf from `~/.fzf/bin/fzf` in a test shell, source `.bashrc`, confirm `fzf --bash` is called and key-bindings are active. Verifies TASK-004 primary branch.
-- **TEST-005**: `ansible-lint ansible/roles/dotfiles-prereqs/tasks/main.yml` MUST exit 0. Verifies TASK-008.
+- **TEST-005**: `ansible-lint ansible/roles/dotfiles_prereqs/tasks/main.yml` MUST exit 0. Verifies TASK-008.
 - **TEST-006**: Run the Ansible role in `--check` mode against a local WSL target (`ansible-playbook … --check`). Confirm `Install fzf from GitHub Releases` task reports `changed` (binary not yet present) and no errors. Verifies TASK-006/TASK-007 playbook correctness.
 
 ---
@@ -121,4 +121,4 @@ This plan addresses both defects with the minimum changes required.
 - [fzf upstream install script](https://github.com/junegunn/fzf#using-git)
 - `scripts/deploy-dotfiles.sh` — deploy loop at lines 77–111; backup logic at lines 102–104
 - `templates/dotfiles/manifest.yml` — current schema reference
-- `ansible/roles/dotfiles-prereqs/tasks/main.yml` — role to modify in Phase 3
+- `ansible/roles/dotfiles_prereqs/tasks/main.yml` — role to modify in Phase 3

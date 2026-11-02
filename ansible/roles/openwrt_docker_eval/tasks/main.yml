@@ -1,5 +1,5 @@
 ---
-# openwrt-docker-eval role
+# openwrt_docker_eval role
 # Implements the OpenWrt-in-Docker evaluation tasks from plans/infrastructure-router-vlans-2.md
 # VLAN data consumed from group_vars/all/vlan-vars.yml (source of truth)
 
@@ -30,7 +30,7 @@
 
           **Source:** https://openwrt.org/docs/guide-user/virtualization/docker_openwrt
           **Image pull status:** {{ 'success' if openwrt_pull is succeeded else 'failed — check Docker access' }}
-          **Extracted by:** ansible/roles/openwrt-docker-eval (research task)
+          **Extracted by:** ansible/roles/openwrt_docker_eval (research task)
 
           ## Evaluation Results
 

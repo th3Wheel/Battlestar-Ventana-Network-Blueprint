@@ -1,5 +1,5 @@
 ---
-# linux-router-eval role
+# linux_router_eval role
 # Implements the linux-router evaluation tasks from plans/infrastructure-router-vlans-2.md
 # VLAN data consumed from group_vars/all/vlan-vars.yml (source of truth)
 
@@ -39,7 +39,7 @@
           # linux-router Capabilities Research
 
           **Source:** https://github.com/garywill/linux-router
-          **Extracted by:** ansible/roles/linux-router-eval (research task)
+          **Extracted by:** ansible/roles/linux_router_eval (research task)
 
           ## Feature Summary
 

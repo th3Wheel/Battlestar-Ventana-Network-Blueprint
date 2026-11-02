@@ -1,5 +1,5 @@
 ---
-# Default variables for opnsense-vm-eval role
+# Default variables for opnsense_vm_eval role
 # Override in host_vars or playbook vars as needed
 
 opnsense_eval_task: provision
