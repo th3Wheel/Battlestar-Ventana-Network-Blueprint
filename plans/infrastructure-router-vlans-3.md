@@ -225,7 +225,7 @@ This plan provides the Ansible-driven implementation schedule to complete the ev
 - **ASSUMPTION-001**: All physical hosts are reachable via Ansible over SSH on their VLAN 40 (InfraCore) management addresses.
 - **ASSUMPTION-002**: The `10.76.X.0/24` subnet scheme is fixed and consistent with current production assignments.
 - **ASSUMPTION-003**: Ansible playbooks target a dedicated lab environment; no production VLANs are affected during the evaluation.
-- **ASSUMPTION-004**: OPNsense VM management IP is `10.76.40.20`; adjust `opnsense_mgmt_ip` in `roles/opnsense_vm_eval/defaults/main.yml` if the actual address differs after first-boot.
+- **ASSUMPTION-004**: OPNsense VM management IP is `10.76.40.20`; adjust `opnsense_vm_eval_mgmt_ip` in `roles/opnsense_vm_eval/defaults/main.yml` if the actual address differs after first-boot.
 
 ## 8. Related Specifications / Further Reading
 

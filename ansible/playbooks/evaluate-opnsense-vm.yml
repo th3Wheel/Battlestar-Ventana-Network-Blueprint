@@ -19,7 +19,7 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: provision
+        opnsense_vm_eval_task: provision
 
 - name: 'Configure — apply VLANs, DHCP, and firewall rules via OPNsense API'
   hosts: lab_opnsense_vm
@@ -28,7 +28,7 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: configure
+        opnsense_vm_eval_task: configure
 
 - name: 'Validate — verify DHCP option 6, DNS relay, and firewall for VLANs 20 and 40'
   hosts: lab_opnsense_vm
@@ -37,7 +37,7 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: validate
+        opnsense_vm_eval_task: validate
 
 - name: 'Full matrix — validate all 11 blueprint VLANs'
   hosts: lab_opnsense_vm
@@ -46,7 +46,7 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: full_matrix
+        opnsense_vm_eval_task: full_matrix
 
 - name: 'Generate config — export OPNsense XML backup and restore script'
   hosts: lab_opnsense_vm
@@ -55,7 +55,7 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: generate_config
+        opnsense_vm_eval_task: generate_config
 
 - name: 'Teardown — remove OPNsense evaluation VM'
   hosts: CrimsonRogue
@@ -64,4 +64,4 @@
   roles:
     - role: opnsense_vm_eval
       vars:
-        opnsense_eval_task: teardown
+        opnsense_vm_eval_task: teardown
