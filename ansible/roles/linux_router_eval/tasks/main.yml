@@ -1,5 +1,5 @@
 ---
-# linux-router-eval role
+# linux_router_eval role
 # Implements the linux-router evaluation tasks from plans/infrastructure-router-vlans-2.md
 # VLAN data consumed from group_vars/all/vlan-vars.yml (source of truth)
 
@@ -22,28 +22,28 @@
     - name: Capture linux-router README for capability extraction
       ansible.builtin.slurp:
         src: '/tmp/linux-router-src/README.md'
-      register: linux_router_readme
+      register: linux_router_eval_readme
 
     - name: Create research output directory
       ansible.builtin.file:
-        path: '{{ research_output_dir }}'
+        path: '{{ linux_router_eval_research_output_dir }}'
         state: directory
         mode: '0755'
       delegate_to: localhost
 
     - name: Write capabilities research file stub
       ansible.builtin.copy:
-        dest: '{{ research_output_dir }}/linux-router-capabilities.md'
+        dest: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
         mode: '0644'
         content: |
           # linux-router Capabilities Research
 
           **Source:** https://github.com/garywill/linux-router
-          **Extracted by:** ansible/roles/linux-router-eval (research task)
+          **Extracted by:** ansible/roles/linux_router_eval (research task)
 
           ## Feature Summary
 
-          {{ linux_router_readme.content | b64decode | truncate(2000) }}
+          {{ linux_router_eval_readme.content | b64decode | truncate(2000) }}
 
           ## Evaluation Results
 
@@ -66,68 +66,74 @@
 
     - name: Download pinned lnxrouter script from reviewed upstream revision
       vars:
-        lnxrouter_commit: '445fadba86a196223fcabd150e0e66eae963c08f'
-        lnxrouter_sha256: 'e242101d418296c2a88c6da7c22dc306791242a19ab90939329c946bde7bae1e'
+        linux_router_eval_commit: '445fadba86a196223fcabd150e0e66eae963c08f'
+        linux_router_eval_sha256: 'e242101d418296c2a88c6da7c22dc306791242a19ab90939329c946bde7bae1e'
       ansible.builtin.get_url:
-        url: 'https://raw.githubusercontent.com/garywill/linux-router/{{ lnxrouter_commit }}/lnxrouter'
+        url: 'https://raw.githubusercontent.com/garywill/linux-router/{{ linux_router_eval_commit }}/lnxrouter'
         dest: '/usr/local/bin/lnxrouter'
-        checksum: 'sha256:{{ lnxrouter_sha256 }}'
+        checksum: 'sha256:{{ linux_router_eval_sha256 }}'
         mode: '0755'
       become: true
 
     - name: Create VLAN interfaces for evaluation VLANs (20 and 40)
       ansible.builtin.command:
-        cmd: 'ip link add link {{ lan_interface }} name {{ lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
+        cmd: 'ip link add link {{ linux_router_eval_lan_interface }} name {{ linux_router_eval_lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
       loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.name }}'
       become: true
-      ignore_errors: true
+      register: linux_router_eval_vlan_add
+      changed_when: linux_router_eval_vlan_add.rc == 0
+      # Re-runs find the interface already present; any other failure is real.
+      failed_when: linux_router_eval_vlan_add.rc != 0 and 'File exists' not in linux_router_eval_vlan_add.stderr
 
     - name: Bring VLAN interfaces up
       ansible.builtin.command:
-        cmd: 'ip link set {{ lan_interface }}.{{ item.id }} up'
+        cmd: 'ip link set {{ linux_router_eval_lan_interface }}.{{ item.id }} up'
       loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
       loop_control:
         label: 'VLAN {{ item.id }}'
       become: true
-      ignore_errors: true
+      changed_when: false
 
     - name: Assign gateway addresses to VLAN interfaces
       ansible.builtin.command:
-        cmd: 'ip addr add {{ item.gateway }}/24 dev {{ lan_interface }}.{{ item.id }}'
+        cmd: 'ip addr add {{ item.gateway }}/24 dev {{ linux_router_eval_lan_interface }}.{{ item.id }}'
       loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.gateway }}'
       become: true
-      ignore_errors: true
+      register: linux_router_eval_gateway_add
+      changed_when: linux_router_eval_gateway_add.rc == 0
+      failed_when: linux_router_eval_gateway_add.rc != 0 and 'File exists' not in linux_router_eval_gateway_add.stderr
 
 - name: 'Validate — check NAT, DHCP option 6, and Pi-hole reachability'
   when: linux_router_eval_task == 'validate'
   block:
     - name: Verify VLAN interfaces exist
       ansible.builtin.command:
-        cmd: 'ip -d link show {{ lan_interface }}.{{ item.id }}'
+        cmd: 'ip -d link show {{ linux_router_eval_lan_interface }}.{{ item.id }}'
       loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
       loop_control:
         label: 'VLAN {{ item.id }}'
-      register: vlan_link_check
+      register: linux_router_eval_vlan_link_check
       changed_when: false
       become: true
 
     - name: Test DNS reachability to Pi-hole primary
       ansible.builtin.command:
         cmd: 'dig +short +timeout=5 example.com @{{ pihole_primary_vip }}'
-      register: dns_check
+      register: linux_router_eval_dns_check
       changed_when: false
-      failed_when: dns_check.rc != 0
+      failed_when: linux_router_eval_dns_check.rc != 0
 
     - name: Log validation results to research file
       ansible.builtin.lineinfile:
-        path: '{{ research_output_dir }}/linux-router-capabilities.md'
+        path: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
         line: "- VLAN {{ item.item.id }} interface check: {{ 'PASS' if item.rc == 0 else 'FAIL' }} ({{ now(fmt='%Y-%m-%d') }})"
         create: true
-      loop: '{{ vlan_link_check.results }}'
+        mode: '0644'
+      loop: '{{ linux_router_eval_vlan_link_check.results }}'
       loop_control:
         label: 'VLAN {{ item.item.id }}'
       delegate_to: localhost
@@ -137,33 +143,36 @@
   block:
     - name: Create VLAN interface for each blueprint VLAN
       ansible.builtin.command:
-        cmd: 'ip link add link {{ lan_interface }} name {{ lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
+        cmd: 'ip link add link {{ linux_router_eval_lan_interface }} name {{ linux_router_eval_lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
       loop: '{{ vlans }}'
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.name }}'
       become: true
-      ignore_errors: true
+      register: linux_router_eval_full_matrix_vlan_add
+      changed_when: linux_router_eval_full_matrix_vlan_add.rc == 0
+      failed_when: linux_router_eval_full_matrix_vlan_add.rc != 0 and 'File exists' not in linux_router_eval_full_matrix_vlan_add.stderr
 
     - name: Verify VLAN interface presence for all 11 VLANs
       ansible.builtin.command:
-        cmd: 'ip -d link show {{ lan_interface }}.{{ item.id }}'
+        cmd: 'ip -d link show {{ linux_router_eval_lan_interface }}.{{ item.id }}'
       loop: '{{ vlans }}'
       loop_control:
         label: 'VLAN {{ item.id }}'
-      register: full_matrix_check
+      register: linux_router_eval_full_matrix_check
       changed_when: false
       become: true
       failed_when: >-
-        full_matrix_check.rc != 0 and
-        'Cannot find device' not in (full_matrix_check.stderr | default('')) and
-        'does not exist' not in (full_matrix_check.stderr | default(''))
+        linux_router_eval_full_matrix_check.rc != 0 and
+        'Cannot find device' not in (linux_router_eval_full_matrix_check.stderr | default('')) and
+        'does not exist' not in (linux_router_eval_full_matrix_check.stderr | default(''))
 
     - name: Append full-matrix results to research file
       ansible.builtin.lineinfile:
-        path: '{{ research_output_dir }}/linux-router-capabilities.md'
+        path: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
         line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item.rc == 0 else 'FAIL' }} | tested: true | date: {{ now(fmt='%Y-%m-%d') }}"
         create: true
-      loop: '{{ full_matrix_check.results }}'
+        mode: '0644'
+      loop: '{{ linux_router_eval_full_matrix_check.results }}'
       loop_control:
         label: 'VLAN {{ item.item.id }}'
       delegate_to: localhost

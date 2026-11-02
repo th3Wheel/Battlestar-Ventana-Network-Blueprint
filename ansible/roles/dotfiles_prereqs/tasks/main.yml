@@ -1,5 +1,5 @@
 ---
-# dotfiles-prereqs role
+# dotfiles_prereqs role
 # Installs fzf, zoxide, and starship on the target workstation
 
 - name: Install fzf via apt
