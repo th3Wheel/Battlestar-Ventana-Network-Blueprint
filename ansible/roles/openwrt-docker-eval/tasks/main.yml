@@ -94,7 +94,10 @@
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.name }}'
       become: true
-      ignore_errors: true
+      register: openwrt_vlan_networks
+      # Best-effort: a VLAN network that cannot be created must not abort the
+      # evaluation; the container exec checks below record what actually exists.
+      failed_when: false
 
     - name: Execute VLAN interface check inside OpenWrt container
       community.docker.docker_container_exec:

@@ -82,7 +82,10 @@
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.name }}'
       become: true
-      ignore_errors: true
+      register: lnxrouter_vlan_add
+      changed_when: lnxrouter_vlan_add.rc == 0
+      # Re-runs find the interface already present; any other failure is real.
+      failed_when: lnxrouter_vlan_add.rc != 0 and 'File exists' not in lnxrouter_vlan_add.stderr
 
     - name: Bring VLAN interfaces up
       ansible.builtin.command:
@@ -91,7 +94,7 @@
       loop_control:
         label: 'VLAN {{ item.id }}'
       become: true
-      ignore_errors: true
+      changed_when: false
 
     - name: Assign gateway addresses to VLAN interfaces
       ansible.builtin.command:
@@ -100,7 +103,9 @@
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.gateway }}'
       become: true
-      ignore_errors: true
+      register: lnxrouter_gateway_add
+      changed_when: lnxrouter_gateway_add.rc == 0
+      failed_when: lnxrouter_gateway_add.rc != 0 and 'File exists' not in lnxrouter_gateway_add.stderr
 
 - name: 'Validate — check NAT, DHCP option 6, and Pi-hole reachability'
   when: linux_router_eval_task == 'validate'
@@ -143,7 +148,9 @@
       loop_control:
         label: 'VLAN {{ item.id }} — {{ item.name }}'
       become: true
-      ignore_errors: true
+      register: full_matrix_vlan_add
+      changed_when: full_matrix_vlan_add.rc == 0
+      failed_when: full_matrix_vlan_add.rc != 0 and 'File exists' not in full_matrix_vlan_add.stderr
 
     - name: Verify VLAN interface presence for all 11 VLANs
       ansible.builtin.command:

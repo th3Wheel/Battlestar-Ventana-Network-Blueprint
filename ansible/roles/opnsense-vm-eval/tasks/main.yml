@@ -14,7 +14,10 @@
         api_password: '{{ proxmox_password }}'
         vmid: '{{ opnsense_vm_id }}'
         state: absent
-      ignore_errors: true
+      register: opnsense_vm_cleanup
+      # Best-effort cleanup of a previous run; the create task below fails
+      # loudly if the Proxmox API is genuinely unreachable.
+      failed_when: false
 
     - name: Create OPNsense evaluation VM on CrimsonRogue
       community.general.proxmox_kvm:
