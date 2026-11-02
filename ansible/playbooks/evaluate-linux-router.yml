@@ -16,7 +16,7 @@
   gather_facts: false
   tags: [research]
   roles:
-    - role: linux-router-eval
+    - role: linux_router_eval
       vars:
         linux_router_eval_task: research
 
@@ -51,7 +51,7 @@
   gather_facts: true
   tags: [provision]
   roles:
-    - role: linux-router-eval
+    - role: linux_router_eval
       vars:
         linux_router_eval_task: provision
 
@@ -60,7 +60,7 @@
   gather_facts: false
   tags: [validate]
   roles:
-    - role: linux-router-eval
+    - role: linux_router_eval
       vars:
         linux_router_eval_task: validate
 
@@ -69,7 +69,7 @@
   gather_facts: false
   tags: [full-matrix]
   roles:
-    - role: linux-router-eval
+    - role: linux_router_eval
       vars:
         linux_router_eval_task: full_matrix
 
@@ -78,6 +78,6 @@
   gather_facts: false
   tags: [generate-config]
   roles:
-    - role: linux-router-eval
+    - role: linux_router_eval
       vars:
         linux_router_eval_task: generate_config
