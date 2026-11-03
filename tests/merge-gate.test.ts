@@ -272,8 +272,12 @@ describe('decide', () => {
   });
 
   describe('listing a PR with gh', () => {
-    const files = (out: string, number = '42') =>
+    const baseOf = (number = '42') =>
+      `gh api repos/o/r/pulls/${number} --jq [.base.ref, .base.repo.default_branch] | @json`;
+    const baseAnswer = (base: string, defaultBranch = 'master') => JSON.stringify([base, defaultBranch]);
+    const files = (out: string, number = '42', base = 'master') =>
       fake({
+        [baseOf(number)]: baseAnswer(base),
         [`gh api --paginate repos/o/r/pulls/${number}/files --jq .[] | (.filename, .previous_filename // empty) | @json`]:
           out,
       });
@@ -292,10 +296,43 @@ describe('decide', () => {
     it('resolves the PR from the current branch first', () => {
       const run = fake({
         'gh pr view --json url --jq .url': 'https://github.com/o/r/pull/9\n',
+        [baseOf('9')]: baseAnswer('master'),
         'gh api --paginate repos/o/r/pulls/9/files --jq .[] | (.filename, .previous_filename // empty) | @json':
           '"docs/a.md"\n',
       });
       expect(decide(bash('gh pr merge --squash'), { run })).toBeNull();
+    });
+
+    describe('only merges into the default branch are gated', () => {
+      // The files lookup is deliberately unanswered below: if the gate asked for it, fake() would throw
+      // and the merge would be refused, so a null result also proves the diff was never listed.
+      it('lets an agent merge a protected-path PR into a non-default branch', () => {
+        const run = fake({ [baseOf()]: baseAnswer('integration/ci-green') });
+        expect(decide(bash('gh pr merge 42 -R o/r'), { run })).toBeNull();
+      });
+
+      it('still gates the PR that brings that branch into the default branch', () => {
+        const run = files('"ansible/site.yml"\n', '42', 'master');
+        expect(decide(bash('gh pr merge 42 -R o/r'), { run })).toMatch(/ansible\/site\.yml/);
+      });
+
+      it('treats the repository default as the default even when it is not master or main', () => {
+        const run = fake({
+          [baseOf()]: baseAnswer('trunk', 'trunk'),
+          'gh api --paginate repos/o/r/pulls/42/files --jq .[] | (.filename, .previous_filename // empty) | @json':
+            '"config/vlan-registry.yaml"\n',
+        });
+        expect(decide(bash('gh pr merge 42 -R o/r'), { run })).toMatch(/config\/vlan-registry\.yaml/);
+      });
+
+      it('fails closed when the base branch cannot be read', () => {
+        expect(decide(bash('gh pr merge 42 -R o/r'), { run: fake() })).toMatch(/could not verify/);
+      });
+
+      it('fails closed when the base branch is missing from the answer', () => {
+        const run = fake({ [baseOf()]: JSON.stringify([null, 'master']) });
+        expect(decide(bash('gh pr merge 42 -R o/r'), { run })).toMatch(/could not read the base branch/);
+      });
     });
   });
 
