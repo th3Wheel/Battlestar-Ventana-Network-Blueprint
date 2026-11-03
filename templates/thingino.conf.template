@@ -4,6 +4,7 @@
 
 # Wi-Fi Configuration
 wifi_ssid="op://homelab/Secureiotwifi/ssid"
+# checkov:skip=CKV_SECRET_6: 1Password secret reference (op://vault/item/field), not a secret value
 wifi_password="op://homelab/Secureiotwifi/password"
 wifi_mode=client
 
