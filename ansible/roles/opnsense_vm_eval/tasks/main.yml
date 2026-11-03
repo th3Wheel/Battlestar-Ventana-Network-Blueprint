@@ -56,6 +56,7 @@
         user: '{{ opnsense_vm_eval_api_key | default(omit, true) }}'
         password: '{{ opnsense_vm_eval_api_secret | default(omit, true) }}'
         force_basic_auth: "{{ (opnsense_vm_eval_api_key | default('', true) | length > 0) and (opnsense_vm_eval_api_secret | default('', true) | length > 0) }}"
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: [200, 401, 403]
       register: opnsense_vm_eval_api_ready
@@ -73,6 +74,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         body_format: json
         body:
@@ -92,6 +94,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         body_format: json
         body:
@@ -114,6 +117,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
 
@@ -127,6 +131,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
       register: opnsense_vm_eval_vlan_list
@@ -148,6 +153,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
       register: opnsense_vm_eval_dns_reach_check
@@ -159,6 +165,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
       register: opnsense_vm_eval_dns_secondary_reach_check
@@ -203,6 +210,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
       register: opnsense_vm_eval_full_vlan_list
@@ -247,6 +255,7 @@
         user: '{{ opnsense_vm_eval_api_key }}'
         password: '{{ opnsense_vm_eval_api_secret }}'
         force_basic_auth: true
+        # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         return_content: true
         status_code: 200

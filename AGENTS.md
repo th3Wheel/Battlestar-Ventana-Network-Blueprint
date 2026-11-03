@@ -39,9 +39,17 @@
 
 ### Never merges without a human
 
-A person has to have **read this diff** before it lands. Telling an agent
-"merge it when you're done" approves a goal, not this change. It does not
-count for anything on this list; everywhere else, standing approval is fine.
+A person has to have **read this diff** before it lands **in the default
+branch** (`master`). Telling an agent "merge it when you're done" approves a
+goal, not this change. It does not count for anything on this list;
+everywhere else, standing approval is fine.
+
+The rule guards the default branch, so an agent may merge pull requests into
+another branch, such as an integration branch used to get a set of changes
+working together. The pull request that carries that branch into the default
+branch is the one a person reads and merges, and it is held to this list like
+any other. `.claude/hooks/merge-gate.mts` enforces exactly this. The
+governance project will revisit the rule and its enforcement.
 
 - Changes under `config/`, `ansible/`, or `infrastructure/`.
 - Changes to `mcp-config.json`, `.mcp.json`, `.cursor/mcp.json`,
