@@ -1,5 +1,7 @@
-// PreToolUse hook: refuses agent-driven merges that touch the paths AGENTS.md
-// lists under "Never merges without a human". A person merges those themselves.
+// PreToolUse hook: refuses agent-driven merges into the default branch that touch the paths
+// AGENTS.md lists under "Never merges without a human". A person merges those themselves.
+// Merges into other branches (an integration branch, say) are not gated; the PR that carries
+// such a branch into the default branch is.
 //
 // This is a guardrail for cooperative agents, not a security boundary: it reads
 // shell text, which cannot be parsed completely. The rule that keeps it honest is
@@ -475,7 +477,9 @@ function pushFiles(merge: Extract<Located, { kind: 'push' }>, run: Runner): stri
   return nulSeparated(git(['diff', '--name-only', '-z', '--no-renames', tip, merge.source, '--']));
 }
 
-function prFiles(merge: Extract<Located, { kind: 'pr' }>, run: Runner): string[] {
+type PrRef = { repo: string; number: string };
+
+function resolvePr(merge: Extract<Located, { kind: 'pr' }>, run: Runner): PrRef {
   let repo = merge.repo;
   let number = merge.selector;
   if (!repo || !number || !/^\d+$/.test(number)) {
@@ -499,6 +503,28 @@ function prFiles(merge: Extract<Located, { kind: 'pr' }>, run: Runner): string[]
     repo = `${match[1]}/${match[2]}`;
     number = match[3];
   }
+  return { repo, number };
+}
+
+// The rule protects the default branch. A PR into any other branch (an integration branch, say)
+// can be merged by an agent; the PR that later carries that branch into the default branch is
+// gated here and read by a person. If the base cannot be read, the lookup throws and the merge
+// is refused.
+function landsOnDefaultBranch({ repo, number }: PrRef, run: Runner): boolean {
+  const output = run('gh', [
+    'api',
+    `repos/${repo}/pulls/${number}`,
+    '--jq',
+    '[.base.ref, .base.repo.default_branch] | @json',
+  ]).trim();
+  const [base, defaultBranch] = JSON.parse(output) as [string?, string?];
+  if (!base) {
+    throw new Error(`could not read the base branch of ${repo}#${number}`);
+  }
+  return DEFAULT_BRANCHES.has(base) || base === defaultBranch;
+}
+
+function prFiles({ repo, number }: PrRef, run: Runner): string[] {
   // The files API reports previous_filename for renames, so a move out of config/ is seen.
   const output = run('gh', [
     'api',
@@ -511,7 +537,11 @@ function prFiles(merge: Extract<Located, { kind: 'pr' }>, run: Runner): string[]
 }
 
 function changedFiles(merge: Located, run: Runner): string[] {
-  return merge.kind === 'push' ? pushFiles(merge, run) : prFiles(merge, run);
+  if (merge.kind === 'push') {
+    return pushFiles(merge, run);
+  }
+  const pr = resolvePr(merge, run);
+  return landsOnDefaultBranch(pr, run) ? prFiles(pr, run) : [];
 }
 
 // Claude Code sends tool_name/tool_input; Copilot's camelCase events send toolName/toolArgs,
