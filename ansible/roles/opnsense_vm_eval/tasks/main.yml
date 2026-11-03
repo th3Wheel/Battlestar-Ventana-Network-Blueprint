@@ -268,11 +268,18 @@
         mode: '0600'
       delegate_to: localhost
 
-    - name: Render Proxmox VM provisioning script from template
-      ansible.builtin.template:
-        src: proxmox-create-opnsense-vm.sh.j2
+    - name: Copy Proxmox VM provisioning script
+      ansible.builtin.copy:
+        src: proxmox-create-opnsense-vm.sh
         dest: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes/proxmox-create-vm.sh'
         mode: '0755'
+      delegate_to: localhost
+
+    - name: Render Proxmox VM parameters from template
+      ansible.builtin.template:
+        src: opnsense-vm.env.j2
+        dest: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes/opnsense-vm.env'
+        mode: '0644'
       delegate_to: localhost
 
 - name: 'Teardown — stop and remove OPNsense evaluation VM'
