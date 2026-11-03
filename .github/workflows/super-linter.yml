@@ -9,7 +9,7 @@ name: Lint Code Base
 on:
   push:
   pull_request:
-    branches: ['master']
+    branches: ['master', 'integration/**']
 
 # super-linter reports a commit status per language (MULTI_STATUS), which needs statuses: write.
 permissions:

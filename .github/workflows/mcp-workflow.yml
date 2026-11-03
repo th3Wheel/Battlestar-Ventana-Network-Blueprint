@@ -2,9 +2,9 @@ name: MCP Context7 Validation
 
 on:
   push:
-    branches: [master, main]
+    branches: [master, main, 'integration/**']
   pull_request:
-    branches: [master, main]
+    branches: [master, main, 'integration/**']
   workflow_dispatch:
 
 jobs:

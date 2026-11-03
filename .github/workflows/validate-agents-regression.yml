@@ -2,7 +2,7 @@ name: Validate Agents Regression
 
 on:
   pull_request:
-    branches: [master, main]
+    branches: [master, main, 'integration/**']
     paths:
       - '.github/agents/validate-agents.sh'
       - 'scripts/check-validator-line-endings.sh'
