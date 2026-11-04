@@ -88,6 +88,7 @@ jobs:
           # copies run their own tool versions with default settings (for example ruff 0.16.x against the
           # locked 0.14.x), so they disagree with the repository's choices.
           VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
           VALIDATE_PYTHON_ISORT: false
           VALIDATE_PYTHON_MYPY: false
           VALIDATE_PYTHON_PYLINT: false
