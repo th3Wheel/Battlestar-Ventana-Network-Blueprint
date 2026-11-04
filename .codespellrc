@@ -3,3 +3,7 @@
 #   prFiles - function in .claude/hooks/merge-gate.mts (pull-request files)
 #   caf     - "café", Git's escaped form of a non-ASCII path in tests/merge-gate.test.ts
 ignore-words-list = prfiles,caf
+# package-lock.json is generated. Its base64 "integrity" hashes contain random letter runs that look
+# like misspellings (for example "ue"), and npm already verifies the package names it lists.
+# The pattern starts with * because linters pass absolute file paths.
+skip = *package-lock.json
