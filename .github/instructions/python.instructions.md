@@ -29,7 +29,7 @@ applyTo: '**/*.py'
 - Maintain proper indentation (use 4 spaces for each level of indentation).
 - Ensure lines do not exceed 120 characters to match the repository's Python linting configuration (`line-length` in `pyproject.toml`, enforced by Ruff).
 - Place function and class docstrings immediately after the `def` or `class` keyword.
-- Use blank lines to separate functions, classes, and code blocks where appropriate.
+- Use empty lines to separate functions, classes, and code blocks where appropriate.
 
 ## Edge Cases and Testing
 

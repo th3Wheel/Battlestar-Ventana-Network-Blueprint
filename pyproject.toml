@@ -50,6 +50,8 @@ python-version = "3.14"
 include = [
     "src",
     "scripts",
+    ".agents/skills/poka-yoke/scripts",
+    ".github/skills/led-analysis/lint",
 ]
 exclude = [
     "ha/templates",

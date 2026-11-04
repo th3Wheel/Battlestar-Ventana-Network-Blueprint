@@ -12,7 +12,7 @@
 
 - **Battlestar Ventana (10):** Trusted LAN
 - **CylonSynthLink (20):** IoT devices
-- **CapricaGuestPortal (30):** Guest – Internet only
+- **CapricaGuestPortal (30):** Guest – internet only
 - **CapricaResidentPortal (31):** Elevated guest (casting, printing)
 
 - **BasestarVentana (40):** Infrastructure switches/controllers
@@ -56,12 +56,12 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - **Guest VLAN:** Isolated from LANs
 - **IoT VLAN:** Restricted to telemetry only
 - **Cameras:** View‑only from Trusted
-- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP
+- **Work VLAN (90):** Unthrottled internet; VPN bootstraps via local DNS/DHCP
 - **ServerVault:** Outbound limited to updates and sync
 
 ---
 
-## 📂 Repo structure
+## 📂 Repository structure
 
 ```tree
 Battlestar-Ventana-Network-Blueprint/
@@ -171,7 +171,7 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 
 ---
 
-🚀 _The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo._
+🚀 _The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, internet policy, service flows, audit checks, and versioned history in one cohesive repository._
 
 ## Contributing
 
