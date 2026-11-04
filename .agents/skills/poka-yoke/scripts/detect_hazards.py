@@ -41,6 +41,12 @@ ALL_EXTS = PY | TS | GO | RS | SQL
 
 LENS = {"C": "contact", "F": "fixed-value", "M": "motion-step", "X": "removed-device"}
 
+# Scan limits and thresholds.
+WIDE_SIGNATURE_MIN_ARGS = 4  # positional parameters before a signature counts as wide
+MAX_SOURCE_CHARS = 2_000_000  # skip files larger than this (generated or minified)
+MAX_LINE_CHARS = 500  # skip lines longer than this (minified)
+MAX_SITES_SHOWN = 8  # sites listed per hazard in the text report
+
 
 @dataclass(frozen=True)
 class Rule:
@@ -53,9 +59,9 @@ class Rule:
     negate: re.Pattern | None = None  # if this also matches the line, skip
 
 
-def R(id, name, severity, exts, pattern, device, negate=None, flags=0):
+def R(rule_id, name, severity, exts, pattern, device, negate=None, flags=0):
     return Rule(
-        id=id,
+        id=rule_id,
         name=name,
         severity=severity,
         exts=frozenset(exts),
@@ -492,7 +498,7 @@ def python_ast_findings(path: Path, source: str) -> list[dict]:
                         }
                     )
             # positional args on a wide signature
-            if len(args) >= 4 and not node.args.kwonlyargs:
+            if len(args) >= WIDE_SIGNATURE_MIN_ARGS and not node.args.kwonlyargs:
                 out.append(
                     {
                         "id": "C1",
@@ -560,7 +566,7 @@ SKIP_DIRS = {
 
 def git(*args: str, cwd: Path) -> str:
     try:
-        r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=30)
+        r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=30, check=False)
         return r.stdout if r.returncode == 0 else ""
     except (subprocess.SubprocessError, FileNotFoundError):
         return ""
@@ -619,27 +625,19 @@ def collect_paths(roots: list[str]) -> list[Path]:
 COMMENT_ONLY = re.compile(r"^\s*(//|#|/\*|\*|--)")
 
 
-def scan_file(path: Path, only_lines: set[int] | None) -> list[dict]:
-    try:
-        source = path.read_text(encoding="utf-8", errors="replace")
-    except (OSError, UnicodeDecodeError):
-        return []
-    if len(source) > 2_000_000:
-        return []
-
+def regex_findings(path: Path, lines: list[str], only_lines: set[int] | None, include_covered: bool) -> list[dict]:
+    """Findings from the per-line regex rules."""
     findings = []
     ext = path.suffix
-    lines = source.splitlines()
-
     for lineno, line in enumerate(lines, 1):
         if only_lines and lineno not in only_lines:
             continue
-        if COMMENT_ONLY.match(line) or len(line) > 500:
+        if COMMENT_ONLY.match(line) or len(line) > MAX_LINE_CHARS:
             continue
         for rule in RULES:
             if ext not in rule.exts:
                 continue
-            if not INCLUDE_COVERED and covered(rule.id, rule.name):
+            if not include_covered and covered(rule.id, rule.name):
                 continue
             if rule.negate and (rule.negate.search(line) or rule.negate.search(str(path))):
                 continue
@@ -654,13 +652,31 @@ def scan_file(path: Path, only_lines: set[int] | None) -> list[dict]:
                         "device": rule.device,
                     }
                 )
+    return findings
 
-    if ext in PY:
-        for f in python_ast_findings(path, source):
-            if not INCLUDE_COVERED and covered(f["id"], f["name"]):
-                continue
-            if not only_lines or f["line"] in only_lines:
-                findings.append(f)
+
+def ast_findings(path: Path, source: str, only_lines: set[int] | None, include_covered: bool) -> list[dict]:
+    """Findings from the Python AST rules."""
+    findings = []
+    for f in python_ast_findings(path, source):
+        if not include_covered and covered(f["id"], f["name"]):
+            continue
+        if not only_lines or f["line"] in only_lines:
+            findings.append(f)
+    return findings
+
+
+def scan_file(path: Path, only_lines: set[int] | None, *, include_covered: bool) -> list[dict]:
+    try:
+        source = path.read_text(encoding="utf-8", errors="replace")
+    except (OSError, UnicodeDecodeError):
+        return []
+    if len(source) > MAX_SOURCE_CHARS:
+        return []
+
+    findings = regex_findings(path, source.splitlines(), only_lines, include_covered)
+    if path.suffix in PY:
+        findings += ast_findings(path, source, only_lines, include_covered)
 
     for f in findings:
         f["file"] = str(path)
@@ -671,8 +687,6 @@ def scan_file(path: Path, only_lines: set[int] | None) -> list[dict]:
 # --------------------------------------------------------------------------------------
 # Output
 # --------------------------------------------------------------------------------------
-
-INCLUDE_COVERED = False
 
 SEV_ORDER = {"high": 0, "medium": 1, "low": 2}
 COLOR = {"high": "\033[31m", "medium": "\033[33m", "low": "\033[90m"}
@@ -710,10 +724,10 @@ def render(findings: list[dict], scope: str, use_color: bool) -> str:
         tag = f"{COLOR[sev]}{sev.upper():<6}{RESET}" if use_color else f"{sev.upper():<6}"
         out.append(f"{tag} {key}  ({group[0]['lens']} lens, {len(group)} site{'s' if len(group) > 1 else ''})")
         out.append(f"       device: {group[0]['device']}")
-        for f in group[:8]:
+        for f in group[:MAX_SITES_SHOWN]:
             out.append(f"       {f['file']}:{f['line']}  {f['snippet']}")
-        if len(group) > 8:
-            out.append(f"       … and {len(group) - 8} more")
+        if len(group) > MAX_SITES_SHOWN:
+            out.append(f"       … and {len(group) - MAX_SITES_SHOWN} more")
         out.append("")
 
     return "\n".join(out)
@@ -746,8 +760,6 @@ def main() -> int:
     ap.add_argument("--repo", default=".", help="repository root (default: .)")
     args = ap.parse_args()
 
-    global INCLUDE_COVERED
-    INCLUDE_COVERED = args.include_covered
     repo = Path(args.repo).resolve()
     findings: list[dict] = []
 
@@ -758,7 +770,7 @@ def main() -> int:
         scope = f"paths: {', '.join(args.paths)}"
         for p in collect_paths(args.paths):
             scanned += 1
-            findings += scan_file(p, None)
+            findings += scan_file(p, None, include_covered=args.include_covered)
         if scanned == 0:
             # Zero findings from zero files is not an all-clear, and it used to be
             # indistinguishable from one. Exit non-zero: failing to do the job should
@@ -793,7 +805,7 @@ def main() -> int:
             fp = repo / rel
             if fp.suffix in ALL_EXTS and fp.exists():
                 scanned += 1
-                findings += scan_file(fp, lines)
+                findings += scan_file(fp, lines, include_covered=args.include_covered)
 
     threshold = SEV_ORDER[args.severity]
     findings = [f for f in findings if SEV_ORDER[f["severity"]] <= threshold]
@@ -810,7 +822,7 @@ def main() -> int:
     else:
         print(render(findings, scope, use_color=sys.stdout.isatty()))
         print(f"\nScanned {scanned} file{'' if scanned == 1 else 's'}.")
-        if not INCLUDE_COVERED:
+        if not args.include_covered:
             tools = sorted({v.split(",")[0].split()[0] for v in COVERED_BY.values() if v})
             # len(COVERED_BY) counts ENTRIES, and one entry can suppress several
             # per-language rules, so it under-reported by three. Count the rules.

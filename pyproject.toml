@@ -11,9 +11,6 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "black==26.3.1",
-    "isort==7.0.0",
-    "pylint==4.0.4",
     "pyyaml==6.0.3",
     "ruff==0.14.11",
     "ty==0.0.78",
@@ -37,7 +34,10 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
+# Ruff replaces Black (format), isort (I) and Pylint (PL, A001/A002 for redefined-builtin).
+select = ["E", "F", "I", "UP", "B", "PL", "A001", "A002"]
+# Pylint's too-many-arguments, disabled in the former .pylintrc.
+ignore = ["PLR0913"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -50,6 +50,8 @@ python-version = "3.14"
 include = [
     "src",
     "scripts",
+    ".agents/skills/poka-yoke/scripts",
+    ".github/skills/led-analysis/lint",
 ]
 exclude = [
     "ha/templates",
