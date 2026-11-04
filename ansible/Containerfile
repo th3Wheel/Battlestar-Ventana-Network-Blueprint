@@ -1,6 +1,9 @@
 ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:24.6.0
 FROM $EE_BASE_IMAGE
 
+# Installs below need root (UID 0); the image drops back to the unprivileged runner user at the end.
+USER 0
+
 # Install Python dependencies
 COPY requirements.txt /build/requirements.txt
 RUN pip3 install --no-cache-dir -r /build/requirements.txt
@@ -11,4 +14,10 @@ RUN ansible-galaxy collection install -r /build/collections/requirements.yml \
     && chmod -R ug+rwx /usr/share/ansible/collections
 
 LABEL org.opencontainers.image.title="battlestar-ventana-ee" \
-      org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
+    org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
+
+USER 1000
+
+# Cheap liveness probe: the toolchain must start and report its version.
+HEALTHCHECK --interval=5m --timeout=30s --start-period=10s --retries=3 \
+    CMD ["ansible", "--version"]

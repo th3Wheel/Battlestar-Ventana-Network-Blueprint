@@ -84,6 +84,7 @@ systemd_event_annotation:
 # # Annotate Grafana when torbox-companion restarts
 #
 # GRAFANA_URL="http://grafana:3000"
+# checkov:skip=CKV_SECRET_6: placeholder in an example command, not a secret
 # GRAFANA_API_KEY="your-api-key-here"
 # TIMESTAMP=$(date +%s000)
 # UPTIME=$(systemctl show torbox-companion --property=ActiveEnterTimestamp --value)

@@ -12,7 +12,7 @@
 
 - **Battlestar Ventana (10):** Trusted LAN
 - **CylonSynthLink (20):** IoT devices
-- **CapricaGuestPortal (30):** Guest – Internet only
+- **CapricaGuestPortal (30):** Guest – internet only
 - **CapricaResidentPortal (31):** Elevated guest (casting, printing)
 
 - **BasestarVentana (40):** Infrastructure switches/controllers
@@ -31,8 +31,8 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📊 Monitoring & dashboards
 
-- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)  
-- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)  
+- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
+- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
@@ -53,15 +53,15 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 🧪 Audit checklist (quick view)
 
-- **Guest VLAN:** Isolated from LANs  
-- **IoT VLAN:** Restricted to telemetry only  
-- **Cameras:** View‑only from Trusted  
-- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP  
+- **Guest VLAN:** Isolated from LANs
+- **IoT VLAN:** Restricted to telemetry only
+- **Cameras:** View‑only from Trusted
+- **Work VLAN (90):** Unthrottled internet; VPN bootstraps via local DNS/DHCP
 - **ServerVault:** Outbound limited to updates and sync
 
 ---
 
-## 📂 Repo structure
+## 📂 Repository structure
 
 ```tree
 Battlestar-Ventana-Network-Blueprint/
@@ -90,9 +90,9 @@ CHANGELOG.md                  # Versioned history of changes
 
 ### 📑 Legend
 
-- 📄 Documentation  
-- 📊 Dashboards  
-- ⚙️ Configs / Alerts  
+- 📄 Documentation
+- 📊 Dashboards
+- ⚙️ Configs / Alerts
 
 ---
 
@@ -143,8 +143,10 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 - The root `pyproject.toml` and `uv.lock` are authoritative for Python development
   tools. Run `uv sync --locked` from the repository root. Do not manually install
   Ansible into this environment: synchronization removes undeclared packages.
-- Ruff replaces Black, isort, and Pylint in the root toolchain; ty provides
-  separate type checking. Ruff's selected rules do not cover every Pylint check.
+- Ruff replaces Black, isort, and Pylint in the root toolchain: it formats, sorts
+  imports, and applies the Pylint rules selected in `pyproject.toml`. ty provides
+  separate type checking. Ruff does not infer types across modules the way Pylint
+  does, so a few Pylint-only checks have no equivalent.
 - `requirements.txt` is a generated compatibility export, not an independent
   dependency source. Regenerate it after dependency changes with
   `uv export --locked --no-hashes --no-emit-project --format requirements-txt --output-file requirements.txt`.
@@ -169,7 +171,7 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 
 ---
 
-🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*
+🚀 _The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, internet policy, service flows, audit checks, and versioned history in one cohesive repository._
 
 ## Contributing
 
