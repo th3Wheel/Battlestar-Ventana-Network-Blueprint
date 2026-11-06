@@ -13,15 +13,15 @@ tasks:
   lint-all:
     desc: Lint all files with ESLint
     cmds:
-      - npm run lint:all
+      - npm run lint:eslint
   fix-all:
     desc: Automatically fix linting issues in all files with ESLint
     cmds:
-      - npm run lint:all -- --fix
+      - npm run lint:eslint:fix
   lint:
-    desc: Lint this file with ESLint
+    desc: Lint the repository with ESLint
     cmds:
-      - eslint
+      - npm run lint:eslint
 
   lint-js:
     desc: Lint all JavaScript files with ESLint
