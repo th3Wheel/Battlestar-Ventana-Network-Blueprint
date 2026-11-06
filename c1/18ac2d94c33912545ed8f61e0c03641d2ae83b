@@ -1,0 +1,137 @@
+.agents/skills/agent-governance/SKILL.md
+  s_711ca8e3a16567::t_d8e47f02feb5ab 22
+.agents/skills/ai-ready/references/report-template.md
+  s_711ca8e3a16567::t_caed306269aec0 30,43,201
+.agents/skills/azure-resource-health-diagnose/SKILL.md
+  s_711ca8e3a16567::t_b98a551a1a076c 182,278
+.agents/skills/breakdown-feature-implementation/SKILL.md
+  s_711ca8e3a16567::t_ab27a93bccb9f5 129
+.agents/skills/generate-custom-instructions-from-codebase/SKILL.md
+  s_711ca8e3a16567::t_13b37227bc8c86 10,38
+.agents/skills/go-mcp-server-generator/SKILL.md
+  s_711ca8e3a16567::t_5c38a42e30be9b 24
+.agents/skills/legacy-circuit-mockups/references/555.md
+  s_711ca8e3a16567::t_283825d83e34d6 246,267,373,455,526,597,681,721,733,745,780,805,833
+.agents/skills/legacy-circuit-mockups/references/assembly-compiler.md
+  s_711ca8e3a16567::t_bb19e105efdfbf 21
+.agents/skills/legacy-circuit-mockups/references/assembly-language.md
+  s_711ca8e3a16567::t_725c9262a0a020 41
+.agents/skills/legacy-circuit-mockups/references/breadboard.md
+  s_711ca8e3a16567::t_c5ff754d9809e4 57,69,182
+.agents/skills/legacy-circuit-mockups/references/connecting-electronic-components.md
+  s_711ca8e3a16567::t_1844a1903e85ce 108
+.agents/skills/legacy-circuit-mockups/references/emulator-28256-eeprom.md
+  s_711ca8e3a16567::t_f81a144f9ccf4c 42,69,168
+.agents/skills/legacy-circuit-mockups/references/emulator-lcd.md
+  s_711ca8e3a16567::t_a2563583aa9eae 90,108,120,231
+.agents/skills/microsoft-skill-creator/SKILL.md
+  s_711ca8e3a16567::t_1c3b0603d4876d 18,68,75,81,115,159,168,177,188,197
+.agents/skills/rust-mcp-server-generator/SKILL.md
+  s_711ca8e3a16567::t_2f08d131dced25 23,159
+.github/agents/context7.agent.md
+  s_711ca8e3a16567::t_e88b795ff4c883 103,120,143,169,238,318,337,361,380,414,421,436,443,450,457,464,471,494,540,837,867,886,903
+.github/agents/custom-agent-foundry.agent.md
+  s_711ca8e3a16567::t_005f7134378b71 107,112,117,122
+.github/agents/doNotLint/markdown-accessibility-assistant.agent.md
+  s_711ca8e3a16567::t_7a718b2d977e06 144
+.github/agents/doNotLint/qa-subagent.agent.md
+  s_711ca8e3a16567::t_062aa4ac17bd23 21,70
+.github/agents/doNotLint/specification.agent.md
+  s_711ca8e3a16567::t_52df7b4739ed48 128
+.github/agents/dynatrace-expert.agent.md
+  s_711ca8e3a16567::t_b4017149b7d11b 716,737,760
+.github/agents/monday-bug-fixer.agent.md
+  s_711ca8e3a16567::t_c79e6347b27cea 51,59,73,88,103,112,138,229,398,403
+.github/agents/neo4j-docker-client-generator.agent.md
+  s_711ca8e3a16567::t_b210ce42a811a8 77
+.github/agents/se-system-architecture-reviewer.agent.md
+  s_711ca8e3a16567::t_0c72602ac0e025 101,109,117,127,133,139
+.github/agents/specification.agent.md
+  s_711ca8e3a16567::t_9989c29a1cb3cd 129
+.github/agents/terraform.agent.md
+  s_711ca8e3a16567::t_c9d871e6ed1b86 120,232,241,261,271
+.github/instructions/code-review-generic.instructions.md
+  s_711ca8e3a16567::t_23bc2b87a2b5ad 268,293,321
+.github/instructions/doNotLint/security-and-owasp.instructions.md
+  s_711ca8e3a16567::t_f432121dd23b78 993
+.github/instructions/mcp-m365-copilot.instructions.md
+  s_711ca8e3a16567::t_5552ca493dd97f 78
+.github/instructions/task-implementation.instructions.md
+  s_711ca8e3a16567::t_cfc8fb4877525b 104
+.github/skills/doNotLint/agent-governance/SKILL.md
+  s_711ca8e3a16567::t_81ad2cdd466d19 22
+.github/skills/doNotLint/git-commit/SKILL.md
+  s_711ca8e3a16567::t_eeee6357b58d81 16,42
+.github/skills/doNotLint/legacy-circuit-mockups/references/555.md
+  s_711ca8e3a16567::t_c475f498f94938 246,267,373,455,526,597,681,721,733,745,780,805,833
+.github/skills/doNotLint/legacy-circuit-mockups/references/assembly-compiler.md
+  s_711ca8e3a16567::t_e6bde04012048d 21
+.github/skills/doNotLint/legacy-circuit-mockups/references/assembly-language.md
+  s_711ca8e3a16567::t_caf8bc4b03ce80 41
+.github/skills/doNotLint/legacy-circuit-mockups/references/breadboard.md
+  s_711ca8e3a16567::t_fab1f5a098a578 57,69,182
+.github/skills/doNotLint/legacy-circuit-mockups/references/connecting-electronic-components.md
+  s_711ca8e3a16567::t_10e6fde6221b5c 108
+.github/skills/doNotLint/legacy-circuit-mockups/references/emulator-28256-eeprom.md
+  s_711ca8e3a16567::t_9ed0505e52604d 42,69,168
+.github/skills/doNotLint/legacy-circuit-mockups/references/emulator-lcd.md
+  s_711ca8e3a16567::t_ef30f56c1a442a 90,108,120,231
+.github/skills/doNotLint/napkin/SKILL.md
+  s_711ca8e3a16567::t_839be992f3386f 30,55,129,141
+.github/skills/doNotLint/update-oo-component-documentation/SKILL.md
+  s_711ca8e3a16567::t_5e06d2ab34a24e 162
+.github/skills/doNotLint/update-specification/SKILL.md
+  s_711ca8e3a16567::t_28bb7fc81452c7 127
+.github/skills/make-skill-template/SKILL.md
+  s_711ca8e3a16567::t_8b2a2348bdd3ea 41,137
+.github/skills/xpipe-mcp-automation/SKILL.md
+  s_711ca8e3a16567::t_c3c3c9e0f159eb 53,69,87,104,121
+AGENT-ASSIGNMENT-services-matrix.md
+  s_711ca8e3a16567::t_07f16d9b238e92 568
+archive/REVISION-SUMMARY.md
+  s_711ca8e3a16567::t_ef13e33db82c9f 51,82
+docs/features/thefuck-integration.md
+  s_711ca8e3a16567::t_3500a73895f02d 155
+docs/gs1920-48hp-switch-config-spec.md
+  s_711ca8e3a16567::t_49b036ccaf4af7 5
+docs/physical-hosts.md
+  s_711ca8e3a16567::t_ab96ac87d51ede 9
+docs/rate-limiting-strategy.md
+  s_711ca8e3a16567::t_5bf54fbf9b140e 384
+docs/ways-of-work/plan/infrastructure-xpipe/proxmox-xpipe-ansible-controller/implementation-plan.md
+  s_711ca8e3a16567::t_97189f296575a1 172
+ha/guidelines/01-architecture-principles.md
+  s_711ca8e3a16567::t_ef583389187ea7 18
+ha/guidelines/09-testing-validation.md
+  s_711ca8e3a16567::t_3b211e9f5d67ae 12
+ha/guidelines/10-documentation-standards.md
+  s_711ca8e3a16567::t_0abbec91a86353 12,60,138,755
+ha/home-assistant-programming-guidelines.instructions.md
+  s_711ca8e3a16567::t_ed4e4e196e31c7 37
+ha/templates/.djlint-README.md
+  s_711ca8e3a16567::t_9cfb3d0ea3e564 32,40,48
+ha/templates/README.template.md
+  s_711ca8e3a16567::t_d2527d53cdf70f 17,92
+infrastructure/radxa/a5e-router-config.md
+  s_711ca8e3a16567::t_7ea27955b297ec 7
+infrastructure/xpipe/QUICKREF.md
+  s_711ca8e3a16567::t_d3756ed71b88d1 59,65,71
+infrastructure/xpipe/SETUP.md
+  s_711ca8e3a16567::t_db6636d89cc22a 140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c118ac2d94c33912545ed8f61e0c03641d2ae83b",
+  "prompts": {},
+  "sessions": {
+    "s_711ca8e3a16567": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8131064-1151-45a7-a790-1d5c62d3271c",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
