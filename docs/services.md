@@ -75,7 +75,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ---
 
-### VLAN 90: ScyllaDataControl (Work VLAN)
+### VLAN 90: ScyllaProcessControl (Work VLAN)
 
 #### Outbound to ServerVault (50)
 
@@ -108,13 +108,13 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ## 🟡 Semi‑Trusted Zone
 
-### VLAN 31: PiconResidentGate (Semi‑Trusted Residents)
+### VLAN 31: CapricaResidentPortal (Semi‑Trusted Residents)
 
 #### Outbound to ServerVault (50)
 
 - **Service:** File sharing, print queue management
 - **Ports:** SMB (445), IPP (631), HTTPS (443)
-- **Direction:** ResidentGate → ServerVault
+- **Direction:** CapricaResidentPortal → ServerVault
 - **Protocol:** TCP
 - **Notes:** Limited access; file and print services only; no direct management access
 - **FW Ref:** [31 GuestElevated → 50 ServerVault](firewall-matrix.md) — Limited
@@ -123,7 +123,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** Printing
 - **Ports:** IPP (631), LPD (515)
-- **Direction:** ResidentGate → Printers
+- **Direction:** CapricaResidentPortal → Printers
 - **Protocol:** TCP
 - **Notes:** Full print submission and status
 - **FW Ref:** [31 GuestElevated → 60 Printers](firewall-matrix.md) — Full
@@ -132,7 +132,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** Media casting
 - **Ports:** DLNA (1900), Chromecast (8008-8009)
-- **Direction:** ResidentGate → Media
+- **Direction:** CapricaResidentPortal → Media
 - **Protocol:** TCP/UDP
 - **Notes:** Full casting and streaming control
 - **FW Ref:** [31 GuestElevated → 70 Media](firewall-matrix.md) — Full
@@ -141,7 +141,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** Web browsing, streaming
 - **Ports:** HTTP (80), HTTPS (443), DNS (53)
-- **Direction:** ResidentGate → Internet
+- **Direction:** CapricaResidentPortal → Internet
 - **Protocol:** TCP/UDP
 - **Notes:** Full web access per Internet access policy
 - **FW Ref:** [31 GuestElevated → Internet](firewall-matrix.md) — Unrestricted
@@ -245,7 +245,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ## 🛠 Infrastructure Zone
 
-### VLAN 40: BasestarControl (InfraCore – Switches & Controllers)
+### VLAN 40: BasestarVentana (InfraCore – Switches & Controllers)
 
 #### Outbound to ServerVault (50)
 
@@ -310,7 +310,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** File sharing, printing, media
 - **Ports:** SMB (445), IPP (631), Plex (32400), HTTPS (443)
-- **Direction:** ← ResidentGate (31), Media (70), Printers (60)
+- **Direction:** ← CapricaResidentPortal (31), Media (70), Printers (60)
 - **Protocol:** TCP
 - **Notes:** Limited access per firewall matrix; specific services only
 - **FW Ref:** [31 → 50](firewall-matrix.md) — Limited; [70 → 50](firewall-matrix.md) — Limited; [60 → 50](firewall-matrix.md) — Full

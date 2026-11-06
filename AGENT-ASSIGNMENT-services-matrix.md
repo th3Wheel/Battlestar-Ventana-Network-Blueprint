@@ -649,7 +649,7 @@ inhibit_rules:
 | PegasusMediaNode | 70 | 10.76.70.0/24 | Media / Casting |
 | ScorpiaMediaShield | 81 | 10.76.81.0/24 | Cameras – Local |
 | ScorpiaMediaRelay | 82 | 10.76.82.0/24 | Cameras – Cloud |
-| ScyllaDataControl | 90 | 10.76.90.0/24 | Work VLAN |
+| ScyllaProcessControl | 90 | 10.76.90.0/24 | Work VLAN |
 
 ### Existing Port Mappings (From firewall-matrix.md Service/Ports Reference Table)
 
