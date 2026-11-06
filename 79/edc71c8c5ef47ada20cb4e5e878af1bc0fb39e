@@ -1,0 +1,21 @@
+docs/naming-conventions.md
+  s_711ca8e3a16567::t_6ac130d8b0f8cc 1-2,9-11,14-18,20,28-31,35-135,137,139-163
+docs/other-devices.md
+  s_711ca8e3a16567::t_400b51a421bb32 1,3,5-6,8-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79edc71c8c5ef47ada20cb4e5e878af1bc0fb39e",
+  "prompts": {},
+  "sessions": {
+    "s_711ca8e3a16567": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8131064-1151-45a7-a790-1d5c62d3271c",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
