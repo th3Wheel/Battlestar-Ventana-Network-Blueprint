@@ -38,7 +38,7 @@ Structured naming for IoT, printers, cameras, and appliances.
 | `frontportal-lock`     | Smart lock          | Active | August Smart Lock — front door                                  |
 | `living-light-01`      | Smart light         | Active | LIFX smart bulb — **verify location**                           |
 
-### Pending rename
+## Pending rename
 
 These devices were added after the naming-scheme change and still use the old
 `<zone>-<role>-<index>` names. Rename them to `<location>-<type>[-<qualifier>][-<index>]`
