@@ -1,0 +1,19 @@
+docs/physical-hosts.md
+  s_711ca8e3a16567::t_1e981f42df306f 13-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "59d88f6c6249208fbe7d858aba6382ea56f64355",
+  "prompts": {},
+  "sessions": {
+    "s_711ca8e3a16567": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8131064-1151-45a7-a790-1d5c62d3271c",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
