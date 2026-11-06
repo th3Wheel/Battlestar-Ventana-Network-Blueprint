@@ -69,6 +69,7 @@ async function findShellScripts(directory, scripts = []) {
 const shellScripts = (await findShellScripts(repositoryRoot)).sort();
 
 if (shellScripts.length === 0) {
+  // eslint-disable-next-line no-console -- command-line output
   console.log('No shell scripts found.');
 } else {
   const versionResult = runShellCheck(['--version'], 'pipe');
