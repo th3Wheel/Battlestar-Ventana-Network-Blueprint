@@ -265,7 +265,7 @@ stmt.setString(1, email);
 ```
 
 **Reference:** OWASP SQL Injection Prevention Cheat Sheet
-```
+```text
 
 #### Important Issue
 ```markdown
@@ -290,7 +290,7 @@ test('should process full refund when order is cancelled', () => {
     expect(result.status).toBe('refunded');
 });
 ```
-```
+```text
 
 #### Suggestion
 ```markdown
@@ -318,7 +318,7 @@ if (!user || !user.isActive || !user.hasPermission('write')) {
 }
 // do something
 ```
-```
+```text
 
 ## Review Checklist
 

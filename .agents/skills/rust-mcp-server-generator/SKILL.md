@@ -20,7 +20,7 @@ Ask the user for:
 
 Generate this structure:
 
-```
+```text
 {project-name}/
 ├── Cargo.toml
 ├── .gitignore
@@ -156,7 +156,7 @@ Run with logging:
 ```bash
 RUST_LOG=debug cargo run
 ```
-```
+```text
 
 ### src/main.rs
 

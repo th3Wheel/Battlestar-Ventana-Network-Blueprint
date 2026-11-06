@@ -98,7 +98,7 @@ Select 2-3 most relevant framework areas based on context.
 ## Step 3: Decision Trees
 
 ### Database Choice:
-```
+```text
 High writes, simple queries → Document DB
 Complex queries, transactions → Relational DB
 High reads, rare writes → Read replicas + caching
@@ -106,7 +106,7 @@ Real-time updates → WebSockets/SSE
 ```
 
 ### AI Architecture:
-```
+```text
 Simple AI → Managed AI services
 Multi-agent → Event-driven orchestration
 Knowledge grounding → Vector databases
@@ -114,7 +114,7 @@ Real-time AI → Streaming + caching
 ```
 
 ### Deployment:
-```
+```text
 Single service → Monolith
 Multiple services → Microservices
 AI/ML workloads → Separate compute
@@ -124,19 +124,19 @@ High compliance → Private cloud
 ## Step 4: Common Patterns
 
 ### High Availability:
-```
+```yaml
 Problem: Service down
 Solution: Load balancer + multiple instances + health checks
 ```
 
 ### Data Consistency:
-```
+```yaml
 Problem: Data sync issues
 Solution: Event-driven + message queue
 ```
 
 ### Performance Scaling:
-```
+```yaml
 Problem: Database bottleneck
 Solution: Read replicas + caching + connection pooling
 ```

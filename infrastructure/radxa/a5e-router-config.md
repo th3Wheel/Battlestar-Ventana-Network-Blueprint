@@ -4,7 +4,7 @@ This document defines the complete router configuration for the Radxa Cubie A5E 
 
 ## Network Topology
 
-```
+```text
 Internet -- [end0: WAN/DHCP] Radxa Cubie A5E [end1: LAN/VLAN 20] -- LAN Clients
                                       |
                                       |-- VLAN 20 (10.10.20.0/24)

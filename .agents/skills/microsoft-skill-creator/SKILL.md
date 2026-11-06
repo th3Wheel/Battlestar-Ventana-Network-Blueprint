@@ -15,7 +15,7 @@ Skills are modular packages that extend agent capabilities with specialized know
 
 ### Skill Structure
 
-```
+```text
 skill-name/
 ├── SKILL.md (required)     # Frontmatter (name, description) + instructions
 ├── references/             # Documentation loaded into context as needed
@@ -65,20 +65,20 @@ Generated skills should include this same CLI fallback table so agents can use e
 Build deep understanding using Learn MCP tools in three phases:
 
 **Phase 1 - Scope Discovery:**
-```
+```text
 microsoft_docs_search(query="{technology} overview what is")
 microsoft_docs_search(query="{technology} concepts architecture")
 microsoft_docs_search(query="{technology} getting started tutorial")
 ```
 
 **Phase 2 - Core Content:**
-```
+```text
 microsoft_docs_fetch(url="...")  # Fetch pages from Phase 1
 microsoft_code_sample_search(query="{technology}", language="{lang}")
 ```
 
 **Phase 3 - Depth:**
-```
+```text
 microsoft_docs_search(query="{technology} best practices")
 microsoft_docs_search(query="{technology} troubleshooting errors")
 ```
@@ -112,7 +112,7 @@ Use the appropriate template from [skill-templates.md](references/skill-template
 
 #### Generated Skill Structure
 
-```
+```text
 {skill-name}/
 ├── SKILL.md                    # Core knowledge + Learn MCP guidance
 ├── references/                 # Detailed local documentation (if needed)
@@ -156,7 +156,7 @@ Use the appropriate template from [skill-templates.md](references/skill-template
 ## Common Investigation Patterns
 
 ### For SDKs/Libraries
-```
+```text
 "{name} overview" → purpose, architecture
 "{name} getting started quickstart" → setup steps
 "{name} API reference" → core classes/methods
@@ -165,7 +165,7 @@ Use the appropriate template from [skill-templates.md](references/skill-template
 ```
 
 ### For Azure Services
-```
+```text
 "{service} overview features" → capabilities
 "{service} quickstart {language}" → setup code
 "{service} REST API reference" → endpoints
@@ -174,7 +174,7 @@ Use the appropriate template from [skill-templates.md](references/skill-template
 ```
 
 ### For Frameworks/Platforms
-```
+```text
 "{framework} architecture concepts" → mental model
 "{framework} project structure" → conventions
 "{framework} tutorial walkthrough" → end-to-end flow
@@ -185,7 +185,7 @@ Use the appropriate template from [skill-templates.md](references/skill-template
 
 ### Investigation
 
-```
+```text
 microsoft_docs_search(query="semantic kernel overview")
 microsoft_docs_search(query="semantic kernel plugins functions")
 microsoft_code_sample_search(query="semantic kernel", language="csharp")
@@ -194,7 +194,7 @@ microsoft_docs_fetch(url="https://learn.microsoft.com/semantic-kernel/overview/"
 
 ### Generated Skill
 
-```
+```text
 semantic-kernel/
 ├── SKILL.md
 └── sample_codes/

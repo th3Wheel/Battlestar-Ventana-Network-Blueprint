@@ -381,7 +381,7 @@ Media streaming from GemenonServiceVault uses HTTP/HTTPS but requires higher ban
 - Camera motion events can generate high log rates
 - Infrastructure devices (switches, firewalls) can burst during events
 - Use rsyslog rate limiting directives:
-  ```
+  ```text
   module(load="imudp" ratelimit.interval="1" ratelimit.burst="100")
   ```
 - Monitor syslog disk usage and rotate logs appropriately

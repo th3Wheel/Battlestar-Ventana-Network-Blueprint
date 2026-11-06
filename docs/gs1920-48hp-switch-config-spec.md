@@ -2,7 +2,7 @@
 
 > Note: This spec currently uses the 10.10.0.0/16 address plan. The canonical repo blueprint uses 10.76.X.0/24 (VLAN ID = X); reconcile this spec with the canonical plan before deployment.
 
-`````
+`````text
 # SCOPE: ZyXEL GS1920-48HP — Fully Deterministic Configuration Specification
 # VERSION: 1.0.0
 # DATE: 2026-06-01

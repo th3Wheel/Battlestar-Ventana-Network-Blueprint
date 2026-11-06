@@ -54,7 +54,7 @@ A **solderless breadboard** is a reusable prototyping platform that allows elect
 * Horizontal connectivity
 * Center trench isolates left and right halves
 
-```
+```text
 A B C D E | F G H I J
 ──────────┼──────────
 Connected | Connected
@@ -66,7 +66,7 @@ Connected | Connected
 * Often **split in the middle** (not always continuous)
 * Usually marked **red (+)** and **blue (-)**
 
-```
+```text
 +  +  +  +  +   (may be split)
 -  -  -  -  -
 ```
@@ -179,7 +179,7 @@ Connected | Connected
 
 ## 10. Typical Breadboard Layout Example
 
-```
+```text
 [ + ] [ - ]   Power Rails
 [ + ] [ - ]
 

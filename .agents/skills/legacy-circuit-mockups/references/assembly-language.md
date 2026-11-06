@@ -38,7 +38,7 @@ This document assumes:
 
 ## 3. 6502 Memory Map Example
 
-```
+```text
 $0000-$00FF  Zero Page (RAM)
 $0100-$01FF  Stack
 $0200-$7FFF  RAM / I/O

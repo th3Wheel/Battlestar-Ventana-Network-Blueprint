@@ -48,7 +48,7 @@
 
 **Example Rate Limits:**
 
-```
+```text
 VLAN 10 (Trusted):      1 Gbps
 VLAN 20 (IoT):          10 Mbps per device
 VLAN 30 (Guest):        50 Mbps
@@ -79,7 +79,7 @@ VLAN 50 (ServerVault):  1 Gbps inbound, 100 Mbps outbound (asymmetric)
 
 **Example Encryption Scope:**
 
-```
+```text
 Tier 1 (Immediate): SMB (445), NFS (2049), Syslog (514)
 Tier 2 (Future):    RTSP (554) — evaluate latency trade-offs
 Tier 3 (Defer):     HTTPS (443), SSH (22), OpenVPN/WireGuard — already encrypted

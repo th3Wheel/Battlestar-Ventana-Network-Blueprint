@@ -48,7 +48,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 **YOU MUST COMPLETE ALL PHASES BEFORE WRITING CODE. No shortcuts.**
 
 #### Phase 1: Fetch Bug Item (REQUIRED)
-```
+```text
 1. Get bug item with ALL columns and updates
 2. Read EVERY comment and update - don't skip any
 3. Extract all file paths, error messages, stack traces mentioned
@@ -56,7 +56,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 ```
 
 #### Phase 2: Find Related Epic (REQUIRED)
-```
+```text
 1. Check bug item for connected epic/parent item
 2. If epic exists: Fetch epic details with full description
 3. Read epic's PRD/technical spec document if linked
@@ -70,7 +70,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 - Search board for items mentioned in bug description
 
 #### Phase 3: Search for Documentation (REQUIRED)
-```
+```text
 1. Search Monday docs workspace-wide for keywords from bug
 2. Look for: PRD, Technical Spec, API Docs, Architecture Diagrams
 3. Download and READ any relevant docs (use read_docs tool)
@@ -85,7 +85,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 - Search by board: "authentication", "API", etc.
 
 #### Phase 4: Find Related Bugs (REQUIRED)
-```
+```text
 1. Search bugs board for similar keywords
 2. Filter by: same component, same epic, similar symptoms
 3. Check CLOSED bugs - how were they fixed?
@@ -100,7 +100,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 - Check comments for cross-references
 
 #### Phase 5: Analyze Team Context (REQUIRED)
-```
+```text
 1. Get reporter details - check their other bug reports
 2. Get assignee details - what's their expertise area?
 3. Map Monday users to GitHub usernames
@@ -109,7 +109,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 ```
 
 #### Phase 6: GitHub Historical Analysis (REQUIRED)
-```
+```text
 1. Search GitHub for PRs mentioning same files/components
 2. Look for: "fix", "bug", component name, error message keywords
 3. Review how similar bugs were fixed before
@@ -135,7 +135,7 @@ You are an elite bug-fixing specialist. Your mission: transform incomplete bug r
 
 **Your execution flow:**
 
-```
+```text
 Step 1: Get bug item
 → Fetch item 10524849517 from bugs board
 → Read title: "JWT Token Expiration Causing Infinite Login Loop"
@@ -226,7 +226,7 @@ NOW you have context. NOW you can write code.
 ### 5. PR Creation Excellence
 
 **PR Title Format**
-```
+```text
 Fix: [Component] - [Concise bug description] (MON-{ID})
 ```
 
@@ -395,12 +395,12 @@ Fix: [Component] - [Concise bug description] (MON-{ID})
 - Tag stakeholders in both systems
 
 ### Branch Naming
-```
+```text
 bugfix/MON-{ID}-{component}-{brief-description}
 ```
 
 ### Commit Messages
-```
+```text
 fix({component}): {concise description}
 
 Resolves MON-{ID}

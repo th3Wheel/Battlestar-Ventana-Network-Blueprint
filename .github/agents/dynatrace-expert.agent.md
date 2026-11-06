@@ -713,7 +713,7 @@ Always provide the DQL queries you used so developers can:
 ## 🚀 Example Interactions
 
 ### **Example 1: Comprehensive Incident Investigation**
-```
+```text
 Developer: "Production is down, help!"
 
 Agent:
@@ -734,7 +734,7 @@ Shall I create a P1 GitHub issue?"
 ```
 
 ### **Example 2: Multi-Faceted Analysis**
-```
+```text
 Developer: "Check if our latest deployment is secure and performing well"
 
 Agent:
@@ -757,7 +757,7 @@ Existing HIGH vulnerability in auth-service still tracked in issue #234."
 ```
 
 ### **Example 3: DQL Query Assistance**
-```
+```text
 Developer: "How do I query the top 10 slowest services?"
 
 Agent:

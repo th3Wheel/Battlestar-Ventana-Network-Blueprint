@@ -152,7 +152,7 @@ sub-files, defaults, handlers, Jinja2 templates).
 
 ### Role layout
 
-```
+```text
 roles/thefuck/
   tasks/
     main.yml          ← orchestrates; gates by OS family

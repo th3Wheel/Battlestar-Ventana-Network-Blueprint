@@ -100,7 +100,7 @@ Extract library/framework names from the user's question:
 
 **You MUST call this tool first:**
 
-```
+```text
 mcp_context7_resolve-library-id({ libraryName: "express" })
 ```
 
@@ -117,7 +117,7 @@ This returns matching libraries. Choose the best match based on:
 
 **You MUST call this tool second:**
 
-```
+```text
 mcp_context7_get-library-docs({
   context7CompatibleLibraryID: "/expressjs/express",
   topic: "middleware"  // or "routing", "best-practices", etc.
@@ -140,7 +140,7 @@ mcp_context7_get-library-docs({
 
    **Examples**:
 
-   ```
+   ```text
    # JavaScript
    package.json → "react": "^18.3.1"
 
@@ -166,7 +166,7 @@ mcp_context7_get-library-docs({
    - Fetch docs for BOTH current and latest versions
    - Call `get-library-docs` twice with version-specific IDs (if available):
 
-     ```
+     ```text
      // Current version
      get-library-docs({
        context7CompatibleLibraryID: "/expressjs/express/4_21_2",
@@ -235,7 +235,7 @@ Now and ONLY now can you answer, using:
 
 **Your REQUIRED response flow:**
 
-```
+```text
 Step 1: Identify library → "express"
 
 Step 2: Call mcp_context7_resolve-library-id
@@ -315,7 +315,7 @@ More tokens = more context but higher cost. Balance appropriately.
 
 ### Pattern 1: Direct API Question
 
-```
+```text
 User: "How do I use React's useEffect hook?"
 
 Your workflow:
@@ -334,7 +334,7 @@ Your workflow:
 
 ### Pattern 2: Code Generation Request
 
-```
+```text
 User: "Create a Next.js middleware that checks authentication"
 
 Your workflow:
@@ -358,7 +358,7 @@ Your workflow:
 
 ### Pattern 3: Debugging/Migration Help
 
-```
+```text
 User: "This Tailwind class isn't working"
 
 Your workflow:
@@ -377,7 +377,7 @@ Your workflow:
 
 ### Pattern 4: Best Practices Inquiry
 
-```
+```text
 User: "What's the best way to handle forms in React?"
 
 Your workflow:
@@ -411,14 +411,14 @@ Your workflow:
 
    **JavaScript/TypeScript/Node.js**:
 
-   ```
+   ```text
    read/readFile on "package.json" or "frontend/package.json" or "api/package.json"
    Extract: "react": "^18.3.1" → Current version is 18.3.1
    ```
 
    **Python**:
 
-   ```
+   ```text
    read/readFile on "requirements.txt"
    Extract: django==4.2.0 → Current version is 4.2.0
 
@@ -433,42 +433,42 @@ Your workflow:
 
    **Ruby**:
 
-   ```
+   ```text
    read/readFile on "Gemfile"
    Extract: gem 'rails', '~> 7.0.8' → Current version is 7.0.8
    ```
 
    **Go**:
 
-   ```
+   ```text
    read/readFile on "go.mod"
    Extract: require github.com/gin-gonic/gin v1.9.1 → Current version is v1.9.1
    ```
 
    **Rust**:
 
-   ```
+   ```text
    read/readFile on "Cargo.toml"
    Extract: tokio = "1.35.0" → Current version is 1.35.0
    ```
 
    **PHP**:
 
-   ```
+   ```text
    read/readFile on "composer.json"
    Extract: "laravel/framework": "^10.0" → Current version is 10.x
    ```
 
    **Java/Maven**:
 
-   ```
+   ```text
    read/readFile on "pom.xml"
    Extract: <version>3.1.0</version> in <dependency> for spring-boot
    ```
 
    **.NET/C#**:
 
-   ```
+   ```text
    read/readFile on "*.csproj"
    Extract: <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
    ```
@@ -491,7 +491,7 @@ Your workflow:
 
 5. **Compare and inform:**
 
-   ```
+   ```text
    # JavaScript Example
    📦 Current: React 18.3.1 (from your package.json)
    🆕 Latest:  React 19.0.0 (from npm registry)
@@ -537,7 +537,7 @@ get -
 
 1. **Inform immediately**:
 
-   ```
+   ```text
    ⚠️ Version Status
    📦 Your version: React 18.3.1
    ✨ Latest stable: React 19.0.0 (released Nov 2024)
@@ -834,7 +834,7 @@ If any checkbox is ❌, **STOP and complete that step first.**
 
 ### Example 1: Simple API Question
 
-````
+````text
 User: "How do I use useState in React?"
 
 Agent:
@@ -864,7 +864,7 @@ Key points from React docs:
 
 (Based on React v18 documentation)"
 
-```
+```text
 
 ### Example 2: Multi-Library Integration
 ```
@@ -883,7 +883,7 @@ Agent:
    - Type safety integration
    - Both libraries' current best practices
 
-```
+```text
 
 ### Example 3: Version-Specific Guidance
 ```
@@ -900,7 +900,7 @@ Agent:
 3. Provide Next.js 13-specific routing patterns
 4. Optionally mention: "Note: Next.js 14 introduced [changes] if you're considering upgrading"
 
-```
+```text
 
 ---
 

@@ -39,7 +39,7 @@ The AT28C256 is commonly used as **ROM** in 6502 systems, but it is *electricall
 
 A read occurs when:
 
-```
+```text
 /CE = 0
 /OE = 0
 /WE = 1
@@ -66,7 +66,7 @@ else:
 
 A write occurs when:
 
-```
+```text
 /CE = 0
 /WE = 0
 ```
@@ -165,7 +165,7 @@ Emulator may:
 
 Common layout:
 
-```
+```text
 $0000-$7FFF  RAM
 $8000-$FFFF  AT28C256 EEPROM
 ```

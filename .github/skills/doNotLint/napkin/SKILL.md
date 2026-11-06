@@ -27,7 +27,7 @@ When the user invokes this skill — saying things like "let's napkin," "open a 
 
 3. **Tell the user what to do next.** Say something warm and simple:
 
-   ```
+   ```text
    Your napkin is open in your browser!
 
    Draw, sketch, or add sticky notes — whatever helps you think through your idea.
@@ -52,7 +52,7 @@ Use the `view` tool to read the PNG. This sends the image as base64-encoded data
 
 If the PNG is not found in either location, do NOT silently skip it. Instead, tell the user:
 
-```
+```text
 I don't see a snapshot from your napkin yet. Here's what to do:
 
 1. Go to your whiteboard in the browser
@@ -126,7 +126,7 @@ When the user wants the agent to add content back to the whiteboard:
 
 **PNG snapshot not found:**
 
-```
+```text
 I don't see a snapshot from your napkin yet. Here's what to do:
 
 1. Go to your whiteboard in the browser
@@ -138,7 +138,7 @@ The button saves a screenshot that I can look at.
 
 **Whiteboard file doesn't exist on Desktop:**
 
-```
+```text
 It looks like we haven't started a napkin yet. Want me to open one for you?
 ```
 

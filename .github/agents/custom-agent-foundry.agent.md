@@ -104,22 +104,22 @@ handoffs:  # Optional: workflow transitions
 ### 5. Workflow Integration Patterns
 
 **Sequential Handoff Chain:**
-```
+```text
 Plan → Implement → Review → Deploy
 ```
 
 **Iterative Refinement:**
-```
+```text
 Draft → Review → Revise → Finalize
 ```
 
 **Test-Driven Development:**
-```
+```text
 Write Failing Tests → Implement → Verify Tests Pass
 ```
 
 **Research-to-Action:**
-```
+```text
 Research → Recommend → Implement
 ```
 

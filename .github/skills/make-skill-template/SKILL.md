@@ -38,7 +38,7 @@ name already exists; do not overwrite or merge without approval.
 
 Create the skill directory with a `SKILL.md` file:
 
-```
+```text
 .agents/skills/<skill-name>/
 └── SKILL.md          # Required
 ```
@@ -134,7 +134,7 @@ Any additional files and directories may be included when useful.
 
 ## Example: Skill Directory Structure
 
-```
+```text
 skill-name/
 ├── SKILL.md          # Required: metadata + instructions
 ├── scripts/          # Optional: executable code

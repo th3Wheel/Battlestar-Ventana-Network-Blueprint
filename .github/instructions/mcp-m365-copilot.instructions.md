@@ -75,7 +75,7 @@ Choose MCP servers that:
 ## File Organization
 
 ### Project Structure
-```
+```text
 project-root/
 ├── appPackage/
 │   ├── manifest.json           # Teams app manifest

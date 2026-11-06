@@ -137,7 +137,7 @@ Merge into `mcp-config.json`:
 
 Ask Copilot to use XPipe commands:
 
-```
+```text
 "Use the start-core-network command to deploy the core network services"
 "Execute the logs-core-network command to check service status"
 "Run the shell-radxa-01 command to troubleshoot the Radxa host"

@@ -7,7 +7,7 @@ description: 'Migration and code evolution instructions generator for GitHub Cop
 
 ## Configuration Variables
 
-```
+```text
 ${MIGRATION_TYPE="Framework Version|Architecture Refactoring|Technology Migration|Dependencies Update|Pattern Changes"}
 <!-- Type of migration or evolution -->
 
@@ -35,7 +35,7 @@ ${VALIDATION_REQUIRED="true|false"}
 
 ## Generated Prompt
 
-```
+```text
 "Analyze code evolution between two project states to generate precise migration instructions for GitHub Copilot. These instructions will guide Copilot to automatically apply the same transformation patterns during future modifications. Follow this methodology:
 
 ### Phase 1: Comparative State Analysis

@@ -15,7 +15,7 @@ applyTo: "**/*.yaml,**/*.py,**/ha/**,**/*.jinja2"
 
 **Directory Structure:**
 
-```
+```text
 ha/
 ├── configuration.yaml          # Core HA configuration
 ├── packages/                   # Modular packages

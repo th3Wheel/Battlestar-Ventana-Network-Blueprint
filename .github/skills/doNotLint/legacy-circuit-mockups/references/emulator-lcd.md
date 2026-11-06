@@ -87,7 +87,7 @@ Row 1: DDRAM[0x40-0x4F]
 
 A write occurs when:
 
-```
+```text
 RS = 1
 R/W = 0
 E: HIGH  LOW
@@ -105,7 +105,7 @@ E: HIGH  LOW
 
 A command write occurs when:
 
-```
+```text
 RS = 0
 R/W = 0
 E: HIGH  LOW
@@ -117,7 +117,7 @@ E: HIGH  LOW
 
 Reads are uncommon in hobby systems.
 
-```
+```text
 RS = 0/1
 R/W = 1
 E: HIGH
@@ -228,7 +228,7 @@ typedef struct {
 
 ## Common Wiring in 6502 Systems
 
-```
+```text
 VIA Port  LCD D4-D7 (4-bit mode)
 RS  VIA bit
 E   VIA bit

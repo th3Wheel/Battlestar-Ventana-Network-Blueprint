@@ -9,7 +9,7 @@ applyTo: "**/*.md,**/*.yaml,**/*.py,**/*.sh,**/ha/**"
 
 **Documentation Structure:**
 
-```
+```text
 📁 ha/
 ├── 📄 README.md (Project overview)
 ├── 📁 docs/
@@ -57,7 +57,7 @@ This Home Assistant setup provides:
 
 ## Architecture
 
-```
+```text
 
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   HA Frontend   │    │   HA Backend    │    │   PostgreSQL    │
@@ -135,7 +135,7 @@ ha core restart
 
 ## Configuration Structure
 
-```
+```text
 config/
 ├── configuration.yaml      # Main configuration
 ├── secrets.yaml           # Sensitive data
@@ -752,7 +752,7 @@ ha logs --since 1h | grep automation
 *Last updated: 2024-01-15*
 *Maintainer: Automation Team*
 
-```
+```text
 
 ## 6. Knowledge Sharing
 

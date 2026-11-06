@@ -21,7 +21,7 @@ You will create a Go MCP server with:
 
 ## Template Structure
 
-```
+```text
 myserver/
 ├── go.mod
 ├── go.sum

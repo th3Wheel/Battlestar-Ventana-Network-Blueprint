@@ -50,7 +50,7 @@ Start a Docker Compose service.
 
 **Example:**
 
-```
+```yaml
 User: "Start the core-network service"
 Agent: Calls start_service("core-network")
 XPipe: Executes `docker compose -f compose/core-network/docker-compose.yml up -d core-network`
@@ -66,7 +66,7 @@ Stop a running Docker Compose service.
 
 **Example:**
 
-```
+```yaml
 User: "Stop Pi-hole"
 Agent: Calls stop_service("pihole")
 XPipe: Executes `docker compose -f compose/pihole/docker-compose.yml down pihole`
@@ -84,7 +84,7 @@ Stream logs from a service.
 
 **Example:**
 
-```
+```yaml
 User: "Show me the last 100 lines of Prometheus logs"
 Agent: Calls logs_service("prometheus", tail=100)
 XPipe: Executes `docker compose -f compose/prometheus/docker-compose.yml logs --tail=100 prometheus`
@@ -101,7 +101,7 @@ Execute a command inside a running container.
 
 **Example:**
 
-```
+```yaml
 User: "Check running processes in core-network container"
 Agent: Calls shell_service("core-network", "ps aux")
 XPipe: Executes `docker compose exec core-network ps aux`
@@ -118,7 +118,7 @@ Inject secrets from 1Password and start service.
 
 **Example:**
 
-```
+```yaml
 User: "Start core-network with secrets"
 Agent: Calls inject_secrets("core-network", "op://Homelab/core-network/token")
 XPipe: Executes:

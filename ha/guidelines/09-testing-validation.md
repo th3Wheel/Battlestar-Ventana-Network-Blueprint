@@ -9,7 +9,7 @@ applyTo: "**/*.py,**/*.yaml,**/*.js,**/*.sh,**/ha/**,**/*.test.*"
 
 **Testing Pyramid for Home Assistant:**
 
-```
+```text
 ┌─────────────────┐
 │   End-to-End    │ ← Few tests, high value
 │     Tests       │

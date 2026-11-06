@@ -14,7 +14,7 @@ This Home Assistant setup provides:
 
 ## Architecture
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   HA Frontend   │    │   HA Backend    │    │   PostgreSQL    │
 │                 │    │                 │    │   Database      │
@@ -89,7 +89,7 @@ ha core restart
 
 ## Configuration Structure
 
-```
+```text
 config/
 ├── configuration.yaml      # Main configuration
 ├── secrets.yaml           # Sensitive data

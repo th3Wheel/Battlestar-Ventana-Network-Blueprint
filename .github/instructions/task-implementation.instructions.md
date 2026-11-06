@@ -101,7 +101,7 @@ Implementation progress MUST be tracked in a corresponding changes files located
 
 ## Implementation Workflow
 
-```
+```text
 1. Read and fully understand plan file and all checklists completely
 2. Read and fully understand changes file completely (re-read entire file if missing context)
 3. For each unchecked task:

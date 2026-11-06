@@ -169,7 +169,7 @@ erDiagram
 
 #### Component Hierarchy (shadcn/ui flavor for a "Command Pack" dashboard)
 
-```
+```text
 Command Pack Page
 ├── Header (Card)
 │   ├── Title h1

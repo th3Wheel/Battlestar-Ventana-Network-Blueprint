@@ -27,7 +27,7 @@ Build the progress bar using 🟩 for nailed, 🟨 for could-be-better, and ⬜ 
 **When a prerequisite caps the medal, say so on the score line** and name what would lift it — a capped medal
 with no explanation reads like a bug. For example:
 
-```
+```text
 📊 **Your Repo Today** · 🥈 **On Track** · 🟩🟩🟩🟩🟩🟩🟩🟩🟩🟨 · 9 of 11 nailed
 ↳ held below 🥇 — `AGENTS.md` has no `## Never merges without a human` section
 ```
@@ -40,7 +40,7 @@ trusting the rest of the report.
 
 Display this report:
 
-```
+```text
 🎯 **AI-Readiness Report**
 
 Here's what an AI agent can learn about this repo from the repo
@@ -198,7 +198,7 @@ Include a summary of what was added and the before/after score in the PR body. I
 
 **Always add exactly one consolidated report comment to the PR.** After creating the PR, post a single comment with a condensed version of the AI-Readiness Report and include all immediate asks/clarifications in that same comment:
 
-```
+```text
 ## 🎯 AI-Readiness Report
 
 **{repo-name}**

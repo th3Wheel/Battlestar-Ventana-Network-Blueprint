@@ -34,7 +34,7 @@ This document provides comprehensive guidelines for programming, configuring, an
 
 **Directory Structure:**
 
-```
+```text
 ha/
 ├── configuration.yaml          # Core HA configuration
 ├── packages/                   # Modular packages

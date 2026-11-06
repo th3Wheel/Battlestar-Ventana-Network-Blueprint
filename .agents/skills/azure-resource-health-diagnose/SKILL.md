@@ -179,7 +179,7 @@ This workflow analyzes a specific Azure resource to assess its health status, di
 **Action**: Present findings and get approval for remediation actions
 **Process**:
 1. **Display Health Assessment Summary**:
-   ```
+   ```text
    🏥 Azure Resource Health Assessment
    
    📊 Resource Overview:
@@ -275,7 +275,7 @@ This workflow analyzes a specific Azure resource to assess its health status, di
    - [Recommendations to prevent similar issues]
    - [Process improvements]
    - [Monitoring enhancements]
-   ```
+   ```text
 
 ## Error Handling
 - **Resource Not Found**: Provide guidance on resource name/location specification

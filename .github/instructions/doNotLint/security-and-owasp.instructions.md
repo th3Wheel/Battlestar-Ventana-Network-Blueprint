@@ -990,7 +990,7 @@ app.disable('x-powered-by');
 
 ## Secure Cookie Flags
 
-```
+```powershell
 Set-Cookie: session=value; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600
 ```
 

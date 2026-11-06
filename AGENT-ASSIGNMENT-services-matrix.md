@@ -565,7 +565,7 @@ inhibit_rules:
 
 ---
 
-```
+```text
 
 ### Key Deliverables for This Section
 

@@ -105,7 +105,7 @@ The 555 timer is a versatile integrated circuit used in timing, pulse generation
 
 ### 555 Pinout Diagram
 
-```
+```text
     ┌─────────────────────────────────────┐
     │  ●                                  │
     │  #1                             #8  │

@@ -18,7 +18,7 @@ The focus is on **toolchain behavior, memory layout, ROM construction, and firmw
 
 ### Memory Map (Canonical)
 
-```
+```text
 $0000-$00FF  Zero Page (RAM)
 $0100-$01FF  Stack (RAM)
 $0200-$7FFF  General RAM (AS6C62256)

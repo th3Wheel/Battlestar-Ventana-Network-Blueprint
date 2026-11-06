@@ -126,7 +126,7 @@ Recipe Library Page
 │           ├── Recipe Title (shadcn: Typography `h3`)
 │           ├── Recipe Tags (shadcn: Badge)
 │           └── Quick Actions (shadcn: Button - View, Edit)
-```
+```text
 
 - **State Flow Diagram**: Component state management using Mermaid
 - Reusable component library specifications

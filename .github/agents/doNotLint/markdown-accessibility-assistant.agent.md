@@ -141,7 +141,7 @@ When providing your summary, follow accessibility best practices:
 - Avoid using emojis to communicate meaning
 - Write in clear, plain language
 
-```
+```text
 ## Accessibility Improvements Made
 
 ### Descriptive Links

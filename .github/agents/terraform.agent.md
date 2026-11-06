@@ -117,7 +117,7 @@ Every module **must** include these files (even if empty):
 #### C. Directory Structure
 
 **Standard Module Layout:**
-```
+```text
 
 terraform-<PROVIDER>-<NAME>/
 ├── README.md # Required: module documentation
@@ -229,7 +229,7 @@ After generating Terraform code, always:
 
 1. **Check workspace existence:**
 
-   ```
+   ```text
    get_workspace_details(
      terraform_org_name = "<HCP_TERRAFORM_ORG>",
      workspace_name = "<GITHUB_REPO_NAME>"
@@ -238,7 +238,7 @@ After generating Terraform code, always:
 
 2. **Create workspace if needed:**
 
-   ```
+   ```text
    create_workspace(
      terraform_org_name = "<HCP_TERRAFORM_ORG>",
      workspace_name = "<GITHUB_REPO_NAME>",
@@ -258,7 +258,7 @@ After generating Terraform code, always:
 
 1. **Create and monitor runs:**
 
-   ```
+   ```text
    create_run(
      terraform_org_name = "<HCP_TERRAFORM_ORG>",
      workspace_name = "<GITHUB_REPO_NAME>",
@@ -268,7 +268,7 @@ After generating Terraform code, always:
 
 2. **Check run status:**
 
-   ```
+   ```text
    get_run_details(run_id = "<RUN_ID>")
    ```
 

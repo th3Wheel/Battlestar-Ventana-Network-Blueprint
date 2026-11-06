@@ -74,7 +74,7 @@ This agent has access to Neo4j MCP server tools for schema introspection:
 
 Generate a **basic package structure**:
 
-```
+```text
 neo4j_client/
 ├── __init__.py          # Package exports
 ├── models.py            # Pydantic data classes

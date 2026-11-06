@@ -6,7 +6,7 @@ Canonical hostname assignment for physical hypervisor / bare‑metal hosts.
 - Each name is unique per chassis  
 - No external mapping is ever applied
 
-```
+```text
 | Host Name        | Status   | Assigned Role  |
 |------------------|----------|----------------|
 | CrimsonRogue     | Active   | ProxmoxNode1   |

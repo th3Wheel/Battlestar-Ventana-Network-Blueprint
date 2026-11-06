@@ -56,19 +56,19 @@ export XPIPE_API_TOKEN=$(op read "op://homelab/xpipe/api-token")
 
 ### Execute a Command
 
-```
+```text
 Use the start-core-network command to deploy core services
 ```
 
 ### Get Status
 
-```
+```text
 Run the network-status command to check network health
 ```
 
 ### Troubleshooting
 
-```
+```text
 Execute the logs-core-network command and share the output
 ```
 

@@ -159,4 +159,4 @@ Update the mermaid diagram to show current:
 - REF-005: Update related documentation links
 - REF-006: Add change history and migration notes for this update
 
-```
+```text
