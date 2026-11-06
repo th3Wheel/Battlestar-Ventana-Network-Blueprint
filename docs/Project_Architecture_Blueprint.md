@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit Internet egress policy per VLAN
-- Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/BasestarVentana
 
 ---
 
@@ -84,7 +84,7 @@ flowchart TB
     V50[50 – ServerVault]
   end
   subgraph Infra[Infrastructure]
-    V40[40 – BasestarControl]
+    V40[40 – BasestarVentana]
   end
   subgraph Surveillance[Surveillance]
     V81[81 – ScorpiaMediaShield]
