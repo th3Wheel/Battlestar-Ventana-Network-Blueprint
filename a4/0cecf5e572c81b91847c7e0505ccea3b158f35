@@ -1,0 +1,21 @@
+.agents/skills/pr-dashboard/scripts/pr-dashboard-cli.mjs
+  s_711ca8e3a16567::t_26a9b785bf9227 9-10,30,50,135,147,184,189,202,240,300,305,341,348,365
+scripts/lint-shell.mjs
+  s_711ca8e3a16567::t_77bdc8f10fb3a4 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a40cecf5e572c81b91847c7e0505ccea3b158f35",
+  "prompts": {},
+  "sessions": {
+    "s_711ca8e3a16567": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8131064-1151-45a7-a790-1d5c62d3271c",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
