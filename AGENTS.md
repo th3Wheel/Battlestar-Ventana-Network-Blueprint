@@ -13,6 +13,9 @@
 - `config/network-topology.yaml` is canonical for infrastructure addresses,
   service VIPs, and DNS records. Treat Ansible VLAN variables as projections.
 - `docs/tech-stack-baseline.md` is canonical for the supported toolchain.
+- `*/settings.local.json` (such as `.claude/settings.local.json`) is per-machine;
+  never commit it. `.gitignore` ignores it and `tests/local-settings.test.ts`
+  fails if one is tracked.
 - Add project skills under `.agents/skills/`; follow
   `.github/instructions/agent-skills.instructions.md`.
 - For issue, branch, commit, or pull request work, follow
