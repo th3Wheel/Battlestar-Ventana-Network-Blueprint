@@ -1,0 +1,23 @@
+.gitignore
+  s_e07e2b1499ce52::t_e0e557beb092aa 15-17
+AGENTS.md
+  s_e07e2b1499ce52::t_25d271a15f12f1 16-18
+tests/local-settings.test.ts
+  s_e07e2b1499ce52::t_e890d07164e6aa 1-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "2e29bd8dc6fc10729f338940efb10e4a6ad70b5c",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
