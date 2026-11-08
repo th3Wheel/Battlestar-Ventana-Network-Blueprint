@@ -1,0 +1,29 @@
+AGENTS.md
+  s_e07e2b1499ce52::t_a0b51994241b94 16-21
+.github/local-files-policy.json
+  s_e07e2b1499ce52::t_9801bf8d10e452 1-23
+.github/workflows/local-files.yml
+  s_e07e2b1499ce52::t_62028c85e8c1f9 1-33
+scripts/check-local-files.ts
+  s_e07e2b1499ce52::t_7f8034705ec294 1-163
+tests/check-local-files.test.ts
+  s_e07e2b1499ce52::t_c7a8a2356c62bf 1-128
+tsconfig.json
+  s_e07e2b1499ce52::t_a564c88f30b9a2 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "6f60391d5f8cbd93698f8dfc0ee8cfffa749c429",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
