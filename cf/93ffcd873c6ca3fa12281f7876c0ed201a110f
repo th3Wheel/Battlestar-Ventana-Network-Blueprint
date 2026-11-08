@@ -1,0 +1,19 @@
+CHANGELOG.md
+  s_e07e2b1499ce52::t_158184d847906f 20-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "cf93ffcd873c6ca3fa12281f7876c0ed201a110f",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
