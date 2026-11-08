@@ -9,9 +9,9 @@ import {
   splitCommands,
   type Located,
   type Runner,
-} from '../.claude/hooks/merge-gate.mts';
+} from '../.agents/hooks/merge-gate.mts';
 
-const HOOK = fileURLToPath(new URL('../.claude/hooks/merge-gate.mts', import.meta.url));
+const HOOK = fileURLToPath(new URL('../.agents/hooks/merge-gate.mts', import.meta.url));
 
 // A stand-in for git/gh: answers only the commands it was told about, fails on the rest.
 const fake =

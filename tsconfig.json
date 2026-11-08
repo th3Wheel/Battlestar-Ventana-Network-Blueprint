@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": [".claude/hooks/*.mts", "tests/**/*.ts"]
+  "include": [".agents/hooks/*.mts", "tests/**/*.ts"]
 }
