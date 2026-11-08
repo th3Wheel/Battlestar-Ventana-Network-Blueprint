@@ -4,19 +4,25 @@
   gather_facts: false
 
   vars:
-    # Retrieve the SSH password from 1Password
-    ssh_password: >-
-      {{ lookup(
-          'community.general.onepassword',
-          'SSH Password',
-          field='password',
-          errors='ignore'
-      ) }}
-
-    # Path to the public key on the controller
-    public_key_path: '~/.ssh/id_ed25519.pub'
+    # Path to the public key on the controller. expanduser is needed because the
+    # expect module does not run a shell, so a bare '~' would not be expanded.
+    public_key_path: "{{ '~/.ssh/id_ed25519.pub' | expanduser }}"
 
   tasks:
+    # Resolved once (set_fact is eager; a play var would re-run the lookup on every use).
+    - name: Retrieve the SSH password from 1Password
+      ansible.builtin.set_fact:
+        ssh_password: >-
+          {{ lookup(
+              'community.general.onepassword',
+              'SSH Password',
+              field='password',
+              errors='ignore'
+          ) }}
+      no_log: true
+      run_once: true
+      delegate_to: localhost
+
     - name: Validate 1Password item exists
       ansible.builtin.assert:
         that:
@@ -49,5 +55,5 @@
       changed_when: false
 
     - name: Report success
-      debug:
+      ansible.builtin.debug:
         msg: 'SSH key successfully deployed to {{ inventory_hostname }}'
