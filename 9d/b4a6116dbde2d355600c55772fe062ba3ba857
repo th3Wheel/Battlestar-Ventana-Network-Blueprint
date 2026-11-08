@@ -1,0 +1,29 @@
+.claude/settings.json
+  s_e07e2b1499ce52::t_72a6275ee50c64 9
+.github/CODEOWNERS
+  s_e07e2b1499ce52::t_8bd0812bc342bd 34-39
+.github/hooks/merge-gate.json
+  s_e07e2b1499ce52::t_26f5a61cc1c5be 7-8
+AGENTS.md
+  s_e07e2b1499ce52::t_7fe9219d686d42 51-54
+tests/merge-gate.test.ts
+  s_e07e2b1499ce52::t_66cd9d663a645b 12,14
+tsconfig.json
+  s_e07e2b1499ce52::t_f5bc572b74a7dd 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "9db4a6116dbde2d355600c55772fe062ba3ba857",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
