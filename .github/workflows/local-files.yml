@@ -1,0 +1,33 @@
+name: Local files
+
+# Blocks per-machine files (settings.local.json, *.local.*, secrets, keys) from reaching the
+# default branch. The forbidden list is .github/local-files-policy.json; the checker is
+# scripts/check-local-files.ts. Require the "Forbid local files" check in the branch ruleset.
+
+on:
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  forbid-local-files:
+    name: Forbid local files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '26.10'
+
+      # Every tracked file in the merge result: a local file added by this pull request, or
+      # already in the tree, fails the check.
+      - name: No tracked local files
+        run: node scripts/check-local-files.ts --tracked
