@@ -1,0 +1,23 @@
+.gitignore
+  s_e07e2b1499ce52::t_8a4aa57cb5e615 18-35
+scripts/check-local-files.ts
+  s_e07e2b1499ce52::t_b9f8e76bf374dd 139-141
+tests/local-settings.test.ts
+  s_e07e2b1499ce52::t_5fec817608e63a 7,79-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "aaf442e1c2ba2b296330c1b020388b347f270ecb",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
