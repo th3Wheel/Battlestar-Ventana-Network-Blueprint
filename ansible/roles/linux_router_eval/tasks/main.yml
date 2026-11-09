@@ -203,3 +203,24 @@
       loop_control:
         label: 'VLAN {{ item.id }}'
       delegate_to: localhost
+
+    - name: Find generated files from earlier runs
+      ansible.builtin.find:
+        paths: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/linux-router/prototypes'
+        patterns: 'vlan-*.sh,vlan-*.env'
+      register: linux_router_eval_generated_files
+      delegate_to: localhost
+
+    - name: Remove per-VLAN scripts and config files this run did not generate
+      ansible.builtin.file:
+        path: '{{ item.path }}'
+        state: absent
+      vars:
+        linux_router_eval_expected_names: >-
+          {% for vlan in vlans %}vlan-{{ vlan.id }}-{{ vlan.name | lower }}.env
+          {% endfor %}
+      loop: '{{ linux_router_eval_generated_files.files }}'
+      loop_control:
+        label: '{{ item.path | basename }}'
+      when: (item.path | basename) not in linux_router_eval_expected_names.split()
+      delegate_to: localhost
