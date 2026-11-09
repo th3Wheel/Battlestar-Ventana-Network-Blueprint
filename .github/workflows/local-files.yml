@@ -16,7 +16,9 @@ name: Local files
 on:
   pull_request_target: # zizmor: ignore[dangerous-triggers]
     branches: [master, main]
-  workflow_dispatch:
+# There is deliberately no workflow_dispatch trigger. CodeQL's cache-poisoning rule treats a
+# manually dispatched workflow as able to write the default branch cache, and flags every
+# step here that runs repository code after the pull request's commits are fetched.
 
 permissions:
   contents: read
@@ -42,7 +44,6 @@ jobs:
       # The ref moves when the branch is force-pushed, so it must still point at the commit that
       # triggered this run. If it does not, fail rather than check a different tree.
       - name: Fetch the pull request commits
-        if: github.event_name == 'pull_request_target'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -57,11 +58,6 @@ jobs:
       # Every file in the pull request's tree: a local file it adds, or one already in the tree,
       # fails the check. It reads the exact commit that triggered the run, not the moving ref.
       - name: No local files in the pull request
-        if: github.event_name == 'pull_request_target'
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node scripts/check-local-files.ts --tracked --head "$HEAD_SHA"
-
-      - name: No tracked local files
-        if: github.event_name != 'pull_request_target'
-        run: node scripts/check-local-files.ts --tracked
