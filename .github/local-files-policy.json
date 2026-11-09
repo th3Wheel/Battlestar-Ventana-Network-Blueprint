@@ -1,5 +1,5 @@
 {
-  "$comment": "Files that belong to one machine or one person and must never be committed. Enforced by scripts/check-local-files.ts (CI check 'Forbid local files', tests/check-local-files.test.ts). Under /.github/ so CODEOWNERS makes a person read every change to this list. Patterns use Node path.matchesGlob syntax, matched against repo-relative paths with forward slashes.",
+  "$comment": "Files that belong to one machine or one person and must never be committed. Enforced by scripts/check-local-files.ts (CI check 'Forbid local files', tests/check-local-files.test.ts). Under /.github/ so CODEOWNERS makes a person read every change to this list. Patterns support * (within one path segment), ** (across directories; **/ matches zero or more) and ?, matched against repo-relative paths with forward slashes. Any other glob syntax is rejected when the policy loads. The allowlist is checked first.",
   "forbidden": [
     {
       "pattern": "**/settings.local.json",
@@ -9,8 +9,10 @@
     { "pattern": ".vscode/launch.json", "reason": "Per-developer debug configuration." },
     { "pattern": ".idea/**", "reason": "Per-developer IDE state." },
     { "pattern": ".worktrees/**", "reason": "Local git worktrees." },
-    { "pattern": "**/.env", "reason": "Secrets for one machine." },
-    { "pattern": "**/.env.*", "reason": "Secrets for one machine; only the .env.example template may be tracked." },
+    {
+      "pattern": "**/.env*",
+      "reason": "Secrets for one machine (.env, .env.production, .envrc, .envbackup, ...); only the .env.example template may be tracked."
+    },
     { "pattern": "**/*.pem", "reason": "Private key or certificate material." },
     { "pattern": "**/*.key", "reason": "Private key material." },
     { "pattern": "**/id_rsa", "reason": "SSH private key." },

@@ -40,6 +40,19 @@ const text = (value: unknown, where: string): string => {
   return value;
 };
 
+// The matcher below understands `*`, `**` and `?` only. Anything else is rejected when the
+// policy loads: a rule written with a character class or braces would otherwise never match,
+// and nobody would notice that the check had stopped enforcing it.
+const UNSUPPORTED_GLOB_CHARS = `[]{}()!${String.fromCharCode(92)}`;
+const glob = (value: unknown, where: string): string => {
+  const pattern = text(value, where);
+  const unsupported = [...pattern].find((char) => UNSUPPORTED_GLOB_CHARS.includes(char));
+  if (unsupported) {
+    throw new Error(`${where} uses unsupported glob syntax "${unsupported}"; only *, ** and ? are understood`);
+  }
+  return pattern;
+};
+
 // Every rule must say why it exists: a list nobody can justify is a list nobody dares edit.
 export function parsePolicy(raw: unknown): Policy {
   if (!isRecord(raw) || !Array.isArray(raw.forbidden) || !Array.isArray(raw.allowed)) {
@@ -53,7 +66,7 @@ export function parsePolicy(raw: unknown): Policy {
       throw new Error(`forbidden[${i}] must be an object`);
     }
     return {
-      pattern: text(rule.pattern, `forbidden[${i}].pattern`),
+      pattern: glob(rule.pattern, `forbidden[${i}].pattern`),
       reason: text(rule.reason, `forbidden[${i}].reason`),
     };
   });
@@ -62,7 +75,7 @@ export function parsePolicy(raw: unknown): Policy {
       throw new Error(`allowed[${i}] must be an object`);
     }
     return {
-      path: text(rule.path, `allowed[${i}].path`),
+      path: glob(rule.path, `allowed[${i}].path`),
       reason: text(rule.reason, `allowed[${i}].reason`),
     };
   });
