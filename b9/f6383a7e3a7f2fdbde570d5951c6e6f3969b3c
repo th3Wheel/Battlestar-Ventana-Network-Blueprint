@@ -1,0 +1,23 @@
+AGENTS.md
+  s_e07e2b1499ce52::t_836d4744af9aaa 57-60
+.claude/hooks/merge-gate.mts
+  s_e07e2b1499ce52::t_4ae1411df54204 6-9,18,586,594,596-600,604-608,614-627,629
+tests/merge-gate.test.ts
+  s_e07e2b1499ce52::t_a1f385f5a77c78 234-280
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "b9f6383a7e3a7f2fdbde570d5951c6e6f3969b3c",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
