@@ -1,0 +1,29 @@
+AGENT-ASSIGNMENT-services-matrix.md
+  s_124c8424037cab::t_76fbb7d14e2e44 577,591,596,602,608,614,621,629-641,652-664,670-689,693-705
+docs/physical-hosts.md
+  s_e142a97a9d77af::t_ed43e107b1c639 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "4473b3095e5a671948d0effa8dbcd6a19cf467b9",
+  "prompts": {},
+  "sessions": {
+    "s_124c8424037cab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a3034e4d06d2cfc9c",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    },
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
