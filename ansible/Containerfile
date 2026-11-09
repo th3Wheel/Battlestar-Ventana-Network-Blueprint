@@ -1,23 +1,44 @@
-ARG EE_BASE_IMAGE=ghcr.io/ansible/awx-ee:24.6.0
+# Execution environment for the Battlestar Ventana Ansible roles.
+#
+# The base is a current Python image. ansible-core 2.21 (requirements.txt) needs Python 3.12 or newer, which the
+# old awx-ee base (CentOS Stream 9, Python 3.9) cannot provide. Keep this on the newest Python that ansible-core
+# supports; override with --build-arg EE_BASE_IMAGE=... to try another base.
+ARG EE_BASE_IMAGE=docker.io/library/python:3.13-slim
 FROM $EE_BASE_IMAGE
 
-# Installs below need root (UID 0); the image drops back to the unprivileged runner user at the end.
+ARG EE_UID=1000
+
+# One shared collections path: installed to here as root, read from here as the runner user.
+ENV ANSIBLE_COLLECTIONS_PATH=/usr/share/ansible/collections \
+    HOME=/home/runner \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONUNBUFFERED=1
+
+# Installs below need root (UID 0); the image drops to the unprivileged runner user at the end.
 USER 0
+
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-client \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --uid "${EE_UID}" --create-home --home-dir /home/runner --shell /bin/bash runner
 
 # Install Python dependencies
 COPY requirements.txt /build/requirements.txt
-RUN pip3 install --no-cache-dir -r /build/requirements.txt
+RUN pip install -r /build/requirements.txt
 
-# Install Ansible collections
+# Install Ansible collections into the shared path, readable by the runner user
 COPY collections/requirements.yml /build/collections/requirements.yml
-RUN ansible-galaxy collection install -r /build/collections/requirements.yml \
-    && chmod -R ug+rwx /usr/share/ansible/collections
+RUN ansible-galaxy collection install -p "${ANSIBLE_COLLECTIONS_PATH}" -r /build/collections/requirements.yml \
+    && chmod -R a+rX "${ANSIBLE_COLLECTIONS_PATH}" \
+    && chown -R "${EE_UID}:${EE_UID}" /home/runner
 
 LABEL org.opencontainers.image.title="battlestar-ventana-ee" \
     org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
 
-USER 1000
+USER ${EE_UID}
+WORKDIR /home/runner
 
-# Cheap liveness probe: the toolchain must start and report its version.
+# The toolchain must start and the collections the roles use must be readable by this user.
 HEALTHCHECK --interval=5m --timeout=30s --start-period=10s --retries=3 \
-    CMD ["ansible", "--version"]
+    CMD ["sh", "-c", "ansible --version >/dev/null && ansible-galaxy collection list community.general | grep -q community.general"]
