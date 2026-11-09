@@ -1,0 +1,19 @@
+.github/workflows/local-files.yml
+  s_e07e2b1499ce52::t_b62eb707909464 19-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "0e9be27871a3a0e21809f24b77bbeb941f1a5d85",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
