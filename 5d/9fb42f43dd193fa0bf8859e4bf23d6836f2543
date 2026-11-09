@@ -1,0 +1,23 @@
+.github/local-files-policy.json
+  s_c7ab32c6f7d013::t_c8b4ff2f2d6a16 4-7,23
+scripts/check-local-files.ts
+  s_c7ab32c6f7d013::t_b556138d5b5878 128,149
+tests/check-local-files.test.ts
+  s_c7ab32c6f7d013::t_7b79f2a76992d0 4,41-43,102-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "5d9fb42f43dd193fa0bf8859e4bf23d6836f2543",
+  "prompts": {},
+  "sessions": {
+    "s_c7ab32c6f7d013": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8baab9af-3908-493a-b9b2-dbce40f5cc32",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
