@@ -5,10 +5,10 @@ import {
   decide,
   findMerges,
   isRiskPath,
-  makeRunner,
-  splitCommands,
   type Located,
+  makeRunner,
   type Runner,
+  splitCommands,
 } from '../.agents/hooks/merge-gate.mts';
 
 const HOOK = fileURLToPath(new URL('../.agents/hooks/merge-gate.mts', import.meta.url));
