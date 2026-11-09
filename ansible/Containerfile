@@ -9,7 +9,12 @@ FROM $EE_BASE_IMAGE
 ARG EE_UID=1000
 
 # One shared collections path: installed to here as root, read from here as the runner user.
+#
+# The repository is expected at /workspace (bind-mount it). ANSIBLE_CONFIG is set explicitly because Ansible
+# ignores an ansible.cfg that it finds in a world-writable directory, which is how bind mounts from Windows
+# and macOS hosts appear; a path given in the environment is always honoured.
 ENV ANSIBLE_COLLECTIONS_PATH=/usr/share/ansible/collections \
+    ANSIBLE_CONFIG=/workspace/ansible/ansible.cfg \
     HOME=/home/runner \
     PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1
@@ -17,11 +22,14 @@ ENV ANSIBLE_COLLECTIONS_PATH=/usr/share/ansible/collections \
 # Installs below need root (UID 0); the image drops to the unprivileged runner user at the end.
 USER 0
 
+# openssh-client: connect to the inventory hosts. git: the ansible.builtin.git module runs on this controller.
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends openssh-client \
+    && apt-get install -y --no-install-recommends git openssh-client \
     && rm -rf /var/lib/apt/lists/* \
-    && useradd --uid "${EE_UID}" --create-home --home-dir /home/runner --shell /bin/bash runner
+    && useradd --uid "${EE_UID}" --create-home --home-dir /home/runner --shell /bin/bash runner \
+    && install -d -o "${EE_UID}" -g "${EE_UID}" -m 0700 /home/runner/.ssh \
+    && install -d -o "${EE_UID}" -g "${EE_UID}" /workspace
 
 # Install Python dependencies
 COPY requirements.txt /build/requirements.txt
@@ -37,7 +45,10 @@ LABEL org.opencontainers.image.title="battlestar-ventana-ee" \
     org.opencontainers.image.description="Ansible execution environment for Battlestar Ventana network automation"
 
 USER ${EE_UID}
-WORKDIR /home/runner
+WORKDIR /workspace/ansible
+
+# Default to showing the toolchain; run a playbook with: ansible-playbook playbooks/<name>.yml
+CMD ["ansible", "--version"]
 
 # The toolchain must start and the collections the roles use must be readable by this user.
 HEALTHCHECK --interval=5m --timeout=30s --start-period=10s --retries=3 \
