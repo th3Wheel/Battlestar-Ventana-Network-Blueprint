@@ -1,5 +1,7 @@
 import { spawnSync } from 'node:child_process';
-import { devNull } from 'node:os';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { devNull, tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { findViolations, loadPolicy, parsePolicy, trackedFiles, type Policy } from '../scripts/check-local-files.ts';
@@ -135,19 +137,13 @@ describe('the repository policy', () => {
         ],
         { cwd, encoding: 'utf8' }
       );
-    const dir = spawnSync(
-      process.execPath,
-      ['-e', "process.stdout.write(require('node:fs').mkdtempSync(require('node:os').tmpdir()+'/lfp-'))"],
-      {
-        encoding: 'utf8',
-      }
-    ).stdout;
+    const dir = mkdtempSync(join(tmpdir(), 'lfp-'));
     // An empty template: a git template can ship its own .git/info/exclude.
     run(dir, 'init', '-q', '--template=', '-b', 'main');
-    spawnSync(process.execPath, ['-e', "require('node:fs').writeFileSync('a.txt','x')"], { cwd: dir });
+    writeFileSync(join(dir, 'a.txt'), 'x');
     run(dir, 'add', '.');
     run(dir, 'commit', '-q', '-m', 'base');
-    spawnSync(process.execPath, ['-e', "require('node:fs').writeFileSync('x.local.json','{}')"], { cwd: dir });
+    writeFileSync(join(dir, 'x.local.json'), '{}');
     run(dir, 'add', '-f', '.');
     run(dir, 'commit', '-q', '-m', 'adds a local file');
 
@@ -157,7 +153,8 @@ describe('the repository policy', () => {
 
     const clean = spawnSync(process.execPath, [SCRIPT, '--base', 'HEAD'], { cwd: dir, encoding: 'utf8' });
     expect(clean.status).toBe(0);
-  });
+    // Several git and node processes run here; a loaded machine can exceed vitest's 5 s default.
+  }, 30_000);
 
   it('exits 2 with no mode, so a misconfigured workflow cannot pass silently', () => {
     expect(spawnSync(process.execPath, [SCRIPT], { encoding: 'utf8' }).status).toBe(2);
