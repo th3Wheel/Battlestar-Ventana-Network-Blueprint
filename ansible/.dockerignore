@@ -1,0 +1,5 @@
+# The image only needs the two requirements files; the repository itself is bind-mounted at run time.
+# Ignoring everything else keeps the build context tiny and the dependency layers cached across commits.
+*
+!requirements.txt
+!collections/requirements.yml
