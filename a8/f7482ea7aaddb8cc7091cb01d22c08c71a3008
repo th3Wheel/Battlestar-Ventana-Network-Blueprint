@@ -1,0 +1,19 @@
+.internal/specs/2026-11-09-ventana-names-design.md
+  s_3c829152fcb2db::t_2f8b5960b34550 1-169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "a8f7482ea7aaddb8cc7091cb01d22c08c71a3008",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
