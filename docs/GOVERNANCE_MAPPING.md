@@ -86,20 +86,21 @@ When an agent produces output that requires a PR, it MUST route review to the
 appropriate CODEOWNER. The mapping below should mirror `.github/CODEOWNERS` exactly.
 **If CODEOWNERS changes, update this table in the same PR.**
 
-| Path Pattern                   | Responsible Owner(s) | Agent Note                                                                                   |
-| ------------------------------ | -------------------- | -------------------------------------------------------------------------------------------- |
-| `infra/prod/**`                | `@network-ops-lead`  | HARD STOP + sign-off required                                                                |
-| `config/network-topology.yaml` | `@network-ops-lead`  | PR review required                                                                           |
-| `config/vlan-registry.yaml`    | `@network-ops-lead`  | PR review required                                                                           |
-| `.github/CODEOWNERS`           | `@repo-admin`        | HARD STOP + sign-off required                                                                |
-| `.agents/hooks/**`             | `@th3Wheel`          | HARD STOP + sign-off required (the shared merge gate; an agent must not loosen its own gate) |
-| `.claude/settings.json`        | `@th3Wheel`          | HARD STOP + sign-off required (wires Claude Code's merge-gate hook)                          |
-| `.github/agents/**`            | `@repo-admin`        | PR review required                                                                           |
-| `.github/workflows/**`         | `@devops-team`       | PR review required                                                                           |
-| `docs/**`                      | `@docs-maintainer`   | PR review recommended                                                                        |
-| `src/**`                       | `@backend-team`      | PR review required                                                                           |
-| `infra/**` (non-prod)          | `@devops-team`       | PR review required                                                                           |
-| `secrets/**`                   | `@security-team`     | HARD STOP + sign-off required                                                                |
+| Path Pattern             | Responsible Owner(s) | Agent Note                                                                                           |
+| ------------------------ | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `*`                      | `@th3Wheel`          | Default for any path no later rule matches. PR review required                                       |
+| `/.github/`              | `@th3Wheel`          | PR review required. `.github/CODEOWNERS` itself is HARD STOP + sign-off required (see section 2)     |
+| `/config/`               | `@th3Wheel`          | PR review required (canonical data sources such as `network-topology.yaml` and `vlan-registry.yaml`) |
+| `/ansible/`              | `@th3Wheel`          | PR review required                                                                                   |
+| `/docs/`                 | `@th3Wheel`          | PR review recommended                                                                                |
+| `/.agents/hooks/`        | `@th3Wheel`          | HARD STOP + sign-off required (the shared merge gate; an agent must not loosen its own gate)         |
+| `/.claude/settings.json` | `@th3Wheel`          | HARD STOP + sign-off required (wires Claude Code's merge-gate hook)                                  |
+
+CODEOWNERS applies the last matching pattern, so the order above follows the file. Paths with no rule of
+their own, such as `infra/prod/**` and `secrets/**`, fall under `*` and are owned by `@th3Wheel`; their
+HARD STOP behaviour comes from the protected-path rules in section 2, not from a separate owner. When
+CODEOWNERS gains per-path owners ([#112](https://github.com/th3Wheel/Battlestar-Ventana-Network-Blueprint/issues/112)),
+add them here in the same PR.
 
 ---
 
@@ -127,11 +128,13 @@ appropriate CODEOWNER. The mapping below should mirror `.github/CODEOWNERS` exac
 
 All PRs opened as a result of agent work MUST comply with:
 
-Labels: copilot-generated
-Body: "Refs: #<issue-number>" or "Closes: #<issue-number>"
-Branch: feature/<issue-number>-<slug> or chore/<issue-number>-<slug>
-Assignee: The engineer who invoked the agent
-Reviewer: CODEOWNER for the affected path(s)
+```text
+Labels:    copilot-generated
+Body:      "Refs: #<issue-number>" or "Closes: #<issue-number>"
+Branch:    feature/<issue-number>-<slug> or chore/<issue-number>-<slug>
+Assignee:  The engineer who invoked the agent
+Reviewer:  CODEOWNER for the affected path(s)
+```
 
 Agents enforce this at the point of:
 
@@ -148,34 +151,23 @@ Agents enforce this at the point of:
 
 When a HARD STOP governance violation is detected by any agent:
 
-Agent outputs ⛔ GOVERNANCE VIOLATION message
-│
-▼
-Engineer reviews violation details
-│
-├─── Violation is legitimate (no sign-off) ──► Engineer provides sign-off
-│ in current session, then
-│ re-invokes the agent
-│
-└─── Violation is in error ──► Engineer reports false positive via
-GitHub Issue tagged `copilot-governance-bug`
-Repository admin investigates and patches agent
+```mermaid
+flowchart TD
+    A["Agent outputs ⛔ GOVERNANCE VIOLATION message"] --> B["Engineer reviews violation details"]
+    B -->|"Violation is legitimate (no sign-off)"| C["Engineer provides sign-off in the current session,<br/>then re-invokes the agent"]
+    B -->|"Violation is in error"| D["Engineer reports a false positive via a GitHub Issue<br/>tagged copilot-governance-bug"]
+    D --> E["Repository admin investigates and patches the agent"]
+```
 
 When Doublecheck raises a CRITICAL or HIGH flag:
 
-Doublecheck outputs ❌ FABRICATION RISK or 🔴 CONTRADICTED finding
-│
-▼
-Engineer reviews the source links and repository cross-check
-│
-├─── Claim is wrong ──► Do not use the flagged value.
-│ Re-invoke the originating agent with a correction,
-│ then run Doublecheck again on the new output.
-│
-└─── Claim is correct (engineer has domain knowledge) ──►
-Engineer states "confirmed — domain knowledge".
-Doublecheck marks as 🔵 DOMAIN-CONFIRMED.
-Engineer documents the confirmation in the PR description.
+```mermaid
+flowchart TD
+    A["Doublecheck outputs ❌ FABRICATION RISK or 🔴 CONTRADICTED finding"] --> B["Engineer reviews the source links and repository cross-check"]
+    B -->|"Claim is wrong"| C["Do not use the flagged value.<br/>Re-invoke the originating agent with a correction,<br/>then run Doublecheck again on the new output."]
+    B -->|"Claim is correct (engineer has domain knowledge)"| D["Engineer states: confirmed, domain knowledge.<br/>Doublecheck marks it 🔵 DOMAIN-CONFIRMED."]
+    D --> E["Engineer documents the confirmation in the PR description"]
+```
 
 **No agent may be instructed to bypass a HARD STOP.** If a bypass is attempted,
 the agent must re-output the violation and refuse to proceed.
