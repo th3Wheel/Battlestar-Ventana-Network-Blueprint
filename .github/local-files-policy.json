@@ -1,7 +1,10 @@
 {
   "$comment": "Files that belong to one machine or one person and must never be committed. Enforced by scripts/check-local-files.ts (CI check 'Forbid local files', tests/check-local-files.test.ts). Under /.github/ so CODEOWNERS makes a person read every change to this list. Patterns use Node path.matchesGlob syntax, matched against repo-relative paths with forward slashes.",
   "forbidden": [
-    { "pattern": "**/settings.local.json", "reason": "Per-machine agent settings (Claude Code, Gemini CLI and others)." },
+    {
+      "pattern": "**/settings.local.json",
+      "reason": "Per-machine agent settings (Claude Code, Gemini CLI and others)."
+    },
     { "pattern": "**/*.local.*", "reason": "By convention a .local. file is per-machine, whatever its extension." },
     { "pattern": ".vscode/launch.json", "reason": "Per-developer debug configuration." },
     { "pattern": ".idea/**", "reason": "Per-developer IDE state." },
@@ -17,7 +20,5 @@
     { "pattern": "**/kubeconfig", "reason": "Cluster credentials." },
     { "pattern": "**/.netrc", "reason": "Stored credentials." }
   ],
-  "allowed": [
-    { "path": "**/.env.example", "reason": "Template with placeholder values only." }
-  ]
+  "allowed": [{ "path": "**/.env.example", "reason": "Template with placeholder values only." }]
 }
