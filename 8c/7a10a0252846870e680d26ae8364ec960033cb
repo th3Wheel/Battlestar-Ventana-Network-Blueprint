@@ -1,0 +1,19 @@
+docs/jaeger-pool.md
+  s_3c829152fcb2db::t_500926992b9b6b 3,5-8,12-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "8c7a10a0252846870e680d26ae8364ec960033cb",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
