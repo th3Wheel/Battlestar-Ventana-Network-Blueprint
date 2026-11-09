@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Reproducible Proxmox VM creation for the OPNsense evaluation environment.
-# Usage: proxmox-create-opnsense-vm.sh <opnsense-vm.env>
+# Usage: proxmox-create-vm.sh <opnsense-vm.env>   (the role installs this file under that name)
 #
 # The VM parameters live in the .env file written by the opnsense_vm_eval role
 # (generate_config task); source of truth is ansible/group_vars/all/vlan-vars.yml.

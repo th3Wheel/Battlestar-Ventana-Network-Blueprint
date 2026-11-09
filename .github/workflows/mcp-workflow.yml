@@ -11,7 +11,34 @@ permissions:
   contents: read
 
 jobs:
+  # Runs on every event, pull requests included. It has no environment and no secret, so code from a pull
+  # request branch (and the package it downloads) can never read CONTEXT7_API_KEY.
   mcp-context7:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '26.10'
+
+      - name: Validate Context7 MCP server starts
+        run: |
+          npx -y @upstash/context7-mcp@2.2.1 --help
+
+  # The only job that sees the copilot environment secret. It never runs for a pull request: only for a push
+  # to a default branch or a manual run.
+  mcp-context7-secret:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     environment: copilot
     permissions:
@@ -28,7 +55,7 @@ jobs:
         with:
           node-version: '26.10'
 
-      - name: Validate Context7 MCP server
+      - name: Validate Context7 MCP server with the API key
         env:
           CONTEXT7_API_KEY: ${{ secrets.COPILOT_MCP_CONTEXT7_KEY }}
         run: |
