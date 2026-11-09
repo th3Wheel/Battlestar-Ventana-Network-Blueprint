@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { devNull } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { findViolations, loadPolicy, parsePolicy, trackedFiles, type Policy } from '../scripts/check-local-files.ts';
@@ -69,6 +70,21 @@ describe('parsePolicy', () => {
     expect(() => parsePolicy(raw)).toThrow();
   });
 
+  // The matcher understands *, ** and ? only. A rule written in any other glob syntax would
+  // silently never match, so it must be refused when the policy loads, not ignored.
+  it.each(['**/*.[Pp][Ee][Mm]', '**/*.{pem,key}', '**/!(keep).env', '**/+(a|b).env', `a${BACKSLASH}*`])(
+    'rejects unsupported glob syntax in a forbidden pattern: %s',
+    (pattern) => {
+      expect(() => parsePolicy({ forbidden: [{ pattern, reason: 'r' }], allowed: [] })).toThrow(/unsupported glob/);
+    }
+  );
+
+  it('rejects unsupported glob syntax in an allowed path too', () => {
+    expect(() =>
+      parsePolicy({ forbidden: [{ pattern: 'a', reason: 'r' }], allowed: [{ path: '*.{a,b}', reason: 'r' }] })
+    ).toThrow(/unsupported glob/);
+  });
+
   it('accepts a well-formed policy', () => {
     expect(parsePolicy(policy)).toEqual(policy);
   });
@@ -88,6 +104,13 @@ describe('the repository policy', () => {
     expect(findViolations(['.env', '.env.production'], real)).toHaveLength(2);
   });
 
+  it.each(['.envrc', '.envbackup', 'deploy/.envrc', 'deploy/.env.production', 'deploy/.env'])(
+    'forbids every .env* variant, not only .env and .env.*: %s',
+    (file) => {
+      expect(findViolations([file], real)).toHaveLength(1);
+    }
+  );
+
   it('is satisfied by every file tracked in the repository', () => {
     expect(findViolations(trackedFiles(), real)).toEqual([]);
   });
@@ -95,10 +118,23 @@ describe('the repository policy', () => {
   it('fails the command line check with exit code 1 for a branch that adds a local file', () => {
     // Build a throwaway repository: one clean commit, then a commit that adds a local file.
     const run = (cwd: string, ...args: string[]) =>
-      spawnSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@example.com', '-c', 'commit.gpgsign=false', ...args], {
-        cwd,
-        encoding: 'utf8',
-      });
+      spawnSync(
+        'git',
+        [
+          '-c',
+          'user.name=t',
+          '-c',
+          'user.email=t@example.com',
+          '-c',
+          'commit.gpgsign=false',
+          // The platform null device is always empty, so a developer's global excludes cannot
+          // make `git add` skip the file this test needs to commit.
+          '-c',
+          `core.excludesFile=${devNull}`,
+          ...args,
+        ],
+        { cwd, encoding: 'utf8' }
+      );
     const dir = spawnSync(
       process.execPath,
       ['-e', "process.stdout.write(require('node:fs').mkdtempSync(require('node:os').tmpdir()+'/lfp-'))"],
@@ -106,12 +142,13 @@ describe('the repository policy', () => {
         encoding: 'utf8',
       }
     ).stdout;
-    run(dir, 'init', '-q', '-b', 'main');
+    // An empty template: a git template can ship its own .git/info/exclude.
+    run(dir, 'init', '-q', '--template=', '-b', 'main');
     spawnSync(process.execPath, ['-e', "require('node:fs').writeFileSync('a.txt','x')"], { cwd: dir });
     run(dir, 'add', '.');
     run(dir, 'commit', '-q', '-m', 'base');
     spawnSync(process.execPath, ['-e', "require('node:fs').writeFileSync('x.local.json','{}')"], { cwd: dir });
-    run(dir, 'add', '.');
+    run(dir, 'add', '-f', '.');
     run(dir, 'commit', '-q', '-m', 'adds a local file');
 
     const bad = spawnSync(process.execPath, [SCRIPT, '--base', 'HEAD~1'], { cwd: dir, encoding: 'utf8' });
