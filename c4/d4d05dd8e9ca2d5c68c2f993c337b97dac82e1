@@ -1,0 +1,21 @@
+docs/architecture/ADR-009-No-Real-Device-Locations-In-The-Public-Repository.md
+  s_3c829152fcb2db::t_6d0972010b0655 1-29
+docs/architecture/README.md
+  s_3c829152fcb2db::t_1201f8d6d60b3d 129-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "c4d4d05dd8e9ca2d5c68c2f993c337b97dac82e1",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
