@@ -1,0 +1,19 @@
+plan/feature-ventana-names-1.md
+  s_3c829152fcb2db::t_99b04da8a68f1c 11,16,18,22-25,29-31,40-53,61-62,66-69,79-83,86-95,113,129-131,135-139,145-146,148-154,158-176,180-186,192-196,203-205,214-215,219-223,228-259,262-264,270-274,277-278,280-283,290-297,304-305,315-316,319-321,338-343,350-385,389-440
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "bcc69cbb11d9b29c9287f1ca13e3f66b70bd9b7b",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
