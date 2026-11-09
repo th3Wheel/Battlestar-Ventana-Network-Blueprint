@@ -3,6 +3,10 @@
 // Merges into other branches (an integration branch, say) are not gated; the PR that carries
 // such a branch into the default branch is.
 //
+// It also refuses a merge that carries per-machine files (settings.local.json, secrets, keys)
+// listed in .github/local-files-policy.json, so an agent cannot land what the CI check
+// "Forbid local files" would reject.
+//
 // This is a guardrail for cooperative agents, not a security boundary: it reads
 // shell text, which cannot be parsed completely. The rule that keeps it honest is
 // "deny what you cannot resolve": a command that looks like a merge but whose
@@ -11,6 +15,7 @@ import { spawnSync } from 'node:child_process';
 import { realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { findViolations, loadPolicy, type Policy } from '../../scripts/check-local-files.ts';
 
 const RISK_PREFIXES = ['config/', 'ansible/', 'infrastructure/'];
 const RISK_FILES = new Set([
@@ -578,7 +583,7 @@ function mergesFor(event: HookEvent, run: Runner): Merge[] {
   return [];
 }
 
-export type Deps = { run?: Runner; listFiles?: (merge: Located) => string[] };
+export type Deps = { run?: Runner; listFiles?: (merge: Located) => string[]; policy?: () => Policy };
 
 const refusal = (detail: string): string => `Merge blocked by AGENTS.md "Never merges without a human": ${detail}`;
 
@@ -586,25 +591,42 @@ export function decide(event: HookEvent, deps: Deps = {}): string | null {
   const run = deps.run ?? makeRunner();
   const listFiles = deps.listFiles ?? ((merge: Located) => changedFiles(merge, run));
   const blocked: string[] = [];
+  const local: string[] = [];
   try {
-    for (const merge of mergesFor(event, run)) {
+    const merges = mergesFor(event, run);
+    // Load the policy only when there is a merge to judge. An unreadable policy is refused
+    // below like any other thing the gate cannot verify.
+    const policy = merges.length > 0 ? (deps.policy ?? loadPolicy)() : undefined;
+    for (const merge of merges) {
       if (merge.kind === 'deny') {
         return refusal(merge.reason);
       }
-      blocked.push(...listFiles(merge).filter(isRiskPath));
+      const files = listFiles(merge);
+      blocked.push(...files.filter(isRiskPath));
+      if (policy) {
+        local.push(...findViolations(files, policy).map((violation) => violation.file));
+      }
     }
   } catch (error) {
     // Fail closed: if we cannot see what a merge changes, neither can we vouch for it.
     return `Merge blocked: could not verify what this merge changes (${messageOf(error)}).`;
   }
-  if (blocked.length === 0) {
-    return null;
+  const reasons: string[] = [];
+  if (blocked.length > 0) {
+    reasons.push(
+      'Merge blocked by AGENTS.md "Never merges without a human".',
+      `This change touches: ${[...new Set(blocked)].join(', ')}.`,
+      'Stop here and ask the user to read the diff and merge it themselves; standing approval does not count.'
+    );
   }
-  return [
-    'Merge blocked by AGENTS.md "Never merges without a human".',
-    `This change touches: ${[...new Set(blocked)].join(', ')}.`,
-    'Stop here and ask the user to read the diff and merge it themselves; standing approval does not count.',
-  ].join(' ');
+  if (local.length > 0) {
+    reasons.push(
+      'Merge blocked by .github/local-files-policy.json.',
+      `This change carries per-machine files: ${[...new Set(local)].join(', ')}.`,
+      'Remove them from the pull request (git rm --cached) and keep them ignored; a person decides whether a file belongs on the allowlist.'
+    );
+  }
+  return reasons.length > 0 ? reasons.join(' ') : null;
 }
 
 function emit(reason: string): void {
