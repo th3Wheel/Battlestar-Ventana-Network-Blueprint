@@ -136,8 +136,9 @@ export function findViolations(files: string[], policy: Policy): Violation[] {
   return violations;
 }
 
-// NUL-separated (-z): without it git quotes unusual names ("caf\303\251.local.json") and a
-// quoted name no longer starts with the characters a pattern expects, so it would slip past.
+// NUL-separated (-z): without it git wraps a name with accented or other non-ASCII letters in
+// quotes and writes those letters as octal escapes, so the name no longer looks like the
+// pattern expects and would slip past.
 function gitNames(args: string[]): string[] {
   const result = spawnSync('git', args, { encoding: 'utf8' });
   if (result.status !== 0) {
