@@ -1,0 +1,31 @@
+docs/architecture/ADR-008-Naming-Scheme-Names-Only-Stopgap.md
+  s_3c829152fcb2db::t_05c91f9473af84 45
+plan/feature-ventana-names-1.md
+  s_3c829152fcb2db::t_896c8aaa78ee7b 102-109,124-125,216,359
+plan/feature-ventana-names-implementation-1.md
+  s_e142a97a9d77af::t_adedfe04519e2a 41-43,90-107,126,132-133,136,992-993,997,1001,1005,1009-1010,1015-1016,1032,1159,1363-1365,1369-1372,1400-1403,1406-1407,1415-1418,1482,1489,1511,1515-1516,1554-1555,1607-1611,1642-1660,1705-1707,1717-1719,1868-1871,2111,3001-3002,3054,3170-3185,3193,3195,3228-3229,3258-3269,3276,3278-3307
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "52b2a788433cf22b54845cb9ef9a17ed9cb84015",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    },
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
