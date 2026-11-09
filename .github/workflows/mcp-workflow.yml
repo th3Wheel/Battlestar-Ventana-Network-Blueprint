@@ -34,7 +34,7 @@ jobs:
           npx -y @upstash/context7-mcp@2.2.1 --help
 
   # The only job that sees the copilot environment secret. It never runs for a pull request: only for a push
-  # to a default branch or a manual run.
+  # to, or a manual run on, a default branch.
   mcp-context7-secret:
     if: >-
       (github.event_name == 'workflow_dispatch' &&
