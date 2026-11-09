@@ -4,10 +4,12 @@ version: 3
 
 images:
   base_image:
-    name: 'ghcr.io/ansible/awx-ee:24.6.0'
+    # Keep in step with EE_BASE_IMAGE in Containerfile. ansible-core 2.21 needs Python 3.12 or newer.
+    name: 'docker.io/library/python:3.13-slim'
 
 dependencies:
   python: requirements.txt
   galaxy: collections/requirements.yml
-  python_interpreter:
-    package_system: python311
+
+options:
+  package_manager_path: /usr/bin/apt-get

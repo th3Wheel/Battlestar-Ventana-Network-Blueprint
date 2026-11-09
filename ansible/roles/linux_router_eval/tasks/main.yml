@@ -6,11 +6,21 @@
 - name: 'Research — clone linux-router upstream repository'
   when: linux_router_eval_task == 'research'
   block:
+    # Runs on the controller. Install git only when it is missing, so a controller that already has it (the
+    # execution environment image does, and runs as an unprivileged user with no sudo) never needs privilege escalation.
+    - name: Check whether git is available
+      ansible.builtin.command:
+        cmd: git --version
+      register: linux_router_eval_git_check
+      changed_when: false
+      failed_when: false
+
     - name: Ensure git is present
       ansible.builtin.package:
         name: git
         state: present
       become: true
+      when: linux_router_eval_git_check.rc != 0
 
     - name: Clone linux-router repository
       ansible.builtin.git:
@@ -49,6 +59,13 @@
 
           _To be populated during TASK-002 and TASK-003._
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          linux_router_eval: phase '{{ linux_router_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Provision — install and configure linux-router on lab node'
   when: linux_router_eval_task == 'provision'
@@ -106,6 +123,13 @@
       register: linux_router_eval_gateway_add
       changed_when: linux_router_eval_gateway_add.rc == 0
       failed_when: linux_router_eval_gateway_add.rc != 0 and 'File exists' not in linux_router_eval_gateway_add.stderr
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          linux_router_eval: phase '{{ linux_router_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Validate — check NAT, DHCP option 6, and Pi-hole reachability'
   when: linux_router_eval_task == 'validate'
@@ -137,6 +161,13 @@
       loop_control:
         label: 'VLAN {{ item.item.id }}'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          linux_router_eval: phase '{{ linux_router_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Full matrix — validate all 11 VLANs'
   when: linux_router_eval_task == 'full_matrix'
@@ -176,6 +207,13 @@
       loop_control:
         label: 'VLAN {{ item.item.id }}'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          linux_router_eval: phase '{{ linux_router_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Generate config — emit prototype scripts for all VLANs'
   when: linux_router_eval_task == 'generate_config'
@@ -224,3 +262,10 @@
         label: '{{ item.path | basename }}'
       when: (item.path | basename) not in linux_router_eval_expected_names.split()
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          linux_router_eval: phase '{{ linux_router_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}

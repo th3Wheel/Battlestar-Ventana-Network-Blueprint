@@ -63,6 +63,13 @@
       retries: 24
       delay: 15
       until: opnsense_vm_eval_api_ready.status in [200, 401, 403]
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Configure — apply VLANs, DHCP scopes, and firewall rules via OPNsense API'
   when: opnsense_vm_eval_task == 'configure'
@@ -120,6 +127,13 @@
         # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
         validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
         status_code: 200
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Validate — verify DHCP option 6, DNS relay, and firewall (VLANs 20 and 40)'
   when: opnsense_vm_eval_task == 'validate'
@@ -199,6 +213,13 @@
 
           _To be populated during full-matrix task._
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Full matrix — validate all 11 blueprint VLANs'
   when: opnsense_vm_eval_task == 'full_matrix'
@@ -237,6 +258,13 @@
       loop_control:
         label: 'VLAN {{ item.item.id }}'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Generate config — export OPNsense XML backup'
   when: opnsense_vm_eval_task == 'generate_config'
@@ -281,6 +309,13 @@
         dest: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/opnsense-vm/prototypes/opnsense-vm.env'
         mode: '0644'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Teardown — stop and remove OPNsense evaluation VM'
   when: opnsense_vm_eval_task == 'teardown'
@@ -301,3 +336,10 @@
         api_password: '{{ proxmox_password }}'
         vmid: '{{ opnsense_vm_eval_vm_id }}'
         state: absent
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          opnsense_vm_eval: phase '{{ opnsense_vm_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
