@@ -6,11 +6,21 @@
 - name: 'Research — clone linux-router upstream repository'
   when: linux_router_eval_task == 'research'
   block:
+    # Runs on the controller. Install git only when it is missing, so a controller that already has it (the
+    # execution environment image does, and runs as an unprivileged user with no sudo) never needs privilege escalation.
+    - name: Check whether git is available
+      ansible.builtin.command:
+        cmd: git --version
+      register: linux_router_eval_git_check
+      changed_when: false
+      failed_when: false
+
     - name: Ensure git is present
       ansible.builtin.package:
         name: git
         state: present
       become: true
+      when: linux_router_eval_git_check.rc != 0
 
     - name: Clone linux-router repository
       ansible.builtin.git:
