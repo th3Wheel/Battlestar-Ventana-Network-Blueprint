@@ -39,17 +39,28 @@ jobs:
           node-version: '26.10'
 
       # Fetch the pull request's commits without checking them out: they are only read as data.
+      # The ref moves when the branch is force-pushed, so it must still point at the commit that
+      # triggered this run. If it does not, fail rather than check a different tree.
       - name: Fetch the pull request commits
         if: github.event_name == 'pull_request_target'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: git fetch --no-tags --quiet origin "refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --quiet origin "refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
+          fetched="$(git rev-parse refs/remotes/pr/head)"
+          if [ "$fetched" != "$HEAD_SHA" ]; then
+            echo "::error::The pull request moved during the run (event ${HEAD_SHA}, fetched ${fetched}); re-run the check."
+            exit 1
+          fi
 
       # Every file in the pull request's tree: a local file it adds, or one already in the tree,
-      # fails the check.
+      # fails the check. It reads the exact commit that triggered the run, not the moving ref.
       - name: No local files in the pull request
         if: github.event_name == 'pull_request_target'
-        run: node scripts/check-local-files.ts --tracked --head refs/remotes/pr/head
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-local-files.ts --tracked --head "$HEAD_SHA"
 
       - name: No tracked local files
         if: github.event_name != 'pull_request_target'
