@@ -1,0 +1,19 @@
+docs/GOVERNANCE_MAPPING.md
+  s_e142a97a9d77af::t_b3ac81422e1157 89-103,131-137,154-160,164-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "94673aee63fe9ca6b72a99b9306b314e67d8e549",
+  "prompts": {},
+  "sessions": {
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
