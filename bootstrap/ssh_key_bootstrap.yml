@@ -21,6 +21,7 @@
           ) }}
       no_log: true
       run_once: true
+      delegate_facts: true
       delegate_to: localhost
 
     - name: Validate 1Password item exists
