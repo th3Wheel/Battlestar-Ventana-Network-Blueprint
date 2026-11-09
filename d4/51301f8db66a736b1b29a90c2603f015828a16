@@ -1,0 +1,31 @@
+docs/architecture/ADR-008-Naming-Scheme-Names-Only-Stopgap.md
+  s_3c829152fcb2db::t_7403ad963d1c9f 1-54
+plan/feature-ventana-names-1.md
+  s_124c8424037cab::t_b91d8f8d61e66d 22,39,138,175-176,225,249-258,264,274-275,280,347,361,364,366,371-372,374,426,433
+docs/architecture/README.md
+  s_3c829152fcb2db::t_daec97f9e1e89f 33,134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "d451301f8db66a736b1b29a90c2603f015828a16",
+  "prompts": {},
+  "sessions": {
+    "s_124c8424037cab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a3034e4d06d2cfc9c",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    },
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
