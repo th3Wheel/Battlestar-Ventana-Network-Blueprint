@@ -1,0 +1,25 @@
+AGENTS.md
+  s_e07e2b1499ce52::t_809086aae1ef14 21-23
+.github/workflows/local-files.yml
+  s_e07e2b1499ce52::t_27c3405c3e45f2 6-14,17,29-30,33,41-53,55
+scripts/check-local-files.ts
+  s_e07e2b1499ce52::t_8509552ea356b7 5-11,137-139,144,148-152,154-168,170-173,175-181,183,186
+tests/check-local-files.test.ts
+  s_e07e2b1499ce52::t_2f3d3c4377788b 7-14,169-255
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "779696fc27931752fadd686fb846f0dc4003eeef",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
