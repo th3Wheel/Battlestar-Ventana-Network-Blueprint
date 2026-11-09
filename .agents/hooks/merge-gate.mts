@@ -272,9 +272,8 @@ function analyzePush(rest: Word[], cwd: string | undefined, run: Runner, merges:
       deleting = true;
     } else if (PUSH_VALUE_FLAGS.has(text)) {
       i++;
-    } else if (text.startsWith('-')) {
-      continue;
-    } else {
+    } else if (!text.startsWith('-')) {
+      // Any other flag takes no value and is skipped; only a bare word is a remote or branch.
       positionals.push(rest[i]);
     }
   }
@@ -529,7 +528,7 @@ function landsOnDefaultBranch({ repo, number }: PrRef, run: Runner): boolean {
   return DEFAULT_BRANCHES.has(base) || base === defaultBranch;
 }
 
-function prFiles({ repo, number }: PrRef, run: Runner): string[] {
+function pullRequestFiles({ repo, number }: PrRef, run: Runner): string[] {
   // The files API reports previous_filename for renames, so a move out of config/ is seen.
   const output = run('gh', [
     'api',
@@ -546,7 +545,7 @@ function changedFiles(merge: Located, run: Runner): string[] {
     return pushFiles(merge, run);
   }
   const pr = resolvePr(merge, run);
-  return landsOnDefaultBranch(pr, run) ? prFiles(pr, run) : [];
+  return landsOnDefaultBranch(pr, run) ? pullRequestFiles(pr, run) : [];
 }
 
 // Claude Code sends tool_name/tool_input; Copilot's camelCase events send toolName/toolArgs,

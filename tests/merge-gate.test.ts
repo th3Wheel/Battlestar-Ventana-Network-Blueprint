@@ -335,8 +335,8 @@ describe('decide', () => {
     });
 
     it('decodes JSON-escaped non-ASCII names', () => {
-      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/caf\\u00e9.yaml"\n') })).toMatch(
-        /config\/café\.yaml/
+      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/\\u00fcber.yaml"\n') })).toMatch(
+        /config\/über\.yaml/
       );
     });
 
@@ -387,7 +387,7 @@ describe('decide', () => {
     const TIP = 'a'.repeat(40);
     const push = (diff: string, extra: Record<string, string> = {}) =>
       fake({
-        [`git ls-remote origin refs/heads/master`]: `${TIP}\trefs/heads/master\n`,
+        'git ls-remote origin refs/heads/master': `${TIP}\trefs/heads/master\n`,
         [`git cat-file -e ${TIP}^{commit}`]: '',
         [`git diff --name-only -z --no-renames ${TIP} HEAD --`]: diff,
         ...extra,
