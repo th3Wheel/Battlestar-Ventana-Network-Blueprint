@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": [".agents/hooks/*.mts", "tests/**/*.ts"]
+  "include": [".agents/hooks/*.mts", "scripts/check-local-files.ts", "tests/**/*.ts"]
 }
