@@ -92,6 +92,8 @@ appropriate CODEOWNER. The mapping below should mirror `.github/CODEOWNERS` exac
 | `config/network-topology.yaml` | `@network-ops-lead` | PR review required |
 | `config/vlan-registry.yaml` | `@network-ops-lead` | PR review required |
 | `.github/CODEOWNERS` | `@repo-admin` | HARD STOP + sign-off required |
+| `.agents/hooks/**` | `@th3Wheel` | HARD STOP + sign-off required (the shared merge gate; an agent must not loosen its own gate) |
+| `.claude/settings.json` | `@th3Wheel` | HARD STOP + sign-off required (wires Claude Code's merge-gate hook) |
 | `.github/agents/**` | `@repo-admin` | PR review required |
 | `.github/workflows/**` | `@devops-team` | PR review required |
 | `docs/**` | `@docs-maintainer` | PR review recommended |
