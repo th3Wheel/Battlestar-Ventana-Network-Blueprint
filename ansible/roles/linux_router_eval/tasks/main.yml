@@ -262,7 +262,7 @@
         paths: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/linux-router/prototypes'
         patterns:
           - '^vlan-[0-9]+-.+\.env$'
-          - '^lnxrouter-vlan-[0-9]+.*\.sh$'
+          - '^vlan-[0-9]+-.+\.sh$'
         use_regex: true
       register: linux_router_eval_vlan_prototype_files
       delegate_to: localhost
@@ -275,7 +275,7 @@
       loop_control:
         label: '{{ item.path | basename }}'
       when: >-
-        item.path | basename is match('^lnxrouter-vlan-[0-9]+.*\.sh$') or
+        item.path | basename is match('^vlan-[0-9]+-.+\.sh$') or
         item.path | basename not in linux_router_eval_current_vlan_env_files
       delegate_to: localhost
   rescue:
