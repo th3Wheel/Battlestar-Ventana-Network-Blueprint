@@ -1,0 +1,28 @@
+---
+- name: Verify VLAN interfaces exist
+  ansible.builtin.command:
+    cmd: 'ip -d link show {{ linux_router_eval_lan_interface }}.{{ item.id }}'
+  loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }}'
+  register: linux_router_eval_vlan_link_check
+  changed_when: false
+  become: true
+
+- name: Test DNS reachability to Pi-hole primary
+  ansible.builtin.command:
+    cmd: 'dig +short +timeout=5 example.com @{{ pihole_primary_vip }}'
+  register: linux_router_eval_dns_check
+  changed_when: false
+  failed_when: linux_router_eval_dns_check.rc != 0
+
+- name: Log validation results to research file
+  ansible.builtin.lineinfile:
+    path: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
+    line: "- VLAN {{ item.item.id }} interface check: {{ 'PASS' if item.rc == 0 else 'FAIL' }} ({{ now(fmt='%Y-%m-%d') }})"
+    create: true
+    mode: '0644'
+  loop: '{{ linux_router_eval_vlan_link_check.results }}'
+  loop_control:
+    label: 'VLAN {{ item.item.id }}'
+  delegate_to: localhost

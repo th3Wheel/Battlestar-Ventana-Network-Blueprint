@@ -1,0 +1,57 @@
+---
+- name: Ensure the OPNsense VM does not already exist
+  community.general.proxmox_kvm:
+    api_host: '{{ opnsense_vm_eval_proxmox_host }}'
+    api_user: '{{ opnsense_vm_eval_proxmox_user }}'
+    api_password: '{{ proxmox_password }}'
+    vmid: '{{ opnsense_vm_eval_vm_id }}'
+    state: absent
+  register: opnsense_vm_eval_vm_cleanup
+  # Best-effort cleanup of a previous run; the create task below fails
+  # loudly if the Proxmox API is genuinely unreachable.
+  failed_when: false
+
+- name: Create OPNsense evaluation VM on CrimsonRogue
+  community.general.proxmox_kvm:
+    api_host: '{{ opnsense_vm_eval_proxmox_host }}'
+    api_user: '{{ opnsense_vm_eval_proxmox_user }}'
+    api_password: '{{ proxmox_password }}'
+    vmid: '{{ opnsense_vm_eval_vm_id }}'
+    name: '{{ opnsense_vm_eval_vm_name }}'
+    node: CrimsonRogue
+    memory: '{{ opnsense_vm_eval_vm_memory_mb }}'
+    cores: '{{ opnsense_vm_eval_vm_cores }}'
+    scsihw: virtio-scsi-pci
+    scsi:
+      scsi0: 'local-lvm:{{ opnsense_vm_eval_vm_disk_gb }}'
+    ide:
+      ide2: '{{ opnsense_vm_eval_iso }},media=cdrom'
+    net:
+      net0: 'virtio,bridge={{ opnsense_vm_eval_vm_bridge }}'
+      net1: 'virtio,bridge={{ opnsense_vm_eval_vm_bridge }}'
+    boot: order=ide2;scsi0
+    state: present
+  register: opnsense_vm_eval_vm_create
+
+- name: Start OPNsense VM
+  community.general.proxmox_kvm:
+    api_host: '{{ opnsense_vm_eval_proxmox_host }}'
+    api_user: '{{ opnsense_vm_eval_proxmox_user }}'
+    api_password: '{{ proxmox_password }}'
+    vmid: '{{ opnsense_vm_eval_vm_id }}'
+    state: started
+
+- name: Wait for OPNsense API to become reachable (initial boot)
+  ansible.builtin.uri:
+    url: 'https://{{ opnsense_vm_eval_mgmt_ip }}/api/core/firmware/info'
+    method: GET
+    user: '{{ opnsense_vm_eval_api_key | default(omit, true) }}'
+    password: '{{ opnsense_vm_eval_api_secret | default(omit, true) }}'
+    force_basic_auth: "{{ (opnsense_vm_eval_api_key | default('', true) | length > 0) and (opnsense_vm_eval_api_secret | default('', true) | length > 0) }}"
+    # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
+    validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
+    status_code: [200, 401, 403]
+  register: opnsense_vm_eval_api_ready
+  retries: 24
+  delay: 15
+  until: opnsense_vm_eval_api_ready.status in [200, 401, 403]

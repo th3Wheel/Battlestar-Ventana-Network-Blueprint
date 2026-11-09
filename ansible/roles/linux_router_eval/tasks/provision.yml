@@ -1,0 +1,54 @@
+---
+- name: Ensure required packages are present
+  ansible.builtin.package:
+    name:
+      - iproute2
+      - dnsmasq
+      - iptables
+      - bridge-utils
+      - dnsutils
+    state: present
+  become: true
+
+- name: Download pinned lnxrouter script from reviewed upstream revision
+  vars:
+    linux_router_eval_commit: '445fadba86a196223fcabd150e0e66eae963c08f'
+    linux_router_eval_sha256: 'e242101d418296c2a88c6da7c22dc306791242a19ab90939329c946bde7bae1e'
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/garywill/linux-router/{{ linux_router_eval_commit }}/lnxrouter'
+    dest: '/usr/local/bin/lnxrouter'
+    checksum: 'sha256:{{ linux_router_eval_sha256 }}'
+    mode: '0755'
+  become: true
+
+- name: Create VLAN interfaces for evaluation VLANs (20 and 40)
+  ansible.builtin.command:
+    cmd: 'ip link add link {{ linux_router_eval_lan_interface }} name {{ linux_router_eval_lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
+  loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }} — {{ item.name }}'
+  become: true
+  register: linux_router_eval_vlan_add
+  changed_when: linux_router_eval_vlan_add.rc == 0
+  # Re-runs find the interface already present; any other failure is real.
+  failed_when: linux_router_eval_vlan_add.rc != 0 and 'File exists' not in linux_router_eval_vlan_add.stderr
+
+- name: Bring VLAN interfaces up
+  ansible.builtin.command:
+    cmd: 'ip link set {{ linux_router_eval_lan_interface }}.{{ item.id }} up'
+  loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }}'
+  become: true
+  changed_when: false
+
+- name: Assign gateway addresses to VLAN interfaces
+  ansible.builtin.command:
+    cmd: 'ip addr add {{ item.gateway }}/24 dev {{ linux_router_eval_lan_interface }}.{{ item.id }}'
+  loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }} — {{ item.gateway }}'
+  become: true
+  register: linux_router_eval_gateway_add
+  changed_when: linux_router_eval_gateway_add.rc == 0
+  failed_when: linux_router_eval_gateway_add.rc != 0 and 'File exists' not in linux_router_eval_gateway_add.stderr

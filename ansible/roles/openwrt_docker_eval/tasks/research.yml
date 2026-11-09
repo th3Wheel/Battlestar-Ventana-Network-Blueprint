@@ -1,0 +1,31 @@
+---
+- name: Create research output directory
+  ansible.builtin.file:
+    path: '{{ openwrt_docker_eval_research_output_dir }}'
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+
+- name: Pull OpenWrt Docker image to confirm availability
+  community.docker.docker_image:
+    name: openwrt/rootfs
+    source: pull
+  delegate_to: localhost
+  ignore_errors: true
+  register: openwrt_docker_eval_pull
+
+- name: Write OpenWrt Docker capabilities research file stub
+  ansible.builtin.copy:
+    dest: '{{ openwrt_docker_eval_research_output_dir }}/openwrt-docker-capabilities.md'
+    mode: '0644'
+    content: |
+      # OpenWrt-in-Docker Capabilities Research
+
+      **Source:** https://openwrt.org/docs/guide-user/virtualization/docker_openwrt
+      **Image pull status:** {{ 'success' if openwrt_docker_eval_pull is succeeded else 'failed — check Docker access' }}
+      **Extracted by:** ansible/roles/openwrt_docker_eval (research task)
+
+      ## Evaluation Results
+
+      _To be populated during TASK-006 and TASK-013._
+  delegate_to: localhost

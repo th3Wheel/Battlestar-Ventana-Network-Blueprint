@@ -1,0 +1,37 @@
+---
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+  become: true
+
+- name: Create VLAN bridge networks in Docker for evaluation VLANs
+  community.docker.docker_network:
+    name: 'vlan{{ item.id }}-bridge'
+    driver: macvlan
+    driver_options:
+      parent: "{{ openwrt_parent_iface | default('eth0') }}.{{ item.id }}"
+    ipam_config:
+      - subnet: '{{ item.subnet }}'
+        gateway: '{{ item.gateway }}'
+    state: present
+  loop: "{{ vlans | selectattr('id', 'in', [20, 40]) | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }}'
+  become: true
+
+- name: Launch OpenWrt container attached to evaluation VLAN bridges
+  community.docker.docker_container:
+    name: openwrt-eval
+    image: '{{ openwrt_docker_eval_rootfs_image }}'
+    state: started
+    restart_policy: unless-stopped
+    capabilities:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      - name: 'vlan20-bridge'
+      - name: 'vlan40-bridge'
+    volumes:
+      - '/tmp/openwrt-eval:/etc/openwrt-eval'
+  become: true

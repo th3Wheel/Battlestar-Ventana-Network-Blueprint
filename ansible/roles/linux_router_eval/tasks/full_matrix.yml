@@ -1,0 +1,36 @@
+---
+- name: Create VLAN interface for each blueprint VLAN
+  ansible.builtin.command:
+    cmd: 'ip link add link {{ linux_router_eval_lan_interface }} name {{ linux_router_eval_lan_interface }}.{{ item.id }} type vlan id {{ item.id }}'
+  loop: '{{ vlans }}'
+  loop_control:
+    label: 'VLAN {{ item.id }} — {{ item.name }}'
+  become: true
+  register: linux_router_eval_full_matrix_vlan_add
+  changed_when: linux_router_eval_full_matrix_vlan_add.rc == 0
+  failed_when: linux_router_eval_full_matrix_vlan_add.rc != 0 and 'File exists' not in linux_router_eval_full_matrix_vlan_add.stderr
+
+- name: Verify VLAN interface presence for all 11 VLANs
+  ansible.builtin.command:
+    cmd: 'ip -d link show {{ linux_router_eval_lan_interface }}.{{ item.id }}'
+  loop: '{{ vlans }}'
+  loop_control:
+    label: 'VLAN {{ item.id }}'
+  register: linux_router_eval_full_matrix_check
+  changed_when: false
+  become: true
+  failed_when: >-
+    linux_router_eval_full_matrix_check.rc != 0 and
+    'Cannot find device' not in (linux_router_eval_full_matrix_check.stderr | default('')) and
+    'does not exist' not in (linux_router_eval_full_matrix_check.stderr | default(''))
+
+- name: Append full-matrix results to research file
+  ansible.builtin.lineinfile:
+    path: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
+    line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item.rc == 0 else 'FAIL' }} | tested: true | date: {{ now(fmt='%Y-%m-%d') }}"
+    create: true
+    mode: '0644'
+  loop: '{{ linux_router_eval_full_matrix_check.results }}'
+  loop_control:
+    label: 'VLAN {{ item.item.id }}'
+  delegate_to: localhost

@@ -1,0 +1,35 @@
+---
+- name: Retrieve full VLAN list from OPNsense API
+  ansible.builtin.uri:
+    url: 'https://{{ opnsense_vm_eval_mgmt_ip }}/api/interfaces/vlan/searchItem'
+    method: GET
+    user: '{{ opnsense_vm_eval_api_key }}'
+    password: '{{ opnsense_vm_eval_api_secret }}'
+    force_basic_auth: true
+    # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
+    validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
+    status_code: 200
+  register: opnsense_vm_eval_full_vlan_list
+
+- name: Assert all 11 blueprint VLANs exist in OPNsense
+  ansible.builtin.assert:
+    that:
+      - opnsense_vm_eval_full_vlan_list.json.rows | selectattr('tag', 'equalto', item.id | string) | list | length > 0
+    fail_msg: 'VLAN {{ item.id }} ({{ item.name }}) missing from OPNsense'
+    success_msg: 'VLAN {{ item.id }} ({{ item.name }}) present'
+  loop: '{{ vlans }}'
+  loop_control:
+    label: 'VLAN {{ item.id }}'
+  register: opnsense_vm_eval_full_matrix_results
+  ignore_errors: true
+
+- name: Append full-matrix results to research file
+  ansible.builtin.lineinfile:
+    path: '{{ opnsense_vm_eval_research_output_dir }}/opnsense-vm-capabilities.md'
+    line: "- VLAN {{ item.item.id }} ({{ item.item.name }}) full-matrix: {{ 'PASS' if item is succeeded else 'FAIL' }} | tested: true | date: {{ ansible_date_time.date }}"
+    create: true
+    mode: '0644'
+  loop: '{{ opnsense_vm_eval_full_matrix_results.results }}'
+  loop_control:
+    label: 'VLAN {{ item.item.id }}'
+  delegate_to: localhost

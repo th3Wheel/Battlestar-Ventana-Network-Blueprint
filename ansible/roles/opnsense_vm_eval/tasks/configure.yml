@@ -1,0 +1,54 @@
+---
+- name: Create VLAN interface on OPNsense LAN port for each blueprint VLAN
+  ansible.builtin.uri:
+    url: 'https://{{ opnsense_vm_eval_mgmt_ip }}/api/interfaces/vlan/addItem'
+    method: POST
+    user: '{{ opnsense_vm_eval_api_key }}'
+    password: '{{ opnsense_vm_eval_api_secret }}'
+    force_basic_auth: true
+    # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
+    validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
+    body_format: json
+    body:
+      vlan:
+        if: '{{ opnsense_vm_eval_lan_iface }}'
+        tag: '{{ item.id }}'
+        descr: '{{ item.name }}'
+    status_code: [200, 201]
+  loop: '{{ vlans }}'
+  loop_control:
+    label: 'VLAN {{ item.id }} — {{ item.name }}'
+
+- name: Configure DHCP scope for each VLAN that has dynamic DHCP enabled
+  ansible.builtin.uri:
+    url: 'https://{{ opnsense_vm_eval_mgmt_ip }}/api/dhcpv4/service/set'
+    method: POST
+    user: '{{ opnsense_vm_eval_api_key }}'
+    password: '{{ opnsense_vm_eval_api_secret }}'
+    force_basic_auth: true
+    # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
+    validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
+    body_format: json
+    body:
+      general:
+        interface: 'vlan{{ item.id }}'
+      'vlan{{ item.id }}':
+        enable: '1'
+        range_from: '{{ item.dhcp_range_start }}'
+        range_to: '{{ item.dhcp_range_end }}'
+        dnsserver: "{{ item.dns }}{% if item.dns_secondary | default('') | length > 0 %},{{ item.dns_secondary }}{% endif %}"
+    status_code: [200, 201]
+  loop: "{{ vlans | selectattr('dhcp_enabled') | list }}"
+  loop_control:
+    label: 'VLAN {{ item.id }} DHCP scope'
+
+- name: Apply OPNsense configuration changes
+  ansible.builtin.uri:
+    url: 'https://{{ opnsense_vm_eval_mgmt_ip }}/api/core/service/reconfigure'
+    method: POST
+    user: '{{ opnsense_vm_eval_api_key }}'
+    password: '{{ opnsense_vm_eval_api_secret }}'
+    force_basic_auth: true
+    # checkov:skip=CKV_ANSIBLE_1: verification defaults to true; the variable is an explicit opt-out for self-signed certs
+    validate_certs: '{{ opnsense_vm_eval_validate_certs }}'
+    status_code: 200

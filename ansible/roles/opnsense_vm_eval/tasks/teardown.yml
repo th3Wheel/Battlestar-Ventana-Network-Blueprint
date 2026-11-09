@@ -1,0 +1,17 @@
+---
+- name: Stop OPNsense VM
+  community.general.proxmox_kvm:
+    api_host: '{{ opnsense_vm_eval_proxmox_host }}'
+    api_user: '{{ opnsense_vm_eval_proxmox_user }}'
+    api_password: '{{ proxmox_password }}'
+    vmid: '{{ opnsense_vm_eval_vm_id }}'
+    state: stopped
+    force: true
+
+- name: Remove OPNsense evaluation VM
+  community.general.proxmox_kvm:
+    api_host: '{{ opnsense_vm_eval_proxmox_host }}'
+    api_user: '{{ opnsense_vm_eval_proxmox_user }}'
+    api_password: '{{ proxmox_password }}'
+    vmid: '{{ opnsense_vm_eval_vm_id }}'
+    state: absent

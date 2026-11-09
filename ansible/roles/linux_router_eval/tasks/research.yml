@@ -1,0 +1,44 @@
+---
+- name: Ensure git is present
+  ansible.builtin.package:
+    name: git
+    state: present
+  become: true
+
+- name: Clone linux-router repository
+  ansible.builtin.git:
+    repo: 'https://github.com/garywill/linux-router.git'
+    dest: '/tmp/linux-router-src'
+    version: master
+    depth: 1
+
+- name: Capture linux-router README for capability extraction
+  ansible.builtin.slurp:
+    src: '/tmp/linux-router-src/README.md'
+  register: linux_router_eval_readme
+
+- name: Create research output directory
+  ansible.builtin.file:
+    path: '{{ linux_router_eval_research_output_dir }}'
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+
+- name: Write capabilities research file stub
+  ansible.builtin.copy:
+    dest: '{{ linux_router_eval_research_output_dir }}/linux-router-capabilities.md'
+    mode: '0644'
+    content: |
+      # linux-router Capabilities Research
+
+      **Source:** https://github.com/garywill/linux-router
+      **Extracted by:** ansible/roles/linux_router_eval (research task)
+
+      ## Feature Summary
+
+      {{ linux_router_eval_readme.content | b64decode | truncate(2000) }}
+
+      ## Evaluation Results
+
+      _To be populated during TASK-002 and TASK-003._
+  delegate_to: localhost
