@@ -36,8 +36,9 @@ jobs:
   # The only job that sees the copilot environment secret. It never runs for a pull request: only for a push
   # to a default branch or a manual run.
   mcp-context7-secret:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
+if: >-
+      (github.event_name == 'workflow_dispatch' &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) ||
       (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     environment: copilot
