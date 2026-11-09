@@ -1,0 +1,49 @@
+.github/local-files-policy.json
+  s_c7ab32c6f7d013::t_51d5953c0df4c8 1-26
+.github/workflows/local-files.yml
+  s_e07e2b1499ce52::t_ba848f5535c9f0 1-63
+.github/workflows/super-linter.yml
+  s_e07e2b1499ce52::t_1d4611ba4af5d5 39
+.gitignore
+  s_e07e2b1499ce52::t_b0bbe8eb60f734 15-35
+scripts/check-local-files.ts
+  s_e07e2b1499ce52::t_4e5ed17390fffa 1-208
+tests/check-local-files.test.ts
+  s_e07e2b1499ce52::t_6e5c1a401175de 1-260
+tests/local-settings.test.ts
+  s_e07e2b1499ce52::t_792f2cd5fff0bb 1-106
+tests/merge-gate.test.ts
+  s_e07e2b1499ce52::t_e0d7a842798383 234-280
+.agents/hooks/merge-gate.mts
+  s_e07e2b1499ce52::t_03e2437c220747 6-9,18,586,594,596-600,604-608,614-627,629
+.github/workflows/validate-network-config.yml
+  s_e07e2b1499ce52::t_57b6ba86ac2c18 25-27,30
+AGENTS.md
+  s_e07e2b1499ce52::t_6e8bbed9c0b62d 16-23,59-64
+tsconfig.json
+  s_e07e2b1499ce52::t_f894ddb8696a56 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "1bf10c62be88fd9059fcf6e2d7592734ec34cc51",
+  "prompts": {},
+  "sessions": {
+    "s_c7ab32c6f7d013": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8baab9af-3908-493a-b9b2-dbce40f5cc32",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    },
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
