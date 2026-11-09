@@ -1,0 +1,19 @@
+.jscpd.json
+  s_e142a97a9d77af::t_0a23d197ccbae4 4-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "02f50151a1d0a206c126e198a990c01ae63630d1",
+  "prompts": {},
+  "sessions": {
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
