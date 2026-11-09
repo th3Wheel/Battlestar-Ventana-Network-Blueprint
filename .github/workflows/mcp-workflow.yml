@@ -10,11 +10,10 @@ on:
 permissions:
   contents: read
 
-# Cancel a run when a newer commit supersedes it on the same pull request or branch. Runs on the default
-# branch are never cancelled, so every merge keeps its own result.
+# Cancel a run when a newer commit supersedes it on the same pull request or branch, including master and main.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main' }}
+  cancel-in-progress: true
 
 jobs:
   # Runs on every event, pull requests included. It has no environment and no secret, so code from a pull
