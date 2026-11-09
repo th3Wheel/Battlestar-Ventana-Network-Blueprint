@@ -155,12 +155,12 @@ For each component, this section summarizes purpose, internal structure, interac
 
 Layers:
 
-1) Physical/Link Layer → switches, cabling
-2) Network Layer → VLANs, routing, DHCP/DNS
-3) Security Layer → firewall/ACLs, Service/Ports allowlists
-4) Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
-5) Observability Layer → dashboards, alerting, logs
-6) Automation Layer → desired IaC/config management (future)
+1. Physical/Link Layer → switches, cabling
+2. Network Layer → VLANs, routing, DHCP/DNS
+3. Security Layer → firewall/ACLs, Service/Ports allowlists
+4. Services Layer → ServerVault apps (MQTT, storage, reverse proxy, syslog)
+5. Observability Layer → dashboards, alerting, logs
+6. Automation Layer → desired IaC/config management (future)
 
 Dependency rules:
 
@@ -318,10 +318,10 @@ Test data strategies:
 
 ### Example: Service/Ports Contract (excerpt)
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|------------------------|----------|-------|
-| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware |
-| 90 Work → 70 Media | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Casting |
+| Source → Destination    | Allowed Services/Ports              | Protocol | Notes                |
+| ----------------------- | ----------------------------------- | -------- | -------------------- |
+| 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
+| 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
 ### Example: Alertmanager Style (excerpt)
 

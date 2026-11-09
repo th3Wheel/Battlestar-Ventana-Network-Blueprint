@@ -1,9 +1,9 @@
 ## 🤖 Physical Hostnames
 
-Canonical hostname assignment for physical hypervisor / bare‑metal hosts.  
+Canonical hostname assignment for physical hypervisor / bare‑metal hosts.
 
-- Retired hostnames are ~~struck out~~ and cannot be reassigned  
-- Each name is unique per chassis  
+- Retired hostnames are ~~struck out~~ and cannot be reassigned
+- Each name is unique per chassis
 - No external mapping is ever applied
 
 ```

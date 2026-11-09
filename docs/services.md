@@ -417,32 +417,32 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 This table consolidates all service-to-port mappings for quick firewall rule generation:
 
-| Service | Port(s) | Protocol | VLAN(s) | Purpose |
-|---------|---------|----------|---------|---------|
-| DNS | 53 | UDP/TCP | All | Domain name resolution; critical for VPN bootstrap (VLAN 90) |
-| DHCP | 67/68 | UDP | All | Network bootstrap; critical for VPN bootstrap (VLAN 90) |
-| NTP | 123 | UDP | 10, 50 | Network time synchronization |
-| SSH | 22 | TCP | 10, 40, 50 | Secure remote access for management |
-| IPP | 631 | TCP | 31, 60 | Internet Printing Protocol for print jobs |
-| LPD | 515 | TCP | 10, 31, 60 | Legacy line printer daemon |
-| SNMP | 161/162 | UDP | 10, 40 | Network monitoring and management |
-| RTSP | 554 | TCP | 10, 81, 82, 50 | Real-time streaming protocol for video |
-| Syslog | 514 | UDP | 40, 50, 81, 82 | Event and log centralization |
-| DLNA | 1900 | UDP | 10, 31, 70, 90 | Media discovery and streaming |
-| mDNS | 5353 | UDP | 20, 31, 60, 70, 81, 82 | Multicast DNS for local device discovery |
-| Chromecast | 8008-8009 | TCP | 10, 31, 70, 90 | Chromecast device control and streaming |
-| MQTT | 1883 | TCP | 20, 50 | MQTT broker (non-TLS) |
-| MQTT | 8883 | TCP | 20, 50 | MQTT broker (TLS) |
-| Plex | 32400 | TCP | 70, 50 | Media server for streaming |
-| JetDirect | 9100 | TCP | 60, 50 | Printer status and job submission |
-| HTTPS | 443 | TCP | All | Secure web services, firmware updates, APIs |
-| HTTP | 80 | TCP | 30, 31, 70 | Unencrypted web services (guest/media/resident) |
-| SMB | 445 | TCP | 10, 31, 50, 60, 70 | File sharing (Windows/Linux) |
-| NFS | 2049 | TCP | 10, 90, 50 | Network file system for backups |
-| PostgreSQL | 5432 | TCP | 40, 50 | Infrastructure database (InfraCore ↔ ServerVault) |
-| OpenVPN | 1194 | UDP/TCP | 90, 50 | VPN tunnel bootstrap |
-| WireGuard | 51820 | UDP | 90, 50 | VPN tunnel (alternative to OpenVPN) |
-| ONVIF | 8080 | TCP | 81, 82 | Camera discovery and management |
+| Service    | Port(s)   | Protocol | VLAN(s)                | Purpose                                                      |
+| ---------- | --------- | -------- | ---------------------- | ------------------------------------------------------------ |
+| DNS        | 53        | UDP/TCP  | All                    | Domain name resolution; critical for VPN bootstrap (VLAN 90) |
+| DHCP       | 67/68     | UDP      | All                    | Network bootstrap; critical for VPN bootstrap (VLAN 90)      |
+| NTP        | 123       | UDP      | 10, 50                 | Network time synchronization                                 |
+| SSH        | 22        | TCP      | 10, 40, 50             | Secure remote access for management                          |
+| IPP        | 631       | TCP      | 31, 60                 | Internet Printing Protocol for print jobs                    |
+| LPD        | 515       | TCP      | 10, 31, 60             | Legacy line printer daemon                                   |
+| SNMP       | 161/162   | UDP      | 10, 40                 | Network monitoring and management                            |
+| RTSP       | 554       | TCP      | 10, 81, 82, 50         | Real-time streaming protocol for video                       |
+| Syslog     | 514       | UDP      | 40, 50, 81, 82         | Event and log centralization                                 |
+| DLNA       | 1900      | UDP      | 10, 31, 70, 90         | Media discovery and streaming                                |
+| mDNS       | 5353      | UDP      | 20, 31, 60, 70, 81, 82 | Multicast DNS for local device discovery                     |
+| Chromecast | 8008-8009 | TCP      | 10, 31, 70, 90         | Chromecast device control and streaming                      |
+| MQTT       | 1883      | TCP      | 20, 50                 | MQTT broker (non-TLS)                                        |
+| MQTT       | 8883      | TCP      | 20, 50                 | MQTT broker (TLS)                                            |
+| Plex       | 32400     | TCP      | 70, 50                 | Media server for streaming                                   |
+| JetDirect  | 9100      | TCP      | 60, 50                 | Printer status and job submission                            |
+| HTTPS      | 443       | TCP      | All                    | Secure web services, firmware updates, APIs                  |
+| HTTP       | 80        | TCP      | 30, 31, 70             | Unencrypted web services (guest/media/resident)              |
+| SMB        | 445       | TCP      | 10, 31, 50, 60, 70     | File sharing (Windows/Linux)                                 |
+| NFS        | 2049      | TCP      | 10, 90, 50             | Network file system for backups                              |
+| PostgreSQL | 5432      | TCP      | 40, 50                 | Infrastructure database (InfraCore ↔ ServerVault)            |
+| OpenVPN    | 1194      | UDP/TCP  | 90, 50                 | VPN tunnel bootstrap                                         |
+| WireGuard  | 51820     | UDP      | 90, 50                 | VPN tunnel (alternative to OpenVPN)                          |
+| ONVIF      | 8080      | TCP      | 81, 82                 | Camera discovery and management                              |
 
 ---
 

@@ -3,7 +3,7 @@
 **Status:** Ready for Execution  
 **Assigned Agent Skill:** Blueprint Mode v39 / Software Engineer Agent v1  
 **Priority:** Critical  
-**Estimated Effort:** 4–6 hours (comprehensive hardening)  
+**Estimated Effort:** 4–6 hours (comprehensive hardening)
 
 ---
 
@@ -39,7 +39,7 @@
 
 ### Context: Why Rate-Limiting is Critical
 
-The current `docs/services.md` defines *which* traffic is allowed between VLANs, but **not how much** traffic per unit time. Without rate-limiting:
+The current `docs/services.md` defines _which_ traffic is allowed between VLANs, but **not how much** traffic per unit time. Without rate-limiting:
 
 - IoT VLAN (20) could be flooded by a single compromised device
 - Work VLAN (90) could exhaust ServerVault bandwidth via uncontrolled backups
@@ -60,40 +60,46 @@ The current `docs/services.md` defines *which* traffic is allowed between VLANs,
 ## Rate-Limiting Tiers by Zone
 
 ### Trusted Zone (Zones 10, 90)
+
 - **VLAN 10 (Ventana):** 1 Gbps (local network capacity assumption)
 - **VLAN 90 (Work):** 100 Mbps (VPN tunnel constraint; adjust per ISP)
 
 ### Semi-Trusted Zone (Zones 31, 60, 70)
+
 - **VLAN 31 (CapricaResidentPortal):** 50 Mbps (residential casting/printing)
 - **VLAN 60 (Printers):** 100 Mbps (print job queueing)
 - **VLAN 70 (Media):** 500 Mbps (streaming workload)
 
 ### Untrusted Zone (Zones 20, 30)
+
 - **VLAN 20 (IoT):** 10 Mbps per device (tight control; firmware updates/telemetry)
 - **VLAN 30 (Guest):** 50 Mbps (fair-share with multiple guests)
 
 ### Infrastructure Zone (Zone 40)
+
 - **VLAN 40 (InfraCore):** 1 Gbps (management plane; high capacity)
 
 ### Services Zone (Zone 50)
+
 - **VLAN 50 (ServerVault):** 1 Gbps inbound, 100 Mbps outbound Internet (asymmetric; NAS is consumer)
 
 ### Surveillance Zone (Zones 81, 82)
+
 - **VLAN 81 (Cameras Local):** 50 Mbps aggregate (4–8 cameras @ 5–10 Mbps each)
 - **VLAN 82 (Cameras Cloud):** 20 Mbps cloud relay (limit cloud upload to prevent ISP throttling)
 
 ## Per-Service Rate-Limiting Rules
 
-| Service | Port | Source VLAN | Destination VLAN | Connections/min | Bytes/sec Limit | Burst Size |
-|---------|------|-------------|------------------|-----------------|-----------------|-----------|
-| DNS | 53 | All | 50 | 1000 | 100 KB/s | 500 KB |
-| DHCP | 67/68 | All | 50 | 100 | 10 KB/s | 50 KB |
-| HTTPS | 443 | All | 50 | 500 | Unlimited | N/A |
-| SMB | 445 | 10, 31, 70 | 50 | 100 | 50 MB/s | 100 MB |
-| NFS | 2049 | 10, 90 | 50 | 50 | 100 MB/s | 500 MB |
-| MQTT | 8883 | 20 | 50 | 1000 msg/min | 1 MB/s | 10 MB |
-| RTSP | 554 | 10, 81, 82 | 50 | Unlimited | 50 MB/s (per stream) | 200 MB |
-| Syslog | 514 | 40, 81, 82 | 50 | 10000 | 10 MB/s | 50 MB |
+| Service | Port  | Source VLAN | Destination VLAN | Connections/min | Bytes/sec Limit      | Burst Size |
+| ------- | ----- | ----------- | ---------------- | --------------- | -------------------- | ---------- |
+| DNS     | 53    | All         | 50               | 1000            | 100 KB/s             | 500 KB     |
+| DHCP    | 67/68 | All         | 50               | 100             | 10 KB/s              | 50 KB      |
+| HTTPS   | 443   | All         | 50               | 500             | Unlimited            | N/A        |
+| SMB     | 445   | 10, 31, 70  | 50               | 100             | 50 MB/s              | 100 MB     |
+| NFS     | 2049  | 10, 90      | 50               | 50              | 100 MB/s             | 500 MB     |
+| MQTT    | 8883  | 20          | 50               | 1000 msg/min    | 1 MB/s               | 10 MB      |
+| RTSP    | 554   | 10, 81, 82  | 50               | Unlimited       | 50 MB/s (per stream) | 200 MB     |
+| Syslog  | 514   | 40, 81, 82  | 50               | 10000           | 10 MB/s              | 50 MB      |
 
 ## Implementation Targets
 
@@ -136,22 +142,22 @@ Currently, traffic between VLANs uses cleartext protocols:
 
 **Structure:**
 
-```markdown
+````markdown
 # 🔐 Service Mesh Architecture — Battlestar Ventana Network Blueprint
 
 ## Recommended Approach: Linkerd (Lightweight) vs Istio (Full-Featured)
 
 ### Decision Matrix
 
-| Aspect | Linkerd | Istio | Recommendation |
-|--------|---------|-------|-----------------|
-| CPU overhead | 1–2% | 5–10% | **Linkerd** (homelab resource-constrained) |
-| Memory overhead | 50–100 MB | 500 MB–1 GB | **Linkerd** |
-| Encryption (mTLS) | ✅ Built-in | ✅ Built-in | Either |
-| Traffic splitting | ✅ | ✅ | Either |
-| Learning curve | Low | Steep | **Linkerd** |
-| Homelab maturity | Proven | Proven | Either |
-| **Recommendation** | ✅ **PREFERRED** | 🟡 Fallback | **Linkerd** |
+| Aspect             | Linkerd          | Istio       | Recommendation                             |
+| ------------------ | ---------------- | ----------- | ------------------------------------------ |
+| CPU overhead       | 1–2%             | 5–10%       | **Linkerd** (homelab resource-constrained) |
+| Memory overhead    | 50–100 MB        | 500 MB–1 GB | **Linkerd**                                |
+| Encryption (mTLS)  | ✅ Built-in      | ✅ Built-in | Either                                     |
+| Traffic splitting  | ✅               | ✅          | Either                                     |
+| Learning curve     | Low              | Steep       | **Linkerd**                                |
+| Homelab maturity   | Proven           | Proven      | Either                                     |
+| **Recommendation** | ✅ **PREFERRED** | 🟡 Fallback | **Linkerd**                                |
 
 ## Deployment Architecture
 
@@ -161,26 +167,27 @@ flowchart TD
         Controller[Controller Pod]
         Proxy[Proxy Injector]
     end
-    
+
     subgraph Mesh["Injected Services"]
         MQTT[MQTT Broker<br/>ServerVault]
         NAS[NAS Storage<br/>ServerVault]
         Camera[Camera Syslog<br/>ScorpiaShield]
     end
-    
+
     subgraph Clients["Service Clients"]
         IoT[IoT Devices<br/>VLAN 20]
         Work[Work VLAN<br/>VLAN 90]
         Monitor[Monitoring<br/>VLAN 40]
     end
-    
+
     IoT -->|Encrypted<br/>mTLS| MQTT
     Work -->|Encrypted<br/>mTLS| NAS
     Monitor -->|Encrypted<br/>mTLS| Camera
-    
+
     Controller -.->|Manages| Mesh
     Proxy -.->|Injects Sidecars| Mesh
 ```
+````
 
 ## Encryption Scope: Which Services to Encrypt
 
@@ -304,23 +311,23 @@ locals {
     "rtsp"      = { port = 554, protocol = "tcp", vlans = ["10", "81", "82", "50"] }
     "syslog"    = { port = 514, protocol = "udp", vlans = ["40", "50", "81", "82"] }
   }
-  
+
   # Firewall rules generated from services matrix
   firewall_rules = [
     # Trusted (10) → IoT (20): DHCP, DNS
     { source_vlan = 10, dest_vlan = 20, service = "dhcp", action = "allow" },
     { source_vlan = 10, dest_vlan = 20, service = "dns", action = "allow" },
-    
+
     # Trusted (10) → ServerVault (50): Full access
     { source_vlan = 10, dest_vlan = 50, service = "dns", action = "allow" },
     { source_vlan = 10, dest_vlan = 50, service = "https", action = "allow" },
     { source_vlan = 10, dest_vlan = 50, service = "smb", action = "allow" },
     { source_vlan = 10, dest_vlan = 50, service = "nfs", action = "allow" },
-    
+
     # IoT (20) → ServerVault (50): Limited (MQTT, HTTPS)
     { source_vlan = 20, dest_vlan = 50, service = "mqtt", action = "allow" },
     { source_vlan = 20, dest_vlan = 50, service = "https", action = "allow" },
-    
+
     # Add remaining rules (abbreviated; full matrix would be much longer)
   ]
 }
@@ -333,26 +340,26 @@ resource "null_resource" "generate_ufw_rules" {
         #!/bin/bash
         # Auto-generated UFW firewall rules
         # Source: docs/services.md + firewall-matrix.md
-        
+
         # Trusted (10) → IoT (20)
         ufw allow from 10.76.10.0/24 to 10.76.20.0/24 port 53 proto udp comment "DNS"
         ufw allow from 10.76.10.0/24 to 10.76.20.0/24 port 67 proto udp comment "DHCP"
-        
+
         # Trusted (10) → ServerVault (50)
         ufw allow from 10.76.10.0/24 to 10.76.50.0/24 port 445 proto tcp comment "SMB"
         ufw allow from 10.76.10.0/24 to 10.76.50.0/24 port 2049 proto tcp comment "NFS"
         ufw allow from 10.76.10.0/24 to 10.76.50.0/24 port 443 proto tcp comment "HTTPS"
-        
+
         # IoT (20) → ServerVault (50) [Limited]
         ufw allow from 10.76.20.0/24 to 10.76.50.0/24 port 8883 proto tcp comment "MQTT TLS"
         ufw allow from 10.76.20.0/24 to 10.76.50.0/24 port 443 proto tcp comment "HTTPS"
-        
+
         # ... (remaining rules)
       RULES
       bash /tmp/ufw_rules.sh
     EOT
   }
-  
+
   triggers = {
     # Regenerate if services matrix changes
     services_hash = filemd5("${path.module}/../../docs/services.md")
@@ -396,7 +403,7 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
 
 **Structure:**
 
-```markdown
+````markdown
 # 🚨 SIEM Policy Violation Alerting — Battlestar Ventana Network Blueprint
 
 ## Alert Categories
@@ -404,6 +411,7 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
 ### Category A: Hard Violations (Immediate Page)
 
 #### A1: Guest VLAN (30) Access to LAN
+
 - **Alert:** Bytes transferred from VLAN 30 to any LAN VLAN (10, 31, 40, 50, 60, 70, 81, 82, 90)
 - **Severity:** CRITICAL
 - **Action:** Page on-call; investigate VLAN configuration
@@ -415,9 +423,10 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
     labels:
       severity: critical
     annotations:
-      summary: "Guest VLAN attempting LAN access"
-      description: "{{ $value }} packets/sec blocked from VLAN 30 → LAN"
+      summary: 'Guest VLAN attempting LAN access'
+      description: '{{ $value }} packets/sec blocked from VLAN 30 → LAN'
   ```
+````
 
 #### A2: IoT VLAN (20) Accessing Trusted (10)
 
@@ -433,7 +442,7 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
     labels:
       severity: critical
     annotations:
-      summary: "Unauthorized IoT → Trusted traffic detected"
+      summary: 'Unauthorized IoT → Trusted traffic detected'
   ```
 
 ### Category B: Threshold Violations (Alert, Don't Page)
@@ -452,8 +461,8 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
     labels:
       severity: warning
     annotations:
-      summary: "VLAN {{ $labels.vlan }} approaching rate-limit"
-      description: "Current: {{ $value | humanize }}% of limit"
+      summary: 'VLAN {{ $labels.vlan }} approaching rate-limit'
+      description: 'Current: {{ $value | humanize }}% of limit'
   ```
 
 #### B2: Service Mesh Encryption Failures
@@ -470,7 +479,7 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
     labels:
       severity: warning
     annotations:
-      summary: "Service Mesh mTLS failures detected"
+      summary: 'Service Mesh mTLS failures detected'
   ```
 
 #### B3: Firewall Rule Generation Failures
@@ -484,12 +493,12 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
   # .github/workflows/firewall-validate.yml
   - name: Validate firewall rules
     run: terraform plan -out=/tmp/firewall.plan
-    
+
   - name: Notify on failure
     if: failure()
     uses: slackapi/slack-notify-action
     with:
-      text: "Firewall rule generation FAILED. Review: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      text: 'Firewall rule generation FAILED. Review: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
   ```
 
 ### Category C: Anomaly Detection (Informational)
@@ -502,8 +511,8 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
 - **Query:**
 
   ```promql
-  (sum by (source_vlan, dest_vlan, service) (rate(firewall_packets_allowed[5m])) 
-    - on (dest_vlan, service) group_left 
+  (sum by (source_vlan, dest_vlan, service) (rate(firewall_packets_allowed[5m]))
+    - on (dest_vlan, service) group_left
     (sum by (dest_vlan, service) (avg(rate(firewall_packets_allowed[24h])))))
   ```
 
@@ -518,25 +527,25 @@ With 11 VLANs and 30+ services, manual monitoring is infeasible. Without SIEM:
 ```yaml
 # alerts/alertmanager-config.yaml
 global:
-  slack_api_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+  slack_api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
 
 route:
-  group_by: ["alertname", "cluster"]
+  group_by: ['alertname', 'cluster']
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 12h
-  
+
   routes:
     - match:
         severity: critical
       receiver: pagerduty
       repeat_interval: 5m
-      
+
     - match:
         severity: warning
       receiver: slack
       repeat_interval: 1h
-      
+
     - match:
         severity: info
       receiver: audit_log
@@ -544,15 +553,15 @@ route:
 receivers:
   - name: pagerduty
     pagerduty_configs:
-      - service_key: "YOUR_PAGERDUTY_KEY"
-      
+      - service_key: 'YOUR_PAGERDUTY_KEY'
+
   - name: slack
     slack_configs:
-      - channel: "#network-alerts"
-        
+      - channel: '#network-alerts'
+
   - name: audit_log
     webhook_configs:
-      - url: "http://splunk:8088/services/collector"
+      - url: 'http://splunk:8088/services/collector'
         send_resolved: true
 
 inhibit_rules:
@@ -710,7 +719,7 @@ Already complete and verified:
 - [ ] **VLAN 10 (Ventana) → ServerVault (50):** Define "General LAN access" ports
   - Likely: DNS (53), NTP (123), HTTPS (443), SMB (445), NFS (2049), DHCP (67/68)
   - Verify existing entries in Firewall Matrix reference table
-  
+
 - [ ] **VLAN 90 (Work) → ServerVault (50):** Complete SMB/NFS and VPN bootstrap ports
   - DNS (53), DHCP (67/68), SMB (445), NFS (2049), likely OpenVPN (1194) or WireGuard (51820)
   - Confirm VPN technology in use from infrastructure/ docs
@@ -818,6 +827,7 @@ Update [docs/services.md](docs/services.md) with:
 
 ---
 
-**Assigned to:** Blueprint Mode v39 / Software Engineer Agent v1  
-**Status:** Ready for Execution  
+**Assigned to:** Blueprint Mode v39 / Software Engineer Agent v1
+**Status:** Ready for Execution
 **Next Step:** Agent to execute plan and report completion status
+```

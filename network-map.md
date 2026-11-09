@@ -9,19 +9,19 @@
 
 ## VLAN Map
 
-| VLAN | Name | Subnet | Zone | Purpose |
-|------|------|--------|------|---------|
-| 10 | Battlestar Ventana | 10.76.10.0/24 | Trusted | Primary LAN |
-| 20 | CylonSynthLink | 10.76.20.0/24 | Untrusted | IoT |
-| 30 | CapricaGuestPortal | 10.76.30.0/24 | Untrusted | Guest internet |
-| 31 | CapricaResidentPortal | 10.76.31.0/24 | Semi‑Trusted | Residents |
-| 40 | InfraCore | 10.76.40.0/24 | Infra | Switches/controllers |
-| 50 | ServerVault | 10.76.50.0/24 | Services | NAS, MQTT, DNS/DHCP |
-| 60 | VirgonFleetYard | 10.76.60.0/24 | Semi‑Trusted | Printers |
-| 70 | PegasusMediaNode | 10.76.70.0/24 | Semi‑Trusted | Media/Casting |
-| 81 | ScorpiaMediaShield | 10.76.81.0/24 | Surveillance | Cameras (Local) |
-| 82 | ScorpiaMediaRelay | 10.76.82.0/24 | Surveillance | Cameras (Cloud) |
-| 90 | ScyllaProcessControl | 10.76.90.0/24 | Trusted | Work VLAN |
+| VLAN | Name                  | Subnet        | Zone         | Purpose              |
+| ---- | --------------------- | ------------- | ------------ | -------------------- |
+| 10   | Battlestar Ventana    | 10.76.10.0/24 | Trusted      | Primary LAN          |
+| 20   | CylonSynthLink        | 10.76.20.0/24 | Untrusted    | IoT                  |
+| 30   | CapricaGuestPortal    | 10.76.30.0/24 | Untrusted    | Guest internet       |
+| 31   | CapricaResidentPortal | 10.76.31.0/24 | Semi‑Trusted | Residents            |
+| 40   | InfraCore             | 10.76.40.0/24 | Infra        | Switches/controllers |
+| 50   | ServerVault           | 10.76.50.0/24 | Services     | NAS, MQTT, DNS/DHCP  |
+| 60   | VirgonFleetYard       | 10.76.60.0/24 | Semi‑Trusted | Printers             |
+| 70   | PegasusMediaNode      | 10.76.70.0/24 | Semi‑Trusted | Media/Casting        |
+| 81   | ScorpiaMediaShield    | 10.76.81.0/24 | Surveillance | Cameras (Local)      |
+| 82   | ScorpiaMediaRelay     | 10.76.82.0/24 | Surveillance | Cameras (Cloud)      |
+| 90   | ScyllaProcessControl  | 10.76.90.0/24 | Trusted      | Work VLAN            |
 
 ## Key Flows (High Level)
 
