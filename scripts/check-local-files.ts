@@ -125,8 +125,7 @@ function gitLines(args: string[]): string[] {
 }
 
 // Added, copied, modified and renamed files: a PR that deletes a forbidden file is fixing it.
-export const changedSince = (base: string) =>
-  gitLines(['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`]);
+export const changedSince = (base: string) => gitLines(['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`]);
 export const trackedFiles = () => gitLines(['ls-files']);
 
 function main(argv: string[]): number {
@@ -147,7 +146,7 @@ function main(argv: string[]): number {
       console.error(
         `\n${violations.length} local file(s) found. Remove them from the commit (git rm --cached <file>) ` +
           'and keep them ignored. If a file is a legitimate shared template, a person adds it to ' +
-          '"allowed" in .github/local-files-policy.json with a reason.',
+          '"allowed" in .github/local-files-policy.json with a reason.'
       );
       return 1;
     }

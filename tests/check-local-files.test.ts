@@ -1,13 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import {
-  findViolations,
-  loadPolicy,
-  parsePolicy,
-  trackedFiles,
-  type Policy,
-} from '../scripts/check-local-files.ts';
+import { findViolations, loadPolicy, parsePolicy, trackedFiles, type Policy } from '../scripts/check-local-files.ts';
 
 const SCRIPT = fileURLToPath(new URL('../scripts/check-local-files.ts', import.meta.url));
 const BACKSLASH = String.fromCharCode(92);
@@ -44,7 +38,9 @@ describe('findViolations', () => {
   });
 
   it('does not flag ordinary files or look-alikes', () => {
-    expect(flagged('README.md', 'config/vlan-registry.yaml', 'local-notes.md', 'localhost.json', 'src/local/a.ts')).toEqual([]);
+    expect(
+      flagged('README.md', 'config/vlan-registry.yaml', 'local-notes.md', 'localhost.json', 'src/local/a.ts')
+    ).toEqual([]);
   });
 
   it('normalizes Windows separators and a leading ./', () => {
@@ -103,9 +99,13 @@ describe('the repository policy', () => {
         cwd,
         encoding: 'utf8',
       });
-    const dir = spawnSync(process.execPath, ['-e', "process.stdout.write(require('node:fs').mkdtempSync(require('node:os').tmpdir()+'/lfp-'))"], {
-      encoding: 'utf8',
-    }).stdout;
+    const dir = spawnSync(
+      process.execPath,
+      ['-e', "process.stdout.write(require('node:fs').mkdtempSync(require('node:os').tmpdir()+'/lfp-'))"],
+      {
+        encoding: 'utf8',
+      }
+    ).stdout;
     run(dir, 'init', '-q', '-b', 'main');
     spawnSync(process.execPath, ['-e', "require('node:fs').writeFileSync('a.txt','x')"], { cwd: dir });
     run(dir, 'add', '.');
