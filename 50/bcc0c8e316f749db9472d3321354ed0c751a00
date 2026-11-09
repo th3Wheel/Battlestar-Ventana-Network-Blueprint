@@ -1,0 +1,31 @@
+.github/workflows/local-files.yml
+  s_e142a97a9d77af::t_c25f75df5cb140 26-31
+.github/workflows/mcp-workflow.yml
+  s_e142a97a9d77af::t_9a4be676d161c7 13-18
+.github/workflows/test.yml
+  s_e142a97a9d77af::t_6c2cb9ffb2804c 13-18
+.github/workflows/validate-agents-regression.yml
+  s_e142a97a9d77af::t_a9fa694ed05e6c 15-20
+.github/workflows/validate-camera-map.yml
+  s_e142a97a9d77af::t_2846abbdc98502 13-18
+.github/workflows/validate-network-config.yml
+  s_e142a97a9d77af::t_b34e826baa8748 20-25
+.github/workflows/super-linter.yml
+  s_e142a97a9d77af::t_f07c692f5bd29e 20-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "50bcc0c8e316f749db9472d3321354ed0c751a00",
+  "prompts": {},
+  "sessions": {
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
