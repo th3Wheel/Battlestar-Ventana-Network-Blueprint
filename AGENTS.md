@@ -13,9 +13,14 @@
 - `config/network-topology.yaml` is canonical for infrastructure addresses,
   service VIPs, and DNS records. Treat Ansible VLAN variables as projections.
 - `docs/tech-stack-baseline.md` is canonical for the supported toolchain.
-- `*/settings.local.json` (such as `.claude/settings.local.json`) is per-machine;
-  never commit it. `.gitignore` ignores it and `tests/local-settings.test.ts`
-  fails if one is tracked.
+- Per-machine files must never be committed: `*/settings.local.json`, any
+  `*.local.*`, `.env*` (except `.env.example`), keys, and state files.
+  `.github/local-files-policy.json` is the list (changes need a person via
+  CODEOWNERS), `scripts/check-local-files.ts` enforces it, `.gitignore` is the
+  first line of defence, and the `Forbid local files` pull request check fails
+  on a violation. It runs from the base branch (`pull_request_target`), so a pull
+  request cannot edit the checker or policy to pass its own check. GitHub blocks
+  the merge only once the branch ruleset lists that check as required.
 - Add project skills under `.agents/skills/`; follow
   `.github/instructions/agent-skills.instructions.md`.
 - For issue, branch, commit, or pull request work, follow
@@ -51,8 +56,10 @@ The rule guards the default branch, so an agent may merge pull requests into
 another branch, such as an integration branch used to get a set of changes
 working together. The pull request that carries that branch into the default
 branch is the one a person reads and merges, and it is held to this list like
-any other. `.claude/hooks/merge-gate.mts` enforces exactly this. The
-governance project will revisit the rule and its enforcement.
+any other. `.claude/hooks/merge-gate.mts` enforces exactly this, and also refuses an
+agent merge that carries a per-machine file listed in
+`.github/local-files-policy.json`. The governance project will revisit the rule
+and its enforcement.
 
 - Changes under `config/`, `ansible/`, or `infrastructure/`.
 - Changes to `mcp-config.json`, `.mcp.json`, `.cursor/mcp.json`,

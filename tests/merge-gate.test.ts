@@ -231,6 +231,53 @@ describe('decide', () => {
     expect(decide(bash('gh pr merge 1'), { listFiles: () => ['docs/a.md'] })).toBeNull();
   });
 
+  describe('per-machine files (.github/local-files-policy.json)', () => {
+    const merge = (files: string[], policy?: () => never) =>
+      decide(bash('gh pr merge 1'), { listFiles: () => files, ...(policy && { policy }) });
+
+    it.each(['.claude/settings.local.json', 'notes.local.md', 'deploy/.env', 'keys/id_ed25519'])(
+      'denies a merge that carries %s',
+      (file) => {
+        expect(merge(['docs/a.md', file])).toMatch(/local-files-policy\.json.*per-machine files/);
+        expect(merge(['docs/a.md', file])).toContain(file);
+      }
+    );
+
+    it('lets the .env.example template through', () => {
+      expect(merge(['docs/a.md', '.env.example'])).toBeNull();
+    });
+
+    it('reports risk paths and per-machine files together', () => {
+      const reason = merge(['ansible/site.yml', '.claude/settings.local.json']);
+      expect(reason).toMatch(/Never merges without a human.*ansible\/site\.yml/);
+      expect(reason).toMatch(/local-files-policy\.json.*settings\.local\.json/);
+    });
+
+    it('applies to pushes to the default branch too', () => {
+      const TIP = 'a'.repeat(40);
+      const run = fake({
+        'git ls-remote origin refs/heads/master': `${TIP}\trefs/heads/master\n`,
+        [`git cat-file -e ${TIP}^{commit}`]: '',
+        [`git diff --name-only -z --no-renames ${TIP} HEAD --`]: 'docs/a.md\0.claude/settings.local.json\0',
+      });
+      expect(decide(bash('git push origin HEAD:master'), { run })).toMatch(/per-machine files.*settings\.local\.json/);
+    });
+
+    it('fails closed when the policy cannot be loaded', () => {
+      const unreadable = () => {
+        throw new Error('policy missing');
+      };
+      expect(merge(['docs/a.md'], unreadable)).toMatch(/could not verify.*policy missing/);
+    });
+
+    it('does not read the policy for commands that are not merges', () => {
+      const unreadable = () => {
+        throw new Error('policy missing');
+      };
+      expect(decide(bash('ls -la'), { policy: unreadable })).toBeNull();
+    });
+  });
+
   it('explains a refusal that is not about files', () => {
     expect(decide(bash('gh pr merge 1 --auto'))).toMatch(/--auto.*merge immediately/);
   });

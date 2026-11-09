@@ -4,6 +4,7 @@ import { devNull, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { loadPolicy } from '../scripts/check-local-files.ts';
 
 // `*/settings.local.json` is per-machine: a person's own permissions and paths. It must
 // never be committed, whichever agent's directory it sits in. Several independent checks
@@ -74,4 +75,32 @@ describe('per-machine settings.local.json', () => {
     expect(source).toBeDefined();
     expect(isGitignore(source)).toBe(false);
   });
+});
+
+// The policy file decides what a pull request may not carry; .gitignore is the first line of
+// defence on a developer's machine. Without this, the two lists drift and files the policy
+// forbids can still be staged by accident, caught only after a pull request is opened.
+describe('.gitignore covers .github/local-files-policy.json', () => {
+  const policy = loadPolicy();
+  // A concrete path a pattern should match, at the repository root and one directory down.
+  const samplesFor = (pattern: string) => {
+    const path = pattern.replaceAll('**', 'x').replaceAll('*', 'x').replaceAll('?', 'x');
+    return [path, path.replace(/^x\//, '')];
+  };
+
+  it.each(policy.forbidden.flatMap((rule) => samplesFor(rule.pattern).map((file) => [rule.pattern, file])))(
+    'a .gitignore rule ignores what %s forbids: %s',
+    (_pattern, file) => {
+      expect(isGitignore(ignoringSource(REPO, file))).toBe(true);
+    }
+  );
+
+  it.each(policy.allowed.flatMap((rule) => samplesFor(rule.path).map((file) => [rule.path, file])))(
+    'what the policy allows (%s) is not ignored: %s',
+    (_path, file) => {
+      // Not `-v`: it reports a `!` negation rule as a match. `-q` gives the final decision,
+      // exit 1 meaning "not ignored".
+      expect(git(REPO, ...NO_GLOBAL_EXCLUDES, 'check-ignore', '--no-index', '-q', file).status).toBe(1);
+    }
+  );
 });

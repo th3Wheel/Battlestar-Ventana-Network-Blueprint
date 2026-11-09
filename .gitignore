@@ -15,3 +15,21 @@ debug.log
 
 # Per-machine agent settings (Claude Code, Gemini CLI and others); never commit.
 **/settings.local.json
+
+# Per-machine and secret files. This mirrors .github/local-files-policy.json, which the
+# "Forbid local files" pull request check enforces; tests/local-settings.test.ts fails if a
+# forbidden pattern there has no matching rule here. Keep the two in step.
+**/*.local.*
+.vscode/launch.json
+.idea/
+.worktrees/
+**/.env*
+!**/.env.example
+**/*.pem
+**/*.key
+**/id_rsa
+**/id_ed25519
+**/*.tfstate
+**/*.tfstate.*
+**/kubeconfig
+**/.netrc
