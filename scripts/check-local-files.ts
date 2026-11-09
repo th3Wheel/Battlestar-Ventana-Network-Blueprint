@@ -113,7 +113,9 @@ export function globToRegExp(glob: string): RegExp {
       source += REGEX_SPECIALS.includes(char) ? ESCAPE + char : char;
     }
   }
-  return new RegExp(`^${source}$`);
+  // The `s` flag lets `.` match a newline: git allows one in a path, and without the flag
+  // `**` would stop at it and a forbidden file in such a directory would pass.
+  return new RegExp(`^${source}$`, 's');
 }
 export const matchesGlob = (file: string, glob: string) => globToRegExp(glob).test(file);
 

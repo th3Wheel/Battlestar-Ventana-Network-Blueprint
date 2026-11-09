@@ -47,6 +47,10 @@ describe('findViolations', () => {
     ]);
   });
 
+  it('flags a forbidden file under a directory whose name contains a newline', () => {
+    expect(flagged('dir\nsub/.env', 'dir\nsub/file.local.json', 'a\nb/.claude/settings.local.json')).toHaveLength(3);
+  });
+
   it('does not flag ordinary files or look-alikes', () => {
     expect(
       flagged('README.md', 'config/vlan-registry.yaml', 'local-notes.md', 'localhost.json', 'src/local/a.ts')
