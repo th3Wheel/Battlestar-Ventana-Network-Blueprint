@@ -20,6 +20,11 @@ permissions:
 jobs:
   run-lint:
     runs-on: ubuntu-latest
+    # One run per branch or pull request: a new push cancels that ref's older lint run, never another ref's. Runs on
+    # master are not cancelled, so every merge keeps its own result.
+    concurrency:
+      group: lint-code-base-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
     steps:
       # Install third-party code under the runner's temp dir, never in the checkout. super-linter's
       # container mounts it at /github/runner_temp, so ansible-lint can still find the collections.
