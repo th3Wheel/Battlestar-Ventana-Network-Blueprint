@@ -32,8 +32,13 @@ const MONTH_INDEX = {
   dec: 11,
 };
 
-const MONTH_PATTERN =
-  'january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec';
+// Built from MONTH_INDEX so the pattern and the table cannot drift apart. The keys are plain letters, so they need
+// no escaping. Longest names first, so "september" is tried before "sep".
+const MONTH_PATTERN = Object.keys(MONTH_INDEX)
+  .sort((a, b) => b.length - a.length)
+  .join('|');
+const MONTH_YEAR_RE = new RegExp(`\\b(${MONTH_PATTERN})\\s+(\\d{4})\\b`);
+const MONTH_ONLY_RE = new RegExp(`\\b(${MONTH_PATTERN})\\b`);
 
 function monthRange(monthStr, year) {
   const mIdx = MONTH_INDEX[monthStr];
@@ -105,7 +110,7 @@ export function parseDateRange(text) {
   }
 
   // month-year like "february 2006" or "feb 2006"
-  if ((match = lower.match(new RegExp(`\\b(${MONTH_PATTERN})\\s+(\\d{4})\\b`)))) {
+  if ((match = lower.match(MONTH_YEAR_RE))) {
     const year = parseInt(match[2], 10);
     if (MONTH_INDEX[match[1]] !== undefined && !Number.isNaN(year)) {
       return monthRange(match[1], year);
@@ -139,7 +144,7 @@ export function parseDateRange(text) {
   }
 
   // month-only like "february" or "feb" (assume current year)
-  if ((match = lower.match(new RegExp(`\\b(${MONTH_PATTERN})\\b`)))) {
+  if ((match = lower.match(MONTH_ONLY_RE))) {
     if (MONTH_INDEX[match[1]] !== undefined) {
       return monthRange(match[1], now.getFullYear());
     }
