@@ -241,6 +241,43 @@
       loop_control:
         label: 'VLAN {{ item.id }}'
       delegate_to: localhost
+
+    - name: Initialize current VLAN env filenames
+      ansible.builtin.set_fact:
+        linux_router_eval_current_vlan_env_files: []
+
+    - name: Collect current VLAN env filenames
+      ansible.builtin.set_fact:
+        linux_router_eval_current_vlan_env_files: >-
+          {{
+            linux_router_eval_current_vlan_env_files
+            + ['vlan-' ~ (item.id | string) ~ '-' ~ (item.name | lower) ~ '.env']
+          }}
+      loop: '{{ vlans }}'
+      loop_control:
+        label: 'VLAN {{ item.id }}'
+
+    - name: Find obsolete VLAN prototype files
+      ansible.builtin.find:
+        paths: '{{ playbook_dir }}/../../projects/route-pi-squared/infrastructure/linux-router/prototypes'
+        patterns:
+          - '^vlan-[0-9]+-.+\.env$'
+          - '^lnxrouter-vlan-[0-9]+.*\.sh$'
+        use_regex: true
+      register: linux_router_eval_vlan_prototype_files
+      delegate_to: localhost
+
+    - name: Remove obsolete VLAN prototype files
+      ansible.builtin.file:
+        path: '{{ item.path }}'
+        state: absent
+      loop: '{{ linux_router_eval_vlan_prototype_files.files }}'
+      loop_control:
+        label: '{{ item.path | basename }}'
+      when: >-
+        item.path | basename is match('^lnxrouter-vlan-[0-9]+.*\.sh$') or
+        item.path | basename not in linux_router_eval_current_vlan_env_files
+      delegate_to: localhost
   rescue:
     - name: Report which phase failed
       ansible.builtin.fail:
