@@ -574,8 +574,7 @@ inhibit_rules:
 
 ---
 
-```
-
+```markdown
 ### Key Deliverables for This Section
 
 1. **Prometheus alerting rules** (10+ rules covering hard violations, thresholds, anomalies)
@@ -589,53 +588,57 @@ inhibit_rules:
 ## 📊 Updated Task Deliverables
 
 ### Phase 1: Core Services Matrix Enhancements (Completed ✅)
+
 - ✅ `docs/services.md` (475 lines, 30+ services, all ports mapped)
 - ✅ Validation checklist passing
 
 ### Phase 2: Rate-Limiting (Enhancement 1)
+
 - [ ] `docs/rate-limiting-strategy.md` (rate-limiting matrix per VLAN + per-service rules)
 - [ ] UFW rate-limiting implementation examples
 - [ ] Monitoring integration (alert at 80% threshold)
 
 ### Phase 3: Service Mesh (Enhancement 2)
+
 - [ ] `docs/service-mesh-architecture.md` (Linkerd vs Istio decision + deployment blueprint)
 - [ ] Kubernetes manifests (control plane, proxy injection, mTLS certs)
 - [ ] Service encryption audit (which services to encrypt first)
 
 ### Phase 4: Firewall Automation (Enhancement 3)
+
 - [ ] `infrastructure/terraform/firewall-automation.tf` (rule generation from markdown)
 - [ ] `scripts/services_to_ufw.py` (conversion script for parsing/generation)
 - [ ] `.github/workflows/firewall-validate.yml` (CI/CD validation + diff preview)
 
 ### Phase 5: SIEM Alerting (Enhancement 4)
+
 - [ ] `docs/siem-alerting-rules.md` (10+ Prometheus alert rules + routing config)
 - [ ] `alerts/prometheus-rules.yml` (complete rule definitions)
 - [ ] `alerts/alertmanager-config.yaml` (receiver setup + slack/pagerduty integration)
 - [ ] `dashboards/siem-violations.json` (Grafana dashboard for monitoring violations)
 
 ### Phase 6: Integration & Validation
+
 - [ ] Update `docs/Project_Architecture_Blueprint.md` with new security layers
 - [ ] Update `.github/copilot-instructions.md` with security/automation patterns
 - [ ] Create `docs/hardening-rollout-plan.md` (phased deployment schedule)
 - [ ] Run all linters; commit with `-S` flag
 
-
-
 ### Firewall Policy Foundation (From firewall-matrix.md)
 
-| Source → Destination | 10 | 20 | 30 | 31 | 40 | 50 | 60 | 70 | 81 | 82 | 90 |
-|----------------------|----|----|----|----|----|----|----|----|----|----|----|
-| **10 Trusted**       | ✅ | 🟡 Limited | ❌ | 🟡 Limited | ✅ | ✅ | ✅ | ✅ | 🔵 View | 🔵 View | ✅  |
-| **20 IoT**           | ❌ | ✅ | ❌ | ❌ | ❌ | 🟡 Limited | ❌ | ❌ | ❌ | ❌ | ❌  |
-| **30 Guest**         | ❌ | ❌ | ✅ Internet | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌  |
-| **31 CapricaResidentPortal**  | 🟡 Limited | ❌ | ❌ | ✅ Internet | ❌ | 🟡 Limited | ✅ Full | ✅ Full | ❌ | ❌ | ❌  |
-| **40 InfraCore**     | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌  |
-| **50 ServerVault**   | ✅ | 🟡 Limited | ❌ | 🟡 Limited | ✅ | ✅ | ✅ | 🟡 Limited | 🔵 View | 🔵 View | 🟡 Limited  |
-| **60 Printers**      | ✅ | ❌ | ❌ | 🟡 Limited | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🟡 Limited  |
-| **70 Media**         | ✅ | ❌ | ❌ | ✅ Full | ❌ | 🟡 Limited | ❌ | ✅ | ❌ | ❌ | ❌  |
-| **81 Cameras Local** | 🔵 View | ❌ | ❌ | ❌ | ❌ | 🔵 View | ❌ | ❌ | ✅ | ❌ | ❌  |
-| **82 Cameras Cloud** | 🔵 View | ❌ | ❌ | ❌ | ❌ | 🔵 View | ❌ | ❌ | ❌ | ✅ | ❌  |
-| **90 Work**          | ✅ | ❌ | ❌ | ❌ | ❌ | 🟡 Limited | 🟡 Limited | ❌ | ❌ | ❌ | ✅  |
+| Source → Destination         | 10         | 20         | 30          | 31          | 40  | 50         | 60         | 70         | 81      | 82      | 90         |
+| ---------------------------- | ---------- | ---------- | ----------- | ----------- | --- | ---------- | ---------- | ---------- | ------- | ------- | ---------- |
+| **10 Trusted**               | ✅         | 🟡 Limited | ❌          | 🟡 Limited  | ✅  | ✅         | ✅         | ✅         | 🔵 View | 🔵 View | ✅         |
+| **20 IoT**                   | ❌         | ✅         | ❌          | ❌          | ❌  | 🟡 Limited | ❌         | ❌         | ❌      | ❌      | ❌         |
+| **30 Guest**                 | ❌         | ❌         | ✅ Internet | ❌          | ❌  | ❌         | ❌         | ❌         | ❌      | ❌      | ❌         |
+| **31 CapricaResidentPortal** | 🟡 Limited | ❌         | ❌          | ✅ Internet | ❌  | 🟡 Limited | ✅ Full    | ✅ Full    | ❌      | ❌      | ❌         |
+| **40 InfraCore**             | ✅         | ❌         | ❌          | ❌          | ✅  | ✅         | ❌         | ❌         | ❌      | ❌      | ❌         |
+| **50 ServerVault**           | ✅         | 🟡 Limited | ❌          | 🟡 Limited  | ✅  | ✅         | ✅         | 🟡 Limited | 🔵 View | 🔵 View | 🟡 Limited |
+| **60 Printers**              | ✅         | ❌         | ❌          | 🟡 Limited  | ❌  | ✅         | ✅         | ❌         | ❌      | ❌      | 🟡 Limited |
+| **70 Media**                 | ✅         | ❌         | ❌          | ✅ Full     | ❌  | 🟡 Limited | ❌         | ✅         | ❌      | ❌      | ❌         |
+| **81 Cameras Local**         | 🔵 View    | ❌         | ❌          | ❌          | ❌  | 🔵 View    | ❌         | ❌         | ✅      | ❌      | ❌         |
+| **82 Cameras Cloud**         | 🔵 View    | ❌         | ❌          | ❌          | ❌  | 🔵 View    | ❌         | ❌         | ❌      | ✅      | ❌         |
+| **90 Work**                  | ✅         | ❌         | ❌          | ❌          | ❌  | 🟡 Limited | 🟡 Limited | ❌         | ❌      | ❌      | ✅         |
 
 **Legend:**
 
@@ -646,60 +649,60 @@ inhibit_rules:
 
 ### VLAN Inventory (From Battlestar-Ventana-Blueprint-Summary.md)
 
-| SSID Name | VLAN | Subnet | Services |
-|-----------|------|--------|----------|
-| Battlestar Ventana | 10 | 10.76.10.0/24 | Trusted LAN |
-| CylonSynthLink | 20 | 10.76.20.0/24 | IoT devices |
-| CapricaGuestPortal | 30 | 10.76.30.0/24 | Guest – Internet only |
-| CapricaResidentPortal | 31 | 10.76.31.0/24 | Semi-trusted (casting, printing, limited LAN) |
-| InfraCore | 40 | 10.76.40.0/24 | Switches, controllers |
-| ServerVault | 50 | 10.76.50.0/24 | NAS, MQTT, Home Assistant |
-| VirgonFleetYard | 60 | 10.76.60.0/24 | Printers |
-| PegasusMediaNode | 70 | 10.76.70.0/24 | Media / Casting |
-| ScorpiaMediaShield | 81 | 10.76.81.0/24 | Cameras – Local |
-| ScorpiaMediaRelay | 82 | 10.76.82.0/24 | Cameras – Cloud |
-| ScyllaProcessControl | 90 | 10.76.90.0/24 | Work VLAN |
+| SSID Name             | VLAN | Subnet        | Services                                      |
+| --------------------- | ---- | ------------- | --------------------------------------------- |
+| Battlestar Ventana    | 10   | 10.76.10.0/24 | Trusted LAN                                   |
+| CylonSynthLink        | 20   | 10.76.20.0/24 | IoT devices                                   |
+| CapricaGuestPortal    | 30   | 10.76.30.0/24 | Guest – Internet only                         |
+| CapricaResidentPortal | 31   | 10.76.31.0/24 | Semi-trusted (casting, printing, limited LAN) |
+| InfraCore             | 40   | 10.76.40.0/24 | Switches, controllers                         |
+| ServerVault           | 50   | 10.76.50.0/24 | NAS, MQTT, Home Assistant                     |
+| VirgonFleetYard       | 60   | 10.76.60.0/24 | Printers                                      |
+| PegasusMediaNode      | 70   | 10.76.70.0/24 | Media / Casting                               |
+| ScorpiaMediaShield    | 81   | 10.76.81.0/24 | Cameras – Local                               |
+| ScorpiaMediaRelay     | 82   | 10.76.82.0/24 | Cameras – Cloud                               |
+| ScyllaProcessControl  | 90   | 10.76.90.0/24 | Work VLAN                                     |
 
 ### Existing Port Mappings (From firewall-matrix.md Service/Ports Reference Table)
 
 Already complete and verified:
 
-| Source → Destination | Allowed Services/Ports | Protocol | Notes |
-|----------------------|----------------------|----------|-------|
-| **10 Trusted → 20 IoT** | DHCP (67/68), DNS (53) | UDP | Basic network services |
-| **10 Trusted → 40 InfraCore** | SSH (22), HTTPS (443), SNMP (161) | TCP | Management access |
-| **10 Trusted → 50 ServerVault** | SMB (445), NFS (2049), HTTPS (443) | TCP | File sharing & web services |
-| **10 Trusted → 60 Printers** | IPP (631), LPD (515) | TCP | Print services |
-| **10 Trusted → 70 Media** | DLNA (1900), Chromecast (8008-8009) | TCP/UDP | Media casting & streaming |
-| **10 Trusted → 81/82 Cameras** | RTSP (554), HTTPS (443) | TCP | Camera viewing & management |
-| **20 IoT → 50 ServerVault** | MQTT (8883), HTTPS (443) | TCP | Telemetry & firmware updates |
-| **31 GuestElevated → 50 ServerVault** | IPP (631), SMB (445) | TCP | Print & file services |
-| **31 GuestElevated → 60 Printers** | IPP (631), LPD (515) | TCP | Print services |
-| **31 GuestElevated → 70 Media** | DLNA (1900), Chromecast (8008-8009) | TCP/UDP | Media casting |
-| **40 InfraCore → 50 ServerVault** | SSH (22), HTTPS (443), PostgreSQL (5432) | TCP | Infrastructure management |
-| **50 ServerVault → 81/82 Cameras** | RTSP (554), Syslog (514) | TCP/UDP | Video storage & logging |
-| **60 Printers → 50 ServerVault** | IPP (631), JetDirect (9100) | TCP | Print job submission |
-| **70 Media → 50 ServerVault** | SMB (445), Plex (32400) | TCP | Media file access |
-| **81 Cameras Local → 50 ServerVault** | RTSP (554), Syslog (514) | TCP/UDP | Local video feed & logging |
-| **82 Cameras Cloud → 🌐 Internet** | HTTPS (443), RTSP (554) | TCP | Cloud video relay |
-| **90 Work → 70 Media** | Chromecast (8008-8009), DLNA (1900) | TCP/UDP | Work device casting to TVs |
-| **90 Work → 🌐 Internet** | All ports | TCP/UDP | Unthrottled internet access |
+| Source → Destination                  | Allowed Services/Ports                   | Protocol | Notes                        |
+| ------------------------------------- | ---------------------------------------- | -------- | ---------------------------- |
+| **10 Trusted → 20 IoT**               | DHCP (67/68), DNS (53)                   | UDP      | Basic network services       |
+| **10 Trusted → 40 InfraCore**         | SSH (22), HTTPS (443), SNMP (161)        | TCP      | Management access            |
+| **10 Trusted → 50 ServerVault**       | SMB (445), NFS (2049), HTTPS (443)       | TCP      | File sharing & web services  |
+| **10 Trusted → 60 Printers**          | IPP (631), LPD (515)                     | TCP      | Print services               |
+| **10 Trusted → 70 Media**             | DLNA (1900), Chromecast (8008-8009)      | TCP/UDP  | Media casting & streaming    |
+| **10 Trusted → 81/82 Cameras**        | RTSP (554), HTTPS (443)                  | TCP      | Camera viewing & management  |
+| **20 IoT → 50 ServerVault**           | MQTT (8883), HTTPS (443)                 | TCP      | Telemetry & firmware updates |
+| **31 GuestElevated → 50 ServerVault** | IPP (631), SMB (445)                     | TCP      | Print & file services        |
+| **31 GuestElevated → 60 Printers**    | IPP (631), LPD (515)                     | TCP      | Print services               |
+| **31 GuestElevated → 70 Media**       | DLNA (1900), Chromecast (8008-8009)      | TCP/UDP  | Media casting                |
+| **40 InfraCore → 50 ServerVault**     | SSH (22), HTTPS (443), PostgreSQL (5432) | TCP      | Infrastructure management    |
+| **50 ServerVault → 81/82 Cameras**    | RTSP (554), Syslog (514)                 | TCP/UDP  | Video storage & logging      |
+| **60 Printers → 50 ServerVault**      | IPP (631), JetDirect (9100)              | TCP      | Print job submission         |
+| **70 Media → 50 ServerVault**         | SMB (445), Plex (32400)                  | TCP      | Media file access            |
+| **81 Cameras Local → 50 ServerVault** | RTSP (554), Syslog (514)                 | TCP/UDP  | Local video feed & logging   |
+| **82 Cameras Cloud → 🌐 Internet**    | HTTPS (443), RTSP (554)                  | TCP      | Cloud video relay            |
+| **90 Work → 70 Media**                | Chromecast (8008-8009), DLNA (1900)      | TCP/UDP  | Work device casting to TVs   |
+| **90 Work → 🌐 Internet**             | All ports                                | TCP/UDP  | Unthrottled internet access  |
 
 ### Internet Access Policy (From firewall-matrix.md)
 
-| VLAN | Outbound Internet Access | Restrictions |
-|------|--------------------------|--------------|
-| **10 Trusted** | ✅ Unrestricted | Standard outbound access |
-| **20 IoT** | 🟡 Limited | Telemetry & firmware updates only (MQTT 8883, HTTPS 443) |
-| **30 Guest** | ✅ Unrestricted | Internet only, no LAN access |
-| **31 GuestElevated** | ✅ Unrestricted | Casting, printing, and Internet allowed |
-| **40 InfraCore** | ❌ Blocked | No direct Internet access (mgmt plane only) |
-| **50 ServerVault** | 🟡 Limited | Updates, cloud sync, API calls |
-| **60 Printers** | ❌ Blocked | Local only, no Internet |
-| **70 Media** | ✅ Unrestricted | Casting + streaming |
-| **81 Cameras Local** | ❌ Blocked | Local only |
-| **82 Cameras Cloud** | ✅ Limited | Cloud relay only (RTSP/HTTPS) |
-| **90 Work** | ✅ Unrestricted | Unthrottled, uses local DNS/DHCP to bootstrap VPN tunnel |
+| VLAN                 | Outbound Internet Access | Restrictions                                             |
+| -------------------- | ------------------------ | -------------------------------------------------------- |
+| **10 Trusted**       | ✅ Unrestricted          | Standard outbound access                                 |
+| **20 IoT**           | 🟡 Limited               | Telemetry & firmware updates only (MQTT 8883, HTTPS 443) |
+| **30 Guest**         | ✅ Unrestricted          | Internet only, no LAN access                             |
+| **31 GuestElevated** | ✅ Unrestricted          | Casting, printing, and Internet allowed                  |
+| **40 InfraCore**     | ❌ Blocked               | No direct Internet access (mgmt plane only)              |
+| **50 ServerVault**   | 🟡 Limited               | Updates, cloud sync, API calls                           |
+| **60 Printers**      | ❌ Blocked               | Local only, no Internet                                  |
+| **70 Media**         | ✅ Unrestricted          | Casting + streaming                                      |
+| **81 Cameras Local** | ❌ Blocked               | Local only                                               |
+| **82 Cameras Cloud** | ✅ Limited               | Cloud relay only (RTSP/HTTPS)                            |
+| **90 Work**          | ✅ Unrestricted          | Unthrottled, uses local DNS/DHCP to bootstrap VPN tunnel |
 
 ### Home Assistant Integration (From wled-configurations.md)
 
