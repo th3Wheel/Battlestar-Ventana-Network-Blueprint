@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { devNull, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
@@ -10,7 +10,11 @@ import { describe, expect, it } from 'vitest';
 // guard that, so no single mechanism (a .gitignore line, a local exclude) is relied on alone.
 
 const REPO = new URL('..', import.meta.url);
-const NO_GLOBAL_EXCLUDES = ['-c', `core.excludesFile=${join(tmpdir(), 'no-such-excludes-file')}`];
+// The platform's null device is always empty, so no file can switch the user's global excludes
+// back on. (A made-up temporary filename could be created by another process.)
+const NO_GLOBAL_EXCLUDES = ['-c', `core.excludesFile=${devNull}`];
+// No init template: a template can ship its own .git/info/exclude.
+const EMPTY_TEMPLATE = '--template=';
 
 const git = (cwd: string | URL, ...args: string[]) => spawnSync('git', args, { encoding: 'utf8', cwd });
 
@@ -24,14 +28,9 @@ function ignoringSource(cwd: string | URL, file: string): string | undefined {
   return result.status === 0 ? result.stdout.match(/^(.+?):\d+:/)?.[1] : undefined;
 }
 
-const isGitignore = (source: string | undefined) =>
-  source !== undefined && /(^|[\\/])\.gitignore$/.test(source);
+const isGitignore = (source: string | undefined) => source !== undefined && /(^|[\\/])\.gitignore$/.test(source);
 
-const SAMPLES = [
-  '.claude/settings.local.json',
-  '.gemini/settings.local.json',
-  'any/nested/dir/settings.local.json',
-];
+const SAMPLES = ['.claude/settings.local.json', '.gemini/settings.local.json', 'any/nested/dir/settings.local.json'];
 
 describe('per-machine settings.local.json', () => {
   it('is not tracked anywhere in the repository', () => {
@@ -51,11 +50,13 @@ describe('per-machine settings.local.json', () => {
     // A fresh repository with only the real .gitignore: an accidental `git add` must fail
     // and stage nothing. (A deliberate `git add -f` is what the tracked-file check catches.)
     const dir = mkdtempSync(join(tmpdir(), 'lst-add-'));
-    git(dir, 'init', '-q');
+    git(dir, 'init', '-q', EMPTY_TEMPLATE);
     copyFileSync(fileURLToPath(new URL('../.gitignore', import.meta.url)), join(dir, '.gitignore'));
     mkdirSync(join(dir, '.claude'));
     writeFileSync(join(dir, '.claude', 'settings.local.json'), '{}');
 
+    // Refused because of the repository's .gitignore, not some other ignore source.
+    expect(isGitignore(ignoringSource(dir, '.claude/settings.local.json'))).toBe(true);
     const add = git(dir, ...NO_GLOBAL_EXCLUDES, 'add', '.claude/settings.local.json');
     expect(add.status).not.toBe(0);
     expect(git(dir, 'ls-files').stdout.trim()).toBe('');
@@ -65,7 +66,7 @@ describe('per-machine settings.local.json', () => {
     // No .gitignore, only a clone-local exclude: git ignores the file, but the repository
     // has not declared the rule, so the check above must not accept it.
     const dir = mkdtempSync(join(tmpdir(), 'lst-exclude-'));
-    git(dir, 'init', '-q');
+    git(dir, 'init', '-q', EMPTY_TEMPLATE);
     mkdirSync(join(dir, '.git', 'info'), { recursive: true });
     writeFileSync(join(dir, '.git', 'info', 'exclude'), '**/settings.local.json\n');
 
