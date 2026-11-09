@@ -1,0 +1,23 @@
+.agents/hooks/merge-gate.mts
+  s_e07e2b1499ce52::t_ade9086e277cac 275-276,531,548
+docs/GOVERNANCE_MAPPING.md
+  s_e07e2b1499ce52::t_2c1c03faa88936 12-30,36-46,57-79,89-102,108-122,130-134,152-153,155-162,167-178,189-199
+tests/merge-gate.test.ts
+  s_e07e2b1499ce52::t_e5b03d771055e6 338-339,390
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "1d5cc86e4441bb833515b0c5a1df5b568dcd6815",
+  "prompts": {},
+  "sessions": {
+    "s_e07e2b1499ce52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c03cbc1-dd5a-4f57-a121-1f48607bcf28",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
