@@ -12,3 +12,6 @@ dist/
 build/
 # Local logs
 debug.log
+
+# Per-machine agent settings (Claude Code, Gemini CLI and others); never commit.
+**/settings.local.json
