@@ -1,5 +1,3 @@
-- Tracking: All personal computers and laptops should be tracked in the asset management system with their assigned Jaeger name. temporary reference: [jaeger-pool.md](jaeger-pool.md)
-
 # 🏷️ Naming Conventions — Battlestar Ventana Network Blueprint
 
 ---
@@ -37,7 +35,7 @@
 - Alternate Pool: `AmberTyphoon`, `CrimsonHawk`, `ObsidianRaptor`
 - Reuse Policy: Unique per active device; may be recycled only if the new system is a direct replacement
 - External Mapping: None
-- Tracking: All personal computers and laptops should be tracked in the asset management system with their assigned Jaeger name. temporary reference: [jaeger-pool.md]
+- Tracking: All personal computers and laptops should be tracked in the asset management system with their assigned Jaeger name. temporary reference: [jaeger-pool.md](jaeger-pool.md)
 
 ### Other Devices (IoT, Printers, Cameras, Appliances, Sensors)
 
