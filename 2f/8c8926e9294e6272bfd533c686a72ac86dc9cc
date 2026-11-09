@@ -1,0 +1,33 @@
+.github/workflows/mcp-workflow.yml
+  s_e142a97a9d77af::t_c7ffa0004edb46 14-15,18-42,58
+ansible/roles/opnsense_vm_eval/files/proxmox-create-opnsense-vm.sh
+  s_3c829152fcb2db::t_5d18e2a3e1ac5c 3
+ansible/roles/opnsense_vm_eval/templates/opnsense-vm.env.j2
+  s_e142a97a9d77af::t_0ca8c1974375dd 3
+network-map.md
+  s_3c829152fcb2db::t_d42ce23723e264 85,106,123,140,157,174,191,208,225,242,259,276,293,310,327,344,361,378,395,412,429,446,463,480,497,514,531,548,565,582,599,616,633,650,667,684,701,718,735,752,769,786,803,820,837,854,871,888,905,922,939,956,973,990,1007,1024,1041,1058,1075,1092,1109,1126,1143,1160,1177,1194,1211,1228,1245,1262,1279,1296,1313,1330,1347,1364,1381,1398,1415,1432,1449,1466,1483,1500,1517,1534,1551,1568,1585,1602,1619,1636,1653,1670,1687,1704,1721,1738,1755,1772,1789,1806,1823,1840,1857,1874,1891,1908,1925,1942,1959,1976,1993,2010,2027,2044,2061,2078,2095,2112,2129,2146,2163,2180,2197,2214,2231,2248,2265,2282,2299,2316,2333,2350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "2f8c8926e9294e6272bfd533c686a72ac86dc9cc",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    },
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
