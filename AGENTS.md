@@ -18,8 +18,9 @@
   `.github/local-files-policy.json` is the list (changes need a person via
   CODEOWNERS), `scripts/check-local-files.ts` enforces it, `.gitignore` is the
   first line of defence, and the `Forbid local files` pull request check fails
-  on a violation. GitHub blocks the merge only once the branch ruleset lists that
-  check as required.
+  on a violation. It runs from the base branch (`pull_request_target`), so a pull
+  request cannot edit the checker or policy to pass its own check. GitHub blocks
+  the merge only once the branch ruleset lists that check as required.
 - Add project skills under `.agents/skills/`; follow
   `.github/instructions/agent-skills.instructions.md`.
 - For issue, branch, commit, or pull request work, follow
