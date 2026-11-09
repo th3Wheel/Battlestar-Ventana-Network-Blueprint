@@ -378,7 +378,7 @@ output "firewall_rules_generated" {
 
 1. **Terraform main.tf** (rule generation logic)
 2. **Conversion script** (`scripts/services_to_ufw.py`) to parse Markdown → UFW rules
-3. **CI/CD integration** (.github/workflows/firewall-validate.yml to linter rules before apply)
+3. **CI/CD integration** (.github/workflows/firewall-validate.yml to validate rules before applying them)
 4. **Rollback procedure** (backup UFW rules before applying generated rules)
 5. **Diff view** (show what rules will be added/removed before apply)
 
