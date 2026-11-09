@@ -1,0 +1,53 @@
+.agents/hooks/merge-gate.mts
+  s_3c829152fcb2db::t_d7c6d6e17f0862 6-9,18,275-276,531,548,585,593,595-599,603-607,613-626,628
+.claude/settings.json
+  s_3c829152fcb2db::t_012165521fe70a 9
+.codespellrc
+  s_3c829152fcb2db::t_6dc6bfa1c99179 3-4
+.editorconfig
+  s_3c829152fcb2db::t_d6844b98cba72f 14-15
+.github/CODEOWNERS
+  s_3c829152fcb2db::t_b46bb605e5192d 34-39
+.github/hooks/merge-gate.json
+  s_3c829152fcb2db::t_a52ceb7cd8a52d 7-8
+.github/local-files-policy.json
+  s_3c829152fcb2db::t_9d2d4326ceeafe 1-26
+.github/workflows/local-files.yml
+  s_3c829152fcb2db::t_b40a39a85bb1c7 1-63
+.github/workflows/super-linter.yml
+  s_3c829152fcb2db::t_08542faf586f27 39
+.github/workflows/validate-network-config.yml
+  s_3c829152fcb2db::t_12e1076d9deff8 30
+.gitignore
+  s_3c829152fcb2db::t_cb0a2ee07cd294 15-35
+AGENTS.md
+  s_3c829152fcb2db::t_28101d7cc18061 16-23,59-64
+docs/GOVERNANCE_MAPPING.md
+  s_3c829152fcb2db::t_14f2f0538540e8 12-30,36-46,57-79,89-103,109-123,131,137,154-160,164-170,181-191
+scripts/check-local-files.ts
+  s_3c829152fcb2db::t_161c25769acada 1-208
+tests/check-local-files.test.ts
+  s_3c829152fcb2db::t_75a97c6a916011 1-260
+tests/local-settings.test.ts
+  s_3c829152fcb2db::t_ecb4cf46035a5d 1-106
+tests/merge-gate.test.ts
+  s_3c829152fcb2db::t_6c479510693ad3 9,11-12,14,234-280,338-339,390
+tsconfig.json
+  s_3c829152fcb2db::t_fa639ad4f503b1 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "a1ade21bacba6dcc13e3126f836215cf7cecdcd7",
+  "prompts": {},
+  "sessions": {
+    "s_3c829152fcb2db": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fa2a7d2-b96a-4d3b-b14e-f0b7deba0c04",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
