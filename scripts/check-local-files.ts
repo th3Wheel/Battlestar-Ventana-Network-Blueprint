@@ -2,8 +2,13 @@
 // keys) is tracked or about to be merged. The list lives in .github/local-files-policy.json
 // so changing it goes through CODEOWNERS review.
 //
-//   node scripts/check-local-files.ts --tracked          every tracked file
-//   node scripts/check-local-files.ts --base <ref>       files a branch adds or changes vs <ref>
+//   node scripts/check-local-files.ts --tracked                   every tracked file
+//   node scripts/check-local-files.ts --base <ref>                files HEAD adds or changes vs <ref>
+//   node scripts/check-local-files.ts --tracked --head <ref>      every file in the tree at <ref>
+//   node scripts/check-local-files.ts --base <ref> --head <ref>   files <ref> adds or changes vs the base
+//
+// --head reads another commit's contents as data and never checks it out, so a workflow can run
+// this script from a trusted branch against a pull request's commits without running its code.
 //
 // Exit 0 clean, 1 violations found, 2 could not decide (bad policy, git failure): fail closed.
 import { spawnSync } from 'node:child_process';
@@ -129,31 +134,56 @@ export function findViolations(files: string[], policy: Policy): Violation[] {
   return violations;
 }
 
-function gitLines(args: string[]): string[] {
+// NUL-separated (-z): without it git quotes unusual names ("caf\303\251.local.json") and a
+// quoted name no longer starts with the characters a pattern expects, so it would slip past.
+function gitNames(args: string[]): string[] {
   const result = spawnSync('git', args, { encoding: 'utf8' });
   if (result.status !== 0) {
     throw new Error((result.stderr || result.error?.message || `git ${args.join(' ')} failed`).trim());
   }
-  return result.stdout.split(/\r?\n/).filter(Boolean);
+  return result.stdout.split('\0').filter(Boolean);
 }
 
 // Added, copied, modified and renamed files: a PR that deletes a forbidden file is fixing it.
-export const changedSince = (base: string) => gitLines(['diff', '--name-only', '--diff-filter=ACMR', `${base}...HEAD`]);
-export const trackedFiles = () => gitLines(['ls-files']);
+export const changedSince = (base: string, head = 'HEAD') =>
+  gitNames(['diff', '--name-only', '-z', '--diff-filter=ACMR', `${base}...${head}`]);
+// With no ref this is the index (what the next commit would contain); with one, that commit's tree.
+export const trackedFiles = (head?: string) =>
+  head ? gitNames(['ls-tree', '-r', '--name-only', '-z', head]) : gitNames(['ls-files', '-z']);
+
+// GitHub workflow commands are parsed from log lines, and a pull request chooses its own file
+// names. Encode the characters that could end a command early or start a new one.
+const escapeData = (text: string) => text.replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A');
+const escapeProperty = (text: string) => escapeData(text).replaceAll(':', '%3A').replaceAll(',', '%2C');
+export const annotation = (v: Violation) =>
+  `::error file=${escapeProperty(v.file)}::${escapeData(`Local file must not be committed (${v.pattern}): ${v.reason}`)}`;
+
+const optionValue = (argv: string[], name: string): string | undefined => {
+  const at = argv.indexOf(name);
+  if (at === -1) {
+    return undefined;
+  }
+  const value = argv[at + 1];
+  if (value === undefined || value.startsWith('--')) {
+    throw new Error(`${name} needs a value`);
+  }
+  return value;
+};
 
 function main(argv: string[]): number {
-  const baseAt = argv.indexOf('--base');
-  const base = baseAt === -1 ? undefined : argv[baseAt + 1];
-  if (!argv.includes('--tracked') && !base) {
-    console.error('usage: check-local-files.ts --tracked | --base <ref>');
-    return 2;
-  }
   try {
+    const base = optionValue(argv, '--base');
+    const head = optionValue(argv, '--head');
+    const tracked = argv.includes('--tracked');
+    if (!tracked && !base) {
+      console.error('usage: check-local-files.ts --tracked | --base <ref> [--head <ref>]');
+      return 2;
+    }
     const policy = loadPolicy();
-    const files = [...(argv.includes('--tracked') ? trackedFiles() : []), ...(base ? changedSince(base) : [])];
+    const files = [...(tracked ? trackedFiles(head) : []), ...(base ? changedSince(base, head) : [])];
     const violations = findViolations([...new Set(files)], policy);
     for (const v of violations) {
-      console.error(`::error file=${v.file}::Local file must not be committed (${v.pattern}): ${v.reason}`);
+      console.error(annotation(v));
     }
     if (violations.length > 0) {
       console.error(

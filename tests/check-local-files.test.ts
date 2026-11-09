@@ -4,7 +4,14 @@ import { devNull, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { findViolations, loadPolicy, parsePolicy, trackedFiles, type Policy } from '../scripts/check-local-files.ts';
+import {
+  annotation,
+  findViolations,
+  loadPolicy,
+  parsePolicy,
+  trackedFiles,
+  type Policy,
+} from '../scripts/check-local-files.ts';
 
 const SCRIPT = fileURLToPath(new URL('../scripts/check-local-files.ts', import.meta.url));
 const BACKSLASH = String.fromCharCode(92);
@@ -158,5 +165,92 @@ describe('the repository policy', () => {
 
   it('exits 2 with no mode, so a misconfigured workflow cannot pass silently', () => {
     expect(spawnSync(process.execPath, [SCRIPT], { encoding: 'utf8' }).status).toBe(2);
+  });
+
+  it('exits 2 when --head has no value', () => {
+    expect(spawnSync(process.execPath, [SCRIPT, '--tracked', '--head'], { encoding: 'utf8' }).status).toBe(2);
+  });
+});
+
+// The workflow runs this script from the trusted base branch against a pull request's commits,
+// read as data with --head and never checked out.
+describe('reading another commit with --head', () => {
+  const git = (cwd: string, ...args: string[]) =>
+    spawnSync(
+      'git',
+      [
+        '-c',
+        'user.name=t',
+        '-c',
+        'user.email=t@example.com',
+        '-c',
+        'commit.gpgsign=false',
+        '-c',
+        `core.excludesFile=${devNull}`,
+        ...args,
+      ],
+      { cwd, encoding: 'utf8' }
+    );
+  const check = (cwd: string, ...args: string[]) =>
+    spawnSync(process.execPath, [SCRIPT, ...args], { cwd, encoding: 'utf8' });
+
+  // `main` is clean and checked out; branch `feature` carries two per-machine files, one with a
+  // non-ASCII name (git quotes those unless asked not to, and a quoted name slips past patterns).
+  const makeRepo = () => {
+    const dir = mkdtempSync(join(tmpdir(), 'lfh-'));
+    git(dir, 'init', '-q', '--template=', '-b', 'main');
+    writeFileSync(join(dir, 'a.txt'), 'x');
+    git(dir, 'add', '.');
+    git(dir, 'commit', '-q', '-m', 'base');
+    git(dir, 'checkout', '-q', '-b', 'feature');
+    writeFileSync(join(dir, 'café.local.json'), '{}');
+    writeFileSync(join(dir, '.envrc'), 'SECRET=1');
+    git(dir, 'add', '-f', '.');
+    git(dir, 'commit', '-q', '-m', 'carries per-machine files');
+    git(dir, 'checkout', '-q', 'main');
+    return dir;
+  };
+
+  it('flags the files in another commit even though a clean branch is checked out', () => {
+    const dir = makeRepo();
+    expect(check(dir, '--tracked').status).toBe(0);
+
+    const result = check(dir, '--tracked', '--head', 'feature');
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('.envrc');
+    expect(result.stderr).toContain('café.local.json');
+  }, 30_000);
+
+  it('flags what a commit adds relative to a base', () => {
+    const dir = makeRepo();
+    expect(check(dir, '--base', 'main', '--head', 'feature').status).toBe(1);
+    expect(check(dir, '--base', 'main', '--head', 'main').status).toBe(0);
+  }, 30_000);
+
+  it('leaves the working tree untouched', () => {
+    const dir = makeRepo();
+    check(dir, '--tracked', '--head', 'feature');
+    expect(git(dir, 'status', '--porcelain').stdout).toBe('');
+    expect(git(dir, 'rev-parse', '--abbrev-ref', 'HEAD').stdout.trim()).toBe('main');
+  }, 30_000);
+
+  it('exits 2 when the commit does not exist', () => {
+    expect(check(makeRepo(), '--tracked', '--head', 'no-such-ref').status).toBe(2);
+  }, 30_000);
+});
+
+describe('annotation', () => {
+  const violation = (file: string) => ({ file, pattern: '**/*.local.*', reason: 'local' });
+
+  it('is a plain error command for an ordinary file name', () => {
+    expect(annotation(violation('docs/a.local.md'))).toBe(
+      '::error file=docs/a.local.md::Local file must not be committed (**/*.local.*): local'
+    );
+  });
+
+  it('encodes characters a pull request could use to end the command or start another', () => {
+    const text = annotation(violation('a\n::error::forged,x:y%.local.json'));
+    expect(text.split('\n')).toHaveLength(1);
+    expect(text).toContain('file=a%0A%3A%3Aerror%3A%3Aforged%2Cx%3Ay%25.local.json::');
   });
 });
