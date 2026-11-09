@@ -13,7 +13,7 @@
 |------|------|--------|------|---------|
 | 10 | Battlestar Ventana | 10.76.10.0/24 | Trusted | Primary LAN |
 | 20 | CylonSynthLink | 10.76.20.0/24 | Untrusted | IoT |
-| 30 | CapricaGuestPortal | 10.76.30.0/24 | Untrusted | Guest Internet |
+| 30 | CapricaGuestPortal | 10.76.30.0/24 | Untrusted | Guest internet |
 | 31 | CapricaResidentPortal | 10.76.31.0/24 | Semi‑Trusted | Residents |
 | 40 | InfraCore | 10.76.40.0/24 | Infra | Switches/controllers |
 | 50 | ServerVault | 10.76.50.0/24 | Services | NAS, MQTT, DNS/DHCP |
@@ -27,9 +27,9 @@
 
 - **Trusted → Services/Infra:** Full access for admin and core services
 - **Semi‑Trusted → Services:** Limited, per service/port allowlists
-- **Untrusted → Internet:** Guest (30) Internet only; IoT (20) limited to telemetry/updates
+- **Untrusted → internet:** Guest (30) internet only; IoT (20) limited to telemetry/updates
 - **Surveillance → Services:** View/logging only (RTSP/Syslog)
-- **Work (90) → Internet:** Unthrottled; bootstraps via local DNS/DHCP
+- **Work (90) → internet:** Unthrottled; bootstraps via local DNS/DHCP
 
 ## Topology (Mermaid)
 

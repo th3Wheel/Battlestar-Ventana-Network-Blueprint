@@ -42,7 +42,7 @@
 - Pattern: `<location>-<type>[-<qualifier>][-<index>]` (lowercase, hyphen-separated)
 - The network zone (VLAN) is already captured by the subnet the device lives on, so the hostname encodes **physical location** instead.
 - `<qualifier>` and `<index>` are optional; use `<qualifier>` first to disambiguate, then `<index>` only if the qualifier alone is still ambiguous.
-- Reuse Policy: Indexes increment sequentially; retired indexes may be reused.
+- Reuse Policy: indices increment sequentially; retired indices may be reused.
 
 #### Location tokens
 

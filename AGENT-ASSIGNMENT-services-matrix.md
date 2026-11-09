@@ -43,7 +43,7 @@ The current `docs/services.md` defines *which* traffic is allowed between VLANs,
 
 - IoT VLAN (20) could be flooded by a single compromised device
 - Work VLAN (90) could exhaust ServerVault bandwidth via uncontrolled backups
-- Guest VLAN (30) could abuse Internet link capacity
+- Guest VLAN (30) could abuse internet link capacity
 - Cameras could spam syslog if misconfigured
 
 **Goal:** Define per-VLAN rate limits aligned with device capacity and security posture.
@@ -371,7 +371,7 @@ output "firewall_rules_generated" {
 
 1. **Terraform main.tf** (rule generation logic)
 2. **Conversion script** (`scripts/services_to_ufw.py`) to parse Markdown → UFW rules
-3. **CI/CD integration** (.github/workflows/firewall-validate.yml to lint rules before apply)
+3. **CI/CD integration** (.github/workflows/firewall-validate.yml to linter rules before apply)
 4. **Rollback procedure** (backup UFW rules before applying generated rules)
 5. **Diff view** (show what rules will be added/removed before apply)
 

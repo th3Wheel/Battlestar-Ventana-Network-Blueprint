@@ -83,7 +83,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Ports:** DNS (53), DHCP (67/68), SMB (445), NFS (2049), OpenVPN (1194) or WireGuard (51820)
 - **Direction:** Work → ServerVault
 - **Protocol:** UDP (DNS/DHCP), TCP (SMB/NFS/VPN)
-- **Notes:** **CRITICAL DEPENDENCY:** Work VLAN must contact local DNS/DHCP (10.76.50.x) FIRST to resolve VPN gateway and establish tunnel before outbound Internet access is enabled. After VPN tunnel established, split-tunnel or full-tunnel per policy. Limited access per firewall matrix.
+- **Notes:** **CRITICAL DEPENDENCY:** Work VLAN must contact local DNS/DHCP (10.76.50.x) FIRST to resolve VPN gateway and establish tunnel before outbound internet access is enabled. After VPN tunnel established, split-tunnel or full-tunnel per policy. Limited access per firewall matrix.
 - **FW Ref:** [90 Work → 50 ServerVault](firewall-matrix.md) — Limited
 
 #### Outbound to Media (70)
@@ -95,14 +95,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Casting to media devices; no file access
 - **FW Ref:** [90 Work → 70 Media](firewall-matrix.md)
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** VPN, web, email, cloud services
 - **Ports:** All TCP/UDP (1024-65535)
-- **Direction:** Work → Internet
+- **Direction:** Work → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Unthrottled Internet access via established VPN tunnel. Local DNS/DHCP must be available for VPN bootstrap.
-- **FW Ref:** [90 Work → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Unthrottled internet access via established VPN tunnel. Local DNS/DHCP must be available for VPN bootstrap.
+- **FW Ref:** [90 Work → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -137,14 +137,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Full casting and streaming control
 - **FW Ref:** [31 GuestElevated → 70 Media](firewall-matrix.md) — Full
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Web browsing, streaming
 - **Ports:** HTTP (80), HTTPS (443), DNS (53)
-- **Direction:** CapricaResidentPortal → Internet
+- **Direction:** CapricaResidentPortal → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Full web access per Internet access policy
-- **FW Ref:** [31 GuestElevated → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Full web access per internet access policy
+- **FW Ref:** [31 GuestElevated → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -159,14 +159,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Limited access per firewall matrix; retrieve media files and metadata only
 - **FW Ref:** [70 Media → 50 ServerVault](firewall-matrix.md) — Limited
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Streaming, content delivery
 - **Ports:** HTTP (80), HTTPS (443), RTSP (554)
-- **Direction:** Media → Internet
+- **Direction:** Media → internet
 - **Protocol:** TCP
-- **Notes:** Full streaming access per Internet access policy
-- **FW Ref:** [70 Media → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Full streaming access per internet access policy
+- **FW Ref:** [70 Media → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -211,14 +211,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** ESP32 camera sensors stream captured TV frames to Hyperion HD server for ambient lighting processing over UDP 19444 only. Hyperion JSON API (TCP 19445) and Web UI (TCP 8090) remain restricted to trusted management VLANs per firewall matrix and are not exposed to IoT devices.
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Firmware updates, cloud sync
 - **Ports:** HTTPS (443), MQTT (8883)
-- **Direction:** IoT → Internet
+- **Direction:** IoT → internet
 - **Protocol:** TCP
 - **Notes:** Limited to firmware updates and cloud telemetry endpoints; no arbitrary outbound access
-- **FW Ref:** [20 IoT → Internet](firewall-matrix.md) — Limited
+- **FW Ref:** [20 IoT → internet](firewall-matrix.md) — Limited
 
 #### Local Network (within VLAN 20)
 
@@ -230,16 +230,16 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ---
 
-### VLAN 30: CapricaGuestPortal (Guest – Internet Only)
+### VLAN 30: CapricaGuestPortal (Guest – internet Only)
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Web browsing
 - **Ports:** HTTP (80), HTTPS (443), DNS (53)
-- **Direction:** Guest → Internet
+- **Direction:** Guest → internet
 - **Protocol:** TCP/UDP
-- **Notes:** **CRITICAL ISOLATION:** No LAN access permitted. Full Internet access per policy; purely outbound.
-- **FW Ref:** [30 Guest → Internet](firewall-matrix.md) — Unrestricted; All LAN destinations Blocked
+- **Notes:** **CRITICAL ISOLATION:** No LAN access permitted. Full internet access per policy; purely outbound.
+- **FW Ref:** [30 Guest → internet](firewall-matrix.md) — Unrestricted; All LAN destinations Blocked
 
 ---
 
@@ -349,14 +349,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Full access per firewall matrix; backup agent, config manager, database
 - **FW Ref:** [40 InfraCore → 50 ServerVault](firewall-matrix.md) — Full
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Updates, cloud sync, API calls
 - **Ports:** HTTPS (443), NTP (123), DNS (53)
-- **Direction:** ServerVault → Internet
+- **Direction:** ServerVault → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Limited outbound per firewall matrix and Internet access policy; updates and cloud integrations only
-- **FW Ref:** [50 ServerVault → Internet](firewall-matrix.md) — Limited
+- **Notes:** Limited outbound per firewall matrix and internet access policy; updates and cloud integrations only
+- **FW Ref:** [50 ServerVault → internet](firewall-matrix.md) — Limited
 
 ---
 
@@ -394,14 +394,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Send logs and metadata to syslog/database; view-only access per firewall matrix
 - **FW Ref:** [82 Cameras Cloud → 50 ServerVault](firewall-matrix.md) — View
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Cloud relay, event upload
 - **Ports:** HTTPS (443), RTSP (554)
-- **Direction:** Cameras Cloud → Internet
+- **Direction:** Cameras Cloud → internet
 - **Protocol:** TCP
-- **Notes:** Cloud relay gateway; limited per firewall matrix and Internet access policy
-- **FW Ref:** [82 Cameras Cloud → Internet](firewall-matrix.md) — Limited
+- **Notes:** Cloud relay gateway; limited per firewall matrix and internet access policy
+- **FW Ref:** [82 Cameras Cloud → internet](firewall-matrix.md) — Limited
 
 #### Local Network (within VLAN 82)
 
