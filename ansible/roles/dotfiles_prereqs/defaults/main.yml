@@ -1,0 +1,8 @@
+---
+# Default variables for dotfiles_prereqs role
+# Override in playbook vars or host_vars as needed
+
+dotfiles_prereqs_tools:
+  - fzf
+  - zoxide
+  - starship
