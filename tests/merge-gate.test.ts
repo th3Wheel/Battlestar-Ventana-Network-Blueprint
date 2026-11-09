@@ -5,13 +5,13 @@ import {
   decide,
   findMerges,
   isRiskPath,
-  makeRunner,
-  splitCommands,
   type Located,
+  makeRunner,
   type Runner,
-} from '../.claude/hooks/merge-gate.mts';
+  splitCommands,
+} from '../.agents/hooks/merge-gate.mts';
 
-const HOOK = fileURLToPath(new URL('../.claude/hooks/merge-gate.mts', import.meta.url));
+const HOOK = fileURLToPath(new URL('../.agents/hooks/merge-gate.mts', import.meta.url));
 
 // A stand-in for git/gh: answers only the commands it was told about, fails on the rest.
 const fake =
@@ -335,8 +335,8 @@ describe('decide', () => {
     });
 
     it('decodes JSON-escaped non-ASCII names', () => {
-      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/caf\\u00e9.yaml"\n') })).toMatch(
-        /config\/café\.yaml/
+      expect(decide(bash('gh pr merge 42 -R o/r'), { run: files('"config/\\u00fcber.yaml"\n') })).toMatch(
+        /config\/über\.yaml/
       );
     });
 
@@ -387,7 +387,7 @@ describe('decide', () => {
     const TIP = 'a'.repeat(40);
     const push = (diff: string, extra: Record<string, string> = {}) =>
       fake({
-        [`git ls-remote origin refs/heads/master`]: `${TIP}\trefs/heads/master\n`,
+        'git ls-remote origin refs/heads/master': `${TIP}\trefs/heads/master\n`,
         [`git cat-file -e ${TIP}^{commit}`]: '',
         [`git diff --name-only -z --no-renames ${TIP} HEAD --`]: diff,
         ...extra,

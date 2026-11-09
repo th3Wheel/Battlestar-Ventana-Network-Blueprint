@@ -56,9 +56,11 @@ The rule guards the default branch, so an agent may merge pull requests into
 another branch, such as an integration branch used to get a set of changes
 working together. The pull request that carries that branch into the default
 branch is the one a person reads and merges, and it is held to this list like
-any other. `.claude/hooks/merge-gate.mts` enforces exactly this, and also refuses an
+any other. `.agents/hooks/merge-gate.mts` enforces exactly this, and also refuses an
 agent merge that carries a per-machine file listed in
-`.github/local-files-policy.json`. The governance project will revisit the rule
+`.github/local-files-policy.json`; each agent wires its own hook to that one
+script (Claude Code: `.claude/settings.json`, Copilot:
+`.github/hooks/merge-gate.json`). The governance project will revisit the rule
 and its enforcement.
 
 - Changes under `config/`, `ansible/`, or `infrastructure/`.
