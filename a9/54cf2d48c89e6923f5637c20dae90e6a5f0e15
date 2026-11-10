@@ -1,0 +1,14 @@
+.github/workflows/codeql.yml
+  h_5b1b81f5de3695 1,37,43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "a954cf2d48c89e6923f5637c20dae90e6a5f0e15",
+  "prompts": {},
+  "humans": {
+    "h_5b1b81f5de3695": {
+      "author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
