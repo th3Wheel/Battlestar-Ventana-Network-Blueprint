@@ -4,8 +4,8 @@ version: 3
 
 images:
   base_image:
-    # Keep in step with EE_BASE_IMAGE in Containerfile. ansible-core 2.21 needs Python 3.12 or newer.
-    name: 'docker.io/library/python:3.13-slim'
+    # Keep in step with EE_BASE_IMAGE in Containerfile, digest included. ansible-core 2.21 needs Python 3.12 or newer.
+    name: 'docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90'
 
 dependencies:
   python: requirements.txt

@@ -3,7 +3,11 @@
 # The base is a current Python image. ansible-core 2.21 (requirements.txt) needs Python 3.12 or newer, which the
 # old awx-ee base (CentOS Stream 9, Python 3.9) cannot provide. Keep this on the newest Python that ansible-core
 # supports; override with --build-arg EE_BASE_IMAGE=... to try another base.
-ARG EE_BASE_IMAGE=docker.io/library/python:3.13-slim
+#
+# Pinned by digest (the multi-arch index for python:3.13-slim) so a rebuild cannot silently change the OS or Python
+# patch level. The tag stays for readability. To take base-image security updates, look up the new digest, change it
+# here and in execution-environment.yml together, then rebuild and test.
+ARG EE_BASE_IMAGE=docker.io/library/python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
 FROM $EE_BASE_IMAGE
 
 ARG EE_UID=1000
