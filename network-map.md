@@ -21,7 +21,7 @@
 | 70   | PegasusMediaNode      | 10.76.70.0/24 | Semi‑Trusted | Media/Casting        |
 | 81   | ScorpiaMediaShield    | 10.76.81.0/24 | Surveillance | Cameras (Local)      |
 | 82   | ScorpiaMediaRelay     | 10.76.82.0/24 | Surveillance | Cameras (Cloud)      |
-| 90   | ScyllaDataControl     | 10.76.90.0/24 | Trusted      | Work VLAN            |
+| 90   | ScyllaProcessControl  | 10.76.90.0/24 | Trusted      | Work VLAN            |
 
 ## Key Flows (High Level)
 
