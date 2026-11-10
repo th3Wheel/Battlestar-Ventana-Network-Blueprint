@@ -48,7 +48,7 @@ jobs:
       # The TypeScript ESLint run resolves imports such as `vitest` from the checkout's node_modules.
       # super-linter excludes node_modules from linting, so installing here does not add lint targets.
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.10'
 
