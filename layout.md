@@ -104,7 +104,7 @@ Battlestar-Ventana-Network-Blueprint/
 ### **📊 Monitoring & Dashboards**
 
 - **dashboards/**: Grafana dashboard designs and mockups
-- **alerts/**: Alertmanager styling and alert configurations
+- **alerts/**: Prometheus alert rules
 - **ha/**: Home Assistant Lovelace UI configurations
 
 ### **📚 Technical Documentation**

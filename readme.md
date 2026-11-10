@@ -181,8 +181,10 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 - The root `pyproject.toml` and `uv.lock` are authoritative for Python development
   tools. Run `uv sync --locked` from the repository root. Do not manually install
   Ansible into this environment: synchronization removes undeclared packages.
-- Ruff replaces Black, isort, and Pylint in the root toolchain; ty provides
-  separate type checking. Ruff's selected rules do not cover every Pylint check.
+- Ruff replaces Black, isort, and Pylint in the root toolchain: it formats, sorts
+  imports, and applies the Pylint rules selected in `pyproject.toml`. ty provides
+  separate type checking. Ruff does not infer types across modules the way Pylint
+  does, so a few Pylint-only checks have no equivalent.
 - `requirements.txt` is a generated compatibility export, not an independent
   dependency source. Regenerate it after dependency changes with
   `uv export --locked --no-hashes --no-emit-project --format requirements-txt --output-file requirements.txt`.
@@ -195,11 +197,13 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 - Native Windows is not an Ansible control node. Do not share a virtual
   environment between Windows and WSL; keep a separate Linux checkout/environment.
   See the [Ansible controller requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
-- The legacy deployment execution environment still uses
-  `ansible/requirements.txt`, Python 3.11, and its existing Core constraints.
-  It is not upgraded by the development controller change. The legacy
-  `ansible/bootstrap-env.ps1` helper is not the new controller bootstrap;
-  use `task ansible:bootstrap` from Linux/WSL instead.
+- The deployment execution environment (`ansible/Containerfile` and
+  `ansible/execution-environment.yml`) is built on `python:3.13-slim` and
+  installs `ansible/requirements.txt`. ansible-core 2.21 needs Python 3.12 or
+  newer, so keep the base image on a supported Python. It is separate from the
+  development controller. The legacy `ansible/bootstrap-env.ps1` helper is not
+  the new controller bootstrap; use `task ansible:bootstrap` from Linux/WSL
+  instead.
 - If uv warns about `VIRTUAL_ENV=.venv\.venv`, deactivate the stale environment
   and open a fresh terminal. VS Code's Python project points at the repository
   root, not the `.venv` directory. Do not use `--active` to redirect project

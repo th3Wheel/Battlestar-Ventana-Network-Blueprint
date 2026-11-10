@@ -30,21 +30,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Resolve yq for Windows shells where Git Bash PATH may not include choco/scoop.
-YQ_BIN=""
-if command -v yq &>/dev/null; then
-  YQ_BIN="yq"
-elif command -v yq.exe &>/dev/null; then
-  YQ_BIN="$(command -v yq.exe)"
-elif [ -x "/mnt/c/ProgramData/chocolatey/bin/yq.exe" ]; then
-  YQ_BIN="/mnt/c/ProgramData/chocolatey/bin/yq.exe"
-else
-  for cand in /mnt/c/Users/*/scoop/shims/yq.exe; do
-    if [ -x "$cand" ]; then
-      YQ_BIN="$cand"
-      break
-    fi
-  done
-fi
+YQ_BIN="$("$(dirname "${BASH_SOURCE[0]}")/resolve-yq.sh" || true)"
 
 if [[ -z "$YQ_BIN" ]]; then
   echo "Error: yq (mikefarah/yq) is required." >&2

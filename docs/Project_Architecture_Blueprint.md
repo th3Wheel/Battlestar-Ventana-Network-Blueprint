@@ -17,7 +17,7 @@ Technologies and artifacts detected:
 - Operational runbooks and inventories: `host-tracker.md`, `other-devices.md`, `services.md`, `naming-conventions.md`
 - Observability/UX:
   - Grafana dashboards (dashboards/)
-  - Alertmanager style configuration (alerts/)
+  - Prometheus alert rules (`alerts/alert_rules.yaml`)
 - Home Assistant configuration (ha/) for smart home services
 
 Architectural patterns in use:
@@ -44,7 +44,7 @@ Guiding principles:
 
 - Least privilege and explicit allowlists
 - Clear, durable boundaries (VLANs, subnets, roles, and naming)
-- Observability-first (dashboards, alert styles) to verify policy in practice
+- Observability-first (dashboards, alert rules) to verify policy in practice
 - Documentation-as-source for repeatability and audits
 
 Key boundaries:
@@ -175,7 +175,7 @@ Dependency rules:
 - Addressing data: `dhcp-scopes.md` defines subnets, gateways, DNS per VLAN
 - Inventory data: `host-tracker.md`, `other-devices.md`, `naming-conventions.md`
 - Event/telemetry: MQTT (IoT→ServerVault), syslog (Cameras→ServerVault), app logs
-- Observability data: Grafana dashboards, Alertmanager styles
+- Observability data: Grafana dashboards, Prometheus alert rules
 - Retention: Define per-source retention on ServerVault (recommendation: 7–30 days logs, 30–90 days camera footage per storage capacity)
 
 Transformations and mapping:
@@ -207,7 +207,7 @@ Validation:
 
 ### Logging & Monitoring
 
-- Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; alert styles defined in `alerts/`
+- Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; Prometheus alert rules defined in `alerts/alert_rules.yaml`
 
 ### Validation
 
@@ -244,7 +244,7 @@ Resilience patterns:
 
 ### Grafana/Alertmanager (dashboards/, alerts/)
 
-- Dashboard-first observability; alert theming via styles
+- Dashboard-first observability; alerting through the Prometheus rules in `alerts/alert_rules.yaml`
 
 ---
 
@@ -323,10 +323,10 @@ Test data strategies:
 | 20 IoT → 50 ServerVault | MQTT (8883), HTTPS (443)            | TCP      | Telemetry & firmware |
 | 90 Work → 70 Media      | Chromecast (8008-8009), DLNA (1900) | TCP/UDP  | Casting              |
 
-### Example: Alertmanager Style (excerpt)
+### Example: Alertmanager Route (excerpt)
 
 ```yaml
-# alerts/Alertmanager style.yaml (excerpt)
+# alertmanager.yml (illustrative excerpt; not stored in this repository)
 route:
   group_by: ['alertname', 'severity']
   group_wait: 30s

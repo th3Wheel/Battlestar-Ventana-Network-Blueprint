@@ -8,8 +8,7 @@
         "Lint: YAML",
         "Lint: JavaScript/TypeScript",
         "Lint: Python (Ruff)",
-        "Lint: Python (ty)",
-        "Lint: Python (Pylint)"
+        "Lint: Python (ty)"
       ],
       "problemMatcher": []
     },
@@ -20,9 +19,7 @@
         "Format: YAML (Prettier)",
         "Lint: JavaScript/TypeScript Fix",
         "Lint: Python (Ruff) Fix",
-        "Format: Python (Ruff)",
-        "Format: Python (Black)",
-        "Format: Python (isort)"
+        "Format: Python (Ruff)"
       ],
       "problemMatcher": []
     },
@@ -141,30 +138,6 @@
       }
     },
     {
-      "label": "Lint: Python (Pylint)",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-NoProfile", "-File", ".github/scripts/run_pylint.ps1"],
-      "problemMatcher": {
-        "owner": "pylint",
-        "fileLocation": ["relative", "${workspaceFolder}"],
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+):\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "severity": 4,
-          "message": 5
-        }
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
       "label": "Lint: Python (ty)",
       "type": "shell",
       "command": "uv",
@@ -230,32 +203,6 @@
       "type": "shell",
       "command": "uv",
       "args": ["run", "ruff", "format", "."],
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "Format: Python (Black)",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-Command", ".venv/Scripts/black.exe ."],
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
-      }
-    },
-    {
-      "label": "Format: Python (isort)",
-      "type": "shell",
-      "command": "powershell",
-      "args": ["-Command", ".venv/Scripts/isort.exe ."],
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
