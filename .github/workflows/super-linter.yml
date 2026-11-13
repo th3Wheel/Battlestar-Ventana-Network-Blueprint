@@ -25,6 +25,11 @@ concurrency:
 jobs:
   run-lint:
     runs-on: ubuntu-latest
+    # One run per branch or pull request: a new push cancels that ref's older lint run, never another ref's. Runs on
+    # master are not cancelled, so every merge keeps its own result.
+    concurrency:
+      group: lint-code-base-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
     steps:
       # Install third-party code under the runner's temp dir, never in the checkout. super-linter's
       # container mounts it at /github/runner_temp, so ansible-lint can still find the collections.
@@ -48,7 +53,7 @@ jobs:
       # The TypeScript ESLint run resolves imports such as `vitest` from the checkout's node_modules.
       # super-linter excludes node_modules from linting, so installing here does not add lint targets.
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.10'
 

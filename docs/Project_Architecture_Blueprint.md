@@ -44,7 +44,7 @@ Guiding principles:
 
 - Least privilege and explicit allowlists
 - Clear, durable boundaries (VLANs, subnets, roles, and naming)
-- Observability-first (dashboards, alert styles) to verify policy in practice
+- Observability-first (dashboards, alert rules) to verify policy in practice
 - Documentation-as-source for repeatability and audits
 
 Key boundaries:
@@ -84,7 +84,7 @@ flowchart TB
     V50[50 – ServerVault]
   end
   subgraph Infra[Infrastructure]
-    V40[40 – BasestarControl]
+    V40[40 – BasestarVentana]
   end
   subgraph Surveillance[Surveillance]
     V81[81 – ScorpiaMediaShield]
@@ -207,7 +207,7 @@ Validation:
 
 ### Logging & Monitoring
 
-- Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; alert styles defined in `alerts/`
+- Centralize logs (syslog/MQTT consumers); dashboards for VLAN traffic; Prometheus alert rules defined in `alerts/alert_rules.yaml`
 
 ### Validation
 
@@ -244,7 +244,7 @@ Resilience patterns:
 
 ### Grafana/Alertmanager (dashboards/, alerts/)
 
-- Dashboard-first observability; alert theming via styles
+- Dashboard-first observability; alerting through the Prometheus rules in `alerts/alert_rules.yaml`
 
 ---
 
