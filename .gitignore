@@ -13,6 +13,10 @@ build/
 # Local logs
 debug.log
 
+# CodeQL local databases and analysis results
+.codeql-db*/
+*.sarif
+
 # Per-machine agent settings (Claude Code, Gemini CLI and others); never commit.
 **/settings.local.json
 
