@@ -36,6 +36,13 @@
 
           _To be populated during TASK-006 and TASK-013._
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          openwrt_docker_eval: phase '{{ openwrt_docker_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Provision — launch OpenWrt container with VLAN 20 and 40 bridges'
   when: openwrt_docker_eval_task == 'provision'
@@ -76,6 +83,13 @@
         volumes:
           - '/tmp/openwrt-eval:/etc/openwrt-eval'
       become: true
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          openwrt_docker_eval: phase '{{ openwrt_docker_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Full matrix — validate all 11 VLANs in OpenWrt container'
   when: openwrt_docker_eval_task == 'full_matrix'
@@ -113,6 +127,13 @@
         create: true
         mode: '0644'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          openwrt_docker_eval: phase '{{ openwrt_docker_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}
 
 - name: 'Generate config — emit docker-compose.yml and UCI backups'
   when: openwrt_docker_eval_task == 'generate_config'
@@ -145,3 +166,10 @@
         content: "{{ openwrt_docker_eval_uci_export.stdout | default('# UCI export not available — container may not be running') }}"
         mode: '0644'
       delegate_to: localhost
+  rescue:
+    - name: Report which phase failed
+      ansible.builtin.fail:
+        msg: >-
+          openwrt_docker_eval: phase '{{ openwrt_docker_eval_task }}' failed at task
+          '{{ ansible_failed_task.name | default('unknown') }}':
+          {{ ansible_failed_result.msg | default('see the task output above') }}

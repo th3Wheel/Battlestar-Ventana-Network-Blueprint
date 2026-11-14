@@ -4,7 +4,7 @@
 
 **IP Scheme:** `10.76.X.0/24` (X = VLAN ID)  
 **Theme:** Colonies & ships from Battlestar Galactica, mapped to VLANs for instant auditability.  
-**Status:** unknown
+**Status:** Active
 
 ---
 
@@ -12,7 +12,7 @@
 
 - **Battlestar Ventana (10):** Trusted LAN
 - **CylonSynthLink (20):** IoT devices
-- **CapricaGuestPortal (30):** Guest – Internet only
+- **CapricaGuestPortal (30):** Guest – internet only
 - **CapricaResidentPortal (31):** Elevated guest (casting, printing)
 
 - **BasestarVentana (40):** Infrastructure switches/controllers
@@ -31,8 +31,8 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 📊 Monitoring & dashboards
 
-- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)  
-- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)  
+- Grafana: [`dashboards/dashboard.json`](dashboards/dashboard.json)
+- Prometheus: [`alerts/alert_rules.yaml`](alerts/alert_rules.yaml)
 - Home Assistant: [`ha/lovelace.yaml`](ha/lovelace.yaml)
 - Homepage mockup: [`dashboards/Homepage Mockup.md`](dashboards/Homepage%20Mockup.md)
 
@@ -43,6 +43,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 - [`docs/dhcp-scopes.md`](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
 - [`docs/audit-checklist.md`](docs/audit-checklist.md) — Operational health checklist
 - [`docs/services.md`](docs/services.md) — Service/ports traffic matrix (per‑VLAN service flows)
+- [`docs/spec-review-todos.md`](docs/spec-review-todos.md) — Outstanding specification review items and TODOs
 - [`docs/host-tracker.md`](docs/host-tracker.md) — Canonical host tracker index
 - [`docs/other-devices.md`](docs/other-devices.md) — IoT, printers, cameras, and appliances tracker
 - [`docs/wled-configurations.md`](docs/wled-configurations.md) — WLED LED strip configurations and presets
@@ -53,46 +54,83 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ## 🧪 Audit checklist (quick view)
 
-- **Guest VLAN:** Isolated from LANs  
-- **IoT VLAN:** Restricted to telemetry only  
-- **Cameras:** View‑only from Trusted  
-- **Work VLAN (90):** Unthrottled Internet; VPN bootstraps via local DNS/DHCP  
+- **Guest VLAN:** Isolated from LANs
+- **IoT VLAN:** Restricted to telemetry only
+- **Cameras:** View‑only from Trusted
+- **Work VLAN (90):** Unthrottled internet; VPN bootstraps via local DNS/DHCP
 - **ServerVault:** Outbound limited to updates and sync
 
 ---
 
-## 📂 Repo structure
+## 📂 repository structure
 
-```tree
+```text
 Battlestar-Ventana-Network-Blueprint/
-├── readme.md                 # Master blueprint doc (VLANs, zones, diagrams, audit checklist)
+├── readme.md                          # Master blueprint doc
+├── CHANGELOG.md                       # Versioned history of changes
+├── layout.md                          # Network layout
+├── network-map.md                     # Network topology map
 │
-├── dashboards/               # Grafana dashboards
+├── alerts/                            # Prometheus alert rules
+│   └── alert_rules.yaml
+│
+├── dashboards/                        # Grafana dashboards
 │   ├── dashboard.json
-│   └── README.md
+│   └── Homepage Mockup.md
 │
-├── alerts/                   # Prometheus alert rules
-│   ├── alert_rules.yaml
-│   └── README.md
+├── docs/                              # Supporting documentation
+│   ├── audit-checklist.md
+│   ├── dhcp-scopes.md
+│   ├── firewall-matrix.md
+│   ├── host-tracker.md
+│   ├── jaeger-pool.md
+│   ├── naming-conventions.md
+│   ├── other-devices.md
+│   ├── physical-hosts.md
+│   ├── Project_Architecture_Blueprint.md
+│   ├── services.md
+│   ├── spec-review-todos.md
+│   └── raw/
+│       └── network.md
 │
-├── ha/                       # Home Assistant Lovelace dashboard
+├── ha/                                # Home Assistant
+│   ├── Dashboard.yaml
 │   ├── lovelace.yaml
-│   └── README.md
+│   └── guidelines/
+│       ├── 01-architecture-principles.md
+│       └── … (02–10)
 │
-└── docs/                     # Supporting documentation
-    ├── firewall-matrix.md    # VLAN + Zone firewall rules, Internet Access Policy, audit tie-in
-    ├── dhcp-scopes.md        # Subnet ranges, gateways, lease times
-    ├── naming-conventions.md # Canonical SSID/VLAN naming rules
-    ├── audit-checklist.md    # Operational health checklist
-    └── services.md           # Service/ports traffic matrix (scaffolded, TODOs for detail)
-CHANGELOG.md                  # Versioned history of changes
+├── plan/                              # Feature and issue plans
+└── plans/                             # Architecture & infrastructure plans
+    ├── architecture-route-pi-squared-1.md
+    ├── infrastructure-router-vlans-1.md
+    ├── infrastructure-router-vlans-2.md
+    └── infrastructure-router-vlans-3.md
 ```
+
+### 🔗 Quick navigation
+
+- [readme.md](readme.md) — Master blueprint doc
+- [CHANGELOG.md](CHANGELOG.md) — Versioned history of changes
+- [layout.md](layout.md) — Network layout
+- [network-map.md](network-map.md) — Network topology map
+- [alerts/alert_rules.yaml](alerts/alert_rules.yaml) — Prometheus alert rules
+- [dashboards/dashboard.json](dashboards/dashboard.json) — Grafana dashboard
+- [dashboards/Homepage Mockup.md](dashboards/Homepage%20Mockup.md) — Homepage mockup
+- [docs/audit-checklist.md](docs/audit-checklist.md) — Operational health checklist
+- [docs/dhcp-scopes.md](docs/dhcp-scopes.md) — Subnet ranges, gateways, lease times
+- [docs/firewall-matrix.md](docs/firewall-matrix.md) — Firewall access matrix
+- [docs/naming-conventions.md](docs/naming-conventions.md) — SSID/VLAN naming rules
+- [docs/services.md](docs/services.md) — Service/ports traffic matrix
+- [docs/Project_Architecture_Blueprint.md](docs/Project_Architecture_Blueprint.md) — Full architecture blueprint
+- [ha/lovelace.yaml](ha/lovelace.yaml) — Home Assistant dashboard config
+- [ha/guidelines/06-security-practices.md](ha/guidelines/06-security-practices.md) — HA security practices
 
 ### 📑 Legend
 
-- 📄 Documentation  
-- 📊 Dashboards  
-- ⚙️ Configs / Alerts  
+- 📄 Documentation
+- 📊 Dashboards
+- ⚙️ Configs / Alerts
 
 ---
 
@@ -143,8 +181,10 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 - The root `pyproject.toml` and `uv.lock` are authoritative for Python development
   tools. Run `uv sync --locked` from the repository root. Do not manually install
   Ansible into this environment: synchronization removes undeclared packages.
-- Ruff replaces Black, isort, and Pylint in the root toolchain; ty provides
-  separate type checking. Ruff's selected rules do not cover every Pylint check.
+- Ruff replaces Black, isort, and Pylint in the root toolchain: it formats, sorts
+  imports, and applies the Pylint rules selected in `pyproject.toml`. ty provides
+  separate type checking. Ruff does not infer types across modules the way Pylint
+  does, so a few Pylint-only checks have no equivalent.
 - `requirements.txt` is a generated compatibility export, not an independent
   dependency source. Regenerate it after dependency changes with
   `uv export --locked --no-hashes --no-emit-project --format requirements-txt --output-file requirements.txt`.
@@ -157,11 +197,13 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 - Native Windows is not an Ansible control node. Do not share a virtual
   environment between Windows and WSL; keep a separate Linux checkout/environment.
   See the [Ansible controller requirements](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#control-node-requirements).
-- The legacy deployment execution environment still uses
-  `ansible/requirements.txt`, Python 3.11, and its existing Core constraints.
-  It is not upgraded by the development controller change. The legacy
-  `ansible/bootstrap-env.ps1` helper is not the new controller bootstrap;
-  use `task ansible:bootstrap` from Linux/WSL instead.
+- The deployment execution environment (`ansible/Containerfile` and
+  `ansible/execution-environment.yml`) is built on `python:3.13-slim` and
+  installs `ansible/requirements.txt`. ansible-core 2.21 needs Python 3.12 or
+  newer, so keep the base image on a supported Python. It is separate from the
+  development controller. The legacy `ansible/bootstrap-env.ps1` helper is not
+  the new controller bootstrap; use `task ansible:bootstrap` from Linux/WSL
+  instead.
 - If uv warns about `VIRTUAL_ENV=.venv\.venv`, deactivate the stale environment
   and open a fresh terminal. VS Code's Python project points at the repository
   root, not the `.venv` directory. Do not use `--active` to redirect project
@@ -169,7 +211,7 @@ temporarily deferred; see [issue #127](https://github.com/th3Wheel/Battlestar-Ve
 
 ---
 
-🚀 *The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, Internet policy, service flows, audit checks, and versioned history in one cohesive repo.*
+🚀 _The Battlestar Ventana Network Blueprint now documents VLANs, firewall rules, internet policy, service flows, audit checks, and versioned history in one cohesive repository._
 
 ## Contributing
 

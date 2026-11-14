@@ -27,9 +27,9 @@ applyTo: '**/*.py'
 
 - Follow the **PEP 8** style guide for Python.
 - Maintain proper indentation (use 4 spaces for each level of indentation).
-- Ensure lines do not exceed 120 characters to match the repository's Python linting configuration (`.pylintrc`).
+- Ensure lines do not exceed 120 characters to match the repository's Python linting configuration (`line-length` in `pyproject.toml`, enforced by Ruff).
 - Place function and class docstrings immediately after the `def` or `class` keyword.
-- Use blank lines to separate functions, classes, and code blocks where appropriate.
+- Use empty lines to separate functions, classes, and code blocks where appropriate.
 
 ## Edge Cases and Testing
 
@@ -44,10 +44,10 @@ applyTo: '**/*.py'
 def calculate_area(radius: float) -> float:
     """
     Calculate the area of a circle given the radius.
-    
+
     Parameters:
     radius (float): The radius of the circle.
-    
+
     Returns:
     float: The area of the circle, calculated as π * radius^2.
     """
