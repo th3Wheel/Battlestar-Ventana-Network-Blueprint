@@ -32,7 +32,7 @@ Boundaries and communication:
 
 - One-way trust boundaries from less-trusted zones into services with minimal port exposure
 - Explicit internet egress policy per VLAN
-- Service discovery and management centralized in ServerVault/BasestarControl
+- Service discovery and management centralized in ServerVault/BasestarVentana
 
 ---
 
@@ -125,7 +125,7 @@ For each component, this section summarizes purpose, internal structure, interac
 
 ### 4.3 Trusted LAN (VLAN 10) and Work (VLAN 90)
 
-- Purpose: End user compute networks
+- Purpose: end user compute networks
 - Interactions:
   - Trusted(10): Full to Infra/Services, view-only to Surveillance
   - Work(90): internet + casting to Media (70); otherwise isolated from LAN

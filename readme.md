@@ -62,7 +62,7 @@ See [`docs/firewall-matrix.md`](docs/firewall-matrix.md)
 
 ---
 
-## 📂 Repository structure
+## 📂 repository structure
 
 ```text
 Battlestar-Ventana-Network-Blueprint/
