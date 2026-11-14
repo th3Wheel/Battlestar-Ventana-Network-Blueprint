@@ -1,0 +1,21 @@
+docs/Project_Architecture_Blueprint.md
+  s_0b27ccf1a1a6df::t_5f8fcc7ad1325e 35,128
+readme.md
+  s_0b27ccf1a1a6df::t_b5e1848272233f 65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "edb544de6d90d041f91ff53d570b8e547180b243",
+  "prompts": {},
+  "sessions": {
+    "s_0b27ccf1a1a6df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28d31f06-a222-4674-9db6-ff9bfbbd967a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
