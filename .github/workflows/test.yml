@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+# Cancel a run when a newer commit supersedes it on the same pull request or branch, including master and main.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest

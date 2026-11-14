@@ -23,6 +23,12 @@ on:
 permissions:
   contents: read
 
+# Cancel a run when a newer commit supersedes it on the same pull request. github.ref is always the base
+# branch for pull_request_target, so the group uses the pull request number instead.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   forbid-local-files:
     name: Forbid local files
