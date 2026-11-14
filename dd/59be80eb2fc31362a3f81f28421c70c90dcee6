@@ -1,0 +1,23 @@
+ansible/.dockerignore
+  s_e142a97a9d77af::t_d7255ce7900ccb 1-5
+ansible/Containerfile
+  s_e142a97a9d77af::t_7fe57ad7ab2a39 16-19,21,29,32,34-36,52-55
+ansible/README.md
+  s_e142a97a9d77af::t_0982f0b1adc343 1-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "dd59be80eb2fc31362a3f81f28421c70c90dcee6",
+  "prompts": {},
+  "sessions": {
+    "s_e142a97a9d77af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "052f2833-3ede-4a9c-9123-5aeb1989ca71",
+        "model": "unknown"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
