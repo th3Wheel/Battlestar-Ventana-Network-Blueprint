@@ -31,3 +31,9 @@
 /ansible/ @th3Wheel
 # ── Documentation ───────────────────────────────────────────────────────────
 /docs/ @th3Wheel
+
+# ── Agent merge gates ───────────────────────────────────────────────────────
+# The shared gate and each agent's hook wiring. Listed explicitly so an agent
+# cannot loosen its own gate without a person reading the diff.
+/.agents/hooks/ @th3Wheel
+/.claude/settings.json @th3Wheel

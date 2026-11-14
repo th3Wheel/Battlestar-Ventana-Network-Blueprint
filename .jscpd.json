@@ -1,0 +1,16 @@
+{
+  "threshold": 4,
+  "reporters": ["consoleFull"],
+  "ignore": [
+    "**/__snapshots__/**",
+    "**/node_modules/**",
+    "**/doNotLint/**",
+    "**/package-lock.json",
+    "**/.mcp.json",
+    "**/.cursor/mcp.json",
+    "**/.vscode/mcp.json",
+    "**/.gemini/settings.json",
+    "**/.github/evals/**"
+  ],
+  "absolute": true
+}

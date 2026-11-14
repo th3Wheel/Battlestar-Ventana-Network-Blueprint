@@ -1,0 +1,63 @@
+name: Local files
+
+# Blocks per-machine files (settings.local.json, *.local.*, secrets, keys) from reaching the
+# default branch. The forbidden list is .github/local-files-policy.json; the checker is
+# scripts/check-local-files.ts. Require the "Forbid local files" check in the branch ruleset.
+#
+# SECURITY: this runs on pull_request_target so that GitHub uses the BASE branch's copy of this
+# workflow, the checker and the policy. A pull request therefore cannot edit them to pass its own
+# check. That is only safe because nothing from the pull request is ever checked out or run:
+#   - the checkout below is the base branch (the default for this trigger);
+#   - the pull request's commits are fetched as data and read with `git ls-tree` / `git diff`;
+#   - the token is read-only and no secrets are used.
+# Do not add a step that checks out, builds or executes pull request code, and do not widen
+# `permissions`. zizmor flags the trigger by design; the suppression below is deliberate.
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
+    branches: [master, main]
+# There is deliberately no workflow_dispatch trigger. CodeQL's cache-poisoning rule treats a
+# manually dispatched workflow as able to write the default branch cache, and flags every
+# step here that runs repository code after the pull request's commits are fetched.
+
+permissions:
+  contents: read
+
+jobs:
+  forbid-local-files:
+    name: Forbid local files
+    runs-on: ubuntu-latest
+    steps:
+      # For pull_request_target this is the base branch, not the pull request.
+      - name: Checkout the base branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.10'
+
+      # Fetch the pull request's commits without checking them out: they are only read as data.
+      # The ref moves when the branch is force-pushed, so it must still point at the commit that
+      # triggered this run. If it does not, fail rather than check a different tree.
+      - name: Fetch the pull request commits
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags --quiet origin "refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
+          fetched="$(git rev-parse refs/remotes/pr/head)"
+          if [ "$fetched" != "$HEAD_SHA" ]; then
+            echo "::error::The pull request moved during the run (event ${HEAD_SHA}, fetched ${fetched}); re-run the check."
+            exit 1
+          fi
+
+      # Every file in the pull request's tree: a local file it adds, or one already in the tree,
+      # fails the check. It reads the exact commit that triggered the run, not the moving ref.
+      - name: No local files in the pull request
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-local-files.ts --tracked --head "$HEAD_SHA"

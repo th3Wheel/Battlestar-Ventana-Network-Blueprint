@@ -75,7 +75,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ---
 
-### VLAN 90: ScyllaDataControl (Work VLAN)
+### VLAN 90: ScyllaProcessControl (Work VLAN)
 
 #### Outbound to ServerVault (50)
 
@@ -83,7 +83,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Ports:** DNS (53), DHCP (67/68), SMB (445), NFS (2049), OpenVPN (1194) or WireGuard (51820)
 - **Direction:** Work → ServerVault
 - **Protocol:** UDP (DNS/DHCP), TCP (SMB/NFS/VPN)
-- **Notes:** **CRITICAL DEPENDENCY:** Work VLAN must contact local DNS/DHCP (10.76.50.x) FIRST to resolve VPN gateway and establish tunnel before outbound Internet access is enabled. After VPN tunnel established, split-tunnel or full-tunnel per policy. Limited access per firewall matrix.
+- **Notes:** **CRITICAL DEPENDENCY:** Work VLAN must contact local DNS/DHCP (10.76.50.x) FIRST to resolve VPN gateway and establish tunnel before outbound internet access is enabled. After VPN tunnel established, split-tunnel or full-tunnel per policy. Limited access per firewall matrix.
 - **FW Ref:** [90 Work → 50 ServerVault](firewall-matrix.md) — Limited
 
 #### Outbound to Media (70)
@@ -95,14 +95,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Casting to media devices; no file access
 - **FW Ref:** [90 Work → 70 Media](firewall-matrix.md)
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** VPN, web, email, cloud services
 - **Ports:** All TCP/UDP (1024-65535)
-- **Direction:** Work → Internet
+- **Direction:** Work → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Unthrottled Internet access via established VPN tunnel. Local DNS/DHCP must be available for VPN bootstrap.
-- **FW Ref:** [90 Work → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Unthrottled internet access via established VPN tunnel. Local DNS/DHCP must be available for VPN bootstrap.
+- **FW Ref:** [90 Work → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -114,7 +114,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** File sharing, print queue management
 - **Ports:** SMB (445), IPP (631), HTTPS (443)
-- **Direction:** ResidentGate → ServerVault
+- **Direction:** CapricaResidentPortal → ServerVault
 - **Protocol:** TCP
 - **Notes:** Limited access; file and print services only; no direct management access
 - **FW Ref:** [31 GuestElevated → 50 ServerVault](firewall-matrix.md) — Limited
@@ -123,7 +123,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** Printing
 - **Ports:** IPP (631), LPD (515)
-- **Direction:** ResidentGate → Printers
+- **Direction:** CapricaResidentPortal → Printers
 - **Protocol:** TCP
 - **Notes:** Full print submission and status
 - **FW Ref:** [31 GuestElevated → 60 Printers](firewall-matrix.md) — Full
@@ -132,19 +132,19 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** Media casting
 - **Ports:** DLNA (1900), Chromecast (8008-8009)
-- **Direction:** ResidentGate → Media
+- **Direction:** CapricaResidentPortal → Media
 - **Protocol:** TCP/UDP
 - **Notes:** Full casting and streaming control
 - **FW Ref:** [31 GuestElevated → 70 Media](firewall-matrix.md) — Full
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Web browsing, streaming
 - **Ports:** HTTP (80), HTTPS (443), DNS (53)
-- **Direction:** ResidentGate → Internet
+- **Direction:** CapricaResidentPortal → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Full web access per Internet access policy
-- **FW Ref:** [31 GuestElevated → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Full web access per internet access policy
+- **FW Ref:** [31 GuestElevated → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -159,14 +159,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Limited access per firewall matrix; retrieve media files and metadata only
 - **FW Ref:** [70 Media → 50 ServerVault](firewall-matrix.md) — Limited
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Streaming, content delivery
 - **Ports:** HTTP (80), HTTPS (443), RTSP (554)
-- **Direction:** Media → Internet
+- **Direction:** Media → internet
 - **Protocol:** TCP
-- **Notes:** Full streaming access per Internet access policy
-- **FW Ref:** [70 Media → Internet](firewall-matrix.md) — Unrestricted
+- **Notes:** Full streaming access per internet access policy
+- **FW Ref:** [70 Media → internet](firewall-matrix.md) — Unrestricted
 
 ---
 
@@ -211,14 +211,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** ESP32 camera sensors stream captured TV frames to Hyperion HD server for ambient lighting processing over UDP 19444 only. Hyperion JSON API (TCP 19445) and Web UI (TCP 8090) remain restricted to trusted management VLANs per firewall matrix and are not exposed to IoT devices.
 - **FW Ref:** [20 IoT → 50 ServerVault](firewall-matrix.md) — Limited
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Firmware updates, cloud sync
 - **Ports:** HTTPS (443), MQTT (8883)
-- **Direction:** IoT → Internet
+- **Direction:** IoT → internet
 - **Protocol:** TCP
 - **Notes:** Limited to firmware updates and cloud telemetry endpoints; no arbitrary outbound access
-- **FW Ref:** [20 IoT → Internet](firewall-matrix.md) — Limited
+- **FW Ref:** [20 IoT → internet](firewall-matrix.md) — Limited
 
 #### Local Network (within VLAN 20)
 
@@ -230,22 +230,22 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 ---
 
-### VLAN 30: CapricaGuestPortal (Guest – Internet Only)
+### VLAN 30: CapricaGuestPortal (Guest – internet Only)
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Web browsing
 - **Ports:** HTTP (80), HTTPS (443), DNS (53)
-- **Direction:** Guest → Internet
+- **Direction:** Guest → internet
 - **Protocol:** TCP/UDP
-- **Notes:** **CRITICAL ISOLATION:** No LAN access permitted. Full Internet access per policy; purely outbound.
-- **FW Ref:** [30 Guest → Internet](firewall-matrix.md) — Unrestricted; All LAN destinations Blocked
+- **Notes:** **CRITICAL ISOLATION:** No LAN access permitted. Full internet access per policy; purely outbound.
+- **FW Ref:** [30 Guest → internet](firewall-matrix.md) — Unrestricted; All LAN destinations Blocked
 
 ---
 
 ## 🛠 Infrastructure Zone
 
-### VLAN 40: BasestarControl (InfraCore – Switches & Controllers)
+### VLAN 40: BasestarVentana (InfraCore – Switches & Controllers)
 
 #### Outbound to ServerVault (50)
 
@@ -310,7 +310,7 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 - **Service:** File sharing, printing, media
 - **Ports:** SMB (445), IPP (631), Plex (32400), HTTPS (443)
-- **Direction:** ← ResidentGate (31), Media (70), Printers (60)
+- **Direction:** ← CapricaResidentPortal (31), Media (70), Printers (60)
 - **Protocol:** TCP
 - **Notes:** Limited access per firewall matrix; specific services only
 - **FW Ref:** [31 → 50](firewall-matrix.md) — Limited; [70 → 50](firewall-matrix.md) — Limited; [60 → 50](firewall-matrix.md) — Full
@@ -349,14 +349,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Full access per firewall matrix; backup agent, config manager, database
 - **FW Ref:** [40 InfraCore → 50 ServerVault](firewall-matrix.md) — Full
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Updates, cloud sync, API calls
 - **Ports:** HTTPS (443), NTP (123), DNS (53)
-- **Direction:** ServerVault → Internet
+- **Direction:** ServerVault → internet
 - **Protocol:** TCP/UDP
-- **Notes:** Limited outbound per firewall matrix and Internet access policy; updates and cloud integrations only
-- **FW Ref:** [50 ServerVault → Internet](firewall-matrix.md) — Limited
+- **Notes:** Limited outbound per firewall matrix and internet access policy; updates and cloud integrations only
+- **FW Ref:** [50 ServerVault → internet](firewall-matrix.md) — Limited
 
 ---
 
@@ -394,14 +394,14 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 - **Notes:** Send logs and metadata to syslog/database; view-only access per firewall matrix
 - **FW Ref:** [82 Cameras Cloud → 50 ServerVault](firewall-matrix.md) — View
 
-#### Outbound to Internet (🌐)
+#### Outbound to internet (🌐)
 
 - **Service:** Cloud relay, event upload
 - **Ports:** HTTPS (443), RTSP (554)
-- **Direction:** Cameras Cloud → Internet
+- **Direction:** Cameras Cloud → internet
 - **Protocol:** TCP
-- **Notes:** Cloud relay gateway; limited per firewall matrix and Internet access policy
-- **FW Ref:** [82 Cameras Cloud → Internet](firewall-matrix.md) — Limited
+- **Notes:** Cloud relay gateway; limited per firewall matrix and internet access policy
+- **FW Ref:** [82 Cameras Cloud → internet](firewall-matrix.md) — Limited
 
 #### Local Network (within VLAN 82)
 
@@ -417,32 +417,32 @@ It is designed to be used in conjunction with the [🔐 Firewall Matrix](firewal
 
 This table consolidates all service-to-port mappings for quick firewall rule generation:
 
-| Service | Port(s) | Protocol | VLAN(s) | Purpose |
-|---------|---------|----------|---------|---------|
-| DNS | 53 | UDP/TCP | All | Domain name resolution; critical for VPN bootstrap (VLAN 90) |
-| DHCP | 67/68 | UDP | All | Network bootstrap; critical for VPN bootstrap (VLAN 90) |
-| NTP | 123 | UDP | 10, 50 | Network time synchronization |
-| SSH | 22 | TCP | 10, 40, 50 | Secure remote access for management |
-| IPP | 631 | TCP | 31, 60 | Internet Printing Protocol for print jobs |
-| LPD | 515 | TCP | 10, 31, 60 | Legacy line printer daemon |
-| SNMP | 161/162 | UDP | 10, 40 | Network monitoring and management |
-| RTSP | 554 | TCP | 10, 81, 82, 50 | Real-time streaming protocol for video |
-| Syslog | 514 | UDP | 40, 50, 81, 82 | Event and log centralization |
-| DLNA | 1900 | UDP | 10, 31, 70, 90 | Media discovery and streaming |
-| mDNS | 5353 | UDP | 20, 31, 60, 70, 81, 82 | Multicast DNS for local device discovery |
-| Chromecast | 8008-8009 | TCP | 10, 31, 70, 90 | Chromecast device control and streaming |
-| MQTT | 1883 | TCP | 20, 50 | MQTT broker (non-TLS) |
-| MQTT | 8883 | TCP | 20, 50 | MQTT broker (TLS) |
-| Plex | 32400 | TCP | 70, 50 | Media server for streaming |
-| JetDirect | 9100 | TCP | 60, 50 | Printer status and job submission |
-| HTTPS | 443 | TCP | All | Secure web services, firmware updates, APIs |
-| HTTP | 80 | TCP | 30, 31, 70 | Unencrypted web services (guest/media/resident) |
-| SMB | 445 | TCP | 10, 31, 50, 60, 70 | File sharing (Windows/Linux) |
-| NFS | 2049 | TCP | 10, 90, 50 | Network file system for backups |
-| PostgreSQL | 5432 | TCP | 40, 50 | Infrastructure database (InfraCore ↔ ServerVault) |
-| OpenVPN | 1194 | UDP/TCP | 90, 50 | VPN tunnel bootstrap |
-| WireGuard | 51820 | UDP | 90, 50 | VPN tunnel (alternative to OpenVPN) |
-| ONVIF | 8080 | TCP | 81, 82 | Camera discovery and management |
+| Service    | Port(s)   | Protocol | VLAN(s)                | Purpose                                                      |
+| ---------- | --------- | -------- | ---------------------- | ------------------------------------------------------------ |
+| DNS        | 53        | UDP/TCP  | All                    | Domain name resolution; critical for VPN bootstrap (VLAN 90) |
+| DHCP       | 67/68     | UDP      | All                    | Network bootstrap; critical for VPN bootstrap (VLAN 90)      |
+| NTP        | 123       | UDP      | 10, 50                 | Network time synchronization                                 |
+| SSH        | 22        | TCP      | 10, 40, 50             | Secure remote access for management                          |
+| IPP        | 631       | TCP      | 31, 60                 | Internet Printing Protocol for print jobs                    |
+| LPD        | 515       | TCP      | 10, 31, 60             | Legacy line printer daemon                                   |
+| SNMP       | 161/162   | UDP      | 10, 40                 | Network monitoring and management                            |
+| RTSP       | 554       | TCP      | 10, 81, 82, 50         | Real-time streaming protocol for video                       |
+| Syslog     | 514       | UDP      | 40, 50, 81, 82         | Event and log centralization                                 |
+| DLNA       | 1900      | UDP      | 10, 31, 70, 90         | Media discovery and streaming                                |
+| mDNS       | 5353      | UDP      | 20, 31, 60, 70, 81, 82 | Multicast DNS for local device discovery                     |
+| Chromecast | 8008-8009 | TCP      | 10, 31, 70, 90         | Chromecast device control and streaming                      |
+| MQTT       | 1883      | TCP      | 20, 50                 | MQTT broker (non-TLS)                                        |
+| MQTT       | 8883      | TCP      | 20, 50                 | MQTT broker (TLS)                                            |
+| Plex       | 32400     | TCP      | 70, 50                 | Media server for streaming                                   |
+| JetDirect  | 9100      | TCP      | 60, 50                 | Printer status and job submission                            |
+| HTTPS      | 443       | TCP      | All                    | Secure web services, firmware updates, APIs                  |
+| HTTP       | 80        | TCP      | 30, 31, 70             | Unencrypted web services (guest/media/resident)              |
+| SMB        | 445       | TCP      | 10, 31, 50, 60, 70     | File sharing (Windows/Linux)                                 |
+| NFS        | 2049      | TCP      | 10, 90, 50             | Network file system for backups                              |
+| PostgreSQL | 5432      | TCP      | 40, 50                 | Infrastructure database (InfraCore ↔ ServerVault)            |
+| OpenVPN    | 1194      | UDP/TCP  | 90, 50                 | VPN tunnel bootstrap                                         |
+| WireGuard  | 51820     | UDP      | 90, 50                 | VPN tunnel (alternative to OpenVPN)                          |
+| ONVIF      | 8080      | TCP      | 81, 82                 | Camera discovery and management                              |
 
 ---
 

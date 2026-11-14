@@ -9,7 +9,7 @@ name: Lint Code Base
 on:
   push:
   pull_request:
-    branches: ['master']
+    branches: ['master', 'integration/**']
 
 # super-linter reports a commit status per language (MULTI_STATUS), which needs statuses: write.
 permissions:
@@ -20,6 +20,11 @@ permissions:
 jobs:
   run-lint:
     runs-on: ubuntu-latest
+    # One run per branch or pull request: a new push cancels that ref's older lint run, never another ref's. Runs on
+    # master are not cancelled, so every merge keeps its own result.
+    concurrency:
+      group: lint-code-base-${{ github.ref }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
     steps:
       # Install third-party code under the runner's temp dir, never in the checkout. super-linter's
       # container mounts it at /github/runner_temp, so ansible-lint can still find the collections.
@@ -43,7 +48,7 @@ jobs:
       # The TypeScript ESLint run resolves imports such as `vitest` from the checkout's node_modules.
       # super-linter excludes node_modules from linting, so installing here does not add lint targets.
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '26.10'
 
@@ -83,3 +88,14 @@ jobs:
           ANSIBLE_COLLECTIONS_PATH: /github/runner_temp/ansible
           # Shell scripts predate shfmt and use 2-space indentation; reformat repo-wide before re-enabling.
           VALIDATE_SHELL_SHFMT: false
+          # Python is linted by the repository's own steps above: ruff check, ruff format --check and
+          # ty check, with versions locked in uv.lock and configuration in pyproject.toml. super-linter's
+          # copies run their own tool versions with default settings (for example ruff 0.16.x against the
+          # locked 0.14.x), so they disagree with the repository's choices.
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_MYPY: false
+          VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_PYTHON_RUFF: false
+          VALIDATE_PYTHON_RUFF_FORMAT: false
