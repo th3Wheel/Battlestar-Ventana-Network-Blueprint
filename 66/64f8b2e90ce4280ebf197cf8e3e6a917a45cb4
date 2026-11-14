@@ -1,0 +1,21 @@
+bootstrap/ssh_key_bootstrap.yml
+  s_0b27ccf1a1a6df::t_ea775b86be8a58 9,13-16
+CHANGELOG.md
+  s_0b27ccf1a1a6df::t_45aba240ce6349 12-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "6664f8b2e90ce4280ebf197cf8e3e6a917a45cb4",
+  "prompts": {},
+  "sessions": {
+    "s_0b27ccf1a1a6df": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28d31f06-a222-4674-9db6-ff9bfbbd967a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Wheeler <tnwheeler@gmail.com>"
+    }
+  }
+}
